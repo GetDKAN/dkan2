@@ -4,33 +4,45 @@
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
-    "require": {
+    "require-dev": {
+      "require": {
+        "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "drupal/jsonb": "1.x-dev",
+        "composer/installers": "^1.0",
+        "oomphinc/composer-installers-extender": "^1.1",
+        "drupal-composer/drupal-scaffold": "^2.0.0",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
-        "drupal/config_update": "1.x-dev",
-        "fxp/composer-asset-plugin": "^1.4@dev",
-        "bower-asset/json-forms": "dev-master",
-        "camspiers/json-pretty": "dev-master"
-    },
-    "require-dev": {
-      "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2"
+      },
+        "burdamagazinorg/thunder-dev-tools": "dev-master",
+        "drupal/coder": "8.2"
     },
     "repositories": [
         {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
         }
     ],
+    "scripts": {
+        "post-install-cmd": ["@composer drupal-scaffold"],
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
+        "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
+    },
     "autoload": {
         "psr-4": {
             "Social\\": "src"
         }
     },
     "extra": {
-        "enable-patching": true
+        "enable-patching": true,
+    },
+    "require-dev": {
+      "burdamagazinorg/thunder-dev-tools": "dev-master",
+      "drupal/coder": "8.2"
     },
     "authors": [
         {
