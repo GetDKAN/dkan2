@@ -4,17 +4,17 @@
     "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
-    "require-dev": {
-      "require": {
+    "require": {
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "composer/installers": "^1.0",
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal/core": "~8.5.2",
         "drupal/entity": "1.0-beta3",
-      },
-        "burdamagazinorg/thunder-dev-tools": "dev-master",
-        "drupal/coder": "8.2"
+        "bower-asset/json-form": "1.1.11"
+    },
+    "require-dev": {
+      "burdamagazinorg/thunder-dev-tools": "dev-master",
+      "drupal/coder": "8.2"
     },
     "repositories": [
         {
@@ -35,11 +35,7 @@
         }
     },
     "extra": {
-        "enable-patching": true,
-    },
-    "require-dev": {
-      "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2"
+        "enable-patching": true
     },
     "authors": [
         {
