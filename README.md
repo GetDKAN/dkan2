@@ -11,7 +11,7 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
     "minimum-stability": "dev",
     "description": "DKAN Test",
     "repositories": [
-        {"type": "vcs", "url": "https://github.com/dafeder/dkan2"},
+        {"type": "vcs", "url": "https://github.com/getdkan/dkan2"},
         {"type": "composer", "url": "https://packages.drupal.org/8"},
         {"type": "composer", "url": "https://asset-packagist.org"}
     ],
@@ -20,7 +20,7 @@ This is a Drupal 8 _profile_. You will need to create a new composer project in 
         "oomphinc/composer-installers-extender": "^1.1",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "drush/drush": "^9.3",
-        "getdkan/dkan2": "dev-form-display-improve",
+        "getdkan/dkan2": "dev-master",
         "cweagans/composer-patches": "^1.5.0"
     },
     "require-dev": {
