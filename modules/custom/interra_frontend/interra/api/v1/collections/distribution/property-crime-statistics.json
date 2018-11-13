@@ -1,0 +1,1 @@
+{"@type":"dcat:Distribution","downloadURL":"http://catalog-demo.interra.io/media/PropertyCrimesByCity.csv","mediaType":"text/csv","format":"csv","title":"Property Crime Statistics by City","interra":{"id":"property-crime-statistics","source":"dkandemo"},"identifier":"c25cb14b-c662-4426-8002-c71174257dfb","created":"2017-11-17","modified":"2017-11-17"}
