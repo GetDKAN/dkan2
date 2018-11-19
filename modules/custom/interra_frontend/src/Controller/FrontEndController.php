@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 */
 class FrontEndController extends ControllerBase {
 
-  private $chunkId = 'c877ef5cb4438b6a5549';
+  private $chunkId = '4883fea295316854f264';
 
   public function about ( Request $request ) {
     return $this->buildPage( $request );
