@@ -26,6 +26,9 @@ class FrontEndController extends ControllerBase {
   public function search ( Request $request ) {
     return $this->buildPage( $request );
   }
+  public function api ( Request $request ) {
+    return $this->buildPage( $request );
+  }
   public function groups ( Request $request ) {
     return $this->buildPage( $request );
   }

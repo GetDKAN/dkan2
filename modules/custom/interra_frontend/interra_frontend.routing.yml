@@ -17,6 +17,12 @@ interra_frontend.search:
   requirements:
     _permission: 'access content'
 interra_frontend.groups:
+  path: '/api'
+  defaults:
+   { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::api'}
+  requirements:
+    _permission: 'access content'
+interra_frontend.groups:
   path: '/groups'
   defaults:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::groups'}
@@ -35,7 +41,7 @@ interra_frontend.dataset:
   requirements:
     _permission: 'access content'
 interra_frontend.distribution:
-  path: '/organization/{id}'
+  path: '/distribution/{id}'
   defaults:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::distribution'}
   requirements:
