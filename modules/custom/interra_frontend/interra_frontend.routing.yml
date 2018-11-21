@@ -1,5 +1,5 @@
 interra_frontend.home:
-  path: '/'
+  path: '/home'
   defaults:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::home'}
   requirements:
@@ -16,7 +16,7 @@ interra_frontend.search:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::search'}
   requirements:
     _permission: 'access content'
-interra_frontend.groups:
+interra_frontend.api:
   path: '/api'
   defaults:
    { _controller: '\Drupal\interra_frontend\Controller\FrontEndController::api'}

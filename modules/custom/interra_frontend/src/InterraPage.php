@@ -7,6 +7,10 @@ class InterraPage {
 
   public function __construct($chunkId, $path = '/') {
     $this->chunkId = $chunkId;
+    $p = explode('/', $path);
+    if (count($p) > 1) {
+      $path = $p[1];
+    }
     $this->path = $path;
   }
 
