@@ -39,6 +39,8 @@ jobs:
             ln -s ~/dkan-tools/bin/dktl /usr/local/bin/dktl
             chmod +x /usr/local/bin/dktl
       - run:
-          name: Setup Containers
+          name: Install DKAN
           command: |
-            dktl dc up -d
+            dktl init
+            dktl drupal:get 8.3.6
+            dktl drupal:make
