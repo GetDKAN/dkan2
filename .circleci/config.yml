@@ -41,5 +41,5 @@ jobs:
       - run:
           name: Install DKAN
           command: |
-            touch /var/www/dktl.yml
+            touch dktl.yml
             dktl
