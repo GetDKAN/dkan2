@@ -42,7 +42,8 @@ jobs:
           name: Startup Containers
           command: |
             touch dktl.yml
-            dktl dc up
+            dktl dc up -d
+            sleep 20
       - run:
           name: Place our code inside of the containers
           command: |
