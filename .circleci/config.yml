@@ -42,7 +42,7 @@ jobs:
           name: Startup Containers
           command: |
             touch dktl.yml
-            dktl dc up -d
+            dktl dc up
       - run:
           name: Place our code inside of the containers
           command: |
@@ -50,7 +50,6 @@ jobs:
             dktl dc exec cli rm -R /usr/local/dkan-tools
             docker cp /www $(dktl dc ps -q cli):/var
             docker cp /root/dkan-tools $(dktl dc ps -q cli):/usr/local
-            docker cp /root/.aws $(dktl dc ps -q cli):/root
       - run:
           name: Test DKTL
           command: |
