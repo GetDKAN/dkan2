@@ -42,4 +42,4 @@ jobs:
           name: Install DKAN
           command: |
             touch dktl.yml
-            dktl
+            dktl dc up -d
