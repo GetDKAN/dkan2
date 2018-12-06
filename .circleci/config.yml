@@ -38,3 +38,7 @@ jobs:
             git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
             ln -s ~/dkan-tools/bin/dktl /usr/local/bin/dktl
             chmod +x /usr/local/bin/dktl
+      - run:
+          name: Setup Containers
+          command: |
+            dktl dc up -d
