@@ -41,6 +41,5 @@ jobs:
       - run:
           name: Install DKAN
           command: |
-            dktl init
-            dktl drupal:get 8.3.6
-            dktl drupal:make
+            touch /var/www/dktl.yml
+            dktl
