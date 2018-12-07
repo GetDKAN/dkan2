@@ -58,7 +58,7 @@ jobs:
             docker cp /www $(dktl dc ps -q cli):/var
             docker cp /root/dkan-tools $(dktl dc ps -q cli):/usr/local
       - run:
-          name: Test DKTL
+          name: Install Site
           command: |
-            ls -lha
-            ls -lha dkan
+            dktl drupal:get 8.6.3
+            dktl drupal:make
