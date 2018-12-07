@@ -13,9 +13,9 @@ before_install:
 before_script:
  - cd /home/travis/build/
  - git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
- - ln -s /home/travis/build/dkan-tools/bin/dktl /usr/local/bin/dktl
- - chmod +x /usr/local/bin/dktl
+
 
 script:
   - pwd
   - ls -lha
+  - ls -lha ~
