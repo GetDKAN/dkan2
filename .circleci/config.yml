@@ -41,7 +41,9 @@ jobs:
       - run:
           name: Package DKAN
           command: |
-            mv /www/* /www/dkan
+            mkdir /dkan2
+            mv /www/* /dkan2
+            mv /dkan2 /www/
       - run:
           name: Startup Containers
           command: |
