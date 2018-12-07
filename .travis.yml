@@ -15,8 +15,10 @@ before_script:
  - git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
  - ln -s /home/travis/build/dkan-tools/bin/dktl /home/travis/bin/dktl
  - chmod +x /home/travis/bin/dktl
+ - mkdir /home/travis/build/www
+ - cd /home/travis/build/www
+ - pwd
+ - dktl init
 
 script:
-  - mkdir /home/travis/build/www
-  - cd /home/travis/build/www
-  - dktl init
+ - ls -lha /home/travis/build/www
