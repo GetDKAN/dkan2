@@ -39,6 +39,10 @@ jobs:
             ln -s ~/dkan-tools/bin/dktl /usr/local/bin/dktl
             chmod +x /usr/local/bin/dktl
       - run:
+          name: Package DKAN
+          command: |
+            mv /www/* /www/dkan
+      - run:
           name: Startup Containers
           command: |
             touch dktl.yml
@@ -54,4 +58,5 @@ jobs:
       - run:
           name: Test DKTL
           command: |
-            ls
+            ls -lha
+            ls -lha dkan
