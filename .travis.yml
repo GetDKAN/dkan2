@@ -11,4 +11,5 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
+  - pwd
   - ls -lha
