@@ -34,13 +34,14 @@ jobs:
             dktl init
             dktl drupal:get 8.6.3
             dktl drupal:make
-            dktl drush site-install -y
+            dktl drush site-install -y --notify
             ls -lha
       - run:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
+            dktl
             dktl test:cypress
 
 
