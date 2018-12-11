@@ -25,11 +25,12 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
       - run:
-          name: Initialize project
+          name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
             cd ~/project
             dktl init
-            ls -lha /home/circleci/project
+            dktl drupal:get 8.6.3
+            dktl drupal:make
 
