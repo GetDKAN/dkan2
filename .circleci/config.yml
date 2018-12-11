@@ -21,11 +21,14 @@ jobs:
           command: |
             cd ~
             git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
+            chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
       - run:
           name: Initialize project
           command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            which dktl
             cd ~/project
             dktl init
             ls -lha /home/circleci/project
