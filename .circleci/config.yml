@@ -34,7 +34,7 @@ jobs:
             dktl init
             dktl drupal:get 8.6.3
             dktl drupal:make
-            dktl drush site-install
+            dktl drush site-install -y
             ls -lha
       - run:
           name: Run tests
