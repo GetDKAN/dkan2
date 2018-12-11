@@ -2,8 +2,8 @@ version: 2
 jobs:
   build:
     parallelism: 1
-    docker:
-      - image: ubuntu:16.04
+    machine:
+      image: circleci/classic:2018-12
     working_directory: /www
     environment:
       TEST_RESULTS: /tmp/test-results
