@@ -12,4 +12,4 @@ jobs:
       - run:
           name: Updates etc
           command: |
-          ls -lha 
+            ls -lha
