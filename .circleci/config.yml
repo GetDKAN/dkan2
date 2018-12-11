@@ -10,7 +10,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Updates etc
+          name: Package DKAN
           command: |
-            ls -lha
-            pwd
+            mkdir /home/circleci/dkan2
+            mv /home/circleci/project/* /home/circleci/dkan2
+            ls -lha /home/circleci/dkan2
+            ls -lha /home/circleci/project
