@@ -31,6 +31,7 @@ jobs:
             which dktl
             cd ~/project
             cp -r ~/dkan2/cypress .
+            cp -r ~/dkan2/cypress.json .
             dktl init
             dktl drupal:get 8.6.3
             dktl drupal:make
