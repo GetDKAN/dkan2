@@ -17,6 +17,9 @@ jobs:
             ls -lha /home/circleci/dkan2
             ls -lha /home/circleci/project
       - run:
-          name: Path
+          name: Install DKTL
           command: |
-            echo $PATH
+            cd ~
+            git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
+            export PATH=$PATH:~/dkan-tools/bin/
+            which dktl
