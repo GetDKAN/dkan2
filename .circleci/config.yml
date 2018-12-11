@@ -4,7 +4,6 @@ jobs:
     parallelism: 1
     machine:
       image: circleci/classic:latest
-    working_directory: /www
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_CHOWN: False
@@ -13,58 +12,4 @@ jobs:
       - run:
           name: Updates etc
           command: |
-            apt-get update
-            apt-get upgrade -y
-            apt-get install git curl wget ruby language-pack-en-base libdigest-hmac-perl -y
-      - run:
-          name: Install Docker client
-          command: |
-            set -x
-            VER="17.12.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
-      - run:
-          name: Install Docker Compose
-          command: |
-            set -x
-            curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-            chmod +x /usr/local/bin/docker-compose
-      - run:
-          name: Install DKTL
-          command: |
-            cd ~
-            git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
-            ln -s ~/dkan-tools/bin/dktl /usr/local/bin/dktl
-            chmod +x /usr/local/bin/dktl
-      - run:
-          name: Package DKAN
-          command: |
-            mkdir /dkan2
-            mv /www/* /dkan2
-            mv /dkan2 /www/
-      - run:
-          name: Startup Containers
-          command: |
-            touch dktl.yml
-            dktl dc up -d
-            sleep 20
-      - run:
-          name: Place our code inside of the containers
-          command: |
-            dktl dc exec cli rm -R /var/www
-            dktl dc exec cli rm -R /usr/local/dkan-tools
-            docker cp /www $(dktl dc ps -q cli):/var
-            docker cp /root/dkan-tools $(dktl dc ps -q cli):/usr/local
-      - run:
-         name: Perform a proper DKTL init
-         command: |
-           rm dktl.yml
-           dktl init
-      - run:
-          name: Install Site
-          command: |
-            dktl drupal:get 8.6.3
-            dktl drupal:make
-            ls -lha
-            ls -lha docroot
+          ls -lha 
