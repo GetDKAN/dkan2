@@ -10,7 +10,6 @@ jobs:
       DKTL_CHOWN: False
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Updates etc
           command: |
