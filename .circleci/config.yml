@@ -21,5 +21,12 @@ jobs:
           command: |
             cd ~
             git clone -b dkan2 https://github.com/GetDKAN/dkan-tools.git
-            export PATH=$PATH:~/dkan-tools/bin/
+            export PATH=$PATH:~/dkan-tools/bin
             which dktl
+      - run:
+          name: Initialize project
+          command: |
+            cd ~/project
+            dktl init
+            ls -lha /home/circleci/project
+
