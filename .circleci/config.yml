@@ -3,7 +3,7 @@ jobs:
   build:
     parallelism: 1
     machine:
-      image: circleci/classic:2018-12
+      image: circleci/classic:latest
     working_directory: /www
     environment:
       TEST_RESULTS: /tmp/test-results
