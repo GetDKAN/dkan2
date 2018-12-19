@@ -2,54 +2,24 @@
 
 DKAN Open Data Portal built on Drupal 8. See NOTES.md for additional information.
 
+## Requirements
+
+1) Install dkan-tools (get the ```dkan2``` branch): [https://github.com/GetDKAN/dkan-tools](https://github.com/GetDKAN/dkan-tools)
+1) In ``dkan-tools/bin/app.php`` There is a variable called ``drupalVersion``. Change its value to ``"V8"``.
+1) Setup and start the proxy:
+    1) Add `dkan.local` to `/etc/hosts`
+    1) Start the proxy: 
+    ``docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy`` 
+
+
 ## Installation
 
-### Install DKAN codebase:
+1) Create a directory for your project: ``mkdir <directory-name> && cd <directory-name>``
+1) Initialize your project with dkan-tools: ``dktl init``
+1) Get Drupal: ``dktl drupal:get <drupal-version>``
+1) Get Drupal dependencies, and install DKAN: ``dktl drupal:make``
+1) Access the site: ``dktl drush uli --uri=dkan.local``
 
-* ``mkdir "dkan8"``
-* ``curl https://raw.githubusercontent.com/GetDKAN/dkan2/master/composer-default.json -o composer.json``
-* ``composer install``
-
-### Developing with Docksal
-
-We currently use [Docksal](https://docksal.io/) for local development. 
-
-* ``fin init``
-* Add the following to your docksal:
-
-```yaml
-services:
-  db:
-    image: docksal/db:1.2-mysql-5.7
-```
-* ``fin start``
-* ``fin drush site:install dkan2 --db-url=mysql://user:user@db/default``
-
-### Enable Cors
-
-For local development you will want to enable CORS. Don't do this on production.
-
-* `cp sites/default/default.settings.yml sites/default/settings.yml``
-
-Add the following to the cors section:
-
-```yml
-
- cors.config:
-    enabled: true
-    # Specify allowed headers, like 'x-allowed-header'.
-    allowedHeaders: ['*']
-    # Specify allowed request methods, specify ['*'] to allow all possible ones.
-    allowedMethods: ['*']
-    # Configure requests allowed from specific origins.
-    allowedOrigins: ['*']
-    # Sets the Access-Control-Expose-Headers header.
-    exposedHeaders: false
-    # Sets the Access-Control-Max-Age header.
-    maxAge: false
-    # Sets the Access-Control-Allow-Credentials header.
-    supportsCredentials: false
-```
 
 ## Developing with and Compiling Front End
 
