@@ -26,6 +26,7 @@ dependencies:
   - history
   - image
   - interra_api
+  - interra_frontend
   - menu_link_content
   - menu_ui
   - node
