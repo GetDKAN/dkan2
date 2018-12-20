@@ -16,8 +16,10 @@ DKAN Open Data Portal built on Drupal 8. See NOTES.md for additional information
 
 1) Create a directory for your project: ``mkdir <directory-name> && cd <directory-name>``
 1) Initialize your project with dkan-tools: ``dktl init``
+1) In ``src/make/composer.json`` for the dkan2 version use ``dev-better-default`` instead of ``dev-master``
 1) Get Drupal: ``dktl drupal:get <drupal-version>``
 1) Get Drupal dependencies, and install DKAN: ``dktl drupal:make``
+1) Install DKAN: ``dktl drush si -y``
 1) Access the site: ``dktl drush uli --uri=dkan.local``
 
 
