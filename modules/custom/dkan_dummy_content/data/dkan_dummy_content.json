@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Recent Stocked Waters - California [ds778]",
+    "description": "This dataset represents locations that have been stocked with fish by the California Department of Fish and Wildlife during the current year and the two preceeding years. Each feature in this dataset represents a California Department of Fish and Wildlife hatcherys inland program fish stocking release water as described in the California Department of Fish and Wildlifes statewide hatchery database. Release water is defined as surface water where fish stocking took place. A single release water may be a moving water such as a portion of a stream or river, or a non-moving water such as a lake, reservoir, or pond. Note that there may be multiple fish planting sites on a designated water during a stocking event but these individual sites are not represented in this dataset.",
+    "organization": "Californa Department of Fish and Wildlife",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "http://data-cdfw.opendata.arcgis.com/datasets/216bf09054564e7c94b026528ffa0cd1_0.csv",
+        "type": "csv"
+      }
+    ]
+  },
+  {
+    "title": "Vegetation - Liberty Island, 2012 [ds821] ",
+    "description": "This map was digitized using 2010 true-color 1-meter National Agriculture Imagery Program (NAIP) aerial imagery. The minimum mapping unit is 0.25 acre with a 10-foot minimum width. The map classification is the same as used for the Delta Vegetation and Land Use map that was based on 2002 imagery and finalized in 2007. The map [ds292] can be obtained here: http://bios.dfg.ca.gov/dataset_index.asp. The report, which provides the classification detail can be obtained here: https://nrm.dfg.ca.gov/FileHandler.ashx?DocumentID=18211. Because Liberty Island was mapped as part of the Delta mapping effort, changes over the eight year period between imagery dates can be seen, most obviously land accretion and erosion and invasion of the non-native water primrose, Ludwigia. Mappers used reconnaissance-level data to refine and verify the map. The data were collected at 48 points during two field missions: 1) August 9, 2012 by land covering the levee on the western boundary of the area, and 2) August 28 - 29, 2012 by boat. All vegetation samples were marked with GPS units and can serve as long-term monitoring points. Photos taken at these GPS points can be used for future monitoring. A database of field data and the digital photos are archived at the office of the Vegetation Classification and Mapping Program (VegCAMP) of DFW. This map has not been assessed for accuracy, but over 25% of the polygons were visited during field reconnaissance. Lead staff of the program cross-checked and edited the map attributes and delineations.",
+    "organization": "Californa Department of Fish and Wildlife",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "http://data-cdfw.opendata.arcgis.com/datasets/1c6d8abf631d453d88666f4bb117752b_0.csv",
+        "type": "csv"
+      }
+    ]
+  },
+  {
+    "title": "Gravesite locations of Veterans and beneficiaries in NEVADA, as of January 2018",
+    "description": "Gravesite locations of Veterans and beneficiaries in NEVADA, as of January 2018.",
+    "organization": "Department of Veterans Affairs - (NCA) National Cemetery Administration",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "https://www.data.va.gov/sites/default/files/NGL20180105/ngl_nevada.csv",
+        "type": "csv"
+      }
+    ]
+  },
+  {
+    "title": "Gravesite locations of Veterans and beneficiaries in OKLAHOMA, as of January 2018",
+    "description": "Gravesite locations of Veterans and beneficiaries in OKLAHOMA, as of January 2018.",
+    "organization": "Department of Veterans Affairs - (NCA) National Cemetery Administration",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "https://www.data.va.gov/sites/default/files/NGL20180105/ngl_oklahoma.csv",
+        "type": "csv"
+      }
+    ]
+  },
+  {
+    "title": "Health Inspections",
+    "description": "Attributes of routine and complaint driven inspections performed by Louisville Metro Department of Public Health and Wellness.  EstablishmentID column can be joined to the EstablishmentID column in the Establishments Table to show attributes of the Establishment when a regulated establishment is involved.",
+    "organization": "Louisville Kentucky - Health and Wellness",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "https://data.louisvilleky.gov/sites/default/files/Health_Inspections.csv",
+        "type": "csv"
+      }
+    ]
+  },
+  {
+    "title": "Animal Bites",
+    "description": "Attributes of animal bite incidents reported to and investigated by Louisville Metro Department of Public Health and Wellness.  Personal/identifying data has been removed.",
+    "organization": "Louisville Kentucky - Health and Wellness",
+    "resources": [
+      {
+        "title": "CSV",
+        "uri": "https://data.louisvilleky.gov/sites/default/files/Health_AnimalBites_0_0_0.csv",
+        "type": "csv"
+      }
+    ]
+  }
+]
