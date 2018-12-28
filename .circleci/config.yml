@@ -37,6 +37,7 @@ jobs:
             dktl drupal:make
             dktl drush site-install -y --notify
             ls -lha
+            ls -la docroot/profiles
       - run:
           name: Run tests
           command: |
