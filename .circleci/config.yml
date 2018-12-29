@@ -40,10 +40,12 @@ jobs:
           name: Test DKAN2 is Installed
           command: |
             ls -lha            
-            ls -la docroot/profiles
+            ls -la docroot/profiles/contrib
       - run:
           name: Install site
           command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            which dktl
             dktl drush site-install dkan2 -y --notify
       - run:
           name: Run tests
