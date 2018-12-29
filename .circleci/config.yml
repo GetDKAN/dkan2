@@ -7,6 +7,7 @@ jobs:
     environment:
       TEST_RESULTS: /tmp/test-results
       DKTL_CHOWN: False
+      DRUPAL_VERSION: V8
     steps:
       - checkout
       - run:
@@ -20,7 +21,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone https://github.com/GetDKAN/dkan-tools.git
+            git clone -b env-drupal-version https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
