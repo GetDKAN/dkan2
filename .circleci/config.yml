@@ -15,8 +15,6 @@ jobs:
           command: |
             mkdir /home/circleci/dkan2
             mv /home/circleci/project/* /home/circleci/dkan2
-            ls -lha /home/circleci/dkan2
-            ls -lha /home/circleci/project
       - run:
           name: Install DKTL
           command: |
@@ -29,7 +27,6 @@ jobs:
           name: Make DKAN
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            which dktl
             cd ~/project
             cp -r ~/dkan2/cypress .
             cp -r ~/dkan2/cypress.json .
@@ -37,20 +34,12 @@ jobs:
             dktl drupal:get 8.6.3
             dktl drupal:make
       - run:
-          name: Test DKAN2 is Installed
-          command: |
-            ls -lha            
-            ls -la docroot/profiles/contrib
-      - run:
           name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            which dktl
             dktl drush site-install dkan2 -y --notify
       - run:
           name: Run tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            which dktl
-            dktl
             dktl test:cypress
