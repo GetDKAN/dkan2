@@ -27,21 +27,29 @@ abstract class Api extends ControllerBase {
     }
   }
 
-  public function post() {
+  public function postAndGetAll() {
     /* @var $request \Symfony\Component\HttpFoundation\Request */
     $request = \Drupal::request();
-    $data = $request->getContent();
+
+    $method = $request->getMethod();
 
     $storage = $this->getStorage();
     $engine = new Sae($storage, $this->getJsonSchema());
 
-    try {
-      $id = $engine->post($data);
-      $uri = $request->getRequestUri();
-      return new JsonResponse((object)["identifier" => "{$uri}/{$id}"]);
+    if ($method == "GET") {
+      return new JsonResponse(json_decode($engine->get()));
     }
-    catch (\Exception $e) {
-      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+    elseif ($method == "POST") {
+
+      $data = $request->getContent();
+
+      try {
+        $id = $engine->post($data);
+        $uri = $request->getRequestUri();
+        return new JsonResponse((object)["identifier" => "{$uri}/{$id}"]);
+      } catch (\Exception $e) {
+        return new JsonResponse((object)["message" => $e->getMessage()], 406);
+      }
     }
   }
 }
