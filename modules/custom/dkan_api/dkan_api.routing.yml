@@ -7,8 +7,8 @@ dkan_api.dataset_get:
     _access: 'TRUE'
 dkan_api.dataset_post:
   path: '/api/v1/dataset'
-  methods: [POST]
+  methods: [GET,POST]
   defaults:
-   { _controller: '\Drupal\dkan_api\Controller\Dataset::post'}
+   { _controller: '\Drupal\dkan_api\Controller\Dataset::postAndGetAll'}
   requirements:
     _access: 'TRUE'
