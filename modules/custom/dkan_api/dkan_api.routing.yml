@@ -12,3 +12,10 @@ dkan_api.dataset_post:
    { _controller: '\Drupal\dkan_api\Controller\Dataset::postAndGetAll'}
   requirements:
     _access: 'TRUE'
+dkan_api.organization_get:
+  path: '/api/v1/organization'
+  methods: [GET]
+  defaults:
+   { _controller: '\Drupal\dkan_api\Controller\Organization::postAndGetAll'}
+  requirements:
+    _access: 'TRUE'
