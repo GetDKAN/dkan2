@@ -31,7 +31,7 @@ jobs:
             cp -r ~/dkan2/cypress .
             cp -r ~/dkan2/cypress.json .
             dktl init
-            dktl drupal:get 8.6.3
+            dktl drupal:get 8.6.4
             dktl drupal:make
       - run:
           name: Install site
