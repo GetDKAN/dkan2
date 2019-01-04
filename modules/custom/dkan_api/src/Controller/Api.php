@@ -20,7 +20,7 @@ abstract class Api extends ControllerBase {
 
     try {
       $data = $engine->get($uuid);
-      return new JsonResponse(json_decode($data));
+      return new JsonResponse(json_decode($data), 200, ["Access-Control-Allow-Origin" => "*"]);
     }
     catch (\Exception $e) {
       return new JsonResponse((object) ["message" => $e->getMessage()], 404);
@@ -37,7 +37,7 @@ abstract class Api extends ControllerBase {
     $engine = new Sae($storage, $this->getJsonSchema());
 
     if ($method == "GET") {
-      return new JsonResponse(json_decode($engine->get()));
+      return new JsonResponse(json_decode($engine->get()), 200, ["Access-Control-Allow-Origin" => "*"]);
     }
     elseif ($method == "POST") {
 
