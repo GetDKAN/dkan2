@@ -17,6 +17,7 @@ dependencies:
   - contextual
   - datetime
   - dblog
+  - dkan_api
   - dkan_dataset
   - dynamic_page_cache
   - editor
@@ -25,8 +26,6 @@ dependencies:
   - help
   - history
   - image
-  - interra_api
-  - interra_frontend
   - menu_link_content
   - menu_ui
   - node
