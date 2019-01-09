@@ -13,13 +13,14 @@
         "drupal/config_update": "1.x-dev",
         "bower-asset/json-forms": "1.6.3",
         "drupal/group": "1.x-dev",
-	"fmizzell/sae" : "dev-master#d0d1ddf8e1b1eb751369dfd11bd8ed9eb565812a",
+        "fmizzell/sae" : "dev-master#d0d1ddf8e1b1eb751369dfd11bd8ed9eb565812a",
         "guzzlehttp/guzzle" : "6.3"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
       "drupal/coder": "8.2",
-        "drupal/devel": "1.x-dev"
+			"phpunit/phpunit": "^4.8|^6.5",
+      "drupal/devel": "1.x-dev"
     },
     "repositories": [
         {
@@ -40,6 +41,7 @@
     },
     "autoload": {
         "psr-4": {
+            "DKAN\\Tests\\": "tests/phpunit/src/",
             "Social\\": "src"
         }
     },
