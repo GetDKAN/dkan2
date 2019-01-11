@@ -19,7 +19,6 @@
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
       "drupal/coder": "8.2",
-			"phpunit/phpunit": "^4.8|^6.5",
       "drupal/devel": "1.x-dev"
     },
     "repositories": [
@@ -41,7 +40,6 @@
     },
     "autoload": {
         "psr-4": {
-            "DKAN\\Tests\\": "tests/phpunit/src/",
             "Social\\": "src"
         }
     },
