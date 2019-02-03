@@ -162,8 +162,8 @@ class Dkan8 extends Load {
       // TODO: Add mapping for required fields.
       $title = isset($doc->title) ? $doc->title : $doc->name;
       $this->log->write('DEBUG', 'saveNode', 'Saving ' . $title);
-      if ($this->migrate) {
-        $doc->distributions = $this->saveFilesLlocally($distributions);
+      if ($bundle == "dataset" && $this->config->migrate) {
+        $this->saveDatasetFilesLocally($doc);
       }
       $nodeWrapper = NODE::create([
         'title' => $title,
@@ -195,6 +195,9 @@ class Dkan8 extends Load {
       $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $doc->identifier);
       $date = date_create();
       $node->update = date_timestamp_get($date);
+      if ($this->config->migrate) {
+        $this->saveDatasetFilesLocally($doc);
+      }
       $node->field_json_metadata = json_encode($doc);
       $node->save();
     }
@@ -207,4 +210,21 @@ class Dkan8 extends Load {
     }
 
   }
+
+  function saveDatasetFilesLocally(&$doc) {
+    if ($doc->distribution != null) {
+      foreach ($doc->distribution as $n => $distribution) {
+        if ($distribution->downloadURL) {
+          $directory = 'public://distribution/';
+          file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
+          $destination = $directory . basename($distribution->downloadURL);
+          $result = system_retrieve_file($distribution->downloadURL, $destination, FALSE, FILE_EXISTS_REPLACE);
+          if ($result) {
+            $doc->distribution[$n]->downloadURL = file_create_url($result);
+          }
+        }
+      }
+    }
+  }
+
 }
