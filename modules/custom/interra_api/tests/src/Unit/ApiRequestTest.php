@@ -7,20 +7,20 @@ class ApiRequestTest extends TestCase {
   
   public $apiRequest;
   
-  public function __construct() {
+  function __construct() {
+    parent::__construct();
     $this->apiRequest = new ApiRequest();
-    
   }
-
-  public function testInstantiateClass() {
+  
+  public function testInstantiass() {
     $this->assertNotNull($this->apiRequest);
   }
   
-  public function testgetUri() {
-    $this->assertEquals($this->apiRequest->getURI('/api/v1/collections/dataset', 'collections/dataset');
-    $this->assertEquals($this->apiRequest->getURI('/api/v1/wtf', 'wtf');
-    $this->assertEquals($this->apiRequest->getURI('/api/collections/dataset', '');
+  public function getUri() {
+    $this->assertEquals($this->apiRequest->getURI('/api/v1/collections/dataset'), 'collections/dataset');
+    $this->assertEquals($this->apiRequest->getURI('/api/v1/wtf'), 'wtf');
+    $this->assertEquals($this->apiRequest->getURI('/api/collections/dataset'), '');
   }
-
+  
 }
 
