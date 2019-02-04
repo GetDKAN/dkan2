@@ -12,11 +12,11 @@ class ApiRequestTest extends TestCase {
     $this->apiRequest = new ApiRequest();
   }
   
-  public function testInstantiass() {
+  public function testInstantiateClass() {
     $this->assertNotNull($this->apiRequest);
   }
   
-  public function getUri() {
+  public function testGetUri() {
     $this->assertEquals($this->apiRequest->getURI('/api/v1/collections/dataset'), 'collections/dataset');
     $this->assertEquals($this->apiRequest->getURI('/api/v1/wtf'), 'wtf');
     $this->assertEquals($this->apiRequest->getURI('/api/collections/dataset'), '');
