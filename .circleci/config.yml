@@ -50,5 +50,5 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cp ../dkan2/phpunit.xml .
-            dktl docker:compose exec cli "docroot/vendor/bin/phpunit"
+            dktl docker:compose exec cli ./docroot/vendor/bin/phpunit
 
