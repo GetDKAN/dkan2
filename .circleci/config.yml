@@ -19,7 +19,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --branch dkan-tests https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -39,16 +39,16 @@ jobs:
           name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl drush site-install dkan2 -y --notify
+            dktl drush site-install dkan2 -y
       - run:
           name: Run cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            dktl test:cypress
+            dktl dkan:test-cypress
       - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cp ../dkan2/phpunit.xml .
-            dktl docker:compose exec cli ./docroot/vendor/bin/phpunit
+            dktl dkan:test-phpunit
 
