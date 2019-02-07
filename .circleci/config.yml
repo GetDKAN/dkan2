@@ -43,8 +43,16 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl drush site-install dkan2 -y
+
       - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl dkan:test-phpunit
+
+      - run:
+          name: Run cypress tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            dktl dkan:test-cypress
+
