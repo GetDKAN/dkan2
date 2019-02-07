@@ -11,11 +11,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Package DKAN
-          command: |
-            mkdir /home/circleci/dkan2
-            mv /home/circleci/project/* /home/circleci/dkan2
-      - run:
           name: Install DKTL
           command: |
             cd ~
@@ -28,8 +23,6 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
-            cp -r ~/dkan2/cypress .
-            cp ~/dkan2/cypress.json .
             dktl init
             sudo chmod 777 src/make/composer.json
             sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/getdkan/dkan2\"},{\"type\": \"vcs\", \"url\": \"https://github.com/fmizzell/sae\"},{\"type\": \"vcs\", \"url\": \"https://github.com/fmizzell/datastore\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
@@ -49,6 +42,5 @@ jobs:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
-            cp ../dkan2/phpunit.xml .
             dktl dkan:test-phpunit
 
