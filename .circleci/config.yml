@@ -19,14 +19,24 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
       - run:
-          name: Make DKAN
+          name: Initialize Project
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/project
             dktl init
+      - run:
+          name: Get Drupal
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/project
+            dktl drupal:get 8.6.4
+      - run:
+          name: Make DKAN
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/project
             sudo chmod 777 src/make/composer.json
             sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/getdkan/dkan2\"},{\"type\": \"vcs\", \"url\": \"https://github.com/fmizzell/sae\"},{\"type\": \"vcs\", \"url\": \"https://github.com/fmizzell/datastore\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
-            dktl drupal:get 8.6.4
             dktl drupal:make
       - run:
           name: Install site
@@ -34,13 +44,7 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             dktl drush site-install dkan2 -y
       - run:
-          name: Run cypress tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            dktl dkan:test-cypress
-      - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl dkan:test-phpunit
-
