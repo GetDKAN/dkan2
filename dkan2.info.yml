@@ -19,6 +19,7 @@ dependencies:
   - dblog
   - dkan_api
   - dkan_dataset
+  - dkan_datastore
   - dynamic_page_cache
   - editor
   - field_ui
