@@ -6,8 +6,19 @@ use Drupal\dkan_api\Storage\DrupalNodeDataset;
 
 class Dataset extends Api {
 
-  protected function getStorage() {
-    return new DrupalNodeDataset();
+  private $nodeDataset;
+
+  public function __construct() {
+    $this->nodeDataset = new DrupalNodeDataset();
+  }
+
+  public function getStorage() {
+    return $this->nodeDataset;
+  }
+
+  public function storeDataset($data) {
+    $nid = $this->nodeDataset->store($data);
+    return $nid;
   }
 
   protected function getJsonSchema() {
