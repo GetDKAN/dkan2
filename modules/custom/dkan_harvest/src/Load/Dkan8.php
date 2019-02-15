@@ -8,6 +8,7 @@ use Drupal\dkan_harvest\Load;
 use Drupal\dkan_harvest\DKANHarvest;
 use Drupal\dkan_schema\Schema;
 use Drupal\dkan_api\Controller\Dataset;
+use Drupal\dkan_harvest\Load\FileHelper;
 
 class Dkan8 extends Load {
 
@@ -32,6 +33,13 @@ class Dkan8 extends Load {
     'theme' => 'term',
     'license' => 'term'
   ];
+
+  protected $fileHelper;
+
+  public function __construct($log, $config, $sourceId, $runId) {
+    parent::__construct($log, $config, $sourceId, $runId);
+    $this->fileHelper = new FileHelper();
+  }
 
   function run($docs) {
     $this->DKANHarvest = new DKANHarvest();
@@ -192,6 +200,22 @@ class Dkan8 extends Load {
       $term->update = date_timestamp_get($date);
       $term->field_json_metadata = json_encode($doc);
       $term->save();
+    }
+
+  }
+
+  function saveDatasetFilesLocally(&$doc) {
+    if (isset($doc->distribution)) {
+      foreach ($doc->distribution as $n => $distribution) {
+        if (isset($distribution->downloadURL)) {
+          $defaultSchemeDir = $this->fileHelper->defaultSchemeDirectory();
+          $targetDir = $defaultSchemeDir . '/distribution';
+          $this->fileHelper->prepareDir($targetDir);
+          if ($result = $this->fileHelper->retrieveFile($distribution->downloadURL, $targetDir, FALSE)) {
+            $doc->distribution[$n]->downloadURL = $this->fileHelper->fileCreate($distribution->downloadURL);
+          }
+        }
+      }
     }
   }
 
