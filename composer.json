@@ -12,8 +12,8 @@
         "drupal/config_update": "1.x-dev",
         "bower-asset/json-forms": "1.6.3",
         "drupal/group": "1.x-dev",
-        "fmizzell/sae" : "dev-master#d0d1ddf8e1b1eb751369dfd11bd8ed9eb565812a",
-        "fmizzell/datastore" : "dev-master#375f70a3751867a3555b9d837805f5093ed9b89c",
+        "fmizzell/sae" : "dev-master",
+        "fmizzell/datastore" : "dev-master",
         "fmizzell/json-schema-provider": "dev-master",
         "guzzlehttp/guzzle" : "6.3"
     },
