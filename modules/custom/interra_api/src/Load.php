@@ -22,8 +22,7 @@ class Load {
   ];
 
   function __construct() {
-    $currentSchema = dkan_schema_current_schema();
-    $schema = new Schema($currentSchema);
+    $schema = new Schema();
     $this->schema = $schema;
     $this->primaryCollection = $schema->config['primaryCollection'];
     $this->collectionToBundleMap = $schema->config['collectionToBundleMap'];
