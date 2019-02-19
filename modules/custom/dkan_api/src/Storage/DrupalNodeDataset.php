@@ -3,8 +3,8 @@
 namespace Drupal\dkan_api\Storage;
 
 use Drupal\node\Entity\Node;
-use Sae\Contracts\Storage;
-use Sae\Contracts\BulkRetriever;
+use Contracts\Storage;
+use Contracts\BulkRetriever;
 
 class DrupalNodeDataset implements Storage, BulkRetriever {
   protected function getType() {
@@ -44,7 +44,17 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
   }
 
   public function store($data, $id = NULL) {
-    $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $data->identifier);
+
+    $data = json_decode($data);
+
+    if (!$id && isset($data->identifier)) {
+        $id = $data->identifier;
+    }
+
+    if ($id) {
+        $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $id);
+    }
+
     if ($node) {    // update existing node
       $node->field_json_metadata = json_encode($data);
       $node->save();
@@ -53,7 +63,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
       $nodeWrapper = NODE::create([
         'title' => $title,
         'type' => 'dataset',
-        'uuid' => $data->identifier,
+        'uuid' => $id,
         'field_json_metadata' => json_encode($data)
       ]);
       $nodeWrapper->save();

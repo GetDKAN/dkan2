@@ -3,6 +3,8 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\dkan_schema\SchemaRetriever;
+use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_schema\Schema;
@@ -24,7 +26,7 @@ class ApiController extends ControllerBase {
     return new JsonResponse( $response );
   }
 
-  public function schema( Request $request ) {
+  public function schemas( Request $request ) {
     $response = array();
     $schema = new Schema();
     $interra = new Interra();
@@ -34,6 +36,17 @@ class ApiController extends ControllerBase {
     $response['facets'] = $schema->config['facets'];
     $response['map'] = ['organization' => ['name' => 'title']];
     return $this->response($response );
+  }
+
+  public function schema($schema_name) {
+      $provider = new Provider(new SchemaRetriever());
+      try {
+          $schema = $provider->retrieve($schema_name);
+      }
+      catch (\Exception $e) {
+          return $this->response($e->getMessage());
+      }
+      return $this->response(json_decode($schema));
   }
 
   public function search( Request $request ) {

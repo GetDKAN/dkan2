@@ -8,13 +8,13 @@
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
         "oomphinc/composer-installers-extender": "^1.1",
-        "drupal/core": "~8.0",
         "drupal/entity": "1.0-beta3",
         "drupal/config_update": "1.x-dev",
         "bower-asset/json-forms": "1.6.3",
         "drupal/group": "1.x-dev",
         "fmizzell/sae" : "dev-master",
         "fmizzell/datastore" : "dev-master",
+        "fmizzell/json-schema-provider": "dev-master",
         "guzzlehttp/guzzle" : "6.3"
     },
     "require-dev": {
@@ -30,18 +30,6 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/fmizzell/contracts"
-        },
-	    {
-            "type": "vcs",
-            "url": "https://github.com/fmizzell/sae"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/fmizzell/datastore"
         }
     ],
     "scripts": {
@@ -52,18 +40,6 @@
             "Social\\": "src"
         }
     },
-    "extra": {
-        "enable-patching": true,
-        "installer-types": ["bower-asset", "npm-asset"],
-        "installer-paths": {
-            "../../../core": ["type:drupal-core"],
-            "../../../libraries/{$name}": ["type:drupal-library", "type:bower-asset", "type:npm-asset"],
-            "../../../modules/contrib/{$name}": ["type:drupal-module"],
-            "../../../themes/contrib/{$name}": ["type:drupal-theme"],
-            "../../../profiles/contrib/{$name}": ["type:drupal-profile"],
-            "../../../../drush/contrib/{$name}": ["type:drupal-drush"]
-        }
-    },
     "authors": [
         {
             "name": "acouch",
@@ -72,6 +48,10 @@
         {
           "name": "dafeder",
           "email": "dafeder@gmail.com"
-        }
+        },
+	{
+	  "name": "fmizzell",
+          "email": "fmizzell.dev@gmail.com"
+	}	  
     ]
 }
