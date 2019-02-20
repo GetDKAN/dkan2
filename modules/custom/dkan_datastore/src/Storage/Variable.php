@@ -1,7 +1,9 @@
 <?php
 namespace Drupal\dkan_datastore\Storage;
 
-class Variable {
+use Dkan\Datastore\Storage\IKeyValue;
+
+class Variable implements IKeyValue {
 
   private $store = [];
 

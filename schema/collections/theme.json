@@ -5,9 +5,7 @@
   "type": "object",
   "required": [
     "title",
-    "identifier",
-    "created",
-    "modified"
+    "identifier"
   ],
   "properties": {
     "title": {
