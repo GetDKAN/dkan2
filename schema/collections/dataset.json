@@ -250,7 +250,7 @@
       "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
       "type": "array",
       "items": {
-        "$ref": "http://pqdc/api/v1/schema/keyword"
+        "$ref": "http://web/api/v1/schema/keyword"
       }
     },
     "license": {
@@ -264,7 +264,7 @@
       "description": "Most recent date on which the dataset was changed, updated or modified.",
       "type": "string"
     },
-    "publisher": { "$ref": "http://pqdc/api/v1/schema/organization" },
+    "publisher": { "$ref": "http://web/api/v1/schema/organization" },
     "references": {
       "title": "Related Documents",
       "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
@@ -296,7 +296,7 @@
       "description": "Main thematic category of the dataset.",
       "type": "array",
       "items": {
-        "$ref": "http://pqdc/api/v1/schema/theme",
+        "$ref": "http://web/api/v1/schema/theme",
         "minLength": 1,
         "minItems": 1
       },

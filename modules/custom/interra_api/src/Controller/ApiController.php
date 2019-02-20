@@ -46,7 +46,9 @@ class ApiController extends ControllerBase {
       catch (\Exception $e) {
           return $this->response($e->getMessage());
       }
-      return $this->response(json_decode($schema));
+      $response = $this->response(json_decode($schema));
+      $response->headers->set("Content-Type", "application/schema+json");
+      return $response;
   }
 
   public function search( Request $request ) {
