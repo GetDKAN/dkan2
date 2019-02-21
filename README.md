@@ -17,7 +17,7 @@ As a piece of software in its Alpha cycle, the code is continuously changing and
 1) Set an environment variable called ``DRUPAL_VERSION`` with a value of ``V8``.
     1) On the command line, enter ``export DRUPAL_VERSION=V8`` or set in ``.bashrc``
 1) Setup and start the proxy:
-    1) Add `dkan.local` to `/etc/hosts`
+    1) Add `dkan` to `/etc/hosts`
     1) Start the proxy: 
     ``docker run -d -p 80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro jwilder/nginx-proxy`` 
 
