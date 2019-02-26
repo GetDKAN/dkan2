@@ -2,42 +2,64 @@
 
 namespace Drupal\dkan_dummy_content;
 
+use Drupal\dkan_harvest\Harvester;
+use Drupal\dkan_harvest\Log\Stdout;
+use Drupal\dkan_harvest\Reverter;
 use Drush\Commands\DrushCommands;
-use GuzzleHttp\Client;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\Table;
 
 class Commands extends DrushCommands {
 
   /**
-   * Import dummy content from a file to the site.
+   * Create dummy content.
    *
-   * @command dkan-dummy-content:import
+   * @command dkan-dummy-content:create
    *
-   * @usage dkan-dummy-content:import
-   *   Import dummy content from a file to the site.
    */
-  public function import() {
-    $path_public_files = \Drupal::service('file_system')
-      ->realpath(file_default_scheme() . "://");
+  public function create() {
 
-    $dummy_content_file = "$path_public_files/dkan_dummy_content.json";
+    $harvest_plan = <<<JSON
+{
+  "sourceId": "dummy", 
+  "source": {
+    "type": "DataJson", 
+    "uri": "http://demo.getdkan.com/data.json"
+  }, 
+  "transforms": [], 
+  "load": {
+    "migrate": false, 
+    "collectionsToUpdate": ["dataset"], "type": "Dataset"
+  }
+}
+JSON;
 
-    if (file_exists($dummy_content_file)) {
-      $content = file_get_contents($dummy_content_file);
-      $phpized = json_decode($content);
-      $client = new Client();
 
-      $url = "http://web/api/v1/dataset";
+    $harvester = new Harvester(json_decode($harvest_plan));
+    $harvester->setLogger(new Stdout(true, "dummy", "run"));
 
-      foreach ($phpized as $dataset) {
-        $response = $client->post($url, [
-          \GuzzleHttp\RequestOptions::JSON => $dataset
-        ]);
-        $this->io()->note("{$dataset->title}: {$response->getStatusCode()}");
-      }
-    }
-    else {
-      $this->io()->error("The file {$dummy_content_file} was not found.");
-    }
+    $results = $harvester->harvest();
+
+    $rows = [];
+    $rows[] = [$results['created'], $results['updated'], $results['skipped']];
+
+
+    $table = new Table(new ConsoleOutput());
+    $table->setHeaders(['created', 'updated', 'skipped'])->setRows($rows);
+    $table->render();
+  }
+
+  /**
+   * Remove dummy content.
+   *
+   * @command dkan-dummy-content:remove
+   */
+  public function remove() {
+    $reverter = new Reverter("dummy");
+    $count = $reverter->run();
+
+    $output = new ConsoleOutput();
+    $output->write("{$count} items reverted for the 'dummy' harvest plan.");
   }
 }
 

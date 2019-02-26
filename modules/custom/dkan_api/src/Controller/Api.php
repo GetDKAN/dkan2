@@ -14,9 +14,7 @@ abstract class Api extends ControllerBase {
 
   public function get($uuid) {
 
-    $storage = $this->getStorage();
-
-    $engine = new Sae($storage, $this->getJsonSchema());
+    $engine = $this->getEngine();
 
     try {
       $data = $engine->get($uuid);
@@ -33,8 +31,7 @@ abstract class Api extends ControllerBase {
 
     $method = $request->getMethod();
 
-    $storage = $this->getStorage();
-    $engine = new Sae($storage, $this->getJsonSchema());
+    $engine = $this->getEngine();
 
     if ($method == "GET") {
       return new JsonResponse(json_decode($engine->get()), 200, ["Access-Control-Allow-Origin" => "*"]);
@@ -51,6 +48,11 @@ abstract class Api extends ControllerBase {
         return new JsonResponse((object)["message" => $e->getMessage()], 406);
       }
     }
+  }
+
+  public function getEngine() {
+    $storage = $this->getStorage();
+    return new Sae($storage, $this->getJsonSchema());
   }
 }
 

@@ -1,7 +1,6 @@
 {
-  "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://example.com/root.json",
+  "$id": "dkan-harvest-source",
   "type": "object",
   "title": "DKAN Harvest Source Config",
   "required": [
@@ -65,7 +64,7 @@
           {
             "type": "string",
             "enum": [
-              "DataJsonToDkan"
+              "DataJsonToDkan", "Transform"
             ]
           }
         ]
@@ -108,7 +107,7 @@
           "type": "string",
           "title": "The location to load the harvest.",
           "default": "Dkan8",
-          "enum": ["Dkan8"]
+          "enum": ["Dkan8", "Dataset"]
         }
       }
     }

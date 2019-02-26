@@ -12,12 +12,8 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
   }
 
   public function retrieve($id) {
-    $connection = \Drupal::database();
-    $sql = "SELECT nid FROM node WHERE uuid = :uuid AND type = :type";
-    $query = $connection->query($sql, [':uuid' => $id, ':type' => $this->getType()]);
-    $results = $query->fetchAll();
 
-    foreach ($results as $result) {
+    foreach ($this->getNodesByUuid($id) as $result) {
       $node = Node::load($result->nid);
       return $node->field_json_metadata->value;
     }
@@ -40,7 +36,11 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
   }
 
   public function remove($id) {
-    // TODO: Implement remove() method.
+
+    foreach ($this->getNodesByUuid($id) as $result) {
+      $node = Node::load($result->nid);
+      return $node->delete();
+    }
   }
 
   public function store($data, $id = NULL) {
@@ -69,6 +69,13 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
       $nodeWrapper->save();
       return $nodeWrapper->id();
     }
+  }
+
+  private function getNodesByUuid($uuid) {
+    $connection = \Drupal::database();
+    $sql = "SELECT nid FROM node WHERE uuid = :uuid AND type = :type";
+    $query = $connection->query($sql, [':uuid' => $uuid, ':type' => $this->getType()]);
+    return $query->fetchAll();
   }
 
 }

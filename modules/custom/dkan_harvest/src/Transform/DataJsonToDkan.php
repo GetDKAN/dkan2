@@ -2,7 +2,6 @@
 
 namespace Drupal\dkan_harvest\Transform;
 
-use Drupal\dkan_harvest\Transform;
 
 class DataJsonToDkan extends Transform {
 

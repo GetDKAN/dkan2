@@ -10,7 +10,7 @@ use Drupal\dkan_schema\Schema;
  * Prepares for storage by adding ids.
  */
 function dkanDatasetPrepareStore($doc, $references, $schema) {
-  $collectionsToUpdate = [
+  /*$collectionsToUpdate = [
     'publisher' => 'object',
     'theme' => 'array',
     'keyword' => 'array',
@@ -35,7 +35,7 @@ function dkanDatasetPrepareStore($doc, $references, $schema) {
         $doc->{$reference} = ['dkan-id' => $value];
       }
     }
-  }
+  }*/
   return $doc;
 }
 

@@ -1,12 +1,14 @@
 <?php
 
-namespace Drupal\dkan_harvest;
+namespace Drupal\dkan_harvest\Log;
 
 abstract class Log {
 
   protected $debug;
   protected $uuid;
   protected $id;
+
+  protected $sourceId;
   protected $runId;
 
   function __construct($debug, $sourceId, $runId) {
@@ -15,8 +17,7 @@ abstract class Log {
     $this->runId = $runId;
   }
 
-  function write($level, $action, $message) {
-  }
+  abstract function write($level, $action, $message);
 
   function logEntry($level, $action, $message) {
     $date = date_create();
