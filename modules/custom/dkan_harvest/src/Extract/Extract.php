@@ -1,10 +1,13 @@
 <?php
 
-namespace Drupal\dkan_harvest;
+namespace Drupal\dkan_harvest\Extract;
 
+use Drupal\dkan_harvest\Log\MakeItLog;
 use GuzzleHttp\Client;
 
 abstract class Extract {
+
+  use MakeItLog;
 
   protected $folder;
 
@@ -12,14 +15,13 @@ abstract class Extract {
 
   protected $sourceId;
 
-  protected $log;
 
-  function __construct($config, $harvest, $log) {
-    $this->uri = $harvest->source->uri;
-    $this->folder = $config->fileLocation . '/dkan_harvest/';
-    $this->sourceId = $harvest->sourceId;
-    $this->log = $log;
+  function __construct($harvest_info) {
+    $this->uri = $harvest_info->source->uri;
+    $this->folder = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . '/dkan_harvest/';
+    $this->sourceId = $harvest_info->sourceId;
   }
+
 
   protected function httpRequest($uri) {
     try {
@@ -29,7 +31,7 @@ abstract class Extract {
       $data = (string) $res->getBody();
       return $data;
     } catch (RequestException $exception) {
-      $this->log->write('ERROR', 'Extract', 'Error reading ' . $uri);
+      $this->log('ERROR', 'Extract', 'Error reading ' . $uri);
     }
   }
 
@@ -52,11 +54,8 @@ abstract class Extract {
     }
   }
 
-  function run() {
-    return array();
-  }
+  abstract public function run();
 
-  function cache() {
-  }
+  abstract public function cache();
 
 }

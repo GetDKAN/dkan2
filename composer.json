@@ -8,7 +8,7 @@
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
         "oomphinc/composer-installers-extender": "^1.1",
-        "drupal/entity": "1.0-beta3",
+        "drupal/entity": "1.0.0-rc1",
         "drupal/config_update": "1.x-dev",
         "bower-asset/json-forms": "1.6.3",
         "drupal/group": "1.x-dev",

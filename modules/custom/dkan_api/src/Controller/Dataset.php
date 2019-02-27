@@ -14,13 +14,8 @@ class Dataset extends Api {
     $this->nodeDataset = new DrupalNodeDataset();
   }
 
-  public function getStorage() {
+  protected function getStorage() {
     return $this->nodeDataset;
-  }
-
-  public function storeDataset($data) {
-    $nid = $this->nodeDataset->store($data);
-    return $nid;
   }
 
   protected function getJsonSchema() {

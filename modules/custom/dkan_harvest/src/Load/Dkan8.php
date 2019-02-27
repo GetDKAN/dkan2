@@ -2,13 +2,9 @@
 
 namespace Drupal\dkan_harvest\Load;
 
-use Drupal\node\Entity\Node;
 use Drupal\taxonomy\Entity\Term;
-use Drupal\dkan_harvest\Load;
-use Drupal\dkan_harvest\DKANHarvest;
 use Drupal\dkan_schema\Schema;
 use Drupal\dkan_api\Controller\Dataset;
-use Drupal\dkan_harvest\Load\FileHelper;
 
 class Dkan8 extends Load {
 
@@ -42,7 +38,7 @@ class Dkan8 extends Load {
   }
 
   function run($docs) {
-    $this->DKANHarvest = new DKANHarvest();
+    $this->DKANHarvest = new Cruder();
     $currentSchema = dkan_schema_current_schema();
     $this->schema = new Schema($currentSchema);
     $primaryBundle = $this->schema->config['primaryCollection'];
@@ -64,7 +60,7 @@ class Dkan8 extends Load {
         }
       }
     }
-    $this->log->write('DEBUG', 'Load::run', "Harvest run completed: $resultLog");
+    $this->log->write('DEBUG', 'Load::run', "Harvester run completed: $resultLog");
     $this->DKANHarvest->runUpdate($this->runId, $this->sourceId, $results);
     return $results;
   }
