@@ -1,23 +1,23 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "dkan-harvest-source",
+  "$id": "harvest-plan",
   "type": "object",
-  "title": "DKAN Harvest Source Config",
+  "title": "Harvest Plan",
   "required": [
-    "sourceId",
+    "identifier",
     "source",
     "transforms",
     "load"
   ],
   "properties": {
-    "sourceId": {
+    "identifier": {
       "type": "string",
-      "title": "The Sourceid for the Harvest Source",
+      "title": "The plan's identifier",
       "pattern": "^(.*)$"
     },
     "source": {
       "type": "object",
-      "title": "The Source for the Harvest",
+      "title": "The Source to harvest",
       "required": [
         "type",
         "uri"
@@ -25,10 +25,7 @@
       "properties": {
         "type": {
           "type": "string",
-          "title": "The Type of Harvest",
-          "enum": [
-            "DataJson"
-          ]
+          "title": "Class utilized to extract the data from the source."
         },
         "uri": {
           "type": "string",
@@ -62,10 +59,7 @@
             }
           },
           {
-            "type": "string",
-            "enum": [
-              "DataJsonToDkan", "Transform"
-            ]
+            "type": "string"
           }
         ]
       }
@@ -74,8 +68,6 @@
       "type": "object",
       "title": "The Load settings for the Harvest",
       "required": [
-        "migrate",
-        "collectionsToUpdate",
         "type"
       ],
       "properties": {
@@ -105,9 +97,7 @@
         },
         "type": {
           "type": "string",
-          "title": "The location to load the harvest.",
-          "default": "Dkan8",
-          "enum": ["Dkan8", "Dataset"]
+          "title": "Class utilized to load the harvested data."
         }
       }
     }

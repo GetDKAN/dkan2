@@ -23,7 +23,7 @@ class SchemaRetriever implements Retriever {
         ];
     }
 
-    public function retrieve($id) {
+    public function retrieve(string $id): ?string {
         if (in_array($id, $this->getAllIds())) {
             return file_get_contents($this->directory . "/collections/{$id}.json");
         }

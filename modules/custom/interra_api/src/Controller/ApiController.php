@@ -80,6 +80,7 @@ class ApiController extends ControllerBase {
     $apiRequest = new ApiRequest();
     $uri = $request->getPathInfo();
     $path = $apiRequest->getUri($uri);
+
     if ($collection = $apiRequest->validateCollectionPath($path)) {
       $load = new Load();
       $docs = $load->loadByType($collection);
