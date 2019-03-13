@@ -20,6 +20,7 @@ dependencies:
   - dkan_api
   - dkan_dataset
   - dkan_datastore
+  - dkan_dummy_content
   - dynamic_page_cache
   - editor
   - field_ui
@@ -28,6 +29,7 @@ dependencies:
   - history
   - image
   - interra_api
+  - interra_frontend
   - menu_link_content
   - menu_ui
   - node

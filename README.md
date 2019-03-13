@@ -33,7 +33,7 @@ As a piece of software in its Alpha cycle, the code is continuously changing and
 
 ## Dummy Content
 
-If you would like some content in the catalog, install ``dkan_dummy_content`` and run the drush command ``dkan-dummy-content:import``. This command required Drush 9.
+If you would like some content in the catalog, run the drush command ``dkan-dummy-content:create``. This command required Drush 9.
 
 ## Graphical User Interface (GUI)
 
