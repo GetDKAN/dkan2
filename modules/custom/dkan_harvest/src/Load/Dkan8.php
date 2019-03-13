@@ -215,4 +215,9 @@ class Dkan8 extends Load {
     }
   }
 
+  protected function saveItem($item) {
+    // TODO: Implement saveItem() method.
+  }
+
+
 }

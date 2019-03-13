@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\dkan_harvest\Unit;
 
-//use Drupal\Tests\dkan_harvest\Unit\TestFileHelper;
 use Drupal\dkan_harvest\Load\Dkan8;
 
 class TestDkan8 extends Dkan8 {
