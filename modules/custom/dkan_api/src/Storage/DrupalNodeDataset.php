@@ -11,7 +11,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
     return 'dataset';
   }
 
-  public function retrieve($id) {
+  public function retrieve(string $id): ?string {
 
     foreach ($this->getNodesByUuid($id) as $result) {
       $node = Node::load($result->nid);
@@ -21,7 +21,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
     throw new \Exception("No data with the identifier {$id} was found.");
   }
 
-  public function retrieveAll() {
+  public function retrieveAll(): array {
     $connection = \Drupal::database();
     $sql = "SELECT nid FROM node WHERE type = :type";
     $query = $connection->query($sql, [':type' => $this->getType()]);
@@ -32,10 +32,10 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
       $node = Node::load($result->nid);
       $all[] = $node->field_json_metadata->value;
     }
-    return "[" . implode(",", $all) . "]";
+    return $all;
   }
 
-  public function remove($id) {
+  public function remove(string $id) {
 
     foreach ($this->getNodesByUuid($id) as $result) {
       $node = Node::load($result->nid);
@@ -43,7 +43,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
     }
   }
 
-  public function store($data, $id = NULL) {
+  public function store(string $data, string $id = NULL): string {
 
     $data = json_decode($data);
 
@@ -58,6 +58,7 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
     if ($node) {    // update existing node
       $node->field_json_metadata = json_encode($data);
       $node->save();
+      return $node->id();
     } else {    // create new node
       $title = isset($data->title) ? $data->title : $data->name;
       $nodeWrapper = NODE::create([
@@ -69,6 +70,8 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
       $nodeWrapper->save();
       return $nodeWrapper->id();
     }
+
+    return NULL;
   }
 
   private function getNodesByUuid($uuid) {

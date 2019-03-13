@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: fmizzell
- * Date: 2/22/19
- * Time: 10:24 AM
- */
 
 namespace Drupal\dkan_harvest\Storage;
 
@@ -18,7 +12,7 @@ class IdGenerator implements \Contracts\IdGenerator {
   }
 
   public function generate() {
-    return isset($this->data->sourceId) ? $this->data->sourceId : NULL;
+    return isset($this->data->identifier) ? $this->data->identifier : NULL;
   }
 
 }

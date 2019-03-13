@@ -15,6 +15,7 @@
         "fmizzell/sae" : "dev-master",
         "fmizzell/datastore" : "dev-master",
         "fmizzell/json-schema-provider": "dev-master",
+	"fmizzell/harvest": "dev-master",
         "guzzlehttp/guzzle" : "6.3"
     },
     "require-dev": {

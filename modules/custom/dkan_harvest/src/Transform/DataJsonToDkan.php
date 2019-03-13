@@ -3,7 +3,7 @@
 namespace Drupal\dkan_harvest\Transform;
 
 
-class DataJsonToDkan extends Transform {
+class DataJsonToDkan extends DrupalModuleHook {
 
   // TODO: This should come from the schema.
   protected $collections = ['dataset', 'publisher', 'keyword', 'license'];

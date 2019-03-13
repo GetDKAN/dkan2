@@ -2,17 +2,20 @@
 
 namespace Drupal\dkan_harvest\Commands;
 
-use Drupal\dkan_harvest\EtlWorkerFactory;
-use Drupal\dkan_harvest\Log\Stdout;
-use Drupal\dkan_harvest\Reverter;
-use Drupal\dkan_harvest\Storage\IdGenerator;
-use Drush\Commands\DrushCommands;
-use Drush\Style\DrushStyle;
-use Drupal\dkan_harvest\Harvester;
-use Drupal\dkan_harvest\Storage\Source;
+use Harvest\EtlWorkerFactory;
+use Harvest\Harvester;
 use Sae\Sae;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
+
+use Drupal\dkan_harvest\Log\Stdout;
+use Drupal\dkan_harvest\Reverter;
+use Drupal\dkan_harvest\Storage\File;
+use Drupal\dkan_harvest\Storage\IdGenerator;
+use Drupal\dkan_harvest\Storage\Source;
+
+use Drush\Commands\DrushCommands;
+use Drush\Style\DrushStyle;
 
 class DkanHarvestCommands extends DrushCommands {
 
@@ -87,7 +90,13 @@ class DkanHarvestCommands extends DrushCommands {
     $harvest_plan = $this->getHarvestPlan($sourceId);
     $harvest_plan->runId = 'cache';
 
-    $factory = new EtlWorkerFactory($harvest_plan);
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    $item_folder = "{$path}/dkan_harvest/{$sourceId}";
+    $hash_folder = "{$path}/dkan_harvest/{$sourceId}-hash";
+    $item_storage = new File($item_folder);
+    $hash_storage = new File($hash_folder);
+
+    $factory = new EtlWorkerFactory($harvest_plan, $item_storage, $hash_storage);
 
     /* @var $extract \Drupal\dkan_harvest\Extract\Extract */
     $extract = $factory->get('extract');
@@ -109,7 +118,16 @@ class DkanHarvestCommands extends DrushCommands {
   public function run($sourceId) {
     $harvest_plan = $this->getHarvestPlan($sourceId);
 
-    $harvester = new Harvester($harvest_plan);
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    $item_folder = "{$path}/dkan_harvest/{$sourceId}";
+    $hash_folder = "{$path}/dkan_harvest/{$sourceId}-hash";
+    $run_folder = "{$path}/dkan_harvest/{$sourceId}-run";
+
+    $item_storage = new File($item_folder);
+    $hash_storage = new File($hash_folder);
+    $run_storage = new File($run_folder);
+
+    $harvester = new Harvester($harvest_plan, $item_storage, $hash_storage, $run_storage);
     $harvester->setLogger(new Stdout(true, $sourceId,"run"));
 
     $results = $harvester->harvest();
@@ -135,7 +153,11 @@ class DkanHarvestCommands extends DrushCommands {
    *   Removes harvested entities.
    */
   public function revert($sourceId) {
-    $reverter = new Reverter($sourceId);
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    $hash_folder = "{$path}/dkan_harvest/{$sourceId}-hash";
+    $hash_storage = new File($hash_folder);
+
+    $reverter = new Reverter($sourceId, $hash_storage);
     $count = $reverter->run();
 
     $output = new ConsoleOutput();
@@ -144,7 +166,8 @@ class DkanHarvestCommands extends DrushCommands {
 
   private function getHarvestPlan($sourceId) {
     $source = new Source();
-    return json_decode($source->retrieve($sourceId));
+    $harvest_plan = $source->retrieve($sourceId);
+    return json_decode($harvest_plan);
   }
 }
 

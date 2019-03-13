@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_harvest\Load;
 
+use Harvest\Load\Load;
 
 class Dataset extends Load {
 
