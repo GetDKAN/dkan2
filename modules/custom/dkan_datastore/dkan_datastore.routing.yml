@@ -1,0 +1,8 @@
+dkan_datastore.datastore_query:
+  path: '/api/v1/datastore/{queryStr}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_api\Controller\Datastore::runQuery'}
+  requirements:
+    _access: 'TRUE'
+
