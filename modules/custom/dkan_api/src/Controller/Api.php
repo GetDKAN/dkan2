@@ -34,7 +34,9 @@ abstract class Api extends ControllerBase {
     $engine = $this->getEngine();
 
     if ($method == "GET") {
-      return new JsonResponse(json_decode($engine->get()), 200, ["Access-Control-Allow-Origin" => "*"]);
+      $datasets = $engine->get();
+      $json_string = "[" . implode(",", $datasets) . "]";
+      return new JsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
     }
     elseif ($method == "POST") {
 
@@ -43,10 +45,38 @@ abstract class Api extends ControllerBase {
       try {
         $id = $engine->post($data);
         $uri = $request->getRequestUri();
-        return new JsonResponse((object)["identifier" => "{$uri}/{$id}"]);
-      } catch (\Exception $e) {
+        return new JsonResponse((object)["endpoint" => "{$uri}/{$id}", "identifier" => $id]);
+      }
+      catch (\Exception $e) {
         return new JsonResponse((object)["message" => $e->getMessage()], 406);
       }
+    }
+  }
+
+  public function putAndDelete($uuid) {
+    /* @var $request \Symfony\Component\HttpFoundation\Request */
+    $request = \Drupal::request();
+
+    $method = $request->getMethod();
+
+    /* @var $engine \Sae\Sae */
+    $engine = $this->getEngine();
+
+    if ($method == "PUT") {
+      $data = $request->getContent();
+
+      try {
+        $engine->put($uuid, $data);
+        $uri = $request->getRequestUri();
+        return new JsonResponse((object)["endpoint" => "{$uri}", "identifier" => $uuid]);
+      }
+      catch (\Exception $e) {
+        return new JsonResponse((object)["message" => $e->getMessage()], 406);
+      }
+    }
+    elseif ($method == "DELETE") {
+      $engine->delete($uuid);
+      return new JsonResponse((object)["message" => "Dataset {$uuid} has been deleted."], 200);
     }
   }
 
