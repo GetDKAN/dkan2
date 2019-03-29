@@ -21,11 +21,20 @@ dkan_api.dataset_post:
     _auth: [ 'basic_auth' ]
   requirements:
     _permission: 'post put delete datasets through the api'
-dkan_api.dataset_put_delete:
+dkan_api.dataset_put:
   path: '/api/v1/dataset/{uuid}'
-  methods: [PUT, DELETE]
+  methods: [PUT]
   defaults:
-    { _controller: '\Drupal\dkan_api\Controller\Dataset::putAndDelete'}
+    { _controller: '\Drupal\dkan_api\Controller\Dataset::put'}
+  options:
+    _auth: [ 'basic_auth' ]
+  requirements:
+    _permission: 'post put delete datasets through the api'
+dkan_api.dataset_delete:
+  path: '/api/v1/dataset/{uuid}'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\dkan_api\Controller\Dataset::delete'}
   options:
     _auth: [ 'basic_auth' ]
   requirements:
@@ -34,7 +43,7 @@ dkan_api.organization_get:
   path: '/api/v1/organization'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_api\Controller\Organization::postAndGetAll'}
+    { _controller: '\Drupal\dkan_api\Controller\Organization::getAll'}
   requirements:
     _access: 'TRUE'
 
