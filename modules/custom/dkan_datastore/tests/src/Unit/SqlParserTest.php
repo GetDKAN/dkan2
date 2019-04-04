@@ -16,9 +16,8 @@ class SqlParserTest extends TestCase
 
   public function setUp() {
     $this->SQLParser = new SqlParser();
-    $this->StateMachine = $this->SQLParser->getSqlMachine();
+    $this->StateMachine = $this->SQLParser->getMachine();
   }
-
 
   public function testSQLParser() {
 
@@ -39,7 +38,7 @@ class SqlParserTest extends TestCase
     $valid_sql_strings[] = '[SELECT * FROM abc][WHERE def = "hij" AND klm = "nop"][ORDER BY qrs, tuv DESC][LIMIT 1 OFFSET 2];';
 
     foreach ($valid_sql_strings as $string) {
-      $this->StateMachine = $this->SQLParser->getSqlMachine();  //TODO: more elegant way of resetting the State Machine
+      $this->StateMachine = $this->SQLParser->getMachine();  //TODO: more elegant way of resetting the State Machine
       $machine = $this->getSqlMachine();
       Feeder::feed($string, $machine);
       $this->assertTrue($machine->isCurrentlyAtAnEndState());
