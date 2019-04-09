@@ -4,14 +4,14 @@ status: true
 dependencies:
   config:
     - core.entity_view_mode.node.teaser
-    - node.type.dataset
+    - node.type.data
   module:
     - user
 _core:
   default_config_hash: pfD8-0aFPrri1eyMDjnjjJPhQp089Go_XCJquZC_iDQ
-id: node.dataset.teaser
+id: node.data.teaser
 targetEntityType: node
-bundle: dataset
+bundle: data
 mode: teaser
 content:
   links:
