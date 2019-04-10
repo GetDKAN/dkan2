@@ -16,7 +16,7 @@ class Search extends Load {
   public function formatSearchDoc($value) {
     $formatted = new \stdClass();
     $formatted->doc = $value;
-    $formatted->ref = "";
+    $formatted->ref = \Drupal::service('path.alias_manager')->getAliasByPath('/node/x');
     return $formatted;
   }
 
