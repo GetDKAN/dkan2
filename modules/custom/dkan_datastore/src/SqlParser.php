@@ -21,14 +21,13 @@ class SqlParser
   }
 
   public static function getMachine() {
-    $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $alphaNumeric = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ*';
 
     $machine = new MachineOfMachines('select');
     $machine->addEndState("end");
 
     $machine->addMachine('select', mb::s('[SELECT'));
-    $machine->addMachine('select_var', mb::bh($letters . '*',mb::ONE_OR_MORE));
+    $machine->addMachine('select_var', mb::bh($letters,mb::ONE_OR_MORE));
     $machine->addMachine('select_from', mb::s('FROM'));
     $machine->addMachine('table_var', mb::bh($letters,mb::ONE_OR_MORE));
     $machine->addMachine('closing_bracket', mb::bh(' ', mb::ZERO_OR_MORE));
@@ -36,8 +35,9 @@ class SqlParser
     $machine->addMachine("order_by", self::getOrderByMachine());
     $machine->addMachine("limit", self::getLimitMachine());
 
-    $machine->addTransition('select', [" ", "  "], "select_var");
+    $machine->addTransition('select', [" "], "select_var");
     $machine->addTransition('select_var', [" "], "select_from");
+    $machine->addTransition('select_var', [","], "select_var");
     $machine->addTransition('select_from', [" "], "table_var");
     $machine->addTransition('table_var', [",", ", ", " ,", " , "], "table_var");
     $machine->addTransition('table_var', ["]"], "closing_bracket");
