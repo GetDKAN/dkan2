@@ -6,6 +6,9 @@ use Maquina\Feeder;
 
 use \PHPUnit\Framework\TestCase;
 
+/**
+ * 
+ */
 class SqlParserTest extends TestCase
 {
 
