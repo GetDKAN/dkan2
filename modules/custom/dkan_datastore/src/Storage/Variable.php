@@ -14,8 +14,8 @@ class Variable implements IKeyValue {
    */
   protected $configFactory;
 
-  public function __construct() {
-    $this->configFactory = \Drupal::service('config.factory');
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->configFactory = $configFactory;
     $store = $this->getAll();
     if ($store) {
       $this->store = $store;
