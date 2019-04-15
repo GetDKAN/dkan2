@@ -55,5 +55,23 @@ class DkanTestBase extends UnitTestCase {
         $reflectionProperty->setAccessible(TRUE);
         return $reflectionProperty->getValue($object);
     }
+    
+    /**
+     * Helper to set projected property. 
+     * 
+     * @param object $object
+     * @param string $property
+     * @return mixed
+     * @throws InvalidArgumentException
+     */
+    protected function writeProtectedProperty($object, string $property, $value) {
+        $reflection = new \ReflectionClass($object);
+        if (!$reflection->hasProperty($property)) {
+            throw new \InvalidArgumentException("Property not found: {$property}");
+        }
+        $reflectionProperty = $reflection->getProperty($property);
+        $reflectionProperty->setAccessible(TRUE);
+        return $reflectionProperty->setValue($object, $value);
+    }
 
 }
