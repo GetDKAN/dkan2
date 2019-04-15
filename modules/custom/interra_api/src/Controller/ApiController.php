@@ -109,7 +109,7 @@ class ApiController extends ControllerBase {
           $resource = new Resource($node->id(), $doc->distribution[0]->downloadURL);
           $provider = new \Dkan\Datastore\Manager\InfoProvider();
           $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
-          $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), new \Drupal\dkan_datastore\Storage\Variable());
+          $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
           $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
           /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
           $datastore = $factory->get();
