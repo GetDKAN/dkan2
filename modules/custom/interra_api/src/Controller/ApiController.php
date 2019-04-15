@@ -111,7 +111,18 @@ class ApiController extends ControllerBase
 
         return $this->response(array_values($themes));
       } elseif ($collection == "organization") {
+        $organizations = [];
+        foreach ($data as $dataset_json) {
+          $dataset = json_decode($dataset_json);
 
+          if ($dataset->publisher) {
+            $organizations[$dataset->publisher->name] = $dataset->publisher;
+          }
+        }
+
+        ksort($organizations);
+
+        return $this->response(array_values($organizations));
       }
     } else {
       throw new NotFoundHttpException();
