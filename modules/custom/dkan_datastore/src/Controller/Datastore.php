@@ -4,6 +4,7 @@ namespace Drupal\dkan_datastore\Controller;
 
 use Dkan\Datastore\Manager\IManager;
 use Dkan\Datastore\Resource;
+use Drupal\dkan_datastore\Util;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_datastore\SqlParser;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -31,7 +32,7 @@ class Datastore implements ContainerInjectionInterface{
       $uuid = $this->getUuidFromSelect($select);
 
       try {
-        $manager = $this->getDatastoreManager($uuid);
+        $manager = Util::getDatastoreManager($uuid);
 
         /* @todo This is bad we should respect the levels of abstraction.
          * The manager should not assume what the storage mechanism looks like
@@ -76,24 +77,6 @@ class Datastore implements ContainerInjectionInterface{
     return trim(end($pieces));
   }
 
-  protected function getDatastoreManager($uuid) : IManager {
-    $database = \Drupal::service('dkan_datastore.database');
-
-    $dataset = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
-
-    $metadata = json_decode($dataset->field_json_metadata->value);
-    $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-
-    $provider = new \Dkan\Datastore\Manager\InfoProvider();
-    $provider->addInfo(new \Dkan\Datastore\Manager\Info(SimpleImport::class, "simple_import", "SimpleImport"));
-
-    $bin_storage = new \Dkan\Datastore\LockableBinStorage("dkan_datastore", new \Dkan\Datastore\Locker("dkan_datastore"), \Drupal::service('dkan_datastore.variable'));
-    $factory = new \Dkan\Datastore\Manager\Factory($resource, $provider, $bin_storage, $database);
-
-    return  $factory->get();
-
-  }
-
   /**
    * @{inheritdocs}
    * @codeCoverageIgnore
@@ -101,5 +84,4 @@ class Datastore implements ContainerInjectionInterface{
     public static function create(ContainerInterface $container) {
         return new static($container);
     }
-
 }
