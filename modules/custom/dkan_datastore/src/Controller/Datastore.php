@@ -96,6 +96,7 @@ class Datastore implements ContainerInjectionInterface{
 
   /**
    * @{inheritdocs}
+   * @codeCoverageIgnore
    */
     public static function create(ContainerInterface $container) {
         return new static($container);
