@@ -144,7 +144,7 @@ class ApiController extends ControllerBase
         $storage = new DrupalNodeDataset();
         $data = $storage->retrieve($uuid);
         $dataset = json_decode($data);
-        $dataset = $this->addDatastoreMetadata();
+        $dataset = $this->addDatastoreMetadata($dataset);
         return $this->response(self::modifyDataset($dataset));
       } else {
         return $this->response([]);
@@ -202,6 +202,8 @@ class ApiController extends ControllerBase
         'columns' => count($headers)
       ];
     }
+
+    return $dataset;
   }
 
 }
