@@ -185,7 +185,6 @@ class ApiController extends ControllerBase
       $identifier = strtolower($identifier);
 
       $objects[] = (object)['identifier' => $identifier, 'title' => $string];
-      break;
     }
 
     return $objects;
