@@ -5,38 +5,14 @@ namespace Drupal\dkan_datastore;
 use Maquina\StateMachine\MachineOfMachines;
 use Maquina\Builder as mb;
 use Maquina\Feeder;
-use Maquina\StateMachine\IStateMachine;
 
 class SqlParser
 {
 
-    /**
-     * Static call for backward compatibility.
-     * 
-     * @codeCoverageIgnore
-     * @param string $name
-     * @param array $arguments
-     * @return mixed
-     */
-    public static function __callStatic($name, $arguments) {
-        $instance = new static();
-        
-        return call_user_func_array([$instance, $name], $arguments);
-    }
-  
-  /**
-   * Validate and SQL string.
-   * 
-   * Can be called statically.
-   * 
-   * @static
-   * @param string $sql
-   * @return bool
-   */
-  public function validate(string $sql): bool {
-    $machine = $this->getMachine();
+  public static function validate(string $sql): bool {
+    $machine = self::getMachine();
     try {
-      $this->feedFeeder($sql, $machine);
+      Feeder::feed($sql, $machine);
       return TRUE;
     }
     catch (\Exception $e) {
@@ -44,16 +20,10 @@ class SqlParser
     }
   }
 
-  /**
-   * Creates the state machine.
-   * 
-   * @static
-   * @return \Maquina\StateMachine\IStateMachine
-   */
-  public function getMachine() {
+  public static function getMachine() {
     $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ*';
 
-    $machine = $this->newMachineOfMachine('select');
+    $machine = new MachineOfMachines('select');
     $machine->addEndState("end");
 
     $machine->addMachine('select', mb::s('[SELECT'));
@@ -86,12 +56,8 @@ class SqlParser
     return $machine;
   }
 
-  /**
-   * 
-   * @return \Maquina\StateMachine\IStateMachine
-   */
-  protected function getWhereMachine() {
-    $machine = $this->newMachineOfMachine('where_start');
+  private static function getWhereMachine() {
+    $machine = new MachineOfMachines('where_start');
     $machine->addEndState("where_end");
 
     $machine->addMachine('where_start', mb::s('WHERE'));
@@ -111,12 +77,8 @@ class SqlParser
     return $machine;
   }
 
-  /**
-   * 
-   * @return \Maquina\StateMachine\IStateMachine
-   */
-  protected function getQuotedStringMachine() {
-    $machine = $this->newMachineOfMachine('1');
+  private static function getQuotedStringMachine() {
+    $machine = new MachineOfMachines('1');
     $machine->addEndState("end");
 
     $machine->addMachine('string', mb::bh('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ %$.',  mb::ONE_OR_MORE));
@@ -127,12 +89,8 @@ class SqlParser
     return $machine;
   }
 
-  /**
-   * 
-   * @return \Maquina\StateMachine\IStateMachine
-   */
-  protected function getOrderByMachine() {
-    $machine = $this->newMachineOfMachine('order');
+  private static function getOrderByMachine() {
+    $machine = new MachineOfMachines('order');
     $machine->addEndState("order_end");
 
     $machine->addMachine('order', mb::s('ORDER BY'));
@@ -145,12 +103,8 @@ class SqlParser
     return $machine;
   }
 
-  /**
-   * 
-    * @return \Maquina\StateMachine\IStateMachine
-   */
-  protected function getLimitMachine() {
-    $machine = $this->newMachineOfMachine('limit');
+  private static function getLimitMachine() {
+    $machine = new MachineOfMachines('limit');
     $machine->addEndState("numeric1");
     $machine->addEndState("numeric2");
     $machine->addMachine('limit', mb::s('LIMIT'));
@@ -164,30 +118,6 @@ class SqlParser
 
     return $machine;
 
-  }
-  
-  /**
-   * Instantiates a new MachineOfMachine.
-   * 
-   * Separate method for easier testing.
-   * 
-   * @param string $initialState
-   * @return \Maquina\StateMachine\IStateMachine
-   */
-  protected function newMachineOfMachine(string $initialState) {
-      return new MachineOfMachines($initialState);
-  }
-  
-  /**
-   * Feeds the feeder.
-   * 
-   * @codeCoverageIgnore
-   * @param string $sql
-   * @param IStateMachine $machine
-   * @throws \Exception 
-   */
-  protected function feedFeeder(string $sql, IStateMachine $machine) {
-      return Feeder::feed($sql, $machine);
   }
 
 }
