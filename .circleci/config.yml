@@ -39,23 +39,25 @@ jobs:
             sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
             dktl make
             rm -rf ./docroot/profiles/contrib/dkan2
-            mkdir ./docroot/profiles/contrib/dkan2
-            cp -R ~/project ./docroot/profiles/contrib/dkan2
+            mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2
       - run:
           name: Install site
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
             dktl install
       - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
             dktl dkan:test-cypress
 
