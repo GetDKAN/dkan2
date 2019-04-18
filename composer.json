@@ -33,7 +33,11 @@
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
-        }
+        },
+	{
+	    "type": "vcs",
+            "url": "https://github.com/fmizzell/json_form"
+	}
     ],
     "scripts": {
         "enable-asset-packagist": "Social\\Composer\\AssetPackagist::execute"
