@@ -14,5 +14,5 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            ls -lha
+            ls -lha ./project
 
