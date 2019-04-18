@@ -8,7 +8,6 @@ jobs:
       TEST_RESULTS: /tmp/test-results
       DKTL_CHOWN: False
       DRUPAL_VERSION: V8
-      CC_TEST_REPORTER_ID: 2b3ceee8f044fb998e8a66ce55a0f960fe71ade329fb1fbc86cd6c0eba47fab5
     steps:
       - checkout
       - run:
@@ -45,18 +44,11 @@ jobs:
             export PATH=$PATH:~/dkan-tools/bin
             dktl install
       - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - run:
           name: Run phpUnit tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             dktl xdebug:start
-            ./cc-test-reporter before-build
-            dktl dkan:test-phpunit --coverage-clover=../../../../clover.xml
-            ./cc-test-reporter after-build --coverage-input-type clover --exit-code $?
+            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
           name: Run cypress tests
           command: |
