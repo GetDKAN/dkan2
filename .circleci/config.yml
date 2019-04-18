@@ -14,7 +14,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --branch master https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --branch better-chown https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -39,7 +39,6 @@ jobs:
             sudo chmod 777 src/make/composer.json
             sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
             dktl make
-            chown -R $USER:$USER ./docroot/profiles/contrib/dkan2
             rm -rf ./docroot/profiles/contrib/dkan2
             mkdir ./docroot/profiles/contrib/dkan2
             cp -R ~/project ./docroot/profiles/contrib/dkan2
