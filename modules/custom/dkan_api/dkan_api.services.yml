@@ -1,0 +1,7 @@
+services:
+    dkan_api.storage.drupal_node_dataset:
+        class: \Drupal\dkan_api\Storage\DrupalNodeDataset
+    dkan_api.storage.organization:
+        class: \Drupal\dkan_api\Storage\Organization
+        arguments: ['@dkan_api.storage.drupal_node_dataset']
+        
