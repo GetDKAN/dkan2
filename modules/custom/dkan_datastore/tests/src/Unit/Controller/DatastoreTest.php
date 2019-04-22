@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_datastore\Controller\Datastore;
-use Dkan\PhpUnit\DkanTestBase;
+use Dkan\Tests\DkanTestBase;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Datastore
@@ -12,7 +12,6 @@ use Dkan\PhpUnit\DkanTestBase;
  */
 class DatastoreTest extends DkanTestBase {
 
-  use \Dkan\PhpUnit\DkanUnitTestTrait;
 
   /**
    *

@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
-use Dkan\PhpUnit\DkanTestBase;
+use Dkan\Tests\DkanTestBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_datastore\Storage\Variable;
 use Drupal\Core\Config\ImmutableConfig;
@@ -15,18 +15,16 @@ use Drupal\Core\Config\Config;
  */
 class VariableTest extends DkanTestBase {
 
-  use \Dkan\PhpUnit\DkanUnitTestTrait;
-
   /**
    *
    */
   public function dataTestConstruct() {
 
     return [
-    // Successfull getAll.
-            [['foo'], ['foo']],
-    // Unsuccessfull getAll.
-            [FALSE, []],
+        // Successfull getAll.
+        [['foo'], ['foo']],
+        // Unsuccessfull getAll.
+        [FALSE, []],
     ];
   }
 
@@ -44,7 +42,7 @@ class VariableTest extends DkanTestBase {
       ->setMethods([
         'getAll',
       ])
-                // Defer calling constructor.
+      // Defer calling constructor.
       ->disableOriginalConstructor()
       ->getMock();
 
