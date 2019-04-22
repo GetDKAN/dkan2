@@ -45,7 +45,7 @@
     "autoload": {
         "psr-4": {
             "Social\\": "src",
-            "Dkan\\PhpUnit\\": "tests/phpunit/src"
+            "Dkan\\": "src/Dkan"
         }
     },
     "authors": [

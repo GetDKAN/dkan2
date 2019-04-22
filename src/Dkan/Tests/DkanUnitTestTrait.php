@@ -1,7 +1,8 @@
 <?php
 
-namespace Dkan\PhpUnit;
-
+namespace Dkan\Tests;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use PHPUnit\Framework\TestCase;
 /**
  * Trait to sideload some utilities into other Unit tests.
  * 
@@ -66,5 +67,25 @@ Trait DkanUnitTestTrait {
         $reflectionProperty->setAccessible(TRUE);
         return $reflectionProperty->setValue($object, $value);
     }
+
+    
+
+  /**
+   * Creates a mock instance of the service container with the `get` method overriden.
+   * 
+   * @return PHPUnit\Framework\MockObject\MockObject
+   * @throws \Exception If not in a unit test case.
+   */
+  protected function getMockContainer() {
+
+    if (!($this instanceof TestCase)) {
+      throw new \Exception('This function is meant to be used only with a PHPUnit test case.');
+    }
+
+    return $this->getMockBuilder(\Symfony\Component\DependencyInjection\ContainerInterface::class)
+                    ->setMethods(['get'])
+                    ->disableOriginalConstructor()
+                    ->getMockForAbstractClass();
+  }
 
 }
