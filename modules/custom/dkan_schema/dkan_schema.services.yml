@@ -1,0 +1,6 @@
+services:
+    dkan_schema.schema_retriever:
+        class: \Drupal\dkan_schema\SchemaRetriever
+        # always return new instance.
+        shared: false
+
