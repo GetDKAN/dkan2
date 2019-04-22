@@ -5,13 +5,40 @@ namespace Drupal\dkan_api\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sae\Sae;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 abstract class Api extends ControllerBase {
 
+  /**
+   * Drupal service container.
+   *
+   * @var \Symfony\Component\DependencyInjection\ContainerInterface
+   */
+  protected $container;
+
+  /**
+   *
+   */
+  public function __construct(ContainerInterface $container) {
+    $this->container = $container;
+  }
+
+  /**
+   *
+   */
   abstract protected function getJsonSchema();
 
+  /**
+   *
+   */
   abstract protected function getStorage();
 
+  /**
+   *
+   */
   public function getAll() {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -22,6 +49,9 @@ abstract class Api extends ControllerBase {
     return new JsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
   }
 
+  /**
+   *
+   */
   public function get($uuid) {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -35,6 +65,9 @@ abstract class Api extends ControllerBase {
     }
   }
 
+  /**
+   *
+   */
   public function post() {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -69,6 +102,9 @@ abstract class Api extends ControllerBase {
     }
   }
 
+  /**
+   *
+   */
   public function put($uuid) {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -100,6 +136,9 @@ abstract class Api extends ControllerBase {
     }
   }
 
+  /**
+   *
+   */
   public function patch($uuid) {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -133,6 +172,9 @@ abstract class Api extends ControllerBase {
     }
   }
 
+  /**
+   *
+   */
   public function delete($uuid) {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
@@ -141,9 +183,21 @@ abstract class Api extends ControllerBase {
     return new JsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
   }
 
+  /**
+   *
+   */
   public function getEngine() {
     $storage = $this->getStorage();
     return new Sae($storage, $this->getJsonSchema());
+  }
+
+  /**
+   * {@inheritdocs}.
+   *
+   * @codeCoverageIgnore
+   */
+  public static function create(ContainerInterface $container) {
+    return new static($container);
   }
 
 }
