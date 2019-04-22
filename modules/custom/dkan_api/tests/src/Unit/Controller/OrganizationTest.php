@@ -1,0 +1,47 @@
+<?php
+
+namespace Drupal\Tests\dkan_api\Unit\Controller;
+
+use Drupal\dkan_api\Controller\Organization as ControllerOrginzation;
+use Drupal\dkan_api\Storage\Organization as StorageOrganization;
+use Dkan\Tests\DkanTestBase;
+
+/**
+ * Description of OrganizationTest
+ * @coversDefaultClass Drupal\dkan_api\Controller\Organization 
+ * @group dkan_api
+ * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
+ */
+class OrganizationTest extends DkanTestBase{
+
+    public function testGetJsonSchema() {
+        $this->markTestIncomplete('Code under test seems to not do anything.');
+    
+    }
+    
+    /**
+     * Tests getStorage().
+     */
+    public function testGetStorage() {
+
+    // setup
+    $mock = $this->getMockBuilder(ControllerOrginzation::class)
+            ->disableOriginalCOnstructor()
+            ->setMethods(NULL) // override nothing
+            ->getMock();
+    $mockStorageOrganization = $this->createMock(StorageOrganization::class);
+    $mockContainer = $this->getMockContainer();
+    $this->writeProtectedProperty($mock, 'container', $mockContainer);
+    
+    // expect
+    $mockContainer->expects($this->once())
+            ->method('get')
+            ->with('dkan_api.storage.organization')
+            ->willReturn($mockStorageOrganization);
+    
+    // assert
+    $actual = $this->invokeProtectedMethod($mock, 'getStorage');
+    $this->assertSame($mockStorageOrganization, $actual);
+  }
+
+}
