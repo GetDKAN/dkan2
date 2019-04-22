@@ -3,9 +3,9 @@
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.6/phpunit.xsd"
     bootstrap="/var/www/docroot/core/tests/bootstrap.php"
     colors="true"
-    stopOnFailure="true"
+    stopOnFailure="false"
     configuration="core"
-    stopOnError="true"
+    stopOnError="false"
     verbose="true">
 
     <testsuites>
@@ -31,6 +31,7 @@
     <filter>
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
+            <directory>modules/custom/dkan_api/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
         </whitelist>
     </filter>
