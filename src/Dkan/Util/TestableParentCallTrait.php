@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkan;
+namespace Dkan\Util;
 
 /**
  * Trait allows for simpler testing of `parent::` calls
@@ -8,11 +8,11 @@ namespace Dkan;
  * Usage:
  * 
  *  In subject under test, instead of using `parent::method($arg1, $arg2)`,
- *  use `$this->parent($arg1, $arg2)`
+ *  use `$this->parentCall('method',$arg1, $arg2)`
  * 
  * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
-Trait TestableParentCall {
+Trait TestableParentCallTrait {
 
     /**
      * Wrapper for unit testing.
@@ -24,7 +24,7 @@ Trait TestableParentCall {
      * @param variable-length ...$args
      * @return mixed
      */
-    protected function parent($method, ...$args) {
+    protected function parentCall($method, ...$args) {
         return parent::$method(...$args);
     }
 }
