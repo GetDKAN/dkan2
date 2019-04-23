@@ -2,14 +2,14 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
-use Drupal\dkan_datastore\Controller\Datastore;
+use Drupal\dkan_datastore\Controller\Api;
 use Dkan\PhpUnit\DkanTestBase;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\dkan_datastore\SqlParser;
 
 /**
- * @coversDefaultClass \Drupal\dkan_datastore\Controller\Datastore
+ * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
  * @group dkan
  * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
@@ -75,7 +75,7 @@ class DatastoreTest extends DkanTestBase {
     public function testExplode($sqlString, $expected) {
 
         // mock with little changed
-        $mock = $this->getMockBuilder(Datastore::class)
+        $mock = $this->getMockBuilder(Api::class)
                 ->disableOriginalConstructor()
                 ->setMethods(null)
                 ->getMock();
@@ -103,7 +103,7 @@ class DatastoreTest extends DkanTestBase {
      */
     public function testGetUuidFromSelect($select, $expected) {
                 // mock with little changed
-        $mock = $this->getMockBuilder(Datastore::class)
+        $mock = $this->getMockBuilder(Api::class)
                 ->disableOriginalConstructor()
                 ->setMethods(null)
                 ->getMock();
