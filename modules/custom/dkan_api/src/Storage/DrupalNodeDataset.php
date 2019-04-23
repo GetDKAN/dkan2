@@ -47,6 +47,12 @@ class DrupalNodeDataset implements Storage, BulkRetriever {
 
     $data = json_decode($data);
 
+    // Replace the theme values by references.
+    if (isset($data->theme)) {
+      $themes = new Theme($data->theme);
+      $data->theme = $themes->retrieveUuids();
+    }
+
     if (!$id && isset($data->identifier)) {
         $id = $data->identifier;
     }
