@@ -42,7 +42,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs ASC',
+                    'ORDER BY qrs',
                 ]
             ],
             [
@@ -50,7 +50,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs, tuv ASC',
+                    'ORDER BY qrs, tuv',
                 ]
             ],
             [
@@ -58,7 +58,7 @@ class DatastoreTest extends DkanTestBase {
                 [
                     'SELECT * FROM abc',
                     'WHERE def = "hij" AND klm = "nop"',
-                    'ORDER BY qrs, tuv DESC ASC',
+                    'ORDER BY qrs, tuv DESC',
                     'LIMIT 1 OFFSET 2',
                 ]
             ],
@@ -80,7 +80,7 @@ class DatastoreTest extends DkanTestBase {
                 ->setMethods(null)
                 ->getMock();
 
-        $actual =$this->invokeProtectedMethod($mock, 'explode', $sqlString);
+        $actual = $this->invokeProtectedMethod($mock, 'explode', $sqlString);
 
         $this->assertArrayEquals($expected, $actual);
     }
