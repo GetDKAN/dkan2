@@ -1,20 +1,22 @@
 <?php
 
-namespace Drupal\dkan_api\Service;
+namespace Drupal\dkan_common\Service;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Sae\Sae;
+use Contracts\Storage as ContractsStorageInterface;
 
 /**
  * Factory to generate DKAN API responses.
  */
-class ResponseFactory implements ContainerInjectionInterface {
+class Factory implements ContainerInjectionInterface {
 
   protected $container;
 
   /**
-   * ResponseFactory.
+   * Factory.
    * 
    * @param ContainerInterface $container Service COntainer.
    */
@@ -33,6 +35,17 @@ class ResponseFactory implements ContainerInjectionInterface {
    */
   public function newJsonResponse($data = null, $status = 200, $headers = [], $json = false) {
     return new JsonResponse($data, $status, $headers, $json);
+  }
+
+  /**
+   * Creates new ServiceApiEngine
+   * 
+   * @param ContractsStorageInterface $storage
+   * @param string $jsonSchema
+   * @return Sae
+   */
+  public function newServiceApiEngine(ContractsStorageInterface $storage, string $jsonSchema) {
+    return new Sae($storage, $jsonSchema);
   }
 
   /**

@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 class SqlParserTest extends TestCase {
 
-  use \Dkan\PhpUnit\DkanUnitTestTrait;
-
   /**
    *
    */

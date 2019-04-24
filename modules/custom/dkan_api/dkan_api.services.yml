@@ -1,7 +1,4 @@
 services:
-    dkan_api.service.response_factory:
-        class: Drupal\dkan_api\Service\ResponseFactory
-        arguments: ['@service_container']
     dkan_api.storage.drupal_node_dataset:
         class: \Drupal\dkan_api\Storage\DrupalNodeDataset
         arguments: ['@entity_type.manager']

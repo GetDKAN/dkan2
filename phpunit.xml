@@ -1,7 +1,7 @@
 <phpunit
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.6/phpunit.xsd"
-    bootstrap="../../core/tests/bootstrap.php"
+    bootstrap="../../../core/tests/bootstrap.php"
     colors="true"
     stopOnFailure="false"
     configuration="core"
@@ -12,6 +12,7 @@
         <testsuite name="DKAN Test Suite">
             <directory>modules/custom/interra_api/tests/src/Unit/ApiRequestTest.php</directory>
             <directory>modules/custom/dkan_harvest/tests/src/Unit/Dkan8Test.php</directory>
+            <directory >modules/custom/dkan_common/tests/src/Unit</directory>
             <directory >modules/custom/dkan_datastore/tests/src/Unit</directory>
         </testsuite>
     </testsuites>
@@ -32,6 +33,7 @@
         <!-- whitelist needed for code coverage generation to work -->
         <whitelist>
             <directory>modules/custom/dkan_api/src</directory>
+            <directory>modules/custom/dkan_common/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
         </whitelist>
     </filter>
