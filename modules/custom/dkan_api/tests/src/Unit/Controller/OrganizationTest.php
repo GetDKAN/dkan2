@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_api\Unit\Controller;
 
 use Drupal\dkan_api\Controller\Organization as ControllerOrginzation;
 use Drupal\dkan_api\Storage\Organization as StorageOrganization;
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 
 /**
  * Description of OrganizationTest.

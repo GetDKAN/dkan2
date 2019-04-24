@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_api\Unit\Controller;
 
 use Drupal\dkan_api\Controller\Api;
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

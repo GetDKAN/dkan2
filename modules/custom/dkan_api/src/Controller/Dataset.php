@@ -8,11 +8,11 @@ use JsonSchemaProvider\Provider;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * Dataset.
  */
 class Dataset extends Api {
 
-  use \Dkan\Util\TestableParentCallTrait;
+  use \Drupal\dkan_common\Util\TestableParentCallTrait;
   
   /**
    *

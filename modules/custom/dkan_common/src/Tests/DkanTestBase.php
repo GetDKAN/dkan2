@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkan\Tests;
+namespace Drupal\dkan_common\Tests;
 
 use Drupal\Tests\UnitTestCase;
 

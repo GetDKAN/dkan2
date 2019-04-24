@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_api\Unit\Storage;
 
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\Organization;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 

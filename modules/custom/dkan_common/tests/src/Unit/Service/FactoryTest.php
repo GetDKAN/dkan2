@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_common\Unit\Service;
 
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_common\Service\Factory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;

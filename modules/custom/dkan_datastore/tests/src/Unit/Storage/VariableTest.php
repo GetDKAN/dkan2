@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
 
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_datastore\Storage\Variable;
 use Drupal\Core\Config\ImmutableConfig;

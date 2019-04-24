@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkan\Tests;
+namespace Drupal\dkan_common\Tests;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use PHPUnit\Framework\TestCase;
 /**
@@ -82,7 +82,7 @@ Trait DkanUnitTestTrait {
       throw new \Exception('This function is meant to be used only with a PHPUnit test case.');
     }
 
-    return $this->getMockBuilder(\Symfony\Component\DependencyInjection\ContainerInterface::class)
+    return $this->getMockBuilder(ContainerInterface::class)
                     ->setMethods(['get'])
                     ->disableOriginalConstructor()
                     ->getMockForAbstractClass();

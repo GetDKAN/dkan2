@@ -1,6 +1,6 @@
 <?php
 
-namespace Dkan\Storage;
+namespace Drupal\dkan_common\Storage;
 use Contracts\Storage;
 use Contracts\BulkRetriever;
 

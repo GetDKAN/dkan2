@@ -44,8 +44,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Social\\": "src",
-            "Dkan\\": "src/Dkan"
+            "Social\\": "src"
         }
     },
     "authors": [

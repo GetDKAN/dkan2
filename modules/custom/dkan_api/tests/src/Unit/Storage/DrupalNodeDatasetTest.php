@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_api\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Dkan\Tests\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
 

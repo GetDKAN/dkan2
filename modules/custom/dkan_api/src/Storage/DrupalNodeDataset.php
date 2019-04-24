@@ -3,7 +3,7 @@
 namespace Drupal\dkan_api\Storage;
 
 use Drupal\node\Entity\Node;
-use Dkan\Storage\StorageInterface;
+use Drupal\dkan_common\Storage\StorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**

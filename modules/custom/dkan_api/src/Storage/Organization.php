@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Dkan\Storage\StorageInterface;
+use Drupal\dkan_common\Storage\StorageInterface;
 
 /**
  *
