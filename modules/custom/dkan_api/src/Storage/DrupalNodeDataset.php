@@ -3,86 +3,138 @@
 namespace Drupal\dkan_api\Storage;
 
 use Drupal\node\Entity\Node;
-use Contracts\Storage;
-use Contracts\BulkRetriever;
+use Dkan\Storage\StorageInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
-class DrupalNodeDataset implements Storage, BulkRetriever {
+/**
+ *
+ */
+class DrupalNodeDataset implements StorageInterface {
+
+  /**
+   *
+   * @var EntityTypeManagerInterface 
+   */
+  protected $entityTypeManager;
+
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
+  }
+
+  /**
+   * Get the node storage.
+   * 
+   * @return \Drupal\node\NodeStorageInterface
+   */
+  protected function getNodeStorage() {
+    return $this->entityTypeManager
+                    ->getStorage('node');
+  }
+
+  /**
+   * @return string Type of node.
+   */
   protected function getType() {
     return 'data';
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function retrieve(string $id): ?string {
 
-    foreach ($this->getNodesByUuid($id) as $result) {
-      $node = Node::load($result->nid);
+    if (false !== ($node = $this->getNodeByUuid($id))) {
       return $node->field_json_metadata->value;
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function retrieveAll(): array {
-    $connection = \Drupal::database();
-    $sql = "SELECT nid FROM node WHERE type = :type";
-    $query = $connection->query($sql, [':type' => $this->getType()]);
-    $results = $query->fetchAll();
+
+    $nodeStorage = $this->getNodeStorage();
+
+    $nodeIds = $nodeStorage->getQuery()
+            ->condition('type', $this->getType())
+            ->execute();
 
     $all = [];
-    foreach ($results as $result) {
-      $node = Node::load($result->nid);
+    foreach ($nodeIds as $nid) {
+      $node = $nodeStorage->load($nid);
       $all[] = $node->field_json_metadata->value;
     }
     return $all;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function remove(string $id) {
 
-    foreach ($this->getNodesByUuid($id) as $result) {
-      $node = Node::load($result->nid);
+    if (false !== ($node = $this->getNodeByUuid($id))) {
       return $node->delete();
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function store(string $data, string $id = NULL): string {
 
     $data = json_decode($data);
 
     if (!$id && isset($data->identifier)) {
-        $id = $data->identifier;
+      $id = $data->identifier;
     }
 
     if ($id) {
-        $node = \Drupal::service('entity.repository')->loadEntityByUuid('node', $id);
+      $node = $this->getNodeByUuid($id);
     }
 
     /* @var $node \Drupal\node\NodeInterface */
-    if ($node) {    // update existing node
+    // update existing node
+    if ($node) {
       $node->field_data_type = "dataset";
       $node->field_json_metadata = json_encode($data);
       $node->save();
       return $node->uuid();
     }
-    else {    // create new node
+    // Create new node.
+    else {
       $title = isset($data->title) ? $data->title : $data->name;
-      $nodeWrapper = NODE::create([
-        'title' => $title,
-        'type' => 'data',
-        'uuid' => $id,
-        'field_data_type' => 'dataset',
-        'field_json_metadata' => json_encode($data)
+      $node = $this->getNodeStorage()
+              ->create([
+          'title' => $title,
+          'type' => 'data',
+          'uuid' => $id,
+          'field_data_type' => 'dataset',
+          'field_json_metadata' => json_encode($data),
       ]);
-      $nodeWrapper->save();
-      return $nodeWrapper->uuid();
+      $node->save();
+      return $node->uuid();
     }
 
     return NULL;
   }
 
-  private function getNodesByUuid($uuid) {
-    $connection = \Drupal::database();
-    $sql = "SELECT nid FROM node WHERE uuid = :uuid AND type = :type";
-    $query = $connection->query($sql, [':uuid' => $uuid, ':type' => $this->getType()]);
-    return $query->fetchAll();
+  /**
+   * Fetch node id of a current type given uuid
+   * 
+   * @return Node|boolean Returns false if no nodes match
+   */
+  protected function getNodeByUuid($uuid) {
+
+    $nodes = $this->getNodeStorage()
+            ->loadByProperties([
+        'type' => $this->getType(),
+        'uuid' => $uuid,
+    ]);
+    // uuid should be universally unique and always return
+    // a single node.
+    return current($nodes);
   }
 
 }
