@@ -10,8 +10,8 @@
 
     <testsuites>
         <testsuite name="DKAN Test Suite">
-            <directory>modules/custom/interra_api/tests/src/Unit/ApiRequestTest.php</directory>
             <directory>modules/custom/dkan_harvest/tests/src/Unit/Dkan8Test.php</directory>
+            <directory >modules/custom/dkan_api/tests/src/Unit</directory>
             <directory >modules/custom/dkan_common/tests/src/Unit</directory>
             <directory >modules/custom/dkan_datastore/tests/src/Unit</directory>
         </testsuite>
