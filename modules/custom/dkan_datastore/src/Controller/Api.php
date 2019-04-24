@@ -81,14 +81,10 @@ class Api implements ContainerInjectionInterface {
     try {
       $manager = Util::getDatastoreManager($uuid);
 
-      /* @todo This is bad we should respect the levels of abstraction.
-       * The manager should not assume what the storage mechanism looks like
-       * and neither should we.
-       */
-
       $table = $manager->getTableName();
       $object->setThingToRetrieve($table);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return new JsonResponse("No datastore.");
     }
 
