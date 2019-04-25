@@ -13,6 +13,7 @@ class Organization implements StorageInterface {
   /**
    * Constructor.
    *
+   * @todo makes more snse to have this class extend DrupalNodeDataset instead of injecting it.
    * @param \Drupal\dkan_api\Storage\DrupalNodeDataset $datasetStorage
    *   Injected Nodeset.
    */
