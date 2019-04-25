@@ -30,7 +30,7 @@ abstract class Api extends ControllerBase {
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
-    $this->dkanFactory = $container>get('dkan.factory');
+    $this->dkanFactory = $container->get('dkan.factory');
   }
 
   /**
