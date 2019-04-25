@@ -3,7 +3,6 @@
 namespace Drupal\dkan_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Sae\Sae;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -44,30 +43,51 @@ abstract class Api extends ControllerBase {
   abstract protected function getStorage();
 
   /**
+   * Get all.
    *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
   public function getAll() {
-    /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
 
-    $datasets = $engine->get();
-    $json_string = "[" . implode(",", $datasets) . "]";
+    $datasets = $this->getEngine()
+      ->get();
+
+    // $datasets is an array of JSON encoded string. Needs to be unflattened.
+    $unflattened = array_map(
+        function ($json_string) {
+          return json_decode($json_string);
+        },
+        $datasets
+    );
 
     return $this->dkanFactory
-      ->newJsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
+      ->newJsonResponse(
+          $unflattened,
+          200,
+          ["Access-Control-Allow-Origin" => "*"]
+      );
   }
 
   /**
+   * Implements GET method.
    *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response.
    */
   public function get($uuid) {
-    /* @var $engine \Sae\Sae */
-    $engine = $this->getEngine();
-
     try {
-      $data = $engine->get($uuid);
+
+      $data = $this->getEngine()
+        ->get($uuid);
+
       return $this->dkanFactory
-        ->newJsonResponse(json_decode($data), 200, ["Access-Control-Allow-Origin" => "*"]);
+        ->newJsonResponse(
+                json_decode($data),
+                200,
+                ["Access-Control-Allow-Origin" => "*"]
+        );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
@@ -76,7 +96,9 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Implements POST method.
    *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
    */
   public function post() {
     /* @var $engine \Sae\Sae */
@@ -116,7 +138,12 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Implements PUT method.
    *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
    */
   public function put($uuid) {
     /* @var $engine \Sae\Sae */
@@ -153,7 +180,12 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Implements PATCH method.
    *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
    */
   public function patch($uuid) {
     /* @var $engine \Sae\Sae */
@@ -193,7 +225,12 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Implements DELETE method.
    *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
    */
   public function delete($uuid) {
     /* @var $engine \Sae\Sae */
@@ -205,11 +242,14 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Get isntance of.
    *
+   * @return \Sae\Sae
    */
   public function getEngine() {
-    $storage = $this->getStorage();
-    return new Sae($storage, $this->getJsonSchema());
+
+    return $this->dkanFactory
+      ->newServiceApiEngine($this->getStorage(), $this->getJsonSchema());
   }
 
   /**
