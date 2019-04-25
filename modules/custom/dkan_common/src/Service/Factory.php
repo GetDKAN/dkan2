@@ -10,21 +10,14 @@ use Contracts\Storage as ContractsStorageInterface;
 
 /**
  * Factory to generate DKAN API responses.
+ *
+ * Coverage is mostly ignored for this class since it's mostly a proxy to
+ * initialise new instances.
+ *
+ * @codeCoverageIgnore
  */
-class Factory implements ContainerInjectionInterface {
+class Factory {
 
-  protected $container;
-
-  /**
-   * Factory for common DKAN object.
-   *
-   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
-   *   Service COntainer.
-   */
-  public function __construct(ContainerInterface $container) {
-
-    $this->container = $container;
-  }
 
   /**
    * Creates a new json response.

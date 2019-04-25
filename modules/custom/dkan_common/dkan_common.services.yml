@@ -1,4 +1,4 @@
 services:
     dkan.factory:
         class: Drupal\dkan_common\Service\Factory
-        arguments: ['@service_container']
+
