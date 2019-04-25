@@ -16,9 +16,10 @@ class Factory implements ContainerInjectionInterface {
   protected $container;
 
   /**
-   * Factory.
-   * 
-   * @param ContainerInterface $container Service COntainer.
+   * Factory for common DKAN object.
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   Service COntainer.
    */
   public function __construct(ContainerInterface $container) {
 
@@ -27,29 +28,38 @@ class Factory implements ContainerInjectionInterface {
 
   /**
    * Creates a new json response.
-   * 
-   * @param mixed $data    The response data
-   * @param int   $status  The response status code
-   * @param array $headers An array of response headers
-   * @param bool  $json    If the data is already a JSON string
+   *
+   * @param mixed $data
+   *   The response data.
+   * @param int $status
+   *   The response status code.
+   * @param array $headers
+   *   An array of response headers.
+   * @param bool $json
+   *   If the data is already a JSON string.
    */
-  public function newJsonResponse($data = null, $status = 200, $headers = [], $json = false) {
+  public function newJsonResponse($data = NULL, $status = 200, array $headers = [], $json = FALSE) {
     return new JsonResponse($data, $status, $headers, $json);
   }
 
   /**
-   * Creates new ServiceApiEngine
-   * 
-   * @param ContractsStorageInterface $storage
+   * Creates new ServiceApiEngine.
+   *
+   * @param \Contracts\Storage $storage
+   *   Storage.
    * @param string $jsonSchema
-   * @return Sae
+   *   Json Schema.
+   *
+   * @return \Sae\Sae
+   *   New Service Api Engine.
    */
   public function newServiceApiEngine(ContractsStorageInterface $storage, string $jsonSchema) {
     return new Sae($storage, $jsonSchema);
   }
 
   /**
-   * {@inheritdocs}
+   * {@inheritdoc}
+   *
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {

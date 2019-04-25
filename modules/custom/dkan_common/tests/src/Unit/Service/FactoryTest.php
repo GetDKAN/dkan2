@@ -35,10 +35,9 @@ class FactoryTest extends DkanTestBase {
    */
   public function testNewJsonResponse() {
 
-
     // Setup.
     $mock = $this->getMockBuilder(Factory::class)
-            ->disableOriginalConstructor()
+      ->disableOriginalConstructor()
     // Override nothing.
       ->setMethods(NULL)->getMock();
 
@@ -48,7 +47,7 @@ class FactoryTest extends DkanTestBase {
     $actual = $mock->newJsonResponse('foo', 500, ['content-type' => 'text/plain'], FALSE);
     $this->assertInstanceOf(JsonResponse::class, $actual);
   }
-  
+
   /**
    * Tests newServiceApiEngine().
    */
@@ -56,22 +55,22 @@ class FactoryTest extends DkanTestBase {
     // This requires instantiation of an actual Sae class.
     $this->markAsRisky();
 
-    // setup
+    // Setup.
     $mockContractsStorage = $this->createMock(ContractsStorageInterface::class);
     $dummyJsonSchema = "{}";
-            
+
     /** @var MockObject|Factory $mock */
-        $mock = $this->getMockBuilder(Factory::class)
-            ->disableOriginalConstructor()
+    $mock = $this->getMockBuilder(Factory::class)
+      ->disableOriginalConstructor()
     // Override nothing.
       ->setMethods(NULL)->getMock();
 
-      // assert
-          // This requires instantiation of an actual JsonResponse class.
+    // assert
+    // This requires instantiation of an actual JsonResponse class.
     $this->markAsRisky();
     $actual = $mock->newServiceApiEngine($mockContractsStorage, $dummyJsonSchema);
     $this->assertInstanceOf(Sae::class, $actual);
-    
-      }
+
+  }
 
 }
