@@ -13,57 +13,5 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
-            chmod 777 ./dkan-tools/bin/dktl
-            export PATH=$PATH:~/dkan-tools/bin
-            which dktl
-      - run:
-          name: Initialize Project
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            mkdir ~/sandbox
-            cd ~/sandbox
-            dktl init
-      - run:
-          name: Get Drupal
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl get 8.6.14
-      - run:
-          name: Make DKAN
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            sudo chmod 777 src/make/composer.json
-            sudo echo "{\"description\":\"Project\",\"minimum-stability\":\"dev\",\"repositories\":[{\"type\":\"vcs\",\"url\":\"https://github.com/fmizzell/json_form\"},{\"type\":\"composer\",\"url\":\"https://asset-packagist.org\"}],\"require\":{\"getdkan/dkan2\":\"dev-$CIRCLE_BRANCH\"}}" > src/make/composer.json
-            dktl make
-            rm -rf ./docroot/profiles/contrib/dkan2
-            mv ~/project ./docroot/profiles/contrib/dkan2
-            ls -lha ./docroot/profiles/contrib/dkan2
-      - run:
-          name: Install site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install
-      - run:
-          name: Run phpUnit tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl xdebug:start
-            dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
-      - run:
-          name: Run cypress tests
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
-            dktl drush user-add-role api_user testuser
-            dktl drush dkan-dummy-content:create
-            dktl dkan:test-cypress
-      - store_artifacts:
-          path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
-      - store_test_results:
-          path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/videos
+            echo $CIRCLE_PR_REPONAME
+            
