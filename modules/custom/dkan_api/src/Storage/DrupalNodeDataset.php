@@ -2,48 +2,56 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Drupal\node\Entity\Node;
 use Drupal\dkan_common\Storage\StorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
- *
+ * DrupalNodeDataset.
  */
 class DrupalNodeDataset implements StorageInterface {
 
   /**
+   * Entity Type Manager.
    *
-   * @var EntityTypeManagerInterface 
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
+  /**
+   * Constructor.
+   *
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   Injected entity type manager.
+   */
   public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
    * Get the node storage.
-   * 
+   *
    * @return \Drupal\node\NodeStorageInterface
+   *   Node Storage.
    */
   protected function getNodeStorage() {
     return $this->entityTypeManager
-                    ->getStorage('node');
+      ->getStorage('node');
   }
 
   /**
-   * @return string Type of node.
+   * @return string
+   *   Type of node.
    */
   protected function getType() {
     return 'data';
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}.
    */
   public function retrieve(string $id): ?string {
 
-    if (false !== ($node = $this->getNodeByUuid($id))) {
+    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
       return $node->field_json_metadata->value;
     }
 
@@ -51,15 +59,15 @@ class DrupalNodeDataset implements StorageInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}.
    */
   public function retrieveAll(): array {
 
     $nodeStorage = $this->getNodeStorage();
 
     $nodeIds = $nodeStorage->getQuery()
-            ->condition('type', $this->getType())
-            ->execute();
+      ->condition('type', $this->getType())
+      ->execute();
 
     $all = [];
     foreach ($nodeIds as $nid) {
@@ -70,17 +78,17 @@ class DrupalNodeDataset implements StorageInterface {
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}.
    */
   public function remove(string $id) {
 
-    if (false !== ($node = $this->getNodeByUuid($id))) {
+    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
       return $node->delete();
     }
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritDoc}.
    */
   public function store(string $data, string $id = NULL): string {
 
@@ -106,13 +114,13 @@ class DrupalNodeDataset implements StorageInterface {
     else {
       $title = isset($data->title) ? $data->title : $data->name;
       $node = $this->getNodeStorage()
-              ->create([
+        ->create([
           'title' => $title,
           'type' => 'data',
           'uuid' => $id,
           'field_data_type' => 'dataset',
           'field_json_metadata' => json_encode($data),
-      ]);
+        ]);
       $node->save();
       return $node->uuid();
     }
@@ -121,18 +129,19 @@ class DrupalNodeDataset implements StorageInterface {
   }
 
   /**
-   * Fetch node id of a current type given uuid
-   * 
-   * @return Node|boolean Returns false if no nodes match
+   * Fetch node id of a current type given uuid.
+   *
+   * @return \Drupal\node\Entity\Node|bool
+   *   Returns false if no nodes match.
    */
   protected function getNodeByUuid($uuid) {
 
     $nodes = $this->getNodeStorage()
-            ->loadByProperties([
+      ->loadByProperties([
         'type' => $this->getType(),
         'uuid' => $uuid,
-    ]);
-    // uuid should be universally unique and always return
+      ]);
+    // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
   }

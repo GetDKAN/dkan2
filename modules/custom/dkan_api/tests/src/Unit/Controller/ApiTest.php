@@ -4,10 +4,10 @@ namespace Drupal\Tests\dkan_api\Unit\Controller;
 
 use Drupal\dkan_api\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_common\Service\Factory;
 
 /**
+ * Tests Drupal\dkan_api\Controller\Api.
  *
  * @coversDefaultClass \Drupal\dkan_api\Controller\Api
  * @group dkan_api
@@ -16,23 +16,23 @@ use Drupal\dkan_common\Service\Factory;
 class ApiTest extends DkanTestBase {
 
   /**
-   *
+   * Tests __construct().
    */
   public function testConstruct() {
 
     $mock = $this->getMockBuilder(Api::class)
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
-    
+
     $mockContainer = $this->getMockContainer();
-    
+
     $mockDkanFactory = $this->createMock(Factory::class);
-    
-    // expect
+
+    // Expect.
     $mockContainer->expects($this->once())
-            ->method('get')
-            ->with('dkan.factory')
-            ->willReturn($mockDkanFactory);
+      ->method('get')
+      ->with('dkan.factory')
+      ->willReturn($mockDkanFactory);
 
     // Assert.
     $mock->__construct($mockContainer);
@@ -41,7 +41,7 @@ class ApiTest extends DkanTestBase {
             $mockContainer,
             $this->readAttribute($mock, 'container')
     );
-    
+
     $this->assertSame(
             $mockDkanFactory,
             $this->readAttribute($mock, 'dkanFactory')
@@ -50,7 +50,7 @@ class ApiTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Placeholder.
    */
   public function testGetAll() {
 

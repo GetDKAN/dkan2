@@ -17,11 +17,11 @@ abstract class Api extends ControllerBase {
    * @var \Symfony\Component\DependencyInjection\ContainerInterface
    */
   protected $container;
-  
+
   /**
    * Factory to generate various dkan classes.
-   * 
-   * @var \Drupal\dkan_common\Service\Factory 
+   *
+   * @var \Drupal\dkan_common\Service\Factory
    */
   protected $dkanFactory;
 
@@ -54,7 +54,7 @@ abstract class Api extends ControllerBase {
     $json_string = "[" . implode(",", $datasets) . "]";
 
     return $this->dkanFactory
-            ->newJsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
+      ->newJsonResponse(json_decode($json_string), 200, ["Access-Control-Allow-Origin" => "*"]);
   }
 
   /**
@@ -67,11 +67,11 @@ abstract class Api extends ControllerBase {
     try {
       $data = $engine->get($uuid);
       return $this->dkanFactory
-            ->newJsonResponse(json_decode($data), 200, ["Access-Control-Allow-Origin" => "*"]);
+        ->newJsonResponse(json_decode($data), 200, ["Access-Control-Allow-Origin" => "*"]);
     }
     catch (\Exception $e) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => $e->getMessage()], 404);
+        ->newJsonResponse((object) ["message" => $e->getMessage()], 404);
     }
   }
 
@@ -96,7 +96,7 @@ abstract class Api extends ControllerBase {
         ->execute();
       if ($existing) {
         return $this->dkanFactory
-            ->newJsonResponse(
+          ->newJsonResponse(
           (object) ["endpoint" => "{$uri}/{$uuid}"], 409);
       }
     }
@@ -104,14 +104,14 @@ abstract class Api extends ControllerBase {
     try {
       $uuid = $engine->post($data);
       return $this->dkanFactory
-            ->newJsonResponse(
+        ->newJsonResponse(
         (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
         201
       );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -129,7 +129,7 @@ abstract class Api extends ControllerBase {
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $uuid) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+        ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
     }
 
     $existing = \Drupal::entityQuery('node')
@@ -140,7 +140,7 @@ abstract class Api extends ControllerBase {
       $engine->put($uuid, $data);
       $uri = $request->getRequestUri();
       return $this->dkanFactory
-            ->newJsonResponse(
+        ->newJsonResponse(
         (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
         // If a new resource is created, inform the user agent via 201 Created.
         empty($existing) ? 201 : 200
@@ -148,7 +148,7 @@ abstract class Api extends ControllerBase {
     }
     catch (\Exception $e) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -166,7 +166,7 @@ abstract class Api extends ControllerBase {
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $uuid) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+        ->newJsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
     }
 
     $existing = \Drupal::entityQuery('node')
@@ -175,20 +175,20 @@ abstract class Api extends ControllerBase {
 
     if (!$existing) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => "Resource not found"], 404);
+        ->newJsonResponse((object) ["message" => "Resource not found"], 404);
     }
 
     try {
       $engine->patch($uuid, $data);
       $uri = $request->getRequestUri();
       return $this->dkanFactory
-            ->newJsonResponse(
+        ->newJsonResponse(
         (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
       );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
+        ->newJsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 
@@ -201,7 +201,7 @@ abstract class Api extends ControllerBase {
 
     $engine->delete($uuid);
     return $this->dkanFactory
-            ->newJsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
+      ->newJsonResponse((object) ["message" => "Dataset {$uuid} has been deleted."], 200);
   }
 
   /**

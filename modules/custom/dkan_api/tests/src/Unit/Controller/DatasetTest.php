@@ -8,7 +8,7 @@ use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use JsonSchemaProvider\Provider;
 
 /**
- * Description of OrganizationTest.
+ * Tests Drupal\dkan_api\Controller\Dataset.
  *
  * @coversDefaultClass Drupal\dkan_api\Controller\Dataset
  * @group dkan_api

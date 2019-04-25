@@ -34,7 +34,7 @@ class Organization extends Api {
    */
   protected function getStorage() {
     return $this->container
-            ->get('dkan_api.storage.organization');
+      ->get('dkan_api.storage.organization');
   }
 
 }

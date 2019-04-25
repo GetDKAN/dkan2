@@ -7,7 +7,7 @@ use Drupal\dkan_api\Storage\Organization as StorageOrganization;
 use Drupal\dkan_common\Tests\DkanTestBase;
 
 /**
- * Description of OrganizationTest.
+ * Tests Drupal\dkan_api\Controller\Organization.
  *
  * @coversDefaultClass Drupal\dkan_api\Controller\Organization
  * @group dkan_api
@@ -16,7 +16,7 @@ use Drupal\dkan_common\Tests\DkanTestBase;
 class OrganizationTest extends DkanTestBase {
 
   /**
-   *
+   * Tests getJsonSchema().
    */
   public function testGetJsonSchema() {
     $this->markTestIncomplete('Code under test seems to not do anything.');

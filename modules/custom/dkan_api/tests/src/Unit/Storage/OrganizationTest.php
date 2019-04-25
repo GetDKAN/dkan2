@@ -7,6 +7,7 @@ use Drupal\dkan_api\Storage\Organization;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 
 /**
+ * Tests Drupal\dkan_api\Storage\Organization.
  *
  * @coversDefaultClass \Drupal\dkan_api\Storage\Organization
  * @group dkan_api
@@ -34,7 +35,7 @@ class OrganizationTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Placeholder.
    */
   public function testRemainingMethods() {
 

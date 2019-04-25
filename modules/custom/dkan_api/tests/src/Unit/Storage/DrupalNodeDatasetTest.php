@@ -8,6 +8,7 @@ use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
 
 /**
+ * Tests Drupal\dkan_api\Storage\DrupalNodeDataset.
  *
  * @coversDefaultClass \Drupal\dkan_api\Storage\DrupalNodeDataset
  * @group dkan_api
@@ -85,7 +86,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Placeholder.
    */
   public function testRemainingMethods() {
 
