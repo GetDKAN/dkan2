@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class Dataset extends Api {
 
-  use \Drupal\dkan_common\Util\TestableParentCallTrait;
+  use \Drupal\dkan_common\Util\ParentCallTrait;
 
   /**
    *

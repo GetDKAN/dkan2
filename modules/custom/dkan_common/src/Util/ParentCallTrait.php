@@ -12,7 +12,7 @@ namespace Drupal\dkan_common\Util;
  *
  * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
-trait TestableParentCallTrait {
+trait ParentCallTrait {
 
   /**
    * Wrapper for unit testing.
