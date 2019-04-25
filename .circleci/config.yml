@@ -14,4 +14,4 @@ jobs:
           command: |
             cd ~
             echo $CIRCLE_PR_REPONAME
-            
+            echo $CIRCLE_PR_USERNAME
