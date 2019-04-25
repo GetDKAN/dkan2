@@ -65,12 +65,12 @@ class DrupalNodeDataset implements StorageInterface {
 
     $nodeStorage = $this->getNodeStorage();
 
-    $nodeIds = $nodeStorage->getQuery()
+    $node_ids = $nodeStorage->getQuery()
       ->condition('type', $this->getType())
       ->execute();
 
     $all = [];
-    foreach ($nodeIds as $nid) {
+    foreach ($node_ids as $nid) {
       $node = $nodeStorage->load($nid);
       $all[] = $node->field_json_metadata->value;
     }
