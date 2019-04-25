@@ -35,6 +35,12 @@
             <directory>modules/custom/dkan_api/src</directory>
             <directory>modules/custom/dkan_common/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
+      <!-- By definition test classes have no tests. -->
+      <exclude>
+        <directory>modules/custom/dkan_common/src/Tests</directory>
+        <directory suffix="Test.php">./</directory>
+        <directory suffix="TestBase.php">./</directory>
+      </exclude>
         </whitelist>
     </filter>
 </phpunit>
