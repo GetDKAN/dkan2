@@ -7,5 +7,5 @@ services:
     # \Drupal\dkan_schema\SchemaRetriever
     dkan_schema.json_schema_provider:
         class: JsonSchemaProvider\Provider
-        argumemts: ['@dkan_schema.schema_retriever']
+        arguments: ['@dkan_schema.schema_retriever']
         shared: false
