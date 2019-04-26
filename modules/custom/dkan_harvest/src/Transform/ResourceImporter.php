@@ -31,19 +31,68 @@ class ResourceImporter extends Transform {
   /**
    * {@inheritdoc}
    */
-  public function run(&$items) {
-    foreach ($items as $key => $item) {
-      foreach ($item->distribution as $index => $dist) {
-        if (isset($dist->downloadURL)) {
-          // Attempt to save a resource file locally.
-          $file_path = $this->saveFile($dist->downloadURL, $item->identifier);
-          if ($file_path) {
-            // Update resource URL.
-            $items[$key]->distribution[$index]->downloadURL = $file_path;
-          }
-        }
-      }
+  public function run(&$datasets) {
+    // Loop through datasets.
+    foreach ($datasets as $dataset_key => $dataset) {
+      $datasets[$dataset_key] = $this->updateDistributions($dataset);
     }
+  }
+
+  /**
+   * Update the distributions attached to a dataset.
+   *
+   * @param object $dataset
+   *   JSON decoded dataset.
+   *
+   * @return object
+   *   The original dataset with updated distributions.
+   */
+  protected function updateDistributions($dataset) {
+    // Abort if there's no distributions.
+    if (empty($dataset)) {
+      return $dataset;
+    }
+
+    $distributions = [];
+
+    // Loop through distributions.
+    foreach ($dataset->distribution as $dist_index => $dist) {
+      $distributions[] = $this->updateDownloadUrl($dataset, $dist);
+    }
+
+    // Update distributions.
+    $dataset->distribution = $distributions;
+
+    return $dataset;
+  }
+
+  /**
+   * Attempt to import distribution file and update downloadURL property.
+   *
+   * @param object $dataset
+   *   JSON decoded dataset.
+   * @param object $dist
+   *   JSON decoded distribution.
+   *
+   * @return object
+   *   The updated distribution.
+   */
+  protected function updateDownloadUrl($dataset, $dist) {
+    // Abort if there's no downloadURL property.
+    if (empty($dist->downloadURL)) {
+      return $dist;
+    }
+
+    // Import distribution file.
+    $new_url = $this->saveFile($dist->downloadURL, $dataset->identifier);
+
+    // If successful, update downloadURL.
+    if ($new_url) {
+      $dist->downloadURL = $new_url;
+    }
+
+    return $dist;
+
   }
 
   /**
@@ -61,7 +110,7 @@ class ResourceImporter extends Transform {
    * @return string|bool
    *   The URL for the newly created file, or FALSE if failure occurs.
    */
-   public function saveFile($url, $dataset_id) {
+  public function saveFile($url, $dataset_id) {
 
     $targetDir = 'public://distribution/' . $dataset_id;
     $this->fileHelper->prepareDir($targetDir);
