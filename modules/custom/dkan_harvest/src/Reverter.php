@@ -5,7 +5,7 @@ namespace Drupal\dkan_harvest;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_harvest\Log\MakeItLog;
 use Drupal\dkan_harvest\Storage\Hash;
-use Harvest\Storage\Storage;
+Use Drupal\dkan_common\Storage\StorageInterface;
 
 class Reverter {
   use MakeItLog;
@@ -13,7 +13,7 @@ class Reverter {
   public $sourceId;
   private $hashStorage;
 
-  function __construct($sourceId, Storage $hash_storage) {
+  function __construct($sourceId, StorageInterface $hash_storage) {
     $this->sourceId = $sourceId;
     $this->hashStorage = $hash_storage;
   }

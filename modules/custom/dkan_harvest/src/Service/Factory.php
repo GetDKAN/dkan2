@@ -4,6 +4,7 @@ namespace Drupal\dkan_harvest\Service;
 
 use Drupal\dkan_harvest\EtlWorkerFactory;
 use Drupal\dkan_harvest\Harvester;
+use Drupal\dkan_harvest\Reverter;
 
 /**
  * Factory class for bits and pieces of dkan_harvest.
@@ -24,6 +25,17 @@ class Factory {
   public function newHarvester($harvest_plan) {
 
     return new Harvester($harvest_plan);
+
+  }
+    /**
+   * New instance of Reverter.
+   *
+   * @param mixed $harvest_plan Harvest plan.
+   * @return Reverter Reverter
+   */
+  public function newReverter($harvest_plan) {
+
+    return new Reverter($harvest_plan);
 
   }
 

@@ -9,5 +9,5 @@ use Contracts\BulkRetriever;
  * Combined interface for storage classes.
  */
 interface StorageInterface extends Storage, BulkRetriever {
-  // Put your code here.
+
 }
