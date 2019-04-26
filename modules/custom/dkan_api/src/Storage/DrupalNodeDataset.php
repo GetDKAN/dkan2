@@ -4,6 +4,7 @@ namespace Drupal\dkan_api\Storage;
 
 use Drupal\dkan_common\Storage\StorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\dkan_api\Storage\ThemeValueReferencer;
 
 /**
  * DrupalNodeDataset.
@@ -16,15 +17,26 @@ class DrupalNodeDataset implements StorageInterface {
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
+  
+  /**
+   * @var Drupal\dkan_api\Storage\ThemeValueReferencer
+   */
+  private $themeValueReferencer;
 
   /**
    * Constructor.
    *
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   * @param EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
+   * @param ThemeValueReferencer $themeValueReferencer
+   *   Injected theme value referencer.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(
+          EntityTypeManagerInterface $entityTypeManager,
+          ThemeValueReferencer $themeValueReferencer
+    ) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->themeValueReferencer = $themeValueReferencer;
   }
 
   /**
@@ -42,19 +54,6 @@ class DrupalNodeDataset implements StorageInterface {
    * @return string
    *   Type of node.
    */
-
-  /**
-   * @var Drupal\dkan_api\Storage\ThemeValueReferencer
-   */
-  private $themeValueReferencer;
-
-  /**
-   * Constructs a DrupalNodeDataset.
-   */
-  public function __construct() {
-    $this->themeValueReferencer = new ThemeValueReferencer();
-  }
-
   protected function getType() {
     return 'data';
   }
@@ -80,6 +79,7 @@ class DrupalNodeDataset implements StorageInterface {
 
     $node_ids = $nodeStorage->getQuery()
       ->condition('type', $this->getType())
+      ->condition('field_data_type', 'dataset')
       ->execute();
 
     $all = [];
