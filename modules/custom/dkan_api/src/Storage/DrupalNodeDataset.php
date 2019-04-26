@@ -2,14 +2,14 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Drupal\dkan_common\Storage\StorageInterface;
+use Harvest\Storage\Storage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_api\Storage\ThemeValueReferencer;
 
 /**
  * DrupalNodeDataset.
  */
-class DrupalNodeDataset implements StorageInterface {
+class DrupalNodeDataset implements Storage {
 
   /**
    * Entity Type Manager.

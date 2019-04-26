@@ -2,12 +2,12 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Drupal\dkan_common\Storage\StorageInterface;
+use Harvest\Storage\Storage;
 
 /**
  * Organization.
  */
-class Organization implements StorageInterface {
+class Organization implements Storage {
   protected $datasetStorage;
 
   /**

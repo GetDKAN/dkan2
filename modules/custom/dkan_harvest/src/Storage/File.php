@@ -2,9 +2,9 @@
 
 namespace Drupal\dkan_harvest\Storage;
 
-use Drupal\dkan_common\Storage\StorageInterface;
+use Harvest\Storage\Storage;
 
-class File implements StorageInterface {
+class File implements Storage {
 
   private $directoryPath;
 
