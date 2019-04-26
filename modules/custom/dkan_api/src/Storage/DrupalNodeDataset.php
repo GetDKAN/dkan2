@@ -42,6 +42,19 @@ class DrupalNodeDataset implements StorageInterface {
    * @return string
    *   Type of node.
    */
+
+  /**
+   * @var Drupal\dkan_api\Storage\ThemeValueReferencer
+   */
+  private $themeValueReferencer;
+
+  /**
+   * Constructs a DrupalNodeDataset.
+   */
+  public function __construct() {
+    $this->themeValueReferencer = new ThemeValueReferencer();
+  }
+
   protected function getType() {
     return 'data';
   }
@@ -94,6 +107,10 @@ class DrupalNodeDataset implements StorageInterface {
 
     $data = json_decode($data);
 
+    if (isset($data->theme)) {
+      $data->theme = $this->themeValueReferencer->reference($data);
+    }
+
     if (!$id && isset($data->identifier)) {
       $id = $data->identifier;
     }
@@ -144,6 +161,14 @@ class DrupalNodeDataset implements StorageInterface {
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
+  }
+
+  protected function themeDereferenced($json) {
+    $data = json_decode($json);
+    if (isset($data->theme)) {
+      $data->theme = $this->themeValueReferencer->dereference($data);
+    }
+    return json_encode($data);
   }
 
 }
