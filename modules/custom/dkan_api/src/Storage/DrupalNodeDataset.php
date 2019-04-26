@@ -21,7 +21,7 @@ class DrupalNodeDataset implements StorageInterface {
   /**
    * @var Drupal\dkan_api\Storage\ThemeValueReferencer
    */
-  private $themeValueReferencer;
+  protected $themeValueReferencer;
 
   /**
    * Constructor.
