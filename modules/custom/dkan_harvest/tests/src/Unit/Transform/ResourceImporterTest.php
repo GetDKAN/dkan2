@@ -17,6 +17,7 @@ class ResourceImporterTest extends DkanTestBase {
    * @return array
    */
   public function dataTestRun() {
+
     $datasetJson = <<<EOF
 {
   "accessLevel": "public",
@@ -66,10 +67,8 @@ EOF;
     $resourceImporterStub->method('updateDistributions')
       ->willReturn($modifiedDataset);
 
-    // Execute 'run' method.
-    $resourceImporterStub->run($datasets);
-
     // Assert
+    $resourceImporterStub->run($datasets);
     $this->assertEquals($expected, $datasets[0]->distribution[0]->downloadURL);
 
   }
@@ -80,6 +79,7 @@ EOF;
    * @return array
    */
   public function dataTestUpdateDistributions() {
+
     $datasetJson = <<<EOF
 {
   "accessLevel": "public",
@@ -129,10 +129,9 @@ EOF;
     $resourceImporterStub->method('updateDownloadUrl')
       ->willReturn($dist);
 
-    $updatedDataset = $this->invokeProtectedMethod($resourceImporterStub, 'updateDistributions', $dataset);
-
     // Assert
-    $this->assertEquals($expected, $updatedDataset->distribution[0]->downloadURL);
+    $actualDataset = $this->invokeProtectedMethod($resourceImporterStub, 'updateDistributions', $dataset);
+    $this->assertEquals($expected, $actualDataset->distribution[0]->downloadURL);
 
   }
 
@@ -142,6 +141,7 @@ EOF;
    * @return array
    */
   public function dataTestUpdateDownloadUrl() {
+
     $datasetJson = <<<EOF
 {
   "accessLevel": "public",
@@ -189,10 +189,9 @@ EOF;
     $resourceImporterStub->method('saveFile')
       ->willReturn($url);
 
-    $updatedDist = $this->invokeProtectedMethod($resourceImporterStub, 'updateDownloadUrl', $dataset, $dist);
-
     // Assert
-    $this->assertEquals($expected, $updatedDist->downloadURL);
+    $actualDist = $this->invokeProtectedMethod($resourceImporterStub, 'updateDownloadUrl', $dataset, $dist);
+    $this->assertEquals($expected, $actualDist->downloadURL);
 
   }
 
@@ -202,10 +201,12 @@ EOF;
    * @return array Array of arguments.
    */
   public function dataTestSaveFile() {
+
     return [
-      ["http://example.com/data1.csv", "data1.csv", TRUE, 'dsid', "http://localhost/site/default/files/distribution/dsid/data1.csv"],
-      ["http://example.com/data2.csv", "data2.csv", FALSE, 'dsid', FALSE], // Pass
+      ["data1.csv", "testid1", TRUE, "http://localhost/site/default/files/distribution/testid1/data1.csv"],
+      ["data2.csv", "testid2", FALSE, FALSE],
     ];
+
   }
 
   /**
@@ -213,13 +214,13 @@ EOF;
    *
    * @dataProvider dataTestSaveFile
    *
-   * @param string $url
    * @param string $filename
-   * @param bool $isUrlValid
    * @param string $datasetId
+   * @param bool $isUrlValid
    * @param string $expected
    */
-  public function testSaveFile($url, $filename, $isUrlValid, $datasetId, $expected) {
+  public function testSaveFile($filename, $datasetId, $isUrlValid, $expected) {
+
     // Create FileHelper stub.
     $fileHelperStub = $this->createMock(IFileHelper::class);
     $fileHelperStub->method('prepareDir')
@@ -237,8 +238,9 @@ EOF;
     $this->writeProtectedProperty($resourceImporterStub, 'fileHelper', $fileHelperStub);
 
     // Assert.
-    $actual = $resourceImporterStub->saveFile($url, $datasetId);
+    $actual = $resourceImporterStub->saveFile("http://example.com/dist/$filename", $datasetId);
     $this->assertEquals($expected, $actual);
+
   }
 
 }
