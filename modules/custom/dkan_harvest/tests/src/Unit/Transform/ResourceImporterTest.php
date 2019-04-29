@@ -12,6 +12,191 @@ use Drupal\dkan_harvest\Load\IFileHelper;
 class ResourceImporterTest extends DkanTestBase {
 
   /**
+   * Data provider for testRun.
+   *
+   * @return array
+   */
+  public function dataTestRun() {
+    $datasetJson = <<<EOF
+{
+  "accessLevel": "public",
+  "@type": "dcat:Dataset",
+  "identifier": "testid",
+  "title": "Test Dataset",
+  "distribution": [
+    {
+    "@type": "dcat:Distribution",
+    "downloadURL": "http://example.com/dist/test.csv",
+    "mediaType": "text/csv"
+    }
+  ]
+}
+EOF;
+
+    $originalDataset = json_decode($datasetJson);
+    $modifiedDataset = json_decode($datasetJson);
+    $modifiedDataset->distribution[0]->downloadURL = 'http://localhost/site/default/files/distribution/testid/test.csv';
+
+    $expected[] = 'http://example.com/dist/test.csv';
+    $expected[] = 'http://localhost/site/default/files/distribution/testid/test.csv';
+
+    return [
+      [[$originalDataset], $originalDataset, $expected[0]],
+      [[$originalDataset], $modifiedDataset, $expected[1]]
+    ];
+
+  }
+
+  /**
+   * Test the ResourceImporter::run method.
+   *
+   * @dataProvider dataTestRun
+   *
+   * @param object $datasets
+   * @param object $modifiedDataset
+   * @param string $expected
+   */
+  public function testRun($datasets, $modifiedDataset, $expected) {
+
+    // Create ResourceImporter stub.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['updateDistributions'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $resourceImporterStub->method('updateDistributions')
+      ->willReturn($modifiedDataset);
+
+    // Execute 'run' method.
+    $resourceImporterStub->run($datasets);
+
+    // Assert
+    $this->assertEquals($expected, $datasets[0]->distribution[0]->downloadURL);
+
+  }
+
+  /**
+   * Data provider for testUpdateDistributions.
+   *
+   * @return array
+   */
+  public function dataTestUpdateDistributions() {
+    $datasetJson = <<<EOF
+{
+  "accessLevel": "public",
+  "@type": "dcat:Dataset",
+  "identifier": "testid",
+  "title": "Test Dataset",
+  "distribution": [
+    {
+    "@type": "dcat:Distribution",
+    "downloadURL": "http://example.com/dist/test.csv",
+    "mediaType": "text/csv"
+    }
+  ]
+}
+EOF;
+
+    $dataset = json_decode($datasetJson);
+    $dataset2 = json_decode($datasetJson);
+
+    $updatedDist = $dataset2->distribution[0];
+    $updatedDist->downloadURL = 'http://localhost/site/default/files/distribution/testid/test.csv';
+
+    return [
+      [$dataset, $dataset->distribution[0], 'http://example.com/dist/test.csv'],
+      [$dataset, $updatedDist, 'http://localhost/site/default/files/distribution/testid/test.csv'],
+    ];
+
+  }
+
+  /**
+   * Test the ResourceImporter::updateDistributions method.
+   *
+   * @dataProvider dataTestUpdateDistributions
+   *
+   * @param $dataset
+   * @param $dist
+   * @param $expected
+   */
+  public function testUpdateDistributions($dataset, $dist, $expected) {
+
+    // Create ResourceImporter stub.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['updateDownloadUrl'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $resourceImporterStub->method('updateDownloadUrl')
+      ->willReturn($dist);
+
+    $updatedDataset = $this->invokeProtectedMethod($resourceImporterStub, 'updateDistributions', $dataset);
+
+    // Assert
+    $this->assertEquals($expected, $updatedDataset->distribution[0]->downloadURL);
+
+  }
+
+  /**
+   * Data provider for testUpdateDownloadUrl.
+   *
+   * @return array
+   */
+  public function dataTestUpdateDownloadUrl() {
+    $datasetJson = <<<EOF
+{
+  "accessLevel": "public",
+  "@type": "dcat:Dataset",
+  "identifier": "testid",
+  "title": "Test Dataset",
+  "distribution": [
+    {
+    "@type": "dcat:Distribution",
+    "downloadURL": "http://example.com/dist/test.csv",
+    "mediaType": "text/csv"
+    }
+  ]
+}
+EOF;
+
+    $dataset = json_decode($datasetJson);
+    $newUrl = 'http://localhost/site/default/files/distribution/testid/test.csv';
+
+    return [
+      [$dataset, $dataset->distribution[0], FALSE, "http://example.com/dist/test.csv"],
+      [$dataset, $dataset->distribution[0], $newUrl, $newUrl],
+    ];
+
+  }
+
+  /**
+   * Test the ResourceImporter::updateDistributions method.
+   *
+   * @dataProvider dataTestUpdateDownloadUrl
+   *
+   * @param $dataset
+   * @param $dist
+   * @param $url
+   * @param $expected
+   */
+  public function testUpdateDownloadUrl($dataset, $dist, $url, $expected) {
+
+    // Create ResourceImporter stub.
+    $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
+      ->setMethods(['saveFile'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $resourceImporterStub->method('saveFile')
+      ->willReturn($url);
+
+    $updatedDist = $this->invokeProtectedMethod($resourceImporterStub, 'updateDownloadUrl', $dataset, $dist);
+
+    // Assert
+    $this->assertEquals($expected, $updatedDist->downloadURL);
+
+  }
+
+  /**
    * Data provider for testSaveFile.
    *
    * @return array Array of arguments.
@@ -35,7 +220,7 @@ class ResourceImporterTest extends DkanTestBase {
    * @param string $expected
    */
   public function testSaveFile($url, $filename, $isUrlValid, $datasetId, $expected) {
-    // Set up.
+    // Create FileHelper stub.
     $fileHelperStub = $this->createMock(IFileHelper::class);
     $fileHelperStub->method('prepareDir')
       ->willReturn(TRUE);
@@ -44,6 +229,7 @@ class ResourceImporterTest extends DkanTestBase {
     $fileHelperStub->method('fileCreate')
       ->willReturn("http://localhost/site/default/files/distribution/$datasetId/$filename");
 
+    // Create ResourceImporter stub.
     $resourceImporterStub = $this->getMockBuilder(ResourceImporter::class)
       ->setMethods(NULL)
       ->disableOriginalConstructor()

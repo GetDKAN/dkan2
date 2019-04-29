@@ -49,7 +49,7 @@ class ResourceImporter extends Transform {
    */
   protected function updateDistributions($dataset) {
     // Abort if there's no distributions.
-    if (empty($dataset)) {
+    if (empty($dataset->distribution)) {
       return $dataset;
     }
 
