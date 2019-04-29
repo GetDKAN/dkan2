@@ -64,7 +64,7 @@ class DrupalNodeDataset implements Storage {
   public function retrieve(string $id): ?string {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $node->field_json_metadata->value;
+      return $this->themeDereferenced($node->field_json_metadata->value);
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
@@ -85,7 +85,7 @@ class DrupalNodeDataset implements Storage {
     $all = [];
     foreach ($node_ids as $nid) {
       $node = $nodeStorage->load($nid);
-      $all[] = $node->field_json_metadata->value;
+      $all[] = $this->themeDereferenced($node->field_json_metadata->value);
     }
     return $all;
   }

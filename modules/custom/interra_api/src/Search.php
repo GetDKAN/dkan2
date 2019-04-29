@@ -24,8 +24,7 @@ class Search {
   public function index() {
     $datasets = [];
 
-    $api_engine = $this->getDatasetEngine()
-            ->getEngine();
+    $api_engine = $this->getDatasetEngine();
     $array_of_json_strings = $api_engine->get();
     $json_string = "[" . implode(",", $array_of_json_strings) . "]";
     $array = json_decode($json_string);
