@@ -2,7 +2,7 @@
 
 namespace Drupal\Tests\dkan_harvest\Unit\Transform;
 
-use Dkan\PhpUnit\DkanTestBase;
+use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_harvest\Transform\ResourceImporter;
 use Drupal\dkan_harvest\Load\IFileHelper;
 
