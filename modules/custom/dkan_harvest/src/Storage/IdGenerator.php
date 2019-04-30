@@ -1,15 +1,15 @@
 <?php
 
-use Contracts\IdGenerator;
-
 namespace Drupal\dkan_harvest\Storage;
+
+use Contracts\IdGenerator as ContractsIdGenerator;
 
 /**
  *
  */
-class IdGenerator implements IdGenerator {
+class IdGenerator implements ContractsIdGenerator {
 
-  private $data;
+  protected  $data;
 
   /**
    *

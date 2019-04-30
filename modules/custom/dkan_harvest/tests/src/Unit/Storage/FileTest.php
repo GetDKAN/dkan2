@@ -14,15 +14,18 @@ use Drupal\dkan_harvest\Load\IFileHelper;
  */
 class FileTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function setUp() {
     parent::setUp();
 
     // `file.inc` isn't loaded during unit tests
-    // some constants are missing
+    // some constants are missing.
     $consts = [
-        'FILE_CREATE_DIRECTORY'   => 1,
-        'FILE_MODIFY_PERMISSIONS' => 2,
-            ];
+      'FILE_CREATE_DIRECTORY'   => 1,
+      'FILE_MODIFY_PERMISSIONS' => 2,
+    ];
     foreach ($consts as $name => $value) {
       if (!defined($name)) {
         define($name, $value);
@@ -30,197 +33,214 @@ class FileTest extends DkanTestBase {
     }
   }
 
+  /**
+   *
+   */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods(['prepareDir'])
-            ->getMockForAbstractClass();
+      ->setMethods(['prepareDir'])
+      ->getMockForAbstractClass();
 
     $directoryPath = '/foobar';
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('prepareDir')
-            ->with(
+      ->method('prepareDir')
+      ->with(
                     $directoryPath,
                     FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS
     );
 
-    // assert
+    // Assert.
     $mock->__construct($directoryPath);
     $this->assertEquals($directoryPath, $this->readAttribute($mock, 'directoryPath'));
   }
 
+  /**
+   *
+   */
   public function testRetrieve() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods(['fileGetContents'])
-            ->getMockForAbstractClass();
+      ->setMethods(['fileGetContents'])
+      ->getMockForAbstractClass();
 
     $id            = 'foo-file';
     $fileContents  = '{foo-file-contents}';
     $directoryPath = '/foobar';
     $this->writeProtectedProperty($mock, 'directoryPath', $directoryPath);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('fileGetContents')
-            ->with("{$directoryPath}/{$id}.json")
-            ->willReturn($fileContents);
+      ->method('fileGetContents')
+      ->with("{$directoryPath}/{$id}.json")
+      ->willReturn($fileContents);
 
-    // assert
-
+    // Assert.
     $actual = $mock->retrieve($id);
     $this->assertEquals($fileContents, $actual);
   }
 
+  /**
+   *
+   */
   public function testStore() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods(['filePutContents'])
-            ->getMockForAbstractClass();
+      ->setMethods(['filePutContents'])
+      ->getMockForAbstractClass();
 
     $id            = 'foo-file';
     $data          = '{foo-file-contents}';
     $directoryPath = '/foobar';
     $this->writeProtectedProperty($mock, 'directoryPath', $directoryPath);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('filePutContents')
-            ->with("{$directoryPath}/{$id}.json", $data);
+      ->method('filePutContents')
+      ->with("{$directoryPath}/{$id}.json", $data);
 
-    // assert
+    // Assert.
     $mock->store($data, $id);
   }
 
+  /**
+   *
+   */
   public function testRemove() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods(['fileDelete'])
-            ->getMockForAbstractClass();
+      ->setMethods(['fileDelete'])
+      ->getMockForAbstractClass();
 
     $id            = 'foo-file';
     $directoryPath = '/foobar';
     $this->writeProtectedProperty($mock, 'directoryPath', $directoryPath);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('fileDelete')
-            ->with("{$directoryPath}/{$id}.json");
+      ->method('fileDelete')
+      ->with("{$directoryPath}/{$id}.json");
 
-    // assert
+    // Assert.
     $mock->remove($id);
   }
 
+  /**
+   *
+   */
   public function testRetrieveAll() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods([
-                'fileGlob',
-                'fileGetContents',
-            ])
-            ->getMockForAbstractClass();
+      ->setMethods([
+        'fileGlob',
+        'fileGetContents',
+      ])
+      ->getMockForAbstractClass();
 
     $glob = [
-        'foo-1.json',
-        'foo-2.json',
+      'foo-1.json',
+      'foo-2.json',
     ];
 
     $fileContents = [
-        '{foo-1-contents}',
-        '{foo-2-contents}',
+      '{foo-1-contents}',
+      '{foo-2-contents}',
     ];
 
-    $expected  = [
-        'foo-1' => '{foo-1-contents}',
-        'foo-2' => '{foo-2-contents}',
+    $expected = [
+      'foo-1' => '{foo-1-contents}',
+      'foo-2' => '{foo-2-contents}',
     ];
     $loopCount = count($glob);
 
     $directoryPath = '/foobar';
     $this->writeProtectedProperty($mock, 'directoryPath', $directoryPath);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('fileGlob')
-            ->with("{$directoryPath}/*.json")
-            ->willReturn($glob);
+      ->method('fileGlob')
+      ->with("{$directoryPath}/*.json")
+      ->willReturn($glob);
 
     $mockFileHelper->expects($this->exactly($loopCount))
-            ->method('fileGetContents')
-            ->withConsecutive(
+      ->method('fileGetContents')
+      ->withConsecutive(
                     [$glob[0]],
                     [$glob[1]]
             )
-            ->willReturnOnConsecutiveCalls(
+      ->willReturnOnConsecutiveCalls(
                     $fileContents[0],
                     $fileContents[1]
     );
 
-    // assert
+    // Assert.
     $actual = $mock->retrieveAll();
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   *
+   */
   public function testRetrieveAllNoFiles() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(File::class)
-            ->setMethods(['getFileHelper'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getFileHelper'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods([
-                'fileGlob',
-                'fileGetContents',
-            ])
-            ->getMockForAbstractClass();
+      ->setMethods([
+        'fileGlob',
+        'fileGetContents',
+      ])
+      ->getMockForAbstractClass();
 
     $glob     = [];
     $expected = [];
@@ -228,20 +248,20 @@ class FileTest extends DkanTestBase {
     $directoryPath = '/foobar';
     $this->writeProtectedProperty($mock, 'directoryPath', $directoryPath);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('fileGlob')
-            ->with("{$directoryPath}/*.json")
-            ->willReturn($glob);
+      ->method('fileGlob')
+      ->with("{$directoryPath}/*.json")
+      ->willReturn($glob);
 
     $mockFileHelper->expects($this->never())
-            ->method('fileGetContents');
+      ->method('fileGetContents');
 
-    // assert
+    // Assert.
     $actual = $mock->retrieveAll();
     $this->assertEquals($expected, $actual);
   }

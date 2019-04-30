@@ -17,12 +17,15 @@ interface IFileHelper {
    */
   public function fileGetContents($path);
 
+  /**
+   *
+   */
   public function filePutContents($path, $content);
 
   /**
    *
    */
-  public function prepareDir(&$directory, $options=FILE_CREATE_DIRECTORY);
+  public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY);
 
   /**
    *
@@ -33,8 +36,17 @@ interface IFileHelper {
    *
    */
   public function fileCreate($uri);
+
+  /**
+   *
+   */
   public function fileDelete($uri);
-public function fileGlob($pattern, $flags=0);
+
+  /**
+   *
+   */
+  public function fileGlob($pattern, $flags = 0);
+
   /**
    *
    */

@@ -140,9 +140,8 @@ class ExtractTest extends DkanTestBase {
    * Tests writeToFile().
    */
   public function testWriteToFile() {
-    // setup
-    // init vfsstream
-    // setup and cache the virtual file system.
+    // Setup.
+    // Init vfsstream.
     $fileSystem = vfsStream::setup('x');
 
     $mock = $this->getMockBuilder(Extract::class)
@@ -173,9 +172,8 @@ class ExtractTest extends DkanTestBase {
    * Tests writeToFile().
    */
   public function testWriteToFileException() {
-    // setup
+    // Setup.
     // init vfsstream
-    // setup and cache the virtual file system.
     // make it non writable.
     $fileSystem = vfsStream::setup('x', 0444);
 

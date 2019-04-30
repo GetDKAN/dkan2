@@ -4,6 +4,7 @@ namespace Drupal\dkan_harvest\Storage;
 
 use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Load\FileHelperTrait;
+
 /**
  *
  */
@@ -18,7 +19,7 @@ class File implements Storage {
   public function __construct($directory_path) {
     $this->directoryPath = $directory_path;
     $this->getFileHelper()
-            ->prepareDir(
+      ->prepareDir(
                     $this->directoryPath,
                     FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS
               );
@@ -30,7 +31,7 @@ class File implements Storage {
   public function retrieve(string $id): ?string {
     $file_path = "{$this->directoryPath}/{$id}.json";
     return $this->getFileHelper()
-            ->fileGetContents($file_path);
+      ->fileGetContents($file_path);
   }
 
   /**
@@ -39,7 +40,7 @@ class File implements Storage {
   public function store(string $data, string $id = NULL): string {
     $file_path = "{$this->directoryPath}/{$id}.json";
     $this->getFileHelper()
-            ->filePutContents($file_path, $data);
+      ->filePutContents($file_path, $data);
     return $id;
   }
 
@@ -49,7 +50,7 @@ class File implements Storage {
   public function remove(string $id) {
     $file_path = "{$this->directoryPath}/{$id}.json";
     $this->getFileHelper()
-            ->fileDelete($file_path);
+      ->fileDelete($file_path);
   }
 
   /**

@@ -29,7 +29,7 @@ class StdoutTest extends DkanTestBase {
     $logEntry = [
       'message' => $message,
     ];
-    
+
     // Expect.
     $mock->expects($this->once())
       ->method('logEntry')
