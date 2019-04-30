@@ -86,7 +86,7 @@ class FileTest extends DkanTestBase {
    * Tests appendToFile().
    */
   public function testAppendToFile() {
-    $this->markTestIncomplete("There's some todo's in SUT.");
+    $this->markTestSkipped("There's some todo's in SUT.");
   }
 
 }

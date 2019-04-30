@@ -3,32 +3,34 @@
 namespace Drupal\dkan_harvest\Storage;
 
 use Harvest\Storage\Storage;
-
+use Drupal\dkan_harvest\Load\FileHelperTrait;
 /**
  *
  */
 class File implements Storage {
 
-  private $directoryPath;
+  protected $directoryPath;
+  use FileHelperTrait;
 
   /**
    *
    */
   public function __construct($directory_path) {
     $this->directoryPath = $directory_path;
-    file_prepare_directory($this->directoryPath, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+    $this->getFileHelper()
+            ->prepareDir(
+                    $this->directoryPath,
+                    FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS
+              );
   }
 
   /**
    *
    */
   public function retrieve(string $id): ?string {
-    $content = NULL;
     $file_path = "{$this->directoryPath}/{$id}.json";
-    if (file_exists($file_path)) {
-      $content = file_get_contents($file_path);
-    }
-    return $content;
+    return $this->getFileHelper()
+            ->fileGetContents($file_path);
   }
 
   /**
@@ -36,7 +38,8 @@ class File implements Storage {
    */
   public function store(string $data, string $id = NULL): string {
     $file_path = "{$this->directoryPath}/{$id}.json";
-    file_put_contents($file_path, $data);
+    $this->getFileHelper()
+            ->filePutContents($file_path, $data);
     return $id;
   }
 
@@ -45,9 +48,8 @@ class File implements Storage {
    */
   public function remove(string $id) {
     $file_path = "{$this->directoryPath}/{$id}.json";
-    if (file_exists($file_path)) {
-      unlink($file_path);
-    }
+    $this->getFileHelper()
+            ->fileDelete($file_path);
   }
 
   /**
@@ -56,8 +58,10 @@ class File implements Storage {
   public function retrieveAll(): array {
     $files_pattern = "{$this->directoryPath}/*.json";
     $items = [];
-    foreach (glob($files_pattern) as $file) {
-      $items[basename($file, ".json")] = file_get_contents($file);
+    $fileHelper = $this->getFileHelper();
+
+    foreach ($fileHelper->fileGlob($files_pattern) as $file) {
+      $items[basename($file, ".json")] = $fileHelper->fileGetContents($file);
     }
     return $items;
   }

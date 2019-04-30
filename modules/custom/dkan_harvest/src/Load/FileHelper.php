@@ -12,14 +12,14 @@ class FileHelper implements IFileHelper {
    */
   public function getRealPath($path) {
     return \Drupal::service('file_system')
-      ->realpath($path);
+                    ->realpath($path);
   }
 
   /**
    *
    */
-  public function prepareDir(&$directory) {
-    file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
+  public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY) {
+    file_prepare_directory($directory, $options);
   }
 
   /**
@@ -43,9 +43,29 @@ class FileHelper implements IFileHelper {
     // @todo this might not always work.
     //   Considering s3fs or others that don't live on disk
     return $this->getRealPath(
-            \Drupal::config('system.file')
-              ->get('default_scheme') . "://"
-        );
+                    \Drupal::config('system.file')
+                            ->get('default_scheme') . "://"
+    );
+  }
+
+  public function fileGetContents($path) {
+    return (is_readable($path) && is_file($path))
+    ? file_get_contents($path)
+    : null;
+  }
+
+  public function filePutContents($path, $content) {
+    return file_put_contents($path, $content);
+  }
+
+  public function fileDelete($uri) {
+    if (file_esists($uri)) {
+      unlink($uir);
+    }
+  }
+
+  public function fileGlob($pattern, $flags=0) {
+    return glob($pattern, $flags);
   }
 
 }
