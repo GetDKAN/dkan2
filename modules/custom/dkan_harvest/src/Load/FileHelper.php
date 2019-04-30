@@ -4,6 +4,10 @@ namespace Drupal\dkan_harvest\Load;
 
 class FileHelper implements IFileHelper {
 
+  public function getRealPath($path) {
+    return \Drupal::service('file_system')
+            ->realpath($path);
+  }
   public function prepareDir(&$directory) {
     file_prepare_directory($directory, FILE_CREATE_DIRECTORY);
   }
@@ -17,7 +21,11 @@ class FileHelper implements IFileHelper {
   }
 
   public function defaultSchemeDirectory() {
-    return \Drupal::service('file_system')->realpath(file_default_scheme());
+    // @todo this might not always work.
+    //       Considering s3fs or others that don't live on disk
+    return $this->getRealPath(
+            \Drupal::config('system.file')
+            ->get('default_scheme')."://"
+        );
   }
-
 }

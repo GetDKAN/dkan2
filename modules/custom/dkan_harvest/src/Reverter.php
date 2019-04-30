@@ -6,23 +6,39 @@ use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_harvest\Log\MakeItLog;
 use Harvest\Storage\Storage;
 
+/**
+ * Reverter.
+ */
 class Reverter {
   use MakeItLog;
 
   public $sourceId;
-  private $hashStorage;
+  protected $hashStorage;
 
-  function __construct($sourceId, Storage $hash_storage) {
+  /**
+   * Reverter.
+   *
+   * @param mixed $sourceId Source Id.
+   * @param Storage $hash_storage Storage.
+   */
+  public function __construct($sourceId, Storage $hash_storage) {
     $this->sourceId = $sourceId;
     $this->hashStorage = $hash_storage;
   }
 
-  function run() {
+  /**
+   * Run the revert.
+   *
+   * @return int
+   *   Count of rows preverted.
+   */
+  public function run() {
     $this->log('DEBUG', 'revert', 'Reverting harvest ' . $this->sourceId);
 
     $uuids = array_keys($this->hashStorage->retrieveAll());
 
     /** @var DrupalNodeDataset $datastore_storage */
+    // cannot use DI here since this class is called by a non drupal package.
     $datastore_storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
 
     $counter = 0;

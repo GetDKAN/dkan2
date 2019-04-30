@@ -4,6 +4,9 @@ namespace Drupal\dkan_harvest\Load;
 
 interface IFileHelper {
 
+
+  public function getRealPath($path);
+
   public function prepareDir(&$directory);
 
   public function retrieveFile($url, $destination = NULL, $managed = FALSE);

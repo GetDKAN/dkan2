@@ -4,10 +4,13 @@ namespace Drupal\dkan_harvest\Extract;
 
 use Drupal\dkan_harvest\Log\MakeItLog;
 use GuzzleHttp\Client;
+use Drupal\dkan_harvest\Load\FileHelperTrait;
+use GuzzleHttp\Exception\RequestException;
 
 abstract class Extract {
 
   use MakeItLog;
+  use FileHelperTrait;
 
   protected $folder;
 
@@ -18,21 +21,30 @@ abstract class Extract {
 
   function __construct($harvest_info) {
     $this->uri = $harvest_info->source->uri;
-    $this->folder = \Drupal::service('file_system')->realpath(file_default_scheme() . "://") . '/dkan_harvest/';
+    $fileHelper = $this->getFileHelper();
+    $this->folder = $fileHelper->defaultSchemeDirectory() . '/dkan_harvest/';
     $this->sourceId = $harvest_info->sourceId;
   }
 
 
   protected function httpRequest($uri) {
     try {
-      $client = new Client();
+      $client = $this->getHttpClient();
       $res = $client
-        ->get($this->uri);
+        ->get($uri);
       $data = (string) $res->getBody();
       return $data;
     } catch (RequestException $exception) {
       $this->log('ERROR', 'Extract', 'Error reading ' . $uri);
     }
+  }
+
+  /**
+   * @codeCoverageIgnore
+   * @return Client
+   */
+  protected function getHttpClient() {
+    return new Client();
   }
 
   protected function writeToFile($id, $item) {
