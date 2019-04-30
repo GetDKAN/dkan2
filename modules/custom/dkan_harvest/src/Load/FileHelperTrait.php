@@ -7,11 +7,11 @@ namespace Drupal\dkan_harvest\Load;
  *
  * Sideloaded as a trait for convenience.
  */
-Trait FileHelperTrait {
+trait FileHelperTrait {
 
   /**
-   * 
-   * @return IFileHelper;
+   *
+   * @return IFileHelper
    */
   protected function getFileHelper() {
     return \Drupal::service('dkan_harvest.file_helper');

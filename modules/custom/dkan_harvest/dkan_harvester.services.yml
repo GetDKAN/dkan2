@@ -4,5 +4,3 @@ services:
     # @todo: this file helper seems a bit out place.
     dkan_harvest.factory:
         class: Drupal\dkan_harvest\Load\FileHelper
-        
-        

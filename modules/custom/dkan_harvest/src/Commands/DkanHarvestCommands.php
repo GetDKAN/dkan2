@@ -15,8 +15,10 @@ use Drupal\dkan_harvest\Storage\IdGenerator;
 use Drupal\dkan_harvest\Storage\Source;
 
 use Drush\Commands\DrushCommands;
-use Drush\Style\DrushStyle;
 
+/**
+ *
+ */
 class DkanHarvestCommands extends DrushCommands {
 
   /**
@@ -42,7 +44,7 @@ class DkanHarvestCommands extends DrushCommands {
     $table = new Table(new ConsoleOutput());
 
     $table
-      ->setHeaders(array('source id'))
+      ->setHeaders(['source id'])
       ->setRows($rows);
 
     $table->render();
@@ -100,7 +102,7 @@ class DkanHarvestCommands extends DrushCommands {
 
     /* @var $extract \Drupal\dkan_harvest\Extract\Extract */
     $extract = $factory->get('extract');
-    $extract->setLogger(new Stdout(true, $harvest_plan->sourceId,"cache"));
+    $extract->setLogger(new Stdout(TRUE, $harvest_plan->sourceId, "cache"));
     $extract->cache();
   }
 
@@ -128,13 +130,12 @@ class DkanHarvestCommands extends DrushCommands {
     $run_storage = new File($run_folder);
 
     $harvester = new Harvester($harvest_plan, $item_storage, $hash_storage, $run_storage);
-    $harvester->setLogger(new Stdout(true, $sourceId,"run"));
+    $harvester->setLogger(new Stdout(TRUE, $sourceId, "run"));
 
     $results = $harvester->harvest();
 
     $rows = [];
     $rows[] = [$results['created'], $results['updated'], $results['skipped']];
-
 
     $table = new Table(new ConsoleOutput());
     $table->setHeaders(['created', 'updated', 'skipped'])->setRows($rows);
@@ -164,10 +165,13 @@ class DkanHarvestCommands extends DrushCommands {
     $output->write("{$count} items reverted for the '{$sourceId}' harvest plan.");
   }
 
+  /**
+   *
+   */
   private function getHarvestPlan($sourceId) {
     $source = new Source();
     $harvest_plan = $source->retrieve($sourceId);
     return json_decode($harvest_plan);
   }
-}
 
+}

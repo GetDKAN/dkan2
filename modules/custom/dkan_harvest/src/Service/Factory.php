@@ -15,15 +15,15 @@ use Harvest\Storage\Storage;
  */
 class Factory {
 
-
-    /**
+  /**
    * New instance of Reverter.
    *
+   * @param mixed $harvest_plan
+   *   Harvest plan.
    *
-   * @param mixed $harvest_plan Harvest plan.
-     *
-     * @codeCoverageIgnore
-   * @return Reverter Reverter
+   * @codeCoverageIgnore
+   *
+   * @return \Drupal\dkan_harvest\Reverter Reverter
    */
   public function newReverter($sourceId, Storage $hash_storage) {
 

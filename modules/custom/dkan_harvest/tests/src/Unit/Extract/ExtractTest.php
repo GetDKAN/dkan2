@@ -23,35 +23,34 @@ class ExtractTest extends DkanTestBase {
    * Tests __construct().
    */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Extract::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getFileHelper'])
-            ->getMockForAbstractClass();
+      ->disableOriginalConstructor()
+      ->setMethods(['getFileHelper'])
+      ->getMockForAbstractClass();
 
     $mockFileHelper = $this->getMockBuilder(IFileHelper::class)
-            ->setMethods(['defaultSchemeDirectory'])
-            ->getMockForAbstractClass();
+      ->setMethods(['defaultSchemeDirectory'])
+      ->getMockForAbstractClass();
 
     $harvest_info = (object) [
-                'sourceId' => 42,
-                'source' => (object) [
-                    'uri' => 'http://foo.bar'
-                ],
+      'sourceId' => 42,
+      'source' => (object) [
+        'uri' => 'http://foo.bar',
+      ],
     ];
     $schemaDir = '/foo';
 
-    // expect
-
+    // Expect.
     $mock->expects($this->once())
-            ->method('getFileHelper')
-            ->willReturn($mockFileHelper);
+      ->method('getFileHelper')
+      ->willReturn($mockFileHelper);
 
     $mockFileHelper->expects($this->once())
-            ->method('defaultSchemeDirectory')
-            ->willReturn($schemaDir);
+      ->method('defaultSchemeDirectory')
+      ->willReturn($schemaDir);
 
-    // assert
+    // Assert.
     $mock->__construct($harvest_info);
     $this->assertEquals($harvest_info->source->uri, $this->readAttribute($mock, 'uri'));
     $this->assertEquals($schemaDir . '/dkan_harvest/', $this->readAttribute($mock, 'folder'));
@@ -62,37 +61,37 @@ class ExtractTest extends DkanTestBase {
    * Tests httpRequest().
    */
   public function testHttpRequest() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Extract::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['getHttpClient'])
-            ->getMockForAbstractClass();
+      ->disableOriginalConstructor()
+      ->setMethods(['getHttpClient'])
+      ->getMockForAbstractClass();
 
     $mockHttpClient = $this->getMockBuilder(ClientInterface::class)
-            ->setMethods(['get'])
-            ->getMockForAbstractClass();
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
 
     $mockResponseInterface = $this->getMockBuilder(ResponseInterface::class)
-            ->setMethods(['getBody'])
-            ->getMockForAbstractClass();
+      ->setMethods(['getBody'])
+      ->getMockForAbstractClass();
 
     $uri = 'foo://bar/resource';
     $expected = 'foobar';
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getHttpClient')
-            ->willReturn($mockHttpClient);
+      ->method('getHttpClient')
+      ->willReturn($mockHttpClient);
 
     $mockHttpClient->expects($this->once())
-            ->method('get')
-            ->with($uri)
-            ->willReturn($mockResponseInterface);
+      ->method('get')
+      ->with($uri)
+      ->willReturn($mockResponseInterface);
 
     $mockResponseInterface->expects($this->once())
-            ->method('getBody')
-            ->willReturn($expected);
-    // assert
+      ->method('getBody')
+      ->willReturn($expected);
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'httpRequest', $uri);
     $this->assertEquals($expected, $actual);
   }
@@ -101,53 +100,54 @@ class ExtractTest extends DkanTestBase {
    * Tests httpRequest() with exception condition.
    */
   public function testHttpRequestException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Extract::class)
-            ->disableOriginalConstructor()
-            ->setMethods([
-                'getHttpClient',
-                'log',
-            ])
-            ->getMockForAbstractClass();
+      ->disableOriginalConstructor()
+      ->setMethods([
+        'getHttpClient',
+        'log',
+      ])
+      ->getMockForAbstractClass();
 
-        $mockHttpClient = $this->getMockBuilder(ClientInterface::class)
-            ->setMethods(['get'])
-            ->getMockForAbstractClass();
+    $mockHttpClient = $this->getMockBuilder(ClientInterface::class)
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
     $uri = 'foo://bar/resource';
-
 
     $mockRequestException = new RequestException(
             'message irrelevant',
             $this->createMock(RequestInterface::class)
     );
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getHttpClient')
-            ->willReturn($mockHttpClient);
+      ->method('getHttpClient')
+      ->willReturn($mockHttpClient);
 
-        $mockHttpClient->expects($this->once())
-            ->method('get')
-            ->with($uri)
-            ->willThrowException($mockRequestException);
-
+    $mockHttpClient->expects($this->once())
+      ->method('get')
+      ->with($uri)
+      ->willThrowException($mockRequestException);
 
     $mock->expects($this->once())
-            ->method('log')
-            ->with('ERROR', 'Extract', 'Error reading ' . $uri);
-    // assert
+      ->method('log')
+      ->with('ERROR', 'Extract', 'Error reading ' . $uri);
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'httpRequest', $uri);
   }
 
+  /**
+   * Tests writeToFile().
+   */
   public function testWriteToFile() {
     // setup
     // init vfsstream
-// setup and cache the virtual file system
+    // setup and cache the virtual file system.
     $fileSystem = vfsStream::setup('x');
 
     $mock = $this->getMockBuilder(Extract::class)
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
 
     $sourceId = 'foobar';
     $this->writeProtectedProperty($mock, 'folder', $fileSystem->url());
@@ -159,7 +159,7 @@ class ExtractTest extends DkanTestBase {
     $expectedDir = $fileSystem->url() . '/' . $sourceId;
     $expectedFile = $expectedDir . '/' . $id . '.json';
 
-    //assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'writeToFile', $id, $item);
     $this->assertDirectoryExists($expectedDir);
     $this->assertDirectoryIsReadable($expectedDir);
@@ -167,6 +167,36 @@ class ExtractTest extends DkanTestBase {
 
     $this->assertFileExists($expectedFile);
     $this->assertEquals($item, file_get_contents($expectedFile));
+  }
+
+  /**
+   * Tests writeToFile().
+   */
+  public function testWriteToFileException() {
+    // setup
+    // init vfsstream
+    // setup and cache the virtual file system.
+    // make it non writable.
+    $fileSystem = vfsStream::setup('x', 0444);
+
+    $mock = $this->getMockBuilder(Extract::class)
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $sourceId = 'foobar';
+    $this->writeProtectedProperty($mock, 'folder', $fileSystem->url());
+    $this->writeProtectedProperty($mock, 'sourceId', $sourceId);
+
+    $id = 42;
+    $item = '{"test":"data"}';
+
+    $expectedDir = $fileSystem->url() . '/' . $sourceId;
+    $expectedFile = $expectedDir . '/' . $id . '.json';
+
+    // Assert.
+    $this->invokeProtectedMethod($mock, 'writeToFile', $id, $item);
+    $this->assertDirectoryNotExists($expectedDir);
+    $this->assertFileNotExists($expectedFile);
   }
 
 }
