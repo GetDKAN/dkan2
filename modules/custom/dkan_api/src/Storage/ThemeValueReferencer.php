@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\dkan_api\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Component\Uuid\Php;
+use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
@@ -26,7 +26,7 @@ class ThemeValueReferencer {
   /**
    * The uuid service.
    *
-   * @var Drupal\Component\Uuid\Php
+   * @var Drupal\Component\Uuid\UuidInterface
    */
   protected $uuidService;
 
@@ -43,7 +43,7 @@ class ThemeValueReferencer {
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Php $uuidService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService= $uuidService;
     $this->queueService = $queueService;
