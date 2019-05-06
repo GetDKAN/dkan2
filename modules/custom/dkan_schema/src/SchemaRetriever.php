@@ -60,9 +60,11 @@ class SchemaRetriever implements Retriever {
 
   /**
    * determine from root dir of dkan2 profile.
+   * @codeCoverageIgnore
    * @return string path.
    */
   protected function getDefaultSchemaDirectory() {
+
     return dirnname(drupal_get_filename('profile', 'dkan2')) . '/schema';
   }
 
