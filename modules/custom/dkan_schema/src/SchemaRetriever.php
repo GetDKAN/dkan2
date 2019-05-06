@@ -3,45 +3,67 @@
 namespace Drupal\dkan_schema;
 
 use Contracts\Retriever;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\File\FileSystemInterface;
+use Drupal\Core\SitePathFactory;
 
 class SchemaRetriever implements Retriever {
 
-    private $directory;
+  /**
+   *
+   * @var string
+   */
+  protected $directory;
 
-    public function __construct()
-    {
-       $this->findSchemaDirectory();
-    }
+  public function __construct() {
+    $this->findSchemaDirectory();
+  }
 
-    public function getAllIds() {
-        return [
-          'dataset'
-        ];
-    }
+  public function getAllIds() {
+    return [
+        'dataset'
+    ];
+  }
 
-    public function retrieve(string $id): ?string {
-        if (in_array($id, $this->getAllIds())) {
-            return file_get_contents($this->directory . "/collections/{$id}.json");
-        }
-        throw new \Exception("Schema {$id} not found.");
-    }
+  public function getSchemaDirectory() {
+    return $this->directory;
+  }
 
-    public function getSchemaDirectory() {
-        return $this->directory;
-    }
+  public function retrieve(string $id): ?string {
 
-    private function findSchemaDirectory() {
-        // Look at the root of drupal.
-        if (file_exists(DRUPAL_ROOT . "/schema")) {
-            $this->directory = DRUPAL_ROOT . "/schema";
-        }
-        // Otherwise we will use our default schema.
-        else if (file_exists(__DIR__ . "/../../../../schema")) {
-            $this->directory = __DIR__ . "/../../../../schema";
-        }
-        else {
-            throw new \Exception("No schema found.");
-        }
+    $filename = $this->getDirectory() . "/collections/{$id}.json";
+
+    if (
+            in_array($id, $this->getAllIds())
+            && is_readable($filename)
+        ) {
+      return file_get_contents($filename);
     }
+    throw new \Exception("Schema {$id} not found.");
+  }
+
+  protected function findSchemaDirectory() {
+
+    $drupalRoot = \Drupal::service('app.root');
+
+    if (is_dir($drupalRoot . "/schema")) {
+      $this->directory = $drupalRoot . "/schema";
+    } elseif (
+      ($directory = $this->getDefaultSchemaDirectory())
+       && is_dir($directory)
+    ) {
+      $this->directory = $directory;
+    } else {
+      throw new \Exception("No schema directory found.");
+    }
+  }
+
+  /**
+   * determine from root dir of dkan2 profile.
+   * @return string path.
+   */
+  protected function getDefaultSchemaDirectory() {
+    return dirnname(drupal_get_filename('profile', 'dkan2')) . '/schema';
+  }
+
 }
-
