@@ -1,11 +1,13 @@
 <?php
 
-
 namespace Drupal\dkan_data\Plugin\Validation\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
+/**
+ *
+ */
 class ProperJsonValidator extends ConstraintValidator {
 
   /**

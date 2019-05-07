@@ -15,7 +15,9 @@ use Symfony\Component\Validator\Constraint;
  */
 class ProperJson extends Constraint {
 
-  // The message that will be shown if the value is not an integer.
+  /**
+   * The message that will be shown if the value is not an integer.
+   */
   public $notProper = '%value is not proper JSON';
 
 }
