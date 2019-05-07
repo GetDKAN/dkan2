@@ -59,13 +59,19 @@ class SchemaRetriever implements Retriever {
   }
 
   /**
-   * determine from root dir of dkan2 profile.
-   * @codeCoverageIgnore
+   * determine default location of schema folder for dkan2 profile.
+   * 
+   * @todo There may be easier way to do this and without hardcoding paths.
    * @return string path.
    */
   protected function getDefaultSchemaDirectory() {
 
-    return dirnname(drupal_get_filename('profile', 'dkan2')) . '/schema';
+    // try to determine root `info.yml` of dkan profile
+    /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
+    $extensionList = \Drupal::service('extension.list.profile');
+    $infoFile = $extensionList->getExtensionInfo('dkan2');
+
+    return dirname($infoFile) . '/schema';
   }
 
 }

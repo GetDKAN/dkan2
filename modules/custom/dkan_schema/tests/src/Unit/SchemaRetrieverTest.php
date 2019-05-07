@@ -7,9 +7,9 @@ use Drupal\dkan_schema\SchemaRetriever;
 use org\bovigo\vfs\vfsStream;
 
 /**
- * Tests Drupal\dkan_harvest\Extract\DataJson.
+ * Tests Drupal\dkan_schema\SchemaRetriever.
  *
- * @coversDefaultClass Drupal\dkan_harvest\Extract\DataJson
+ * @coversDefaultClass Drupal\dkan_schema\SchemaRetriever
  * @group dkan_harvest
  */
 class SchemaRetrieverTest extends DkanTestBase {
@@ -267,7 +267,33 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests getDefaultSchemaDirectory().
    */
   public function testGetDefaultSchemaDirectory() {
-    $this->markTestSkipped("uses `drupal_get_filename`. harder to mock, so skipping for now.");
+
+    $mock = getMockBuilder(SchemaRetriever::class)
+            ->setMethods(null)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+    $infoFile = '/foo/bar/dkan2.yml';
+    $expected = '/foo/bar/schema';
+
+    $mockExtensionList = getMockBuilder(\Drupal\Core\Extension\ExtensionList::class)
+            ->setMethods(['getExtensionInfo'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+    $this->setActualContainer([
+        'extension.list.profile' => $mockExtensionList,
+    ]);
+
+    // expects
+    $mockExtensionList->expects($this->once())
+            ->method('getExtensionInfo')
+            ->with('dkan2')
+            ->willReturn($infoFile);
+
+    // assert
+    $actual = $this->invokeProtectedMethod($mock, 'getDefaultSchemaDirectory');
+    $this->assertEquals($expected, $actual);
   }
 
 }
