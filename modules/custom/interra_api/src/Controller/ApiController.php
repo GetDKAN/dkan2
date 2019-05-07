@@ -18,6 +18,7 @@ use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
 * An ample controller.
@@ -27,39 +28,54 @@ class ApiController extends ControllerBase
 
   public function schemas(Request $request)
   {
-    $provider = new Provider(new SchemaRetriever());
     try {
-      $schema = $provider->retrieve('dataset');
+      $schema = $this->fetchSchema('dataset');
     } catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
 
     $data = ['dataset' => json_decode($schema)];
+    return $this->jsonResponse($data);
 
-    $response = $this->response($data);
-    $response->headers->set("Content-Type", "application/schema+json");
-    return $response;
   }
 
   public function schema($schema_name)
   {
-    $provider = new Provider(new SchemaRetriever());
     try {
-      $schema = $provider->retrieve($schema_name);
+      $schema = $this->fetchSchema($schema_name);
     } catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
-    $response = $this->response(json_decode($schema));
-    $response->headers->set("Content-Type", "application/schema+json");
-    return $response;
+
+    return $this->jsonResponse(json_decode($schema));
+
   }
+
+  /**
+   *
+   * @param string $schema_name
+   * @return string Schema
+   */
+  protected function fetchSchema($schema_name) {
+    $provider = $this->getSchemaProvider();
+   return $provider->retrieve($schema_name);
+  }
+
 
   public function search(Request $request)
   {
-    $search = new Search();
+    /** @var Search $search */
+    $search = \Drupal::service('interra_api.search');
     return $this->response($search->index());
   }
 
+  /**
+   *
+   * @TODO very high CRAP score. consider refactoring. use routing to split to different method?
+   * @param type $collection
+   * @return type
+   * @throws NotFoundHttpException
+   */
   public function collection($collection)
   {
     $valid_collections = [
@@ -69,6 +85,8 @@ class ApiController extends ControllerBase
     ];
 
     $collection = str_replace(".json", "", $collection);
+    /** @var \Drupal\interra_api\Service\DatasetModifier $datasetModifier */
+    $datasetModifier = \Drupal::service('interra_api.service.dataset_modifier');
 
     if (in_array($collection, $valid_collections)) {
 
@@ -81,7 +99,7 @@ class ApiController extends ControllerBase
         $decoded = json_decode($json);
 
         foreach ($decoded as $key => $dataset) {
-          $decoded[$key] = self::modifyDataset($dataset);
+          $decoded[$key] = $datasetModifier->modifyDataset($dataset);
         }
 
         return $this->response($decoded);
@@ -91,7 +109,7 @@ class ApiController extends ControllerBase
           $dataset = json_decode($dataset_json);
 
           if ($dataset->theme && is_array($dataset->theme)) {
-            $theme = self::objectifyStringsArray($dataset->theme);
+            $theme =  $datasetModifier->objectifyStringsArray($dataset->theme);
             $themes[$theme[0]->identifier] = $theme[0];
           }
         }
@@ -118,6 +136,14 @@ class ApiController extends ControllerBase
     }
   }
 
+  /**
+   *
+   * @todo does not appear to be used in routes. Is this still needed?
+   * @param type $collection
+   * @param type $doc
+   * @return type
+   * @throws NotFoundHttpException
+   */
   public function doc($collection, $doc)
   {
     $valid_collections = [
@@ -135,7 +161,7 @@ class ApiController extends ControllerBase
         $data = $storage->retrieve($uuid);
         $dataset = json_decode($data);
         $dataset = $this->addDatastoreMetadata($dataset);
-        return $this->response(self::modifyDataset($dataset));
+        return $this->response($datasetModifier->modifyDataset($dataset));
       } else {
         return $this->response([]);
       }
@@ -144,44 +170,14 @@ class ApiController extends ControllerBase
     }
   }
 
-  public static function modifyDataset($dataset)
-  {
-    foreach ($dataset->distribution as $key2 => $distro) {
-      $format = str_replace("text/", "", $distro->mediaType);
-      if ($format == "csv") {
-        $distro->format = $format;
-        $dataset->distribution[$key2] = $distro;
-      } else {
-        unset($dataset->distribution[$key2]);
-      }
-    }
-
-    if ($dataset->theme && is_array($dataset->theme)) {
-      $dataset->theme = self::objectifyStringsArray($dataset->theme);
-    }
-
-    if ($dataset->keyword && is_array($dataset->keyword)) {
-      $dataset->keyword = self::objectifyStringsArray($dataset->keyword);
-    }
-
-    return $dataset;
-  }
-
-  public static function objectifyStringsArray(array $array)
-  {
-    $objects = [];
-    foreach ($array as $string) {
-      $identifier = str_replace(" ", "", $string);
-      $identifier = strtolower($identifier);
-
-      $objects[] = (object)['identifier' => $identifier, 'title' => $string];
-    }
-
-    return $objects;
-  }
-
+  /**
+   *
+   * @TODO only used by `doc()` is this still needed?
+   * @param type $dataset
+   * @return type
+   */
   private function addDatastoreMetadata($dataset) {
-    $manager = Util::getDatastoreManager($dataset->identifier);
+    $manager = $this->getDatastoreManager($dataset->identifier);
 
     if ($manager) {
       $headers = $manager->getTableHeaders();
@@ -195,13 +191,53 @@ class ApiController extends ControllerBase
     return $dataset;
   }
 
+  /**
+   *
+   * @param mixed $resp
+   * @return JsonResponse
+   */
   protected function response($resp)
   {
-    $response = new JsonResponse($resp);
+    /** @var JsonResponse $response */
+    $response = \Drupal::service('dkan.factory')
+            ->newJsonResponse($resp);
     $response->headers->set('Access-Control-Allow-Origin', '*');
     $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
     $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
     return $response;
+  }
+
+  /**
+   *
+   * @param mixed $resp
+   * @return JsonResponse
+   */
+  protected function jsonResponse($resp) {
+    $response = $this->response($resp);
+    // @todo is this necessary? it's already a JsonResponse object
+    $response->headers->set("Content-Type", "application/schema+json");
+    return $response;
+  }
+
+  /**
+   * New instance of Schema provider.
+   *
+   * @codeCoverageIgnore
+   * @return Provider
+   *   Provider instance.
+   */
+  protected function getSchemaProvider() {
+    $schmaRetriever = \Drupal::service('dkan_schema.schema_retriever');
+    return new Provider($schmaRetriever);
+  }
+
+  /**
+   * @todo refactor to not use static call
+   * @param string $uuid
+   * @return \Dkan\Datastore\Manager\IManager
+   */
+  protected function getDatastoreManager($uuid) {
+    return Util::getDatastoreManager($uuid);
   }
 
 }

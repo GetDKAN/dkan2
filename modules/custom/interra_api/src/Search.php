@@ -8,13 +8,14 @@ class Search {
 
   public function formatDocs($docs) {
     $index = array();
-    foreach($docs as $id => $doc) {
+    foreach ($docs as $id => $doc) {
       $index[] = $this->formatSearchDoc($doc);
     }
     return $index;
   }
+
   public function formatSearchDoc($value) {
-    $formatted = new \stdClass();
+    $formatted      = new \stdClass();
     $formatted->doc = $value;
     $formatted->ref = "";
     return $formatted;
@@ -23,28 +24,34 @@ class Search {
   public function index() {
     $datasets = [];
 
-    $api_engine = $this->getDatasetEngine();
-    $array_of_json_strings = $api_engine->get();
-    $json_string = "[" . implode(",", $array_of_json_strings) . "]";
-    $array = json_decode($json_string);
+    /** @var Service\DatasetModifier $dataset_modifier */
+    $dataset_modifier = \Drupal::service('interra_api.service.dataset_modifier');
 
-    foreach ($array as $dataset) {
-      $datasets[] = ApiController::modifyDataset($dataset);
+    foreach ($this->getDatasets() as $dataset) {
+      $datasets[] = $dataset_modifier->modifyDataset($dataset);
     }
 
     return $this->formatDocs($datasets);
   }
 
-   /**
-   * Get the engine from the Datset Controller.
+  /**
+   * Get datasets.
    *
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
-   * @return \Sae\Sae
+   * @return array Array of dataset objects
    */
-  protected function getDatasetEngine() {
+  protected function getDatasets() {
     /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-      $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
-      return $dataset_controller->getEngine();
+    $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
+
+    // engine returns array of json strings.
+   return array_map(
+            function($item) {
+              return json_decode($item);
+            },
+            $dataset_controller->getEngine()
+                    ->get()
+    );
   }
 
 }
