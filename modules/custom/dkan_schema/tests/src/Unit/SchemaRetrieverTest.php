@@ -5,6 +5,7 @@ namespace Drupal\Tests\dkan_schema\Unit;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_schema\SchemaRetriever;
 use org\bovigo\vfs\vfsStream;
+use Drupal\Core\Extension\ExtensionList;
 
 /**
  * Tests Drupal\dkan_schema\SchemaRetriever.
@@ -268,7 +269,7 @@ class SchemaRetrieverTest extends DkanTestBase {
    */
   public function testGetDefaultSchemaDirectory() {
 
-    $mock = getMockBuilder(SchemaRetriever::class)
+    $mock = $this->getMockBuilder(SchemaRetriever::class)
             ->setMethods(null)
             ->disableOriginalConstructor()
             ->getMock();
@@ -276,10 +277,10 @@ class SchemaRetrieverTest extends DkanTestBase {
     $infoFile = '/foo/bar/dkan2.yml';
     $expected = '/foo/bar/schema';
 
-    $mockExtensionList = getMockBuilder(\Drupal\Core\Extension\ExtensionList::class)
+    $mockExtensionList = $this->getMockBuilder(ExtensionList::class)
             ->setMethods(['getExtensionInfo'])
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMockForAbstractClass();
 
     $this->setActualContainer([
         'extension.list.profile' => $mockExtensionList,
