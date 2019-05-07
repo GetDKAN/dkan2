@@ -8,21 +8,21 @@ use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
- * Implements hook_entity_load().
+ * Implements hook_node_load().
  */
-function dkan_data_entity_load(array $entities, $entity_type_id) {
-  if ($entity_type_id == "node") {
-    foreach ($entities as $entity) {
-      if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
-        $metadata = json_decode($entity->get('field_json_metadata')->value);
-        if (isset($metadata->theme)) {
-          $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
-          $metadata->theme = $referencer->dereference($metadata);
-          $entity->set('field_json_metadata', json_encode($metadata));
-        }
+function dkan_data_node_load(array $entities) {
+
+  foreach ($entities as $entity) {
+    if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
+      $metadata = json_decode($entity->get('field_json_metadata')->value);
+      if (isset($metadata->theme)) {
+        $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
+        $metadata->theme = $referencer->dereference($metadata);
+        $entity->set('field_json_metadata', json_encode($metadata));
       }
     }
   }
+
 }
 
 /**

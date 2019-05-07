@@ -12,12 +12,12 @@ use Drupal\dkan_schema\SchemaRetriever;
 class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
 
   /**
-   *
+   * {@inheritDoc}.
    */
   public function loadOverrides($names) {
     if (in_array("core.entity_form_display.node.data.default", $names)) {
-      $retriever = new SchemaRetriever();
-      $schema = $retriever->retrieve("dataset");
+
+      $schema = $this->getSchema();
       return [
         "core.entity_form_display.node.data.default" =>
         [
@@ -40,22 +40,28 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
   /**
    *
    */
-  public function getCacheSuffix() {
-    $blah = "blah";
+  protected function getSchema() {
+    // @codeCoverageIgnoreStart
+    return (new SchemaRetriever())->retrieve("dataset");
+    // @codeCoverageIgnoreEnd
   }
 
   /**
-   *
+   * {@inheritDoc}.
+   */
+  public function getCacheSuffix() {
+  }
+
+  /**
+   * {@inheritDoc}.
    */
   public function createConfigObject($name, $collection = StorageInterface::DEFAULT_COLLECTION) {
-    $blah = "blah";
   }
 
   /**
-   *
+   * {@inheritDoc}.
    */
   public function getCacheableMetadata($name) {
-    $blah = "blah";
   }
 
 }
