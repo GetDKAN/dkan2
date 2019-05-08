@@ -107,7 +107,7 @@ class SchemaRetrieverTest extends DkanTestBase {
     // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
       ->setMethods([
-        'getDirectory',
+        'getSchemaDirectory',
         'getAllIds',
       ])
       ->disableOriginalConstructor()
@@ -117,7 +117,7 @@ class SchemaRetrieverTest extends DkanTestBase {
 
     // Expect.
     $mock->expects($this->once())
-      ->method('getDirectory')
+      ->method('getSchemaDirectory')
       ->willReturn($vfs->url() . '/' . $directory);
 
     $mock->expects($this->once())
@@ -137,7 +137,7 @@ class SchemaRetrieverTest extends DkanTestBase {
     // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
       ->setMethods([
-        'getDirectory',
+        'getSchemaDirectory',
         'getAllIds',
       ])
       ->disableOriginalConstructor()
@@ -161,7 +161,7 @@ class SchemaRetrieverTest extends DkanTestBase {
     $directory = $vfs->url() . '/foo';
     // Expect.
     $mock->expects($this->once())
-      ->method('getDirectory')
+      ->method('getSchemaDirectory')
       ->willReturn($directory);
 
     $mock->expects($this->once())
@@ -275,7 +275,7 @@ class SchemaRetrieverTest extends DkanTestBase {
     $expected = '/foo/bar/schema';
 
     $mockExtensionList = $this->getMockBuilder(ExtensionList::class)
-      ->setMethods(['getExtensionInfo'])
+      ->setMethods(['getPathname'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -285,7 +285,7 @@ class SchemaRetrieverTest extends DkanTestBase {
 
     // Expects.
     $mockExtensionList->expects($this->once())
-      ->method('getExtensionInfo')
+      ->method('getPathname')
       ->with('dkan2')
       ->willReturn($infoFile);
 

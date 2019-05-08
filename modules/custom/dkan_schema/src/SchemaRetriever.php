@@ -43,7 +43,7 @@ class SchemaRetriever implements Retriever {
    */
   public function retrieve(string $id): ?string {
 
-    $filename = $this->getDirectory() . "/collections/{$id}.json";
+    $filename = $this->getSchemaDirectory() . "/collections/{$id}.json";
 
     if (
             in_array($id, $this->getAllIds())
@@ -87,7 +87,7 @@ class SchemaRetriever implements Retriever {
     // Try to determine root `info.yml` of dkan profile.
     /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
     $extensionList = \Drupal::service('extension.list.profile');
-    $infoFile = $extensionList->getExtensionInfo('dkan2');
+    $infoFile = $extensionList->getPathname('dkan2');
 
     return dirname($infoFile) . '/schema';
   }
