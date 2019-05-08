@@ -12,6 +12,7 @@
         <testsuite name="DKAN Test Suite">
             <directory>modules/custom/dkan_api/tests/src/Unit</directory>
             <directory>modules/custom/dkan_common/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_data/tests/src/Unit</directory>
             <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
             <directory>modules/custom/dkan_harvest/tests/src/Unit</directory>
             <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
@@ -37,6 +38,7 @@
         <whitelist>
             <directory>modules/custom/dkan_api/src</directory>
             <directory>modules/custom/dkan_common/src</directory>
+            <directory>modules/custom/dkan_data/src</directory>
             <directory>modules/custom/dkan_datastore/src</directory>
             <directory>modules/custom/dkan_harvest/src</directory>
             <directory>modules/custom/dkan_schema/src</directory>

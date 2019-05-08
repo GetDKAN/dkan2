@@ -3,34 +3,29 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\dkan_datastore\Util;
 use Drupal\dkan_schema\SchemaRetriever;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_schema\Schema;
-use Drupal\interra_api\Interra;
 use Drupal\interra_api\Search;
-use Drupal\interra_api\SiteMap;
-use Drupal\interra_api\Swagger;
-use Drupal\interra_api\ApiRequest;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Dkan\Datastore\Resource;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
-* An ample controller.
-*/
-class ApiController extends ControllerBase
-{
+ * An ample controller.
+ */
+class ApiController extends ControllerBase {
 
-  public function schemas(Request $request)
-  {
+  /**
+   *
+   */
+  public function schemas(Request $request) {
     try {
       $schema = $this->fetchSchema('dataset');
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
 
@@ -39,11 +34,14 @@ class ApiController extends ControllerBase
 
   }
 
-  public function schema($schema_name)
-  {
+  /**
+   *
+   */
+  public function schema($schema_name) {
     try {
       $schema = $this->fetchSchema($schema_name);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       return $this->response($e->getMessage());
     }
 
@@ -81,7 +79,7 @@ class ApiController extends ControllerBase
     $valid_collections = [
       'dataset',
       'organization',
-      'theme'
+      'theme',
     ];
 
     $collection = str_replace(".json", "", $collection);
@@ -90,7 +88,7 @@ class ApiController extends ControllerBase
 
     if (in_array($collection, $valid_collections)) {
 
-      /** @var DrupalNodeDataset $storage */
+      /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
       $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
       $data = $storage->retrieveAll();
 
@@ -103,7 +101,8 @@ class ApiController extends ControllerBase
         }
 
         return $this->response($decoded);
-      } elseif ($collection == "theme") {
+      }
+      elseif ($collection == "theme") {
         $themes = [];
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
@@ -117,7 +116,8 @@ class ApiController extends ControllerBase
         ksort($themes);
 
         return $this->response(array_values($themes));
-      } elseif ($collection == "organization") {
+      }
+      elseif ($collection == "organization") {
         $organizations = [];
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
@@ -131,7 +131,8 @@ class ApiController extends ControllerBase
 
         return $this->response(array_values($organizations));
       }
-    } else {
+    }
+    else {
       throw new NotFoundHttpException();
     }
   }
@@ -147,7 +148,7 @@ class ApiController extends ControllerBase
   public function doc($collection, $doc)
   {
     $valid_collections = [
-      'dataset'
+      'dataset',
     ];
 
     $uuid = str_replace(".json", "", $doc);
@@ -156,16 +157,18 @@ class ApiController extends ControllerBase
 
       if ($collection == "dataset") {
 
-        /** @var DrupalNodeDataset $storage */
+        /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
         $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
         $data = $storage->retrieve($uuid);
         $dataset = json_decode($data);
         $dataset = $this->addDatastoreMetadata($dataset);
         return $this->response($datasetModifier->modifyDataset($dataset));
-      } else {
+      }
+      else {
         return $this->response([]);
       }
-    } else {
+    }
+    else {
       throw new NotFoundHttpException();
     }
   }
@@ -176,6 +179,9 @@ class ApiController extends ControllerBase
    * @param type $dataset
    * @return type
    */
+  /**
+   *
+   */
   private function addDatastoreMetadata($dataset) {
     $manager = $this->getDatastoreManager($dataset->identifier);
 
@@ -184,7 +190,7 @@ class ApiController extends ControllerBase
       $dataset->columns = $headers;
       $dataset->datastore_statistics = [
         'rows' => $manager->numberOfRecordsImported(),
-        'columns' => count($headers)
+        'columns' => count($headers),
       ];
     }
 
@@ -241,4 +247,3 @@ class ApiController extends ControllerBase
   }
 
 }
-
