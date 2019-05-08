@@ -15,6 +15,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 */
 class FrontEndController extends ControllerBase {
 
+  /**
+   *
+   * @todo this is never used.
+   * @var strign
+   */
   private $chunkId = '4883fea295316854f264';
 
   public function about ( Request $request ) {
@@ -43,8 +48,9 @@ class FrontEndController extends ControllerBase {
   }
 
   public function buildPage ( Request $request ) {
-    $page = new InterraPage();
-    return new Response( $page->build() );
+    $page = \Drupal::service('interra_frontend.interra_page');
+    $factory = \Drupal::service('dkan.factory');
+    return $factory->newHttpResponse( $page->build() );
   }
 }
 
