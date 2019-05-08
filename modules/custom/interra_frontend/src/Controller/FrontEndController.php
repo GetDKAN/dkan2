@@ -4,8 +4,6 @@ namespace Drupal\interra_frontend\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Drupal\interra_frontend\InterraPage;
 
 /**
  * An ample controller.
@@ -81,7 +79,7 @@ class FrontEndController extends ControllerBase {
   public function buildPage(Request $request) {
     $page = \Drupal::service('interra_frontend.interra_page');
     $factory = \Drupal::service('dkan.factory');
-    return $factory->newHttpResponse( $page->build() );
+    return $factory->newHttpResponse($page->build());
   }
 
 }

@@ -13,80 +13,86 @@ use Drupal\dkan_common\Tests\DkanTestBase;
  */
 class DatasetModifierTest extends DkanTestBase {
 
+  /**
+   * Data for testModifyDatasetFunctional.
+   *
+   * @return array
+   *   Array of arguments.
+   */
   public function dataTestModifyDatasetFunctional() {
     return [
         [
-            (object) [
-                'distribution' => [
-                    (object) [
-                        'mediaType' => 'text/csv'
-                    ],
-                    (object) [
-                        'mediaType' => 'foobar', // this should be removed.
-                    ],
-                ]
+          (object) [
+            'distribution' => [
+              (object) [
+                'mediaType' => 'text/csv',
+              ],
+              (object) [
+                  // This should be removed.
+                'mediaType' => 'foobar',
+              ],
             ],
-            (object) [
-                'distribution' => [
-                    (object) [
-                        'mediaType' => 'text/csv',
-                        'format'    => 'csv',
-                    ],
-                ]
+          ],
+          (object) [
+            'distribution' => [
+              (object) [
+                'mediaType' => 'text/csv',
+                'format'    => 'csv',
+              ],
             ],
+          ],
         ],
-        // theme processing
+        // Theme processing.
         [
-            (object) [
-                'distribution'=>[],
-                'theme' => [
-                    'Foo Bar Theme',
-                    'moomootheme'
-                ]
+          (object) [
+            'distribution' => [],
+            'theme' => [
+              'Foo Bar Theme',
+              'moomootheme',
             ],
-            (object) [
-                'distribution'=>[],
-                'theme' => [
-                    (object) [
-                        'identifier' => 'foobartheme',
-                        'title'      => 'Foo Bar Theme',
-                    ],
-                    (object) [
-                        'identifier' => 'moomootheme',
-                        'title'      => 'moomootheme',
-                    ],
-                ]
+          ],
+          (object) [
+            'distribution' => [],
+            'theme' => [
+              (object) [
+                'identifier' => 'foobartheme',
+                'title'      => 'Foo Bar Theme',
+              ],
+              (object) [
+                'identifier' => 'moomootheme',
+                'title'      => 'moomootheme',
+              ],
             ],
+          ],
         ],
-        // keyword processing
+        // Keyword processing.
         [
-            (object) [
-                'distribution'=>[],
-                'keyword' => [
-                    'Foo Bar Keyword',
-                    'moomookeyword'
-                ]
+          (object) [
+            'distribution' => [],
+            'keyword' => [
+              'Foo Bar Keyword',
+              'moomookeyword',
             ],
-            (object) [
-                'distribution'=>[],
-                'keyword' => [
-                    (object) [
-                        'identifier' => 'foobarkeyword',
-                        'title'      => 'Foo Bar Keyword',
-                    ],
-                    (object) [
-                        'identifier' => 'moomookeyword',
-                        'title'      => 'moomookeyword',
-                    ],
-                ]
+          ],
+          (object) [
+            'distribution' => [],
+            'keyword' => [
+              (object) [
+                'identifier' => 'foobarkeyword',
+                'title'      => 'Foo Bar Keyword',
+              ],
+              (object) [
+                'identifier' => 'moomookeyword',
+                'title'      => 'moomookeyword',
+              ],
             ],
+          ],
         ],
     ];
   }
 
   /**
-   *
-   * Tests both modifyDataset() and objectifyStringsArray() to some extent
+   * Tests both modifyDataset() and objectifyStringsArray() to some extent.
    *
    * @param \stdClass $dataset
    * @param \stdClass $expected
@@ -95,14 +101,18 @@ class DatasetModifierTest extends DkanTestBase {
    * @dataProvider dataTestModifyDatasetFunctional
    */
   public function testModifyDatasetFunctional(\stdClass $dataset, \stdClass $expected) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatasetModifier::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    // assert
+    // Assert.
     $this->assertEquals($expected, $mock->modifyDataset($dataset));
+
+    // Is a functional test, not really unit.
+    // can be risky.
+    $this->markAsRisky();
   }
 
 }

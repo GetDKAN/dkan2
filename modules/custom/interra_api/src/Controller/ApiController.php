@@ -4,14 +4,12 @@ namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\dkan_datastore\Util;
-use Drupal\dkan_schema\SchemaRetriever;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\dkan_schema\Schema;
 use Drupal\interra_api\Search;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * An ample controller.
@@ -56,13 +54,14 @@ class ApiController extends ControllerBase {
    */
   protected function fetchSchema($schema_name) {
     $provider = $this->getSchemaProvider();
-   return $provider->retrieve($schema_name);
+    return $provider->retrieve($schema_name);
   }
 
-
-  public function search(Request $request)
-  {
-    /** @var Search $search */
+  /**
+   *
+   */
+  public function search(Request $request) {
+    /** @var \Drupal\interra_api\Search $search */
     $search = \Drupal::service('interra_api.search');
     return $this->response($search->index());
   }
@@ -70,12 +69,11 @@ class ApiController extends ControllerBase {
   /**
    *
    * @TODO very high CRAP score. consider refactoring. use routing to split to different method?
-   * @param type $collection
-   * @return type
+   * @param mixed $collection
+   * @return mixed
    * @throws NotFoundHttpException
    */
-  public function collection($collection)
-  {
+  public function collection($collection) {
     $valid_collections = [
       'dataset',
       'organization',
@@ -108,7 +106,7 @@ class ApiController extends ControllerBase {
           $dataset = json_decode($dataset_json);
 
           if ($dataset->theme && is_array($dataset->theme)) {
-            $theme =  $datasetModifier->objectifyStringsArray($dataset->theme);
+            $theme = $datasetModifier->objectifyStringsArray($dataset->theme);
             $themes[$theme[0]->identifier] = $theme[0];
           }
         }
@@ -140,13 +138,12 @@ class ApiController extends ControllerBase {
   /**
    *
    * @todo does not appear to be used in routes. Is this still needed?
-   * @param type $collection
-   * @param type $doc
-   * @return type
+   * @param mixed $collection
+   * @param mixed $doc
+   * @return mixed
    * @throws NotFoundHttpException
    */
-  public function doc($collection, $doc)
-  {
+  public function doc($collection, $doc) {
     $valid_collections = [
       'dataset',
     ];
@@ -179,6 +176,7 @@ class ApiController extends ControllerBase {
    * @param type $dataset
    * @return type
    */
+
   /**
    *
    */
@@ -200,13 +198,12 @@ class ApiController extends ControllerBase {
   /**
    *
    * @param mixed $resp
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
-  protected function response($resp)
-  {
-    /** @var JsonResponse $response */
+  protected function response($resp) {
+    /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
     $response = \Drupal::service('dkan.factory')
-            ->newJsonResponse($resp);
+      ->newJsonResponse($resp);
     $response->headers->set('Access-Control-Allow-Origin', '*');
     $response->headers->set('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE');
     $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
@@ -216,7 +213,7 @@ class ApiController extends ControllerBase {
   /**
    *
    * @param mixed $resp
-   * @return JsonResponse
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
   protected function jsonResponse($resp) {
     $response = $this->response($resp);
@@ -229,7 +226,8 @@ class ApiController extends ControllerBase {
    * New instance of Schema provider.
    *
    * @codeCoverageIgnore
-   * @return Provider
+   *
+   * @return \JsonSchemaProvider\Provider
    *   Provider instance.
    */
   protected function getSchemaProvider() {

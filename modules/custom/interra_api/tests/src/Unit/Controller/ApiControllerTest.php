@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\interra_api\Unit\Controller;
 
+use Drupal\interra_api\Search;
 use Drupal\interra_api\Controller\ApiController;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use JsonSchemaProvider\Provider;
@@ -22,43 +23,42 @@ class ApiControllerTest extends DkanTestBase {
    * Tests schemas().
    */
   public function testSchemas() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods([
-                'fetchSchema',
-                'response',
-                'jsonResponse',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'fetchSchema',
+        'response',
+        'jsonResponse',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-
-    $mockRequest  = $this->createMock(Request::class);
+    $mockRequest = $this->createMock(Request::class);
     $mockResponse = $this->createMock(JsonResponse::class);
 
     $schemaName = 'dataset';
-    // cheating a bit
-    $schema     = json_encode((object) [
-                'foo' => uniqid('bar'),
+    // Cheating a bit.
+    $schema = json_encode((object) [
+      'foo' => uniqid('bar'),
     ]);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('fetchSchema')
-            ->with($schemaName)
-            ->willReturn($schema);
+      ->method('fetchSchema')
+      ->with($schemaName)
+      ->willReturn($schema);
 
     $mock->expects($this->never())
-            ->method('response');
+      ->method('response');
 
     $mock->expects($this->once())
-            ->method('jsonResponse')
-            // contains a reference to an stdclass.
-            // is a bit iffy since not *same* obbject
-            ->with($this->isType('array'))
-            ->willReturn($mockResponse);
+      ->method('jsonResponse')
+            // Contains a reference to an stdclass.
+            // is a bit iffy since not *same* obbject.
+      ->with($this->isType('array'))
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $actual = $mock->schemas($mockRequest);
     $this->assertSame($mockResponse, $actual);
   }
@@ -67,38 +67,38 @@ class ApiControllerTest extends DkanTestBase {
    * Tests schemas() on exception.
    */
   public function testSchemasException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods([
-                'fetchSchema',
-                'response',
-                'jsonResponse',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'fetchSchema',
+        'response',
+        'jsonResponse',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $mockRequest  = $this->createMock(Request::class);
+    $mockRequest = $this->createMock(Request::class);
     $mockResponse = $this->createMock(JsonResponse::class);
 
     $schemaName = 'dataset';
 
     $message = 'something went fubar';
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('fetchSchema')
-            ->with($schemaName)
-            ->willThrowException(new \Exception($message));
+      ->method('fetchSchema')
+      ->with($schemaName)
+      ->willThrowException(new \Exception($message));
 
     $mock->expects($this->never())
-            ->method('jsonResponse');
+      ->method('jsonResponse');
 
     $mock->expects($this->once())
-            ->method('response')
-            ->with($message)
-            ->willReturn($mockResponse);
+      ->method('response')
+      ->with($message)
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $actual = $mock->schemas($mockRequest);
     $this->assertSame($mockResponse, $actual);
   }
@@ -107,39 +107,39 @@ class ApiControllerTest extends DkanTestBase {
    * Tests schema().
    */
   public function testSchema() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods([
-                'fetchSchema',
-                'response',
-                'jsonResponse',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'fetchSchema',
+        'response',
+        'jsonResponse',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockResponse = $this->createMock(JsonResponse::class);
 
     $schemaName = uniqid('schema');
-    // cheating a bit
-    $schema     = json_encode((object) [
-                'foo' => uniqid('bar'),
+    // Cheating a bit.
+    $schema = json_encode((object) [
+      'foo' => uniqid('bar'),
     ]);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('fetchSchema')
-            ->with($schemaName)
-            ->willReturn($schema);
+      ->method('fetchSchema')
+      ->with($schemaName)
+      ->willReturn($schema);
 
     $mock->expects($this->never())
-            ->method('response');
+      ->method('response');
 
     $mock->expects($this->once())
-            ->method('jsonResponse')
-            ->with(json_decode($schema))
-            ->willReturn($mockResponse);
+      ->method('jsonResponse')
+      ->with(json_decode($schema))
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $actual = $mock->schema($schemaName);
     $this->assertSame($mockResponse, $actual);
   }
@@ -148,16 +148,15 @@ class ApiControllerTest extends DkanTestBase {
    * Tests schema() on exception.
    */
   public function testSchemaException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods([
-                'fetchSchema',
-                'response',
-                'jsonResponse',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
-
+      ->setMethods([
+        'fetchSchema',
+        'response',
+        'jsonResponse',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockResponse = $this->createMock(JsonResponse::class);
 
@@ -165,163 +164,173 @@ class ApiControllerTest extends DkanTestBase {
 
     $message = 'something went fubar';
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('fetchSchema')
-            ->with($schemaName)
-            ->willThrowException(new \Exception($message));
+      ->method('fetchSchema')
+      ->with($schemaName)
+      ->willThrowException(new \Exception($message));
 
     $mock->expects($this->never())
-            ->method('jsonResponse');
+      ->method('jsonResponse');
 
     $mock->expects($this->once())
-            ->method('response')
-            ->with($message)
-            ->willReturn($mockResponse);
+      ->method('response')
+      ->with($message)
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $actual = $mock->schema($schemaName);
     $this->assertSame($mockResponse, $actual);
   }
 
+  /**
+   *
+   */
   public function testResponse() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFactory = $this->getMockBuilder(Factory::class)
-            ->setMethods(['newJsonResponse'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['newJsonResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $this->setActualContainer([
-        'dkan.factory' => $mockFactory,
+      'dkan.factory' => $mockFactory,
     ]);
 
     $mockResponse = $this->createMock(JsonResponse::class);
 
     $mockHeaderBag = $this->getMockBuilder(HeaderBag::class)
-            ->setMethods(['set'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['set'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockResponse->headers = $mockHeaderBag;
 
     $resp = uniqid('foo response');
 
-    // expect
-
+    // Expect.
     $mockFactory->expects($this->once())
-            ->method('newJsonResponse')
-            ->with($resp)
-            ->willReturn($mockResponse);
+      ->method('newJsonResponse')
+      ->with($resp)
+      ->willReturn($mockResponse);
 
     $mockHeaderBag->expects($this->exactly(3))
-            ->method('set')
-            ->withConsecutive(
+      ->method('set')
+      ->withConsecutive(
                     ['Access-Control-Allow-Origin', '*'],
                     ['Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, DELETE'],
                     ['Access-Control-Allow-Headers', 'Authorization']
     );
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'response', $resp);
     $this->assertSame($mockResponse, $actual);
   }
 
+  /**
+   *
+   */
   public function testFetchSchema() {
-    // setup
+    // Setup.
     $mock         = $this->getMockBuilder(ApiController::class)
-            ->setMethods(['getSchemaProvider'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getSchemaProvider'])
+      ->disableOriginalConstructor()
+      ->getMock();
     $mockProvider = $this->getMockBuilder(Provider::class)
-            ->setMethods(['retrieve'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['retrieve'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $schemaName = uniqid('schema_name');
     $schema     = uniqid('the schema itself');
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getSchemaProvider')
-            ->willReturn($mockProvider);
+      ->method('getSchemaProvider')
+      ->willReturn($mockProvider);
 
     $mockProvider->expects($this->once())
-            ->method('retrieve')
-            ->with($schemaName)
-            ->willReturn($schema);
+      ->method('retrieve')
+      ->with($schemaName)
+      ->willReturn($schema);
 
-    // assert
+    // Assert.
     $this->assertEquals($schema, $this->invokeProtectedMethod($mock, 'fetchSchema', $schemaName));
   }
 
+  /**
+   *
+   */
   public function testSearch() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods(['response'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['response'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $mockSearch = $this->getMockBuilder(\Drupal\interra_api\Search::class)
-            ->setMethods(['index'])
-            ->disableOriginalConstructor()
-            ->getMock();
+    $mockSearch = $this->getMockBuilder(Search::class)
+      ->setMethods(['index'])
+      ->disableOriginalConstructor()
+      ->getMock();
     $this->setActualContainer([
-        'interra_api.search' => $mockSearch
+      'interra_api.search' => $mockSearch,
     ]);
 
     $mockRequest  = $this->createMock(Request::class);
     $mockResponse = $this->createMock(JsonResponse::class);
     $index        = [uniqid('result of some kind')];
 
-    // expect
+    // Expect.
     $mockSearch->expects($this->once())
-            ->method('index')
-            ->willReturn($index);
+      ->method('index')
+      ->willReturn($index);
 
     $mock->expects($this->once())
-            ->method('response')
-            ->with($index)
-            ->willReturn($mockResponse);
+      ->method('response')
+      ->with($index)
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $this->assertSame($mockResponse, $mock->search($mockRequest));
   }
 
+  /**
+   *
+   */
   public function testJsonResponse() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(ApiController::class)
-            ->setMethods(['response'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['response'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockResponse = $this->createMock(JsonResponse::class);
 
     $mockHeaderBag = $this->getMockBuilder(HeaderBag::class)
-            ->setMethods(['set'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['set'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockResponse->headers = $mockHeaderBag;
 
     $resp = uniqid('foo response');
 
-    // expect
-
+    // Expect.
     $mock->expects($this->once())
-            ->method('response')
-            ->with($resp)
-            ->willReturn($mockResponse);
+      ->method('response')
+      ->with($resp)
+      ->willReturn($mockResponse);
 
     $mockHeaderBag->expects($this->once())
-            ->method('set')
-            ->with("Content-Type", "application/schema+json");
+      ->method('set')
+      ->with("Content-Type", "application/schema+json");
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'jsonResponse', $resp);
     $this->assertSame($mockResponse, $actual);
   }

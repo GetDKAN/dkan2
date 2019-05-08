@@ -3,10 +3,10 @@
 namespace Drupal\dkan_schema;
 
 use Contracts\Retriever;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\File\FileSystemInterface;
-use Drupal\Core\SitePathFactory;
 
+/**
+ *
+ */
 class SchemaRetriever implements Retriever {
 
   /**
@@ -15,20 +15,32 @@ class SchemaRetriever implements Retriever {
    */
   protected $directory;
 
+  /**
+   *
+   */
   public function __construct() {
     $this->findSchemaDirectory();
   }
 
+  /**
+   *
+   */
   public function getAllIds() {
     return [
-        'dataset'
+      'dataset',
     ];
   }
 
+  /**
+   *
+   */
   public function getSchemaDirectory() {
     return $this->directory;
   }
 
+  /**
+   *
+   */
   public function retrieve(string $id): ?string {
 
     $filename = $this->getDirectory() . "/collections/{$id}.json";
@@ -42,31 +54,37 @@ class SchemaRetriever implements Retriever {
     throw new \Exception("Schema {$id} not found.");
   }
 
+  /**
+   *
+   */
   protected function findSchemaDirectory() {
 
     $drupalRoot = \Drupal::service('app.root');
 
     if (is_dir($drupalRoot . "/schema")) {
       $this->directory = $drupalRoot . "/schema";
-    } elseif (
+    }
+    elseif (
       ($directory = $this->getDefaultSchemaDirectory())
        && is_dir($directory)
     ) {
       $this->directory = $directory;
-    } else {
+    }
+    else {
       throw new \Exception("No schema directory found.");
     }
   }
 
   /**
-   * determine default location of schema folder for dkan2 profile.
-   * 
+   * Determine default location of schema folder for dkan2 profile.
+   *
    * @todo There may be easier way to do this and without hardcoding paths.
+   *
    * @return string path.
    */
   protected function getDefaultSchemaDirectory() {
 
-    // try to determine root `info.yml` of dkan profile
+    // Try to determine root `info.yml` of dkan profile.
     /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
     $extensionList = \Drupal::service('extension.list.profile');
     $infoFile = $extensionList->getExtensionInfo('dkan2');

@@ -19,18 +19,17 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests __construct().
    */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(['findSchemaDirectory'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['findSchemaDirectory'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('findSchemaDirectory');
+      ->method('findSchemaDirectory');
 
-    // assert
+    // Assert.
     $mock->__construct();
   }
 
@@ -38,14 +37,14 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests getAllIds().
    */
   public function testGetAllIds() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
-    // assert
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+    // Assert.
     $this->assertEquals($mock->getAllIds(), [
-        'dataset',
+      'dataset',
     ]);
   }
 
@@ -53,40 +52,41 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests getSchemaDirectory().
    */
   public function testGetSchemaDirectory() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $expected = '/foo/bar';
     $this->writeProtectedProperty($mock, 'directory', $expected);
-    // assert
+    // Assert.
     $this->assertEquals($expected, $mock->getSchemaDirectory());
   }
 
   /**
    * Data provider for testRetrieveException.
+   *
    * @return array Arguments.
    */
   public function dataTestRetrieveException() {
 
     return [
-        // not valid id
+        // Not valid id.
         [
-            'foo-id-not-valid',
+          'foo-id-not-valid',
             [],
-            'directory',
-            null,
-            []
+          'directory',
+          NULL,
+            [],
         ],
-        // not readable
+        // Not readable.
         [
-            'foo-not-readable',
+          'foo-not-readable',
             ['foo-not-readable'],
-            'directory',
-            null,
-            []
+          'directory',
+          NULL,
+            [],
         ],
     ];
   }
@@ -95,37 +95,38 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests retrieve() for exception conditions.
    *
    * @dataProvider dataTestRetrieveException
-   * 
+   *
    * @param string $id
    * @param array $allIds
    * @param string directory
    * @param int $vfsPermissions
-   * @param array $vfsStructure filesystem definition as used by vfsstream
+   * @param array $vfsStructure
+   *   filesystem definition as used by vfsstream.
    */
   public function testRetrieveException(string $id, array $allIds, string $directory, $vfsPermissions, array $vfsStructure) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods([
-                'getDirectory',
-                'getAllIds',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'getDirectory',
+        'getAllIds',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $vfs = vfsStream::setup('root', $vfsPermissions, $vfsStructure);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getDirectory')
-            ->willReturn($vfs->url() . '/' . $directory);
+      ->method('getDirectory')
+      ->willReturn($vfs->url() . '/' . $directory);
 
     $mock->expects($this->once())
-            ->method('getAllIds')
-            ->willReturn($allIds);
+      ->method('getAllIds')
+      ->willReturn($allIds);
 
     $this->setExpectedException(\Exception::class, "Schema {$id} not found.");
 
-    // assert
+    // Assert.
     $mock->retrieve($id);
   }
 
@@ -133,14 +134,14 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests retrieve().
    */
   public function testRetrieve() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods([
-                'getDirectory',
-                'getAllIds',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'getDirectory',
+        'getAllIds',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $id = uniqid('id');
 
@@ -148,28 +149,26 @@ class SchemaRetrieverTest extends DkanTestBase {
     $allIds         = [$id];
     $vfsPermissions = 0777;
     $vfsStructure   = [
-        // need to trim off `/` for vfs
-        'foo' => [
-            'collections' => [
-                "{$id}.json" => $expected,
-            ],
-        ]
+        // Need to trim off `/` for vfs.
+      'foo' => [
+        'collections' => [
+          "{$id}.json" => $expected,
+        ],
+      ],
     ];
 
     $vfs       = vfsStream::setup('root', $vfsPermissions, $vfsStructure);
     $directory = $vfs->url() . '/foo';
-    // expect
+    // Expect.
+    $mock->expects($this->once())
+      ->method('getDirectory')
+      ->willReturn($directory);
 
     $mock->expects($this->once())
-            ->method('getDirectory')
-            ->willReturn($directory);
+      ->method('getAllIds')
+      ->willReturn($allIds);
 
-    $mock->expects($this->once())
-            ->method('getAllIds')
-            ->willReturn($allIds);
-
-    // assert
-
+    // Assert.
     $actual = $mock->retrieve($id);
     $this->assertEquals($expected, $actual);
   }
@@ -178,57 +177,57 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests findSchemaDirectory when schema dir is in drupal root.
    */
   public function testFindSchemDirectorySchemaInDrupalRoot() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(['getDefaultSchemaDirectory'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getDefaultSchemaDirectory'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), null, [
-                'schema' => [],
+    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
+      'schema' => [],
     ]);
 
     $this->setActualContainer([
-        'app.root' => $vfs->url(),
+      'app.root' => $vfs->url(),
     ]);
 
     $expected = $vfs->url() . '/schema';
 
-    // expect
+    // Expect.
     $mock->expects($this->never())
-            ->method('getDefaultSchemaDirectory');
+      ->method('getDefaultSchemaDirectory');
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'findSchemaDirectory');
     $this->assertEquals($expected, $this->readAttribute($mock, 'directory'));
   }
 
   /**
-   *  Tests findSchemaDirectory() when using fallback schema.
+   * Tests findSchemaDirectory() when using fallback schema.
    */
   public function testFindSchemDirectoryUseDefaultFallback() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(['getDefaultSchemaDirectory'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getDefaultSchemaDirectory'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), null, [
-                'schema' => [],
+    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
+      'schema' => [],
     ]);
 
     $this->setActualContainer([
-        'app.root' => uniqid('/foo-this-is-not-valid'),
+      'app.root' => uniqid('/foo-this-is-not-valid'),
     ]);
 
     $expected = $vfs->url();
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getDefaultSchemaDirectory')
-            ->willReturn($expected);
+      ->method('getDefaultSchemaDirectory')
+      ->willReturn($expected);
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'findSchemaDirectory');
     $this->assertEquals($expected, $this->readAttribute($mock, 'directory'));
   }
@@ -237,30 +236,28 @@ class SchemaRetrieverTest extends DkanTestBase {
    * Tests findSchemaDirectory() for exception condition.
    */
   public function testFindSchemDirectoryException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(['getDefaultSchemaDirectory'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getDefaultSchemaDirectory'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $vfs = vfsStream::setup(uniqid('vfs'), null, [
-                'schema' => [],
+    $vfs = vfsStream::setup(uniqid('vfs'), NULL, [
+      'schema' => [],
     ]);
 
     $this->setActualContainer([
-        'app.root' => uniqid('/foo-this-is-not-valid'),
+      'app.root' => uniqid('/foo-this-is-not-valid'),
     ]);
-
 
     $this->setExpectedException(\Exception::class, "No schema directory found.");
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getDefaultSchemaDirectory')
-            ->willReturn(uniqid('/foo-this-is-not-valid-either'));
+      ->method('getDefaultSchemaDirectory')
+      ->willReturn(uniqid('/foo-this-is-not-valid-either'));
 
-
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'findSchemaDirectory');
   }
 
@@ -270,29 +267,29 @@ class SchemaRetrieverTest extends DkanTestBase {
   public function testGetDefaultSchemaDirectory() {
 
     $mock = $this->getMockBuilder(SchemaRetriever::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $infoFile = '/foo/bar/dkan2.yml';
     $expected = '/foo/bar/schema';
 
     $mockExtensionList = $this->getMockBuilder(ExtensionList::class)
-            ->setMethods(['getExtensionInfo'])
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+      ->setMethods(['getExtensionInfo'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
 
     $this->setActualContainer([
-        'extension.list.profile' => $mockExtensionList,
+      'extension.list.profile' => $mockExtensionList,
     ]);
 
-    // expects
+    // Expects.
     $mockExtensionList->expects($this->once())
-            ->method('getExtensionInfo')
-            ->with('dkan2')
-            ->willReturn($infoFile);
+      ->method('getExtensionInfo')
+      ->with('dkan2')
+      ->willReturn($infoFile);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getDefaultSchemaDirectory');
     $this->assertEquals($expected, $actual);
   }

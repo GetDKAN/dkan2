@@ -19,7 +19,9 @@ class FrontEndControllerTest extends DkanTestBase {
 
   /**
    * Data for testMethodsThatJustCallBuildPage.
+   *
    * @return array
+   *   Array of arguments.
    */
   public function dataMethodsThatJustCallBuildPage() {
 
@@ -36,68 +38,73 @@ class FrontEndControllerTest extends DkanTestBase {
   }
 
   /**
-   * A bunch of methods just seem to call
+   * A bunch of methods just seem to call.
+   *
+   * @param string $methodName
+   *   MethodName.
    *
    * @dataProvider dataMethodsThatJustCallBuildPage
-   * @param string $methodName MethodName
    */
   public function testMethodsThatJustCallBuildPage($methodName) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(FrontEndController::class)
-            ->setMethods(['buildPage'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['buildPage'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
-    $mockRequest  = $this->createMock(Request::class);
+    $mockRequest = $this->createMock(Request::class);
     $mockResponse = $this->createMock(Response::class);
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('buildPage')
-            ->with($mockRequest)
-            ->willReturn($mockResponse);
+      ->method('buildPage')
+      ->with($mockRequest)
+      ->willReturn($mockResponse);
 
-    // assert
+    // Assert.
     $actual = call_user_func([$mock, $methodName], $mockRequest);
     $this->assertSame($mockResponse, $actual);
   }
 
+  /**
+   * Tests buildPage().
+   */
   public function testBuildPage() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(FrontEndController::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockInterraPage = $this->getMockBuilder(InterraPage::class)
-            ->setMethods(['build'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['build'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockFactory = $this->getMockBuilder(Factory::class)
-            ->setMethods(['newHttpResponse'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['newHttpResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $this->setActualContainer([
-        'interra_frontend.interra_page' => $mockInterraPage,
-        'dkan.factory'                  => $mockFactory,
+      'interra_frontend.interra_page' => $mockInterraPage,
+      'dkan.factory'                  => $mockFactory,
     ]);
 
-    $mockRequest  = $this->createMock(Request::class);
+    $mockRequest = $this->createMock(Request::class);
     $mockResponse = $this->createMock(Response::class);
 
     $pageContent = '<html>something was built </html>';
-    // expect
+    // Expect.
     $mockInterraPage->expects($this->once())
-            ->method('build')
-            ->willReturn($pageContent);
+      ->method('build')
+      ->willReturn($pageContent);
 
     $mockFactory->expects($this->once())
-            ->method('newHttpResponse')
-            ->with($pageContent)
-            ->willReturn($mockResponse);
-    // assert
+      ->method('newHttpResponse')
+      ->with($pageContent)
+      ->willReturn($mockResponse);
+    // Assert.
     $actual = $mock->buildPage($mockRequest);
     $this->assertSame($mockResponse, $actual);
   }

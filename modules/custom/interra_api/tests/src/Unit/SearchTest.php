@@ -16,173 +16,184 @@ use Drupal\dkan_api\Controller\Dataset as DatasetController;
  */
 class SearchTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function testFormatDocs() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Search::class)
-            ->setMethods(['formatSearchDoc'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['formatSearchDoc'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $formatted1 = (object) ['foo' => 'bar-1'];
     $formatted2 = (object) ['foo' => 'bar-2'];
 
     $docs      = [
-        'id-1' => 'doc-1',
-        'id-2' => 'doc-2',
+      'id-1' => 'doc-1',
+      'id-2' => 'doc-2',
     ];
     $loopCount = count($docs);
 
     $expected = [
-        $formatted1,
-        $formatted2,
+      $formatted1,
+      $formatted2,
     ];
 
-    // expect
+    // Expect.
     $mock->expects($this->exactly($loopCount))
-            ->method('formatSearchDoc')
-            ->withConsecutive(
+      ->method('formatSearchDoc')
+      ->withConsecutive(
                     [$docs['id-1']],
                     [$docs['id-2']]
             )
-            ->willReturn(
+      ->willReturn(
                     $formatted1,
                     $formatted2
     );
 
-    // assert
+    // Assert.
     $actual = $mock->formatDocs($docs);
+    $this->assertEquals($expected, $actual);
   }
 
+  /**
+   *
+   */
   public function testFormatSearchDoc() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Search::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $value = uniqid('value');
 
-    // assert
+    // Assert.
     $actual = $mock->formatSearchDoc($value);
     $this->assertInstanceOf('stdClass', $actual);
     $this->assertEquals($actual->doc, $value);
     $this->assertEquals($actual->ref, '');
   }
 
+  /**
+   *
+   */
   public function testIndex() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Search::class)
-            ->setMethods([
-                'getDatasets',
-                'formatDocs',
-            ])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods([
+        'getDatasets',
+        'formatDocs',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockDatasetModifier = $this->getMockBuilder(DatasetModifier::class)
-            ->setMethods(['modifyDataset'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['modifyDataset'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $this->setActualContainer([
-        'interra_api.service.dataset_modifier' => $mockDatasetModifier,
+      'interra_api.service.dataset_modifier' => $mockDatasetModifier,
     ]);
 
     $item1 = (object) ['foo' => 'foo'];
-    $item2 = (object) ['foo'=>'bat'];
-    $item3 = (object) ['foo'=>'barbrr'];
+    $item2 = (object) ['foo' => 'bat'];
+    $item3 = (object) ['foo' => 'barbrr'];
     $datasets = [
-        $item1,
-        $item2,
-        $item3,
+      $item1,
+      $item2,
+      $item3,
     ];
 
     $loopCount = count($datasets);
 
     $modifiedDatasets = [
-        'does not',
-        'really',
-        'matter',
+      'does not',
+      'really',
+      'matter',
     ];
 
     $expected = [uniqid('could be anything at this point')];
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
-            ->method('getDatasets')
-            ->willReturn($datasets);
+      ->method('getDatasets')
+      ->willReturn($datasets);
 
     $mockDatasetModifier->expects($this->exactly($loopCount))
-            ->method('modifyDataset')
-            ->withConsecutive(
+      ->method('modifyDataset')
+      ->withConsecutive(
                     [$item1],
                     [$item2],
                     [$item3]
             )
-            ->willReturnOnConsecutiveCalls(
+      ->willReturnOnConsecutiveCalls(
                     $modifiedDatasets[0],
                     $modifiedDatasets[1],
                     $modifiedDatasets[2]
     );
 
     $mock->expects($this->once())
-            ->method('formatDocs')
-            ->with($modifiedDatasets)
-            ->willReturn($expected);
-    // assert
-
+      ->method('formatDocs')
+      ->with($modifiedDatasets)
+      ->willReturn($expected);
+    // Assert.
     $actual = $mock->index();
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   *
+   */
   public function testGetDatasets() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(Search::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $mockDatasetController = $this->getMockBuilder(DatasetController::class)
-            ->setMethods(['getEngine'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['getEngine'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $this->setActualContainer([
-        'dkan_api.controller.dataset'=>$mockDatasetController,
+      'dkan_api.controller.dataset' => $mockDatasetController,
     ]);
 
     $mockEngine = $this->getMockBuilder(Sae::class)
-            ->setMethods(['get'])
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $item1 = (object) ['foo' => 'foo'];
-    $item2 = (object) ['foo'=>'bat'];
-    $item3 = (object) ['foo'=>'barbrr'];
+    $item2 = (object) ['foo' => 'bat'];
+    $item3 = (object) ['foo' => 'barbrr'];
 
     $engineOutput = [
-       json_encode($item1),
-        json_encode($item2),
-       json_encode( $item3),
+      json_encode($item1),
+      json_encode($item2),
+      json_encode($item3),
     ];
-    
+
     $expected = [
-        $item1,
-        $item2,
-        $item3,
+      $item1,
+      $item2,
+      $item3,
     ];
 
-    // expect
-
+    // Expect.
     $mockDatasetController->expects($this->once())
-            ->method('getEngine')
-            ->willReturn($mockEngine);
+      ->method('getEngine')
+      ->willReturn($mockEngine);
 
     $mockEngine->expects($this->once())
-            ->method('get')
-            ->willReturn($engineOutput);
+      ->method('get')
+      ->willReturn($engineOutput);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getDatasets');
     $this->assertEquals($expected, $actual);
   }

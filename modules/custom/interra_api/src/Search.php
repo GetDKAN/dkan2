@@ -2,18 +2,25 @@
 
 namespace Drupal\interra_api;
 
-use Drupal\interra_api\Controller\ApiController;
-
+/**
+ *
+ */
 class Search {
 
+  /**
+   *
+   */
   public function formatDocs($docs) {
-    $index = array();
+    $index = [];
     foreach ($docs as $id => $doc) {
       $index[] = $this->formatSearchDoc($doc);
     }
     return $index;
   }
 
+  /**
+   *
+   */
   public function formatSearchDoc($value) {
     $formatted      = new \stdClass();
     $formatted->doc = $value;
@@ -21,6 +28,9 @@ class Search {
     return $formatted;
   }
 
+  /**
+   *
+   */
   public function index() {
     $datasets = [];
 
@@ -38,19 +48,20 @@ class Search {
    * Get datasets.
    *
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
+   *
    * @return array Array of dataset objects
    */
   protected function getDatasets() {
     /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
     $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
 
-    // engine returns array of json strings.
-   return array_map(
-            function($item) {
+    // Engine returns array of json strings.
+    return array_map(
+            function ($item) {
               return json_decode($item);
             },
             $dataset_controller->getEngine()
-                    ->get()
+              ->get()
     );
   }
 

@@ -14,28 +14,31 @@ use org\bovigo\vfs\vfsStream;
  */
 class InterraPageTest extends DkanTestBase {
 
+  /**
+   * Tests build().
+   */
   public function testBuild() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(InterraPage::class)
-            ->setMethods(null)
-            ->disableOriginalConstructor()
-            ->getMock();
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
 
     $expected = '<html>something like that</html>';
-    $vfs      = vfsStream::setup('root', null, [
-                'data-catalog-frontend' => [
-                    'build' => [
-                        'index.html' => $expected
-                    ],
-                ],
+    $vfs      = vfsStream::setup('root', NULL, [
+      'data-catalog-frontend' => [
+        'build' => [
+          'index.html' => $expected,
+        ],
+      ],
     ]);
     $appRoot  = $vfs->url();
 
     $this->setActualContainer([
-        'app.root' => $appRoot,
+      'app.root' => $appRoot,
     ]);
-    
-    // assert
+
+    // Assert.
     $this->assertEquals($expected, $mock->build());
   }
 

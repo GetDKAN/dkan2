@@ -34,16 +34,19 @@ class Factory {
     return new JsonResponse($data, $status, $headers, $json);
   }
 
-    /**
-     * Creates new HTTP Response.
-     *
-     * @param mixed $content The response content, see setContent()
-     * @param int   $status  The response status code
-     * @param array $headers An array of response headers
-     *
-     * @return static
-     */
-  public function newHttpResponse($content = '', $status = 200, $headers = []) {
+  /**
+   * Creates new HTTP Response.
+   *
+   * @param mixed $content
+   *   The response content, see setContent()
+   * @param int $status
+   *   The response status code.
+   * @param array $headers
+   *   An array of response headers.
+   *
+   * @return static
+   */
+  public function newHttpResponse($content = '', $status = 200, array $headers = []) {
     return Response::create($content, $status, $headers);
   }
 
