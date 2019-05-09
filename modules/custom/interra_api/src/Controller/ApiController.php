@@ -184,12 +184,17 @@ class ApiController extends ControllerBase {
     $manager = $this->getDatastoreManager($dataset->identifier);
 
     if ($manager) {
-      $headers = $manager->getTableHeaders();
-      $dataset->columns = $headers;
-      $dataset->datastore_statistics = [
-        'rows' => $manager->numberOfRecordsImported(),
-        'columns' => count($headers),
-      ];
+      try {
+        $headers = $manager->getTableHeaders();
+        $dataset->columns = $headers;
+        $dataset->datastore_statistics = [
+          'rows' => $manager->numberOfRecordsImported(),
+          'columns' => count($headers),
+        ];
+      }
+      catch (\Exception $e) {
+
+      }
     }
 
     return $dataset;
