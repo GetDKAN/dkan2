@@ -6,6 +6,7 @@ use Drupal\interra_frontend\Controller\FrontEndController;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\interra_frontend\InterraPage;
 use Drupal\dkan_common\Service\Factory;
 
@@ -107,6 +108,49 @@ class FrontEndControllerTest extends DkanTestBase {
     // Assert.
     $actual = $mock->buildPage($mockRequest);
     $this->assertSame($mockResponse, $actual);
+  }
+
+  /**
+   * Tests buildPage() for not found exception.
+   */
+  public function testBuildPageHttpNotFoundException() {
+    // Setup.
+    $mock = $this->getMockBuilder(FrontEndController::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockInterraPage = $this->getMockBuilder(InterraPage::class)
+      ->setMethods(['build'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockFactory = $this->getMockBuilder(Factory::class)
+      ->setMethods(['newHttpResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $this->setActualContainer([
+      'interra_frontend.interra_page' => $mockInterraPage,
+      'dkan.factory'                  => $mockFactory,
+    ]);
+
+    $mockRequest = $this->createMock(Request::class);
+
+    $pageContent = FALSE;
+    // Expect.
+    $mockInterraPage->expects($this->once())
+      ->method('build')
+      ->willReturn($pageContent);
+
+    $mockFactory->expects($this->never())
+      ->method('newHttpResponse');
+
+    $this->setExpectedException(NotFoundHttpException::class, 'Page could not be loaded');
+
+    // Assert.
+    $mock->buildPage($mockRequest);
+
   }
 
 }

@@ -42,4 +42,26 @@ class InterraPageTest extends DkanTestBase {
     $this->assertEquals($expected, $mock->build());
   }
 
+  /**
+   * Tests build() on fail conditions.
+   */
+  public function testBuildNotFound() {
+    // Setup.
+    $mock = $this->getMockBuilder(InterraPage::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $expected = FALSE;
+    $vfs      = vfsStream::setup('root');
+    $appRoot  = $vfs->url();
+
+    $this->setActualContainer([
+      'app.root' => $appRoot,
+    ]);
+
+    // Assert.
+    $this->assertEquals($expected, $mock->build());
+  }
+
 }
