@@ -76,7 +76,7 @@ class FrontEndController extends ControllerBase {
 
   /**
    *
-   * @param Request $request
+   * @param \Symfony\Component\HttpFoundation\Request $request
    * @return \Symfony\Component\HttpFoundation\Response
    * @throws NotFoundHttpException If page is not found
    */

@@ -137,50 +137,56 @@ class ApiController extends ControllerBase {
 
   /**
    *
-   * @todo does not appear to be used in routes. Is this still needed?
+   *
    * @param mixed $collection
    * @param mixed $doc
    * @return mixed
-   * @throws NotFoundHttpException
    */
   public function doc($collection, $doc) {
+    // Array of.
     $valid_collections = [
-      'dataset',
+      'dataset' => [$this, 'docDatasetHandler'],
     ];
 
-    $uuid = str_replace(".json", "", $doc);
+    if (
+            isset($valid_collections[$collection])
+            && is_callable($valid_collections[$collection])
+    ) {
 
-    if (in_array($collection, $valid_collections)) {
-
-      if ($collection == "dataset") {
-
-        /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
-        $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
-        $data = $storage->retrieve($uuid);
-        $dataset = json_decode($data);
-        $dataset = $this->addDatastoreMetadata($dataset);
-        return $this->response($datasetModifier->modifyDataset($dataset));
-      }
-      else {
-        return $this->response([]);
-      }
+      // @TODO this is refactor to reduce CRAP score.
+      //       Not sure if additional params need to be passed
+      return $this->response(call_user_func($valid_collections[$collection], $doc));
     }
     else {
-      throw new NotFoundHttpException();
+      return $this->response([]);
     }
   }
 
   /**
+   * Handles dataset collections for doc.
    *
-   * @TODO only used by `doc()` is this still needed?
-   * @param type $dataset
-   * @return type
+   * @param string $doc
+   *
+   * @return mixed
    */
+  protected function docDatasetHandler($doc) {
+    $uuid = str_replace(".json", "", $doc);
+    /** @var \Drupal\dkan_api\Storage\DrupalNodeDataset $storage */
+    $storage = \Drupal::service('dkan_api.storage.drupal_node_dataset');
+    /** @var \Drupal\interra_api\Service\DatasetModifier $datasetModifuer */
+    $datasetModifier = \Drupal::service('interra_api.service.dataset_modifier');
+    $data            = $storage->retrieve($uuid);
+    $dataset         = json_decode($data);
+    $dataset         = $this->addDatastoreMetadata($dataset);
+    return $datasetModifier->modifyDataset($dataset);
+  }
 
   /**
    *
+   * @param \stdClass $dataset
+   * @return \stdClass Same
    */
-  private function addDatastoreMetadata($dataset) {
+  protected function addDatastoreMetadata(\stdClass $dataset) {
     $manager = $this->getDatastoreManager($dataset->identifier);
 
     if ($manager) {
@@ -193,7 +199,7 @@ class ApiController extends ControllerBase {
         ];
       }
       catch (\Exception $e) {
-
+        // @todo log this?
       }
     }
 

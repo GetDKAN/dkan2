@@ -14,7 +14,7 @@ class InterraPage {
    */
   public function build() {
     $file = \Drupal::service('app.root') . "/data-catalog-frontend/build/index.html";
-    return is_file($file) ? file_get_contents($file) : false;
+    return is_file($file) ? file_get_contents($file) : FALSE;
   }
 
 }
