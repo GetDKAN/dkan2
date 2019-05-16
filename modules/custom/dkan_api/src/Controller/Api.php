@@ -13,6 +13,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class Api extends ControllerBase {
 
   /**
+   * Represents the data type passed via the HTTP request url schema_id slug.
+   *
+   * @var string
+   */
+  protected $schemaId;
+
+  /**
    * Drupal service container.
    *
    * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -47,10 +54,14 @@ abstract class Api extends ControllerBase {
   /**
    * Get all.
    *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function getAll() {
+  public function getAll($schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
 
     $datasets = $this->getEngine()
       ->get();
@@ -76,11 +87,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function get($uuid) {
+  public function get($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     try {
 
       $data = $this->getEngine()
@@ -102,10 +117,15 @@ abstract class Api extends ControllerBase {
   /**
    * Implements POST method.
    *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function post() {
+  public function post($schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -147,11 +167,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function put($uuid) {
+  public function put($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -190,11 +214,15 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($uuid) {
+  public function patch($uuid, $schema_id = 'dataset') {
+    $this->schemaId = $schema_id;
+
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
@@ -236,11 +264,13 @@ abstract class Api extends ControllerBase {
    *
    * @param string $uuid
    *   Identifier.
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function delete($uuid) {
+  public function delete($uuid, $schema_id = 'dataset') {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 
