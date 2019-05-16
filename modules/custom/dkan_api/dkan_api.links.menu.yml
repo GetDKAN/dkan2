@@ -1,0 +1,5 @@
+dkan_api.api_settings_form:
+  title: API
+  route_name: dkan_api.config_settings
+  description: Configure API endpoints.
+  parent: dkan_common.admin_config_dkan

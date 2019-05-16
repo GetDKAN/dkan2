@@ -1,3 +1,12 @@
+dkan_api.config_settings:
+  path: '/admin/config/dkan/api'
+  defaults:
+    _form: '\Drupal\dkan_api\Form\ApiSettingsForm'
+    _title: API
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
 dkan_api.dataset_get_all:
   path: '/api/v1/dataset'
   methods: [GET]
