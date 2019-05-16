@@ -31,6 +31,7 @@ class Dataset extends Api {
    * @return \Drupal\dkan_api\Storage\DrupalNodeDataset Dataset
    */
   protected function getStorage() {
+    $this->nodeDataset->setSchema($this->schemaId);
     return $this->nodeDataset;
   }
 
