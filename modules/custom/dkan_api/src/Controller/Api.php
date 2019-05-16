@@ -6,7 +6,9 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Class Api.
  *
+ * @package Drupal\dkan_api\Controller
  */
 abstract class Api extends ControllerBase {
 
@@ -25,7 +27,7 @@ abstract class Api extends ControllerBase {
   protected $dkanFactory;
 
   /**
-   *
+   * Api constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -33,12 +35,12 @@ abstract class Api extends ControllerBase {
   }
 
   /**
-   *
+   * Gets the json schema object.
    */
   abstract protected function getJsonSchema();
 
   /**
-   *
+   * Gets the storage object.
    */
   abstract protected function getStorage();
 
@@ -46,6 +48,7 @@ abstract class Api extends ControllerBase {
    * Get all.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function getAll() {
 
@@ -74,7 +77,8 @@ abstract class Api extends ControllerBase {
    * @param string $uuid
    *   Identifier.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response.
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function get($uuid) {
     try {
@@ -98,7 +102,8 @@ abstract class Api extends ControllerBase {
   /**
    * Implements POST method.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function post() {
     /* @var $engine \Sae\Sae */
@@ -143,7 +148,8 @@ abstract class Api extends ControllerBase {
    * @param string $uuid
    *   Identifier.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function put($uuid) {
     /* @var $engine \Sae\Sae */
@@ -185,7 +191,8 @@ abstract class Api extends ControllerBase {
    * @param string $uuid
    *   Identifier.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function patch($uuid) {
     /* @var $engine \Sae\Sae */
@@ -230,7 +237,8 @@ abstract class Api extends ControllerBase {
    * @param string $uuid
    *   Identifier.
    *
-   * @return \Symfony\Component\HttpFoundation\JsonResponse Json response
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
    */
   public function delete($uuid) {
     /* @var $engine \Sae\Sae */
@@ -242,9 +250,10 @@ abstract class Api extends ControllerBase {
   }
 
   /**
-   * Get isntance of.
+   * Get SAE instance.
    *
    * @return \Sae\Sae
+   *   Service Api Engine
    */
   public function getEngine() {
 

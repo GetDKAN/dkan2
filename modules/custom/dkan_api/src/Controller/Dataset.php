@@ -38,8 +38,17 @@ class Dataset extends Api {
    * Get Json Schema.
    *
    * @return string
+   *   Json schema.
    */
   protected function getJsonSchema() {
+
+    // @Todo: mechanism to validate against additional schemas. For now,
+    // validate against the empty object, as it accepts any valid json.
+    if (isset($this->schemaId) && $this->schemaId != 'dataset') {
+      // @codeCoverageIgnoreStart
+      return '{ }';
+      // @codeCoverageIgnoreEnd
+    }
 
     /** @var \Drupal\dkan_schema\SchemaRetriever $retriever */
     $retriever = $this->container
