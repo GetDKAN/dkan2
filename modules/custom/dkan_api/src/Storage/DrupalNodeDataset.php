@@ -25,6 +25,13 @@ class DrupalNodeDataset implements Storage {
   protected $themeValueReferencer;
 
   /**
+   * Represents the data type passed via the HTTP request url schema_id slug.
+   *
+   * @var string
+   */
+  protected $schemaId;
+
+  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -38,6 +45,16 @@ class DrupalNodeDataset implements Storage {
     ) {
     $this->entityTypeManager = $entityTypeManager;
     $this->themeValueReferencer = $themeValueReferencer;
+  }
+
+  /**
+   * Sets the data type.
+   *
+   * @param $schema_id string
+   *   The HTTP request's schema or data type.
+   */
+  public function setSchema($schema_id) {
+    $this->schemaId = $schema_id;
   }
 
   /**
@@ -80,7 +97,7 @@ class DrupalNodeDataset implements Storage {
 
     $node_ids = $nodeStorage->getQuery()
       ->condition('type', $this->getType())
-      ->condition('field_data_type', 'dataset')
+      ->condition('field_data_type', $this->schemaId)
       ->execute();
 
     $all = [];
@@ -127,7 +144,7 @@ class DrupalNodeDataset implements Storage {
     /* @var $node \Drupal\node\NodeInterface */
     // update existing node
     if ($node) {
-      $node->field_data_type = "dataset";
+      $node->field_data_type = $this->schemaId;
       $new_data = json_encode($data);
       // Check for orphan theme references.
       $this->themeValueReferencer->processDeletedThemes(
@@ -146,7 +163,7 @@ class DrupalNodeDataset implements Storage {
           'title' => $title,
           'type' => 'data',
           'uuid' => $id,
-          'field_data_type' => 'dataset',
+          'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
         ]);
       $node->save();
