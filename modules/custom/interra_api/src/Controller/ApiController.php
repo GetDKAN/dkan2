@@ -105,7 +105,7 @@ class ApiController extends ControllerBase {
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
 
-          if ($dataset->theme && is_array($dataset->theme)) {
+          if (isset($dataset->theme) && is_array($dataset->theme)) {
             $theme = $datasetModifier->objectifyStringsArray($dataset->theme);
             $themes[$theme[0]->identifier] = $theme[0];
           }
@@ -120,7 +120,7 @@ class ApiController extends ControllerBase {
         foreach ($data as $dataset_json) {
           $dataset = json_decode($dataset_json);
 
-          if ($dataset->publisher) {
+          if (isset($dataset->publisher)) {
             $organizations[$dataset->publisher->name] = $dataset->publisher;
           }
         }
