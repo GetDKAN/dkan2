@@ -23,12 +23,6 @@ class DatastoreManagerBuilder {
 
   /**
    *
-   * @var Info
-   */
-  protected $info;
-
-  /**
-   *
    * @var Resource
    */
   protected $resource;
@@ -38,38 +32,28 @@ class DatastoreManagerBuilder {
   }
 
   /**
-   * Set information about the manager class to build.
-   *
-   * This allows overriding the importer class amongst other things.
-   * 
-   * @param type $class
-   * @param type $machine_name
-   * @param type $label
-   * @return $this
+   * @todo make it so Info is overridable. seems like a good place to specify a different import handler.
+   * @return Info
    */
-  public function setInfo($class, $machine_name, $label) {
-    $this->info = new Info($class, $machine_name, $label);
-    return $this;
-  }
-
   protected function getInfo() {
-
-    if (!isset($this->info)) {
-      // create one with default values.
-      $this->info = new Info(SimpleImport::class, "simple_import", "SimpleImport");
-    }
-
-    return $this->info;
+    return new Info(SimpleImport::class, "simple_import", "SimpleImport");
   }
 
   protected function getInfoProvider() {
-    return new InfoProvider($this->getInfo());
+    $infoProvider = new InfoProvider();
+    $infoProvider->addInfo($this->getInfo());
+    return $infoProvider;
   }
 
-  protected function loadEntityByUuid(string $uuid): \stdClass {
+  /**
+   *
+   * @param string $uuid
+   * @return \Drupal\Core\Entity\EntityInterface
+   */
+  protected function loadEntityByUuid(string $uuid) {
     return $this->container
         ->get('entity.repository')
-        ->loadEntityByUuid('node', $uuid);
+        ->loadEntityByUuid('node' , $uuid);
   }
 
   public function setResource($id, $filePath) {
