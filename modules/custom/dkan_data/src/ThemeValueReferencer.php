@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\dkan_api\Storage;
+namespace Drupal\dkan_data;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Component\Uuid\UuidInterface;
