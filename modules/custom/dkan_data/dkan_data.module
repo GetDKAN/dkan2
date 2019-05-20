@@ -16,7 +16,7 @@ function dkan_data_node_load(array $entities) {
     if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
       $metadata = json_decode($entity->get('field_json_metadata')->value);
       if (isset($metadata->theme)) {
-        $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
+        $referencer = Drupal::service("dkan_data.theme_value_referencer");
         $metadata->theme = $referencer->dereference($metadata);
         $entity->set('field_json_metadata', json_encode($metadata));
       }
@@ -63,7 +63,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   }
 
   if (isset($metadata->theme)) {
-    $referencer = Drupal::service("dkan_api.storage.theme_value_referencer");
+    $referencer = Drupal::service("dkan_data.theme_value_referencer");
     $metadata->theme = $referencer->reference($metadata);
   }
 
