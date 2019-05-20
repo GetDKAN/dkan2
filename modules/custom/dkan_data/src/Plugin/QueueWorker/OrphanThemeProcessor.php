@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\dkan_api\Plugin\QueueWorker;
+namespace Drupal\dkan_data\Plugin\QueueWorker;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
