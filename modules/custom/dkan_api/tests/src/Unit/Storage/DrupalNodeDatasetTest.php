@@ -6,7 +6,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_api\Storage\DrupalNodeDataset;
 use Drupal\node\NodeStorageInterface;
-use Drupal\dkan_api\Storage\ThemeValueReferencer;
 
 /**
  * Tests Drupal\dkan_api\Storage\DrupalNodeDataset.
@@ -22,21 +21,16 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testConstruct() {
     $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-    $mockThemeValueReferencer = $this->createMock(ThemeValueReferencer::class);
     $mock = $this->getMockBuilder(DrupalNodeDataset::class)
       ->disableOriginalConstructor()
       ->getMock();
 
     // Assert.
-    $mock->__construct($mockEntityTypeManager, $mockThemeValueReferencer);
+    $mock->__construct($mockEntityTypeManager);
 
     $this->assertSame(
             $mockEntityTypeManager,
             $this->readAttribute($mock, 'entityTypeManager')
-    );
-    $this->assertSame(
-            $mockThemeValueReferencer,
-            $this->readAttribute($mock, 'themeValueReferencer')
     );
   }
 

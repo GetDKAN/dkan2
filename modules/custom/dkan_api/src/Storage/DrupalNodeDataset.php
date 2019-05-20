@@ -18,26 +18,13 @@ class DrupalNodeDataset implements Storage {
   protected $entityTypeManager;
 
   /**
-   * Theme Value Referencer.
-   *
-   * @var Drupal\dkan_api\Storage\ThemeValueReferencer
-   */
-  protected $themeValueReferencer;
-
-  /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param \Drupal\dkan_api\Storage\ThemeValueReferencer $themeValueReferencer
-   *   Injected theme value referencer.
    */
-  public function __construct(
-          EntityTypeManagerInterface $entityTypeManager,
-          ThemeValueReferencer $themeValueReferencer
-    ) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->themeValueReferencer = $themeValueReferencer;
   }
 
   /**
@@ -65,7 +52,7 @@ class DrupalNodeDataset implements Storage {
   public function retrieve(string $id): ?string {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $this->themeDereferenced($node->field_json_metadata->value);
+      return $node->field_json_metadata->value;
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
@@ -86,7 +73,7 @@ class DrupalNodeDataset implements Storage {
     $all = [];
     foreach ($node_ids as $nid) {
       $node = $nodeStorage->load($nid);
-      $all[] = $this->themeDereferenced($node->field_json_metadata->value);
+      $all[] = $node->field_json_metadata->value;
     }
     return $all;
   }
@@ -97,10 +84,6 @@ class DrupalNodeDataset implements Storage {
   public function remove(string $id) {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      // Check for orphan theme references.
-      $this->themeValueReferencer->processDeletedThemes(
-        $node->field_json_metadata->value
-      );
       return $node->delete();
     }
   }
@@ -111,10 +94,6 @@ class DrupalNodeDataset implements Storage {
   public function store(string $data, string $id = NULL): string {
 
     $data = json_decode($data);
-
-    if (isset($data->theme)) {
-      $data->theme = $this->themeValueReferencer->reference($data);
-    }
 
     if (!$id && isset($data->identifier)) {
       $id = $data->identifier;
@@ -129,11 +108,6 @@ class DrupalNodeDataset implements Storage {
     if ($node) {
       $node->field_data_type = "dataset";
       $new_data = json_encode($data);
-      // Check for orphan theme references.
-      $this->themeValueReferencer->processDeletedThemes(
-        $node->field_json_metadata->value,
-        $new_data
-      );
       $node->field_json_metadata = $new_data;
       $node->save();
       return $node->uuid();
@@ -172,17 +146,6 @@ class DrupalNodeDataset implements Storage {
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
-  }
-
-  /**
-   * Helper function.
-   */
-  protected function themeDereferenced($json) {
-    $data = json_decode($json);
-    if (isset($data->theme)) {
-      $data->theme = $this->themeValueReferencer->dereference($data);
-    }
-    return json_encode($data);
   }
 
 }
