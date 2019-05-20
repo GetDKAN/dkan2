@@ -61,8 +61,8 @@ class DkanDatastoreCommands extends DrushCommands {
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
         $this->output->writeln("And created a resource.");
 
-        // @TODO this 
-        if($deferred) {
+        // handle the command differently if deferred.
+        if(!empty($deferred)) {
           $this->output->writeln("Using deferred processing. Items will be pocessed by queue.");
           /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
           $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
