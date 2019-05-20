@@ -29,11 +29,13 @@ class DeferredImportQueuer{
     
     $fileChunks = $fileChunker->chunkFile($resource, $chunkSize);
     
-    $queue = $this->getQueueForDatastore($uuid);
+    $queue = $this->getQueue();
     
     foreach ($fileChunks as $fileIdentifier => $filePath) {
       $queue->createItem([
         'uuid'            => $uuid,
+        // resource id is used to create table.
+        'resource_id' => $resource->getId(),
         'file_identifier' => $fileIdentifier,
         'file_path'       => $filePath,
       ]);
@@ -46,7 +48,7 @@ class DeferredImportQueuer{
    * Get the queue for the datastore_import.
    * @return QueueInterface
    */
-  public function getQueueForDatastore(): QueueInterface {
+  public function getQueue(): QueueInterface {
     return \Drupal::queue('dkan_datastore_import_queue');
   }
 

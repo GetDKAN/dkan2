@@ -55,7 +55,7 @@ class CsvChunker implements FileChunkerInterface {
         || (false === $line)
       ) {
         // write current chunk and move on to next
-        $partIdentifier = $resourceId . '.part-' . str_pad("$partCount", 6, '0', STR_PAD_LEFT);
+        $partIdentifier = 'dkan-resource-'.$resourceId . '.part-' . str_pad("$partCount", 6, '0', STR_PAD_LEFT);
         $partFilename = $tmpDir . '/' . $partIdentifier . '.csv';
         
         $this->writeCsvChunk($partFilename, $currentChunkLines);
