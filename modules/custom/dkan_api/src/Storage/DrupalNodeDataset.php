@@ -21,26 +21,30 @@ class DrupalNodeDataset implements Storage {
   protected $entityTypeManager;
 
   /**
-   * Theme Value Referencer.
+   * Represents the data type passed via the HTTP request url schema_id slug.
    *
-   * @var Drupal\dkan_api\Storage\ThemeValueReferencer
+   * @var string
    */
-  protected $themeValueReferencer;
+  protected $schemaId;
 
   /**
    * Constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param \Drupal\dkan_api\Storage\ThemeValueReferencer $themeValueReferencer
-   *   Injected theme value referencer.
    */
-  public function __construct(
-          EntityTypeManagerInterface $entityTypeManager,
-          ThemeValueReferencer $themeValueReferencer
-    ) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->themeValueReferencer = $themeValueReferencer;
+  }
+
+  /**
+   * Sets the data type.
+   *
+   * @param $schema_id string
+   *   The HTTP request's schema or data type.
+   */
+  public function setSchema($schema_id) {
+    $this->schemaId = $schema_id;
   }
 
   /**
@@ -68,7 +72,7 @@ class DrupalNodeDataset implements Storage {
   public function retrieve(string $id): ?string {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $this->themeDereferenced($node->field_json_metadata->value);
+      return $node->field_json_metadata->value;
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
@@ -83,13 +87,13 @@ class DrupalNodeDataset implements Storage {
 
     $node_ids = $nodeStorage->getQuery()
       ->condition('type', $this->getType())
-      ->condition('field_data_type', 'dataset')
+      ->condition('field_data_type', $this->schemaId)
       ->execute();
 
     $all = [];
     foreach ($node_ids as $nid) {
       $node = $nodeStorage->load($nid);
-      $all[] = $this->themeDereferenced($node->field_json_metadata->value);
+      $all[] = $node->field_json_metadata->value;
     }
     return $all;
   }
@@ -100,10 +104,6 @@ class DrupalNodeDataset implements Storage {
   public function remove(string $id) {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      // Check for orphan theme references.
-      $this->themeValueReferencer->processDeletedThemes(
-        $node->field_json_metadata->value
-      );
       return $node->delete();
     }
   }
@@ -114,10 +114,6 @@ class DrupalNodeDataset implements Storage {
   public function store(string $data, string $id = NULL): string {
 
     $data = json_decode($data);
-
-    if (isset($data->theme)) {
-      $data->theme = $this->themeValueReferencer->reference($data);
-    }
 
     if (!$id && isset($data->identifier)) {
       $id = $data->identifier;
@@ -130,13 +126,8 @@ class DrupalNodeDataset implements Storage {
     /* @var $node \Drupal\node\NodeInterface */
     // update existing node
     if ($node) {
-      $node->field_data_type = "dataset";
+      $node->field_data_type = $this->schemaId;
       $new_data = json_encode($data);
-      // Check for orphan theme references.
-      $this->themeValueReferencer->processDeletedThemes(
-        $node->field_json_metadata->value,
-        $new_data
-      );
       $node->field_json_metadata = $new_data;
       $node->save();
       return $node->uuid();
@@ -149,7 +140,7 @@ class DrupalNodeDataset implements Storage {
           'title' => $title,
           'type' => 'data',
           'uuid' => $id,
-          'field_data_type' => 'dataset',
+          'field_data_type' => $this->schemaId,
           'field_json_metadata' => json_encode($data),
         ]);
       $node->save();
@@ -210,17 +201,6 @@ class DrupalNodeDataset implements Storage {
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
-  }
-
-  /**
-   * Helper function.
-   */
-  protected function themeDereferenced($json) {
-    $data = json_decode($json);
-    if (isset($data->theme)) {
-      $data->theme = $this->themeValueReferencer->dereference($data);
-    }
-    return json_encode($data);
   }
 
 }

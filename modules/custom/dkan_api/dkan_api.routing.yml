@@ -1,19 +1,19 @@
 dkan_api.dataset_get_all:
-  path: '/api/v1/dataset'
+  path: '/api/v1/{schema_id}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::getAll'}
   requirements:
     _access: 'TRUE'
 dkan_api.dataset_get:
-  path: '/api/v1/dataset/{uuid}'
+  path: '/api/v1/{schema_id}/{uuid}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::get'}
   requirements:
     _access: 'TRUE'
 dkan_api.dataset_post:
-  path: '/api/v1/dataset'
+  path: '/api/v1/{schema_id}'
   methods: [POST]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::post'}
@@ -22,7 +22,7 @@ dkan_api.dataset_post:
   requirements:
     _permission: 'post put delete datasets through the api'
 dkan_api.dataset_put:
-  path: '/api/v1/dataset/{uuid}'
+  path: '/api/v1/{schema_id}/{uuid}'
   methods: [PUT]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::put'}
@@ -31,7 +31,7 @@ dkan_api.dataset_put:
   requirements:
     _permission: 'post put delete datasets through the api'
 dkan_api.dataset_patch:
-  path: '/api/v1/dataset/{uuid}'
+  path: '/api/v1/{schema_id}/{uuid}'
   methods: [PATCH]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::patch'}
@@ -40,7 +40,7 @@ dkan_api.dataset_patch:
   requirements:
     _permission: 'post put delete datasets through the api'
 dkan_api.dataset_delete:
-  path: '/api/v1/dataset/{uuid}'
+  path: '/api/v1/{schema_id}/{uuid}'
   methods: [DELETE]
   defaults:
     { _controller: '\Drupal\dkan_api\Controller\Dataset::delete'}
