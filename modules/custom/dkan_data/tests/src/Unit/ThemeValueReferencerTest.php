@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_api\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_api\Storage\ThemeValueReferencer;
+use Drupal\dkan_data\ThemeValueReferencer;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
