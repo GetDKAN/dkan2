@@ -14,7 +14,7 @@ use stdClass;
  *
  * @package Drupal\dkan_api\Storage
  */
-class ThemeValueReferencer {
+class ValueReferencer {
 
   /**
    * The entity type manager service.

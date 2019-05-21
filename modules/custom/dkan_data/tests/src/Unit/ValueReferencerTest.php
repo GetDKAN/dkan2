@@ -4,7 +4,7 @@ namespace Drupal\Tests\dkan_api\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_data\ThemeValueReferencer;
+use Drupal\dkan_data\ValueReferencer;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
@@ -14,19 +14,19 @@ use Drupal\Core\Entity\EntityInterface;
 use stdClass;
 
 /**
- * Tests Drupal\dkan_api\Storage\ThemeValueReferencer.
+ * Tests Drupal\dkan_api\Storage\ValueReferencer.
  *
- * @coversDefaultClass \Drupal\dkan_api\Storage\ThemeValueReferencer
+ * @coversDefaultClass \Drupal\dkan_api\Storage\ValueReferencer
  * @group dkan_api
  */
-class ThemeValueReferencerTest extends DkanTestBase {
+class ValueReferencerTest extends DkanTestBase {
 
   /**
    * Tests the constructor.
    */
   public function testConstruct() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
@@ -71,7 +71,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testReferenceSingle(string $theme, array $nodes, $expected) {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
@@ -135,7 +135,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testThemesRemoved($old, $new, array $expected) {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
@@ -171,7 +171,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    *   Expected result from dereferenceSingle when passed test data.
    */
   public function testDereferenceSingle($str, array $nodes, $expected) {
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
@@ -241,7 +241,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testDereferenceWithoutThemes(\stdClass $data, $expected) {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
@@ -255,7 +255,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testDereferenceWithThemes() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(['dereferenceSingle'])
       ->getMock();
@@ -305,7 +305,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testReferenceWithoutThemes(\stdClass $data, $expected) {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
@@ -319,7 +319,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testReferenceWithExistingThemes() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(['referenceSingle'])
       ->getMock();
@@ -342,7 +342,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testReferenceCreatingNewThemeReference() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(['referenceSingle', 'createThemeReference'])
       ->getMock();
@@ -370,7 +370,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testReferenceFailsAtCreatingNewThemeReference() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(['referenceSingle', 'createThemeReference'])
       ->getMock();
@@ -397,7 +397,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testProcessDeletedThemes() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods([
         'themesRemoved',
@@ -443,7 +443,7 @@ class ThemeValueReferencerTest extends DkanTestBase {
    */
   public function testCreateThemeReference() {
     // Setup.
-    $mock = $this->getMockBuilder(ThemeValueReferencer::class)
+    $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();

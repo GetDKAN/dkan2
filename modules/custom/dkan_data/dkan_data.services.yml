@@ -3,8 +3,8 @@ services:
     class: \Drupal\dkan_data\ConfigurationOverrider
     tags:
       - {name: config.factory.override, priority: 5}
-  dkan_data.theme_value_referencer:
-    class: \Drupal\dkan_data\ThemeValueReferencer
+  dkan_data.value_referencer:
+    class: \Drupal\dkan_data\ValueReferencer
     arguments:
       - '@entity_type.manager'
       - '@uuid'
