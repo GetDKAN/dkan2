@@ -71,12 +71,12 @@ function dkan_data_entity_presave(EntityInterface $entity) {
 }
 
 /**
- * Implements hook_ENTITY_TYPE_delete().
+ * Implements hook_ENTITY_TYPE_predelete().
  */
-function dkan_data_node_delete(EntityInterface $entity) {
+function dkan_data_node_predelete(EntityInterface $entity) {
   // Only process potentially deleted references for datasets.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
-    $metadata = $entity->get('field_json_metadata')->value;
+    $metadata = _raw_json_metadata($entity->id());
     $referencer = Drupal::service("dkan_data.value_referencer");
     $referencer->processDeletedReferences($metadata);
   }
@@ -91,4 +91,20 @@ function dkan_data_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
   }
+}
+
+/**
+ * Provides the raw, unreferenced json metadata of a dataset.
+ *
+ * @param int $entity_id
+ *   The dataset's entity id.
+ *
+ * @return string
+ *   The json metadata.
+ */
+function _raw_json_metadata(int $entity_id) {
+  return \Drupal::service('database')->query(
+    "SELECT field_json_metadata_value FROM node__field_json_metadata WHERE entity_id=:nid",
+    [':nid' => $entity_id]
+  )->fetchField();
 }
