@@ -113,7 +113,7 @@ class ValueReferencerTest extends DkanTestBase {
   /**
    * Provides a list of old and new json strings to test themes being removed.
    */
-  public function dataTestThemesRemoved() {
+  public function dataTestReferencesRemoved() {
     return [
       ['{}', '{}', []],
       ['{"theme":["Theme One"]}', '{"key":"value"}', ['Theme One']],
@@ -122,9 +122,9 @@ class ValueReferencerTest extends DkanTestBase {
   }
 
   /**
-   * Tests the themesRemoved function.
+   * Tests the referencesRemoved function.
    *
-   * @dataProvider dataTestThemesRemoved
+   * @dataProvider dataTestreferencesRemoved
    *
    * @param string $old
    *   Existing json string.
@@ -133,7 +133,7 @@ class ValueReferencerTest extends DkanTestBase {
    * @param array $expected
    *   Expected array containing themes removed between old and new.
    */
-  public function testThemesRemoved($old, $new, array $expected) {
+  public function testReferencesRemoved($old, $new, array $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
@@ -141,7 +141,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->getMock();
 
     // Assert.
-    $this->assertEquals($expected, $mock->themesRemoved($old, $new));
+    $this->assertEquals($expected, $mock->referencesRemoved($old, $new));
   }
 
   /**
@@ -393,14 +393,14 @@ class ValueReferencerTest extends DkanTestBase {
   }
 
   /**
-   * Tests the processDeletedThemes function.
+   * Tests the processDeletedReferences function.
    */
-  public function testProcessDeletedThemes() {
+  public function testprocessDeletedReferences() {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
       ->setMethods([
-        'themesRemoved',
+        'referencesRemoved',
       ])
       ->getMock();
     $mockQueueFactory = $this->getMockBuilder(QueueFactory::class)
@@ -423,7 +423,7 @@ class ValueReferencerTest extends DkanTestBase {
 
     // Expect.
     $mock->expects($this->once())
-      ->method('themesRemoved')
+      ->method('referencesRemoved')
       ->with($old, $new)
       ->willReturn($themes_removed);
     $mockQueueFactory->expects($this->atLeastOnce())
@@ -435,7 +435,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->withConsecutive([$themes_removed[0]], [$themes_removed[1]])
       ->willReturnOnConsecutiveCalls(TRUE, TRUE);
 
-    $mock->processDeletedThemes($old, $new);
+    $mock->processDeletedReferences($old, $new);
   }
 
   /**

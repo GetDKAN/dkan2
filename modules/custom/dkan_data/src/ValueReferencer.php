@@ -198,8 +198,8 @@ class ValueReferencer {
    * @return int
    *   The number of items queued for processing.
    */
-  public function processDeletedThemes(string $old, string $new = "{}") {
-    $themes_removed = $this->themesRemoved($old, $new);
+  public function processDeletedReferences(string $old, string $new = "{}") {
+    $themes_removed = $this->referencesRemoved($old, $new);
 
     $orphan_theme_queue = $this->queueService->get('orphan_theme_processor');
     foreach ($themes_removed as $theme_removed) {
@@ -219,7 +219,7 @@ class ValueReferencer {
    * @return array
    *   Array of theme uuid(s).
    */
-  public function themesRemoved(string $old, string $new = "{}"): array {
+  public function referencesRemoved(string $old, $new = "{}"): array {
     $old_data = json_decode($old);
     if (!isset($old_data->theme)) {
       // No theme to potentially delete nor check for orphan.
