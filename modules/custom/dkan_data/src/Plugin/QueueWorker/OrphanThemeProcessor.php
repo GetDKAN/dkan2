@@ -60,13 +60,10 @@ class OrphanThemeProcessor extends QueueWorkerBase implements ContainerFactoryPl
    * {@inheritdoc}
    */
   public function processItem($uuid) {
-    $datasets = $this->entityTypeManager->getStorage('node')
-      ->loadByProperties([
-        'field_data_type' => 'dataset',
-      ]);
+    $datasets = $this->rawJsonMetadata(NULL);
 
     foreach ($datasets as $dataset) {
-      $data = json_decode($dataset->field_json_metadata->value);
+      $data = json_decode($dataset->field_json_metadata_value);
       $themes = $data->theme ?? [];
       if (in_array($uuid, $themes)) {
         // Uuid found in use, abort.
@@ -83,6 +80,30 @@ class OrphanThemeProcessor extends QueueWorkerBase implements ContainerFactoryPl
     if (FALSE !== ($theme = reset($themes))) {
       $theme->delete();
     }
+  }
+
+  /**
+   * Provides the raw, unreferenced json metadata from datasets.
+   *
+   * Returns a dynamic query based on the following parameters.
+   *
+   * @param int $nid
+   * @param string $type
+   *
+   * @return string
+   *   The json metadata.
+   */
+  function rawJsonMetadata(int $nid = NULL, $type = 'dataset') {
+    $connection = \Drupal::service('database');
+    $query = $connection->select('node__field_json_metadata', 'm');
+    $query->fields('m', ['field_json_metadata_value']);
+    if ($nid) {
+      $query->condition('m.entity_id', $nid);
+    }
+    if ($type) {
+      $query->join('node__field_data_type', 't', 'm.entity_id = t.entity_id and t.field_data_type_value=:type', [':type' => $type]);
+    }
+    return $query->execute();
   }
 
 }
