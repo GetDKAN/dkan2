@@ -74,14 +74,9 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     $metadata->theme = $referencer->reference($metadata);
   }
   $entity->set('field_json_metadata', json_encode($metadata));
-//  ddl($entity->get('field_json_metadata')->value, 'entity after referencing themes');
 
+  // If updating an existing entity, check for orphan property references.
   if (isset($entity->original)) {
-    if (isset($entity->unreferenced_json_metadata)) {
-//      ddl($entity->unreferenced_json_metadata, 'unreferenced_json_metadata');
-    }
-//    ddl($entity->original->get('field_json_metadata')->value, "presave original json value");
-//    ddl($entity->get('field_json_metadata')->value, "presave incoming json value");
     $referencer->processDeletedReferences(
       $entity->unreferenced_json_metadata,
       $entity->get('field_json_metadata')->value
