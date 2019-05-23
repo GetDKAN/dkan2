@@ -10,15 +10,15 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Verifies if a theme is orphaned, then deletes it.
+ * Verifies if a dataset property reference is orphaned, then deletes it.
  *
  * @QueueWorker(
- *   id = "orphan_theme_processor",
- *   title = @Translation("Task Worker: Verify then delete orphaned theme"),
+ *   id = "orphan_property_processor",
+ *   title = @Translation("Task Worker: Check for orphaned property reference"),
  *   cron = {"time" = 15}
  * )
  */
-class OrphanThemeProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+class OrphanPropertyProcessor extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   /**
    * The entity type manager service.

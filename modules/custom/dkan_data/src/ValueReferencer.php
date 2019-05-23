@@ -201,7 +201,7 @@ class ValueReferencer {
   public function processDeletedReferences(string $old, string $new = "{}") {
     $themes_removed = $this->referencesRemoved($old, $new);
 
-    $orphan_theme_queue = $this->queueService->get('orphan_theme_processor');
+    $orphan_theme_queue = $this->queueService->get('orphan_property_processor');
     foreach ($themes_removed as $theme_removed) {
       // @Todo: Only add to the queue when uuid doesn't already exists in it.
       $orphan_theme_queue->createItem($theme_removed);
