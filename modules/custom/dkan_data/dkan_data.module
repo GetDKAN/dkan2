@@ -14,6 +14,9 @@ function dkan_data_node_load(array $entities) {
 
   foreach ($entities as $entity) {
     if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
+      // Temporarily save the raw json metadata, for later use.
+      $entity->unreferenced_json_metadata = $entity->get('field_json_metadata')->value;
+
       $metadata = json_decode($entity->get('field_json_metadata')->value);
       if (isset($metadata->theme)) {
         $referencer = Drupal::service("dkan_data.value_referencer");
@@ -31,6 +34,10 @@ function dkan_data_node_load(array $entities) {
 function dkan_data_entity_presave(EntityInterface $entity) {
 
   if ($entity->bundle() != "data") {
+    return;
+  }
+
+  if ($entity->get('field_data_type')->value != 'dataset') {
     return;
   }
 
@@ -62,23 +69,61 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     $entity->set('uuid', $metadata->identifier);
   }
 
+  $referencer = Drupal::service("dkan_data.value_referencer");
   if (isset($metadata->theme)) {
-    $referencer = Drupal::service("dkan_data.value_referencer");
     $metadata->theme = $referencer->reference($metadata);
   }
-
   $entity->set('field_json_metadata', json_encode($metadata));
+//  ddl($entity->get('field_json_metadata')->value, 'entity after referencing themes');
+
+  if (isset($entity->original)) {
+    if (isset($entity->unreferenced_json_metadata)) {
+//      ddl($entity->unreferenced_json_metadata, 'unreferenced_json_metadata');
+    }
+//    ddl($entity->original->get('field_json_metadata')->value, "presave original json value");
+//    ddl($entity->get('field_json_metadata')->value, "presave incoming json value");
+    $referencer->processDeletedReferences(
+      $entity->unreferenced_json_metadata,
+      $entity->get('field_json_metadata')->value
+    );
+  }
+}
+
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function dkan_data_node_insert(EntityInterface $entity) {
+  // Only process potentially deleted references for datasets.
+  if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
+//    ddl($entity, 'dkan_data_node_insert entity');
+//    ddl($entity->original->get('field_json_metadata')->value, 'dkan_data_node_update original');
+  }
+}
+
+  /**
+ * Implements hook_ENTITY_TYPE_update().
+ */
+function dkan_data_node_update(EntityInterface $entity) {
+  // Check for orphan references when datasets are updated.
+  if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
+//    ddl($entity->unreferenced_json_metadata, 'dkan_data_node_update entity');
+//    ddl($entity->original->get('field_json_metadata')->value, 'dkan_data_node_update original');
+//    ddl($entity, 'dkan_data_node_update entity');
+//    ddl($entity->get('field_json_metadata')->value, 'dkan_data_node_update new');
+//    $referencer = Drupal::service("dkan_data.value_referencer");
+//    $referencer->processDeletedReferences($metadata);
+  }
 }
 
 /**
  * Implements hook_ENTITY_TYPE_predelete().
  */
 function dkan_data_node_predelete(EntityInterface $entity) {
-  // Only process potentially deleted references for datasets.
+  // Check for orphan references when datasets are deleted.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
-    $metadata = _raw_json_metadata($entity->id());
     $referencer = Drupal::service("dkan_data.value_referencer");
-    $referencer->processDeletedReferences($metadata);
+    $referencer->processDeletedReferences($entity->unreferenced_json_metadata);
   }
 }
 
@@ -91,20 +136,4 @@ function dkan_data_entity_bundle_field_info_alter(&$fields, EntityTypeInterface 
       $fields['field_json_metadata']->addConstraint('ProperJson', []);
     }
   }
-}
-
-/**
- * Provides the raw, unreferenced json metadata of a dataset.
- *
- * @param int $entity_id
- *   The dataset's entity id.
- *
- * @return string
- *   The json metadata.
- */
-function _raw_json_metadata(int $entity_id) {
-  return \Drupal::service('database')->query(
-    "SELECT field_json_metadata_value FROM node__field_json_metadata WHERE entity_id=:nid",
-    [':nid' => $entity_id]
-  )->fetchField();
 }
