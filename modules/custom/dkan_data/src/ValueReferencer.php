@@ -235,4 +235,24 @@ class ValueReferencer {
     return array_diff($old_themes, $new_themes);
   }
 
+  /**
+   * Get the list of dataset properties being referenced.
+   *
+   * @return array
+   *   list of dataset properties.
+   */
+  protected function getPropertyList() {
+    $config = \Drupal::config('dkan_data.settings');
+    $config_property_list = trim($config->get('property_list'));
+
+    // Trim and split list on newlines whether Windows, MacOS or Linux.
+    $property_list = preg_split(
+      '/\s*\r\n\s*|\s*\r\s*|\s*\n\s*/',
+      $config_property_list,
+      -1,
+      PREG_SPLIT_NO_EMPTY
+    );
+    return $property_list;
+  }
+
 }
