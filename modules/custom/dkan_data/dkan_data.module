@@ -89,33 +89,6 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   }
 }
 
-
-/**
- * Implements hook_ENTITY_TYPE_update().
- */
-function dkan_data_node_insert(EntityInterface $entity) {
-  // Only process potentially deleted references for datasets.
-  if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
-//    ddl($entity, 'dkan_data_node_insert entity');
-//    ddl($entity->original->get('field_json_metadata')->value, 'dkan_data_node_update original');
-  }
-}
-
-  /**
- * Implements hook_ENTITY_TYPE_update().
- */
-function dkan_data_node_update(EntityInterface $entity) {
-  // Check for orphan references when datasets are updated.
-  if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
-//    ddl($entity->unreferenced_json_metadata, 'dkan_data_node_update entity');
-//    ddl($entity->original->get('field_json_metadata')->value, 'dkan_data_node_update original');
-//    ddl($entity, 'dkan_data_node_update entity');
-//    ddl($entity->get('field_json_metadata')->value, 'dkan_data_node_update new');
-//    $referencer = Drupal::service("dkan_data.value_referencer");
-//    $referencer->processDeletedReferences($metadata);
-  }
-}
-
 /**
  * Implements hook_ENTITY_TYPE_predelete().
  */
