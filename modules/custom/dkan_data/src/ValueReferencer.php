@@ -52,51 +52,64 @@ class ValueReferencer {
   /**
    * Returns the uuid references for all themes values.
    *
-   * @param \stdClass $data
+   * @param stdClass $data
    *   The object from the json data string.
    *
    * @return mixed
    *   An array of uuid, or NULL.
    */
   public function reference(stdClass $data) {
-    if (!isset($data->theme) || !is_array($data->theme)) {
-      return NULL;
-    }
-    $themes = [];
-    foreach ($data->theme as $theme) {
-      $uuid = $this->referenceSingle($theme);
-      if (!$uuid) {
-        $uuid = $this->createThemeReference($theme);
-      }
-      // Return the existing or generated uuid, if not keep the original value.
-      if ($uuid) {
-        $themes[] = $uuid;
-      }
-      else {
-        $themes[] = $theme;
+    // Cycle through the dataset properties we seek to reference.
+    foreach ($this->getPropertyList() as $property_id) {
+      if (isset($data->{$property_id})) {
+        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
       }
     }
-    return $themes;
+    return $data;
   }
 
   /**
-   * Returns a single uuid reference for a particular theme value.
-   *
-   * If a corresponding existing uuid is not found, a theme data item is saved
-   * and its uuid returned.
-   *
-   * @param string $theme
-   *   Human-readable theme value.
+   * @param string $property_id
+   * @param mixed $data
    *
    * @return mixed
-   *   string containing uuid, or NULL.
    */
-  protected function referenceSingle(string $theme) {
+  protected function referenceProperty(string $property_id, $data) {
+    if (is_array($data)) {
+      return $this->referenceMultiple($property_id, $data);
+    }
+    if (is_object($data) || is_string($data)) {
+      return $this->referenceSingle($property_id, $data);
+    }
+  }
+
+  protected function referenceMultiple(string $property_id, array $values) : array {
+    $result = [];
+    foreach ($values as $value) {
+      $result[] = $this->referenceSingle($property_id, $value);
+    }
+    return $result;
+  }
+
+  protected function referenceSingle(string $property_id, $value) {
+    $uuid = $this->checkExistingReference($property_id, $value);
+    if (!$uuid) {
+      $uuid = $this->createPropertyReference($property_id, $value);
+    }
+    if ($uuid) {
+      return $uuid;
+    }
+    else {
+      return $value;
+    }
+  }
+
+  protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
       ->loadByProperties([
-        'field_data_type' => "theme",
-        'title' => $theme,
+        'field_data_type' => $property_id,
+        'title' => $this->setReferenceTitle($data),
       ]);
 
     if ($node = reset($nodes)) {
@@ -105,38 +118,39 @@ class ValueReferencer {
     return NULL;
   }
 
-  /**
-   * Generate and save a json theme item.
-   *
-   * @param string $theme
-   *   Human-readable theme value.
-   *
-   * @return string
-   *   The new theme data item's uuid.
-   */
-  protected function createThemeReference(string $theme) {
+  protected function createPropertyReference(string $property_id, $data) {
     $today = date('Y-m-d');
 
     // Create theme json.
-    $data = new stdClass();
-    $data->title = $theme;
-    $data->identifier = $this->uuidService->generate();
-    $data->created = $today;
-    $data->modified = $today;
+    $ref = new stdClass();
+    $ref->title = $this->setReferenceTitle($data);
+    $ref->identifier = $this->uuidService->generate();
+    $ref->data = $data;
+    $ref->created = $today;
+    $ref->modified = $today;
 
     // Create new data node for this theme.
     $node = $this->entityTypeManager
       ->getStorage('node')
       ->create([
-        'title' => $theme,
+        'title' => $ref->title,
         'type' => 'data',
-        'uuid' => $data->identifier,
-        'field_data_type' => 'theme',
-        'field_json_metadata' => json_encode($data),
+        'uuid' => $ref->identifier,
+        'field_data_type' => $property_id,
+        'field_json_metadata' => json_encode($ref),
       ]);
     $node->save();
 
     return $node->uuid();
+  }
+
+  protected function setReferenceTitle($data) {
+    if (is_string($data)) {
+      return $data;
+    }
+    else {
+      return md5(json_encode($data));
+    }
   }
 
   /**
@@ -216,7 +230,7 @@ class ValueReferencer {
    * @return array
    *   Array of theme uuid(s).
    */
-  public function referencesRemoved(string $old, $new = "{}"): array {
+  public function referencesRemoved($old, $new = "{}") {
     $old_data = json_decode($old);
     if (!isset($old_data->theme)) {
       // No theme to potentially delete nor check for orphan.

@@ -70,9 +70,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
   }
 
   $referencer = Drupal::service("dkan_data.value_referencer");
-  if (isset($metadata->theme)) {
-    $metadata->theme = $referencer->reference($metadata);
-  }
+  $metadata = $referencer->reference($metadata);
   $entity->set('field_json_metadata', json_encode($metadata));
 
   // If updating an existing entity, check for orphan property references.
