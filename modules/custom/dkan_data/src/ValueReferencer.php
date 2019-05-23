@@ -194,11 +194,8 @@ class ValueReferencer {
    *   Json string of item being replaced.
    * @param string $new
    *   Json string of item doing the replacing.
-   *
-   * @return int
-   *   The number of items queued for processing.
    */
-  public function processDeletedReferences(string $old, string $new = "{}") {
+  public function processDeletedReferences(string $old, $new = "{}") {
     $themes_removed = $this->referencesRemoved($old, $new);
 
     $orphan_theme_queue = $this->queueService->get('orphan_property_processor');
