@@ -16,5 +16,4 @@ services:
     shared: false
   dkan_datastore.manager.deferred_import_queuer:
     class: Drupal\dkan_datastore\Manager\DeferredImportQueuer
-  dkan_datastore.manager.csv_chunker:
-    class: Drupal\dkan_datastore\Manager\CsvChunker
+
