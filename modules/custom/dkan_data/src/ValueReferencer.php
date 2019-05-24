@@ -331,6 +331,40 @@ class ValueReferencer {
       ]);
   }
 
+  public function processUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
+    // Cycle through the dataset properties being referenced, check for orphans.
+    foreach ($this->getPropertyList() as $property_id) {
+      if (!isset($old_dataset->{$property_id})) {
+        // The old dataset had no value for this property, thus no references
+        // could be deleted. Safe to skip checking for orphan reference.
+        continue;
+      }
+      if (!isset($new_dataset->{$property_id})) {
+        $new_dataset->{$property_id} = $this->emptyPropertyOfSameType($old_dataset->{$property_id});
+      }
+      $this->processUpdatedProperty($property_id, $old_dataset->{$property_id}, $new_dataset->{$property_id});
+    }
+  }
+
+  protected function processUpdatedProperty($property_id, $old_value, $new_value) {
+    ddl($property_id, 'processUpdatedProperty property_id');
+    ddl($old_value, 'processUpdatedProperty old_value');
+    ddl($new_value, 'processUpdatedProperty new_value');
+  }
+
+  protected function emptyPropertyOfSameType($data) {
+    switch (gettype($data)) {
+      case 'array':
+        return [];
+      case 'string':
+        return "";
+      case 'object':
+        return (object) [];
+    }
+  }
+
+
+
   /**
    * Check for orphan references when a dataset is being updated.
    *
@@ -339,7 +373,7 @@ class ValueReferencer {
    * @param stdClass $new_data
    *   The updated dataset.
    */
-  public function processUpdatedDataset(stdClass $old_data, stdClass $new_data) {
+//  public function processUpdatedDataset(stdClass $old_data, stdClass $new_data) {
 //    ddl($old_dataset, 'old dataset');
 //    ddl($new_dataset, 'new dataset');
     // Cycle through the dataset properties being referenced.
@@ -348,7 +382,7 @@ class ValueReferencer {
 //        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
 //      }
 //    }
-  }
+//  }
 
   /**
    * Queue deleted references for processing, as they may be orphans.
