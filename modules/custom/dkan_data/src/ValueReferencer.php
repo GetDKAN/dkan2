@@ -309,14 +309,17 @@ class ValueReferencer {
     }
   }
 
-  protected function processDeletedProperty($property_id, $data) {
-    if (is_array($data)) {
-      foreach ($data as $uuid) {
-        $this->processDeletedReference($property_id, $uuid);
-      }
+  protected function processDeletedProperty($property_id, $uuids) {
+    // Treat single uuid as an array of one uuid.
+    if (!is_array($uuids)) {
+      $uuids = [$uuids];
     }
-    else {
-      $this->processDeletedReference($property_id, $data);
+    $this->processDeletedReferences($property_id, $uuids);
+  }
+
+  protected function processDeletedReferences($property_id, $uuids) {
+    foreach ($uuids as $uuid) {
+      $this->processDeletedReference($property_id, $uuid);
     }
   }
 
