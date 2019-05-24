@@ -10,7 +10,7 @@ use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
 /**
- * Replaces human-readable theme values with their corresponding uuids.
+ * Replaces some dataset property values with references, or vice versa.
  *
  * @package Drupal\dkan_api\Storage
  */
@@ -50,13 +50,13 @@ class ValueReferencer {
   }
 
   /**
-   * Returns the uuid references for all themes values.
+   * Replaces some dataset property values with references.
    *
    * @param stdClass $data
-   *   The object from the json data string.
+   *   Json object from field_json_metadata.
    *
-   * @return mixed
-   *   An array of uuid, or NULL.
+   * @return stdClass
+   *   Modified json object.
    */
   public function reference(stdClass $data) {
     // Cycle through the dataset properties we seek to reference.
@@ -121,19 +121,18 @@ class ValueReferencer {
   protected function createPropertyReference(string $property_id, $data) {
     $today = date('Y-m-d');
 
-    // Create theme json.
+    // Create json metadata for the reference.
     $ref = new stdClass();
-    $ref->title = $this->setReferenceTitle($data);
     $ref->identifier = $this->uuidService->generate();
     $ref->data = $data;
     $ref->created = $today;
     $ref->modified = $today;
 
-    // Create new data node for this theme.
+    // Create node to store this reference.
     $node = $this->entityTypeManager
       ->getStorage('node')
       ->create([
-        'title' => $ref->title,
+        'title' => $this->setReferenceTitle($data),
         'type' => 'data',
         'uuid' => $ref->identifier,
         'field_data_type' => $property_id,
@@ -163,20 +162,29 @@ class ValueReferencer {
    *   An array of theme values, or NULL.
    */
   public function dereference(stdClass $data) {
-    if (!isset($data->theme) || !is_array($data->theme)) {
-      return NULL;
+    // Cycle through the dataset properties we seek to dereference.
+    foreach ($this->getPropertyList() as $property_id) {
+      if (isset($data->{$property_id})) {
+        $data->{$property_id} = $this->dereferenceProperty($property_id, $data->{$property_id});
+      }
     }
-    $themes = [];
-    foreach ($data->theme as $theme) {
-      $themes[] = $this->dereferenceSingle($theme);
-    }
+    return $data;
+  }
 
-    if (!empty($themes)) {
-      return $themes;
+  protected function dereferenceProperty(string $property_id, $data) {
+    if (is_array($data)) {
+      return $this->dereferenceMultiple($property_id, $data);
     }
-    else {
-      return NULL;
+    else
+      return $this->dereferenceSingle($property_id, $data);
+  }
+
+  protected function dereferenceMultiple(string $property_id, array $data) : array {
+    $result = [];
+    foreach ($data as $datum) {
+      $result[] = $this->dereferenceSingle($property_id, $datum);
     }
+    return $result;
   }
 
   /**
@@ -188,15 +196,18 @@ class ValueReferencer {
    * @return string
    *   The theme value.
    */
-  protected function dereferenceSingle(string $str) {
+  protected function dereferenceSingle(string $property_id, string $str) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
       ->loadByProperties([
-        'field_data_type' => "theme",
+        'field_data_type' => $property_id,
         'uuid' => $str,
       ]);
     if ($node = reset($nodes)) {
-      return $node->title->value;
+      if (isset($node->field_json_metadata->value)) {
+        $metadata = json_decode($node->field_json_metadata->value);
+        return $metadata->data;
+      }
     }
     return $str;
   }

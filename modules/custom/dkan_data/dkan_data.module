@@ -15,12 +15,13 @@ function dkan_data_node_load(array $entities) {
   foreach ($entities as $entity) {
     if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
       // Temporarily save the raw json metadata, for later use.
-      $entity->unreferenced_json_metadata = $entity->get('field_json_metadata')->value;
+      $metadata_string = $entity->get('field_json_metadata')->value;
+      $entity->unreferenced_json_metadata = $metadata_string;
       // Dereference dataset properties.
-      $metadata = json_decode($entity->get('field_json_metadata')->value);
+      $metadata_obj = json_decode($metadata_string);
       $referencer = Drupal::service("dkan_data.value_referencer");
-      $metadata = $referencer->dereference($metadata);
-      $entity->set('field_json_metadata', json_encode($metadata));
+      $metadata_obj = $referencer->dereference($metadata_obj);
+      $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
   }
 
