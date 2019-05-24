@@ -327,7 +327,7 @@ class ValueReferencer {
       ]);
   }
 
-  public function processUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
+  public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
     // Cycle through the dataset properties being referenced, check for orphans.
     foreach ($this->getPropertyList() as $property_id) {
       if (!isset($old_dataset->{$property_id})) {
@@ -338,14 +338,18 @@ class ValueReferencer {
       if (!isset($new_dataset->{$property_id})) {
         $new_dataset->{$property_id} = $this->emptyPropertyOfSameType($old_dataset->{$property_id});
       }
-      $this->processUpdatedProperty($property_id, $old_dataset->{$property_id}, $new_dataset->{$property_id});
+      $this->processReferencesInUpdatedProperty($property_id, $old_dataset->{$property_id}, $new_dataset->{$property_id});
     }
   }
 
-  protected function processUpdatedProperty($property_id, $old_value, $new_value) {
-    ddl($property_id, 'processUpdatedProperty property_id');
-    ddl($old_value, 'processUpdatedProperty old_value');
-    ddl($new_value, 'processUpdatedProperty new_value');
+  protected function processReferencesInUpdatedProperty($property_id, $old_value, $new_value) {
+    if (!is_array($old_value)) {
+      $old_value = [$old_value];
+      $new_value = [$new_value];
+    }
+    foreach (array_diff($old_value, $new_value) as $removed_reference) {
+      $this->queueReferenceForRemoval($property_id, $removed_reference);
+    }
   }
 
   protected function emptyPropertyOfSameType($data) {
