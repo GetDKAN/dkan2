@@ -300,30 +300,26 @@ class ValueReferencer {
    * @param stdClass $data
    *   Dataset to be deleted.
    */
-  public function processDeletedDataset(stdClass $data) {
+  public function processReferencesInDeletedDataset(stdClass $data) {
     // Cycle through the dataset properties we seek to reference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
-        $this->processDeletedProperty($property_id, $data->{$property_id});
+        $this->processReferencesInDeletedProperty($property_id, $data->{$property_id});
       }
     }
   }
 
-  protected function processDeletedProperty($property_id, $uuids) {
+  protected function processReferencesInDeletedProperty($property_id, $uuids) {
     // Treat single uuid as an array of one uuid.
     if (!is_array($uuids)) {
       $uuids = [$uuids];
     }
-    $this->processDeletedMultipleReferences($property_id, $uuids);
-  }
-
-  protected function processDeletedMultipleReferences($property_id, $uuids) {
     foreach ($uuids as $uuid) {
-      $this->processDeletedReference($property_id, $uuid);
+      $this->queueReferenceForRemoval($property_id, $uuid);
     }
   }
 
-  protected function processDeletedReference($property_id, $uuid) {
+  protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_property_processor')
       ->createItem([
         $property_id,
