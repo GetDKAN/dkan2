@@ -147,7 +147,7 @@ class ValueReferencer {
       ->getStorage('node')
       ->loadByProperties([
         'field_data_type' => $property_id,
-        'title' => $this->setReferenceTitle($data),
+        'title' => $this->titleHash($data),
       ]);
 
     if ($node = reset($nodes)) {
@@ -166,7 +166,6 @@ class ValueReferencer {
    * @return string|null
    */
   protected function createPropertyReference(string $property_id, $data) {
-
     // Create json metadata for the reference.
     $ref = new stdClass();
     $ref->identifier = $this->uuidService->generate();
@@ -176,7 +175,7 @@ class ValueReferencer {
     $node = $this->entityTypeManager
       ->getStorage('node')
       ->create([
-        'title' => $this->setReferenceTitle($data),
+        'title' => $this->titleHash($data),
         'type' => 'data',
         'uuid' => $ref->identifier,
         'field_data_type' => $property_id,
@@ -188,7 +187,7 @@ class ValueReferencer {
   }
 
   /**
-   * Create a simple hash of the json data in string format.
+   * Create a simple hash of the json data in string format, to use as a title.
    *
    * @param string|stdClass $data
    *   The json value of a particular dataset property.
@@ -196,7 +195,7 @@ class ValueReferencer {
    * @return string
    *   Md5 hash.
    */
-  protected function setReferenceTitle($data) {
+  protected function titleHash($data) {
     return md5(json_encode($data));
   }
 
