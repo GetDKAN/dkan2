@@ -428,7 +428,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->willReturn($themes_removed);
     $mockQueueFactory->expects($this->atLeastOnce())
       ->method('get')
-      ->with('orphan_property_processor')
+      ->with('orphan_reference_processor')
       ->willReturn($mockQueueInterface);
     $mockQueueInterface->expects($this->exactly(2))
       ->method('createItem')

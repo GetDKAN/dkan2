@@ -320,7 +320,7 @@ class ValueReferencer {
   }
 
   protected function queueReferenceForRemoval($property_id, $uuid) {
-    $this->queueService->get('orphan_property_processor')
+    $this->queueService->get('orphan_reference_processor')
       ->createItem([
         $property_id,
         $uuid,
@@ -395,7 +395,7 @@ class ValueReferencer {
 //  public function processUpdatedDataset(string $old, $new = "{}") {
 //    $references_removed = $this->referencesRemoved($old, $new);
 //
-//    $orphan_reference_queue = $this->queueService->get('orphan_property_processor');
+//    $orphan_reference_queue = $this->queueService->get('orphan_reference_processor');
 //    foreach ($references_removed as $reference_removed) {
 //       @Todo: Only add to the queue when uuid doesn't already exists in it.
 //      $orphan_reference_queue->createItem($reference_removed);

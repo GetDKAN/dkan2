@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Verifies if a dataset property reference is orphaned, then deletes it.
  *
  * @QueueWorker(
- *   id = "orphan_property_processor",
+ *   id = "orphan_reference_processor",
  *   title = @Translation("Task Worker: Check for orphaned property reference"),
  *   cron = {"time" = 15}
  * )
