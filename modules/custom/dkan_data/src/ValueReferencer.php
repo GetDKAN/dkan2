@@ -42,6 +42,10 @@ class ValueReferencer {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
+   * @param \Drupal\Component\Uuid\UuidInterface $uuidService
+   *   Injected uuid service.
+   * @param \Drupal\Core\Queue\QueueFactory $queueService
+   *   Injected queue service.
    */
   public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
@@ -52,10 +56,10 @@ class ValueReferencer {
   /**
    * Replaces some dataset property values with references.
    *
-   * @param stdClass $data
+   * @param \stdClass $data
    *   Json object from field_json_metadata.
    *
-   * @return stdClass
+   * @return \stdClass
    *   Modified json object.
    */
   public function reference(stdClass $data) {
@@ -69,8 +73,12 @@ class ValueReferencer {
   }
 
   /**
+   * Replaces a single property's data with a reference.
+   *
    * @param string $property_id
+   *   The dataset property id.
    * @param mixed $data
+   *   Single reference, or an array of references.
    *
    * @return mixed
    */
@@ -83,6 +91,17 @@ class ValueReferencer {
     }
   }
 
+  /**
+   * References the values in an array.
+   *
+   * @param string $property_id
+   *   The dataset property id.
+   * @param array $values
+   *   Array of values to reference.
+   *
+   * @return array
+   *   Array of references.
+   */
   protected function referenceMultiple(string $property_id, array $values) : array {
     $result = [];
     foreach ($values as $value) {
@@ -91,6 +110,16 @@ class ValueReferencer {
     return $result;
   }
 
+  /**
+   * References when the property's value is a string or object.
+   *
+   * @param string $property_id
+   *   The dataset property id.
+   * @param $value
+   *   The dataset json value of that particular property.
+   *
+   * @return string|null
+   */
   protected function referenceSingle(string $property_id, $value) {
     $uuid = $this->checkExistingReference($property_id, $value);
     if (!$uuid) {
@@ -104,6 +133,15 @@ class ValueReferencer {
     }
   }
 
+  /**
+   * Checks for existing reference by hashing its value.
+   *
+   * @param string $property_id
+   *   The dataset property id.
+   * @param $data
+   *
+   * @return string|null
+   */
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
@@ -118,6 +156,15 @@ class ValueReferencer {
     return NULL;
   }
 
+  /**
+   * Creates
+   *
+   * @param string $property_id
+   *   The dataset property id.
+   * @param mixed $data
+   *
+   * @return string|null
+   */
   protected function createPropertyReference(string $property_id, $data) {
     $today = date('Y-m-d');
 
@@ -143,23 +190,27 @@ class ValueReferencer {
     return $node->uuid();
   }
 
+  /**
+   * Create a simple hash of the json data in string format.
+   *
+   * @param string|stdClass $data
+   *   The json value of a particular dataset property.
+   *
+   * @return string
+   *   Md5 hash.
+   */
   protected function setReferenceTitle($data) {
-    if (is_string($data)) {
-      return $data;
-    }
-    else {
-      return md5(json_encode($data));
-    }
+    return md5(json_encode($data));
   }
 
   /**
-   * Returns the human-readable theme values from uuids.
+   * Replaces references with their values in an entire dataset.
    *
    * @param \stdClass $data
-   *   The object from the json data string.
+   *   The json metadata object.
    *
    * @return mixed
-   *   An array of theme values, or NULL.
+   *   Modified json metadata object.
    */
   public function dereference(stdClass $data) {
     // Cycle through the dataset properties we seek to dereference.
@@ -171,14 +222,35 @@ class ValueReferencer {
     return $data;
   }
 
+  /**
+   * @param string $property_id
+   *   The dataset property id.
+   * @param $data
+   *   An array or string of uuid's.
+   *
+   * @return array|string
+   *   An array or string of dereferenced values.
+   */
   protected function dereferenceProperty(string $property_id, $data) {
     if (is_array($data)) {
       return $this->dereferenceMultiple($property_id, $data);
     }
-    else
+    else {
       return $this->dereferenceSingle($property_id, $data);
+    }
   }
 
+  /**
+   * Process the dereferencing of the items in an array.
+   *
+   * @param string $property_id
+   *   A dataset property id.
+   * @param array $data
+   *   An array of references.
+   *
+   * @return array
+   *   An array of unreferenced values.
+   */
   protected function dereferenceMultiple(string $property_id, array $data) : array {
     $result = [];
     foreach ($data as $datum) {
@@ -188,13 +260,15 @@ class ValueReferencer {
   }
 
   /**
-   * Returns the human-readable theme value from its uuid.
+   * Returns the string or object value of a reference.
    *
+   * @param string $property_id
+   *   The dataset property id.
    * @param string $str
-   *   The string could either be a uuid or a human-readable theme value.
+   *   Either a uuid or an actual json value.
    *
    * @return string
-   *   The theme value.
+   *   The data from this reference.
    */
   protected function dereferenceSingle(string $property_id, string $str) {
     $nodes = $this->entityTypeManager
@@ -209,11 +283,13 @@ class ValueReferencer {
         return $metadata->data;
       }
     }
+    // If str was not found, it's unlikely it was a uuid to begin with. It was
+    // most likely never referenced to begin with, so return unchanged.
     return $str;
   }
 
   /**
-   * Queue deleted themes for processing, as they may be orphans.
+   * Queue deleted references for processing, as they may be orphans.
    *
    * @param string $old
    *   Json string of item being replaced.
@@ -221,17 +297,17 @@ class ValueReferencer {
    *   Json string of item doing the replacing.
    */
   public function processDeletedReferences(string $old, $new = "{}") {
-    $themes_removed = $this->referencesRemoved($old, $new);
+    $references_removed = $this->referencesRemoved($old, $new);
 
-    $orphan_theme_queue = $this->queueService->get('orphan_property_processor');
-    foreach ($themes_removed as $theme_removed) {
+    $orphan_reference_queue = $this->queueService->get('orphan_property_processor');
+    foreach ($references_removed as $reference_removed) {
       // @Todo: Only add to the queue when uuid doesn't already exists in it.
-      $orphan_theme_queue->createItem($theme_removed);
+      $orphan_reference_queue->createItem($reference_removed);
     }
   }
 
   /**
-   * Returns an array of theme uuid(s) being removed as the data changes.
+   * Returns an array of references being removed as the data changes.
    *
    * @param string $old
    *   Json string of item being replaced.
@@ -239,7 +315,7 @@ class ValueReferencer {
    *   Json string of item doing the replacing.
    *
    * @return array
-   *   Array of theme uuid(s).
+   *   Array of references.
    */
   public function referencesRemoved($old, $new = "{}") {
     $old_data = json_decode($old);
@@ -264,7 +340,7 @@ class ValueReferencer {
    * Get the list of dataset properties being referenced.
    *
    * @return array
-   *   list of dataset properties.
+   *   List of dataset properties.
    */
   protected function getPropertyList() {
     $config = \Drupal::config('dkan_data.settings');
