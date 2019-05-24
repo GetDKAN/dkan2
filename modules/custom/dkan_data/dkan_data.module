@@ -74,7 +74,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
 
   // If updating an existing entity, check for orphan property references.
   if (isset($entity->original)) {
-    $referencer->processDeletedReferences(
+    $referencer->processModifiedDataset(
       $entity->unreferenced_json_metadata,
       $entity->get('field_json_metadata')->value
     );
@@ -88,7 +88,7 @@ function dkan_data_node_predelete(EntityInterface $entity) {
   // Check for orphan references when datasets are deleted.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
     $referencer = Drupal::service("dkan_data.value_referencer");
-    $referencer->processDeletedReferences($entity->unreferenced_json_metadata);
+    $referencer->processModifiedDataset($entity->unreferenced_json_metadata);
   }
 }
 

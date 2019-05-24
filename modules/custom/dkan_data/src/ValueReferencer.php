@@ -302,7 +302,7 @@ class ValueReferencer {
    * @param string $new
    *   Json string of item doing the replacing.
    */
-  public function processDeletedReferences(string $old, $new = "{}") {
+  public function processModifiedDataset(string $old, $new = "{}") {
     $references_removed = $this->referencesRemoved($old, $new);
 
     $orphan_reference_queue = $this->queueService->get('orphan_property_processor');
