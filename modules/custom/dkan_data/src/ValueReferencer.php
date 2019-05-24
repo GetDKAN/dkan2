@@ -314,10 +314,10 @@ class ValueReferencer {
     if (!is_array($uuids)) {
       $uuids = [$uuids];
     }
-    $this->processDeletedReferences($property_id, $uuids);
+    $this->processDeletedMultipleReferences($property_id, $uuids);
   }
 
-  protected function processDeletedReferences($property_id, $uuids) {
+  protected function processDeletedMultipleReferences($property_id, $uuids) {
     foreach ($uuids as $uuid) {
       $this->processDeletedReference($property_id, $uuid);
     }
