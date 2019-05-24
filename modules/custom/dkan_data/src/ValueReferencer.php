@@ -166,14 +166,11 @@ class ValueReferencer {
    * @return string|null
    */
   protected function createPropertyReference(string $property_id, $data) {
-    $today = date('Y-m-d');
 
     // Create json metadata for the reference.
     $ref = new stdClass();
     $ref->identifier = $this->uuidService->generate();
     $ref->data = $data;
-    $ref->created = $today;
-    $ref->modified = $today;
 
     // Create node to store this reference.
     $node = $this->entityTypeManager
