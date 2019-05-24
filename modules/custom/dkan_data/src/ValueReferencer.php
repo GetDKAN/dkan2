@@ -56,11 +56,11 @@ class ValueReferencer {
   /**
    * Replaces some dataset property values with references.
    *
-   * @param \stdClass $data
-   *   Json object from field_json_metadata.
+   * @param stdClass $data
+   *   Dataset json object.
    *
-   * @return \stdClass
-   *   Modified json object.
+   * @return stdClass
+   *   Json object modified with references to some of its properties' values.
    */
   public function reference(stdClass $data) {
     // Cycle through the dataset properties we seek to reference.
@@ -73,14 +73,15 @@ class ValueReferencer {
   }
 
   /**
-   * Replaces a single property's data with a reference.
+   * References a dataset property's value, general case.
    *
    * @param string $property_id
    *   The dataset property id.
    * @param mixed $data
-   *   Single reference, or an array of references.
+   *   Single value or array of values to be referenced.
    *
-   * @return mixed
+   * @return string|array
+   *   Single reference, or an array of references.
    */
   protected function referenceProperty(string $property_id, $data) {
     if (is_array($data)) {
@@ -92,15 +93,15 @@ class ValueReferencer {
   }
 
   /**
-   * References the values in an array.
+   * References a dataset property's value, array case.
    *
    * @param string $property_id
    *   The dataset property id.
    * @param array $values
-   *   Array of values to reference.
+   *   The array of values to be referenced.
    *
    * @return array
-   *   Array of references.
+   *   The array of uuid references.
    */
   protected function referenceMultiple(string $property_id, array $values) : array {
     $result = [];
@@ -111,14 +112,15 @@ class ValueReferencer {
   }
 
   /**
-   * References when the property's value is a string or object.
+   * References a dataset property's value, string or object case.
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param $value
-   *   The dataset json value of that particular property.
+   * @param string|stdClass $value
+   *   The value to be referenced.
    *
-   * @return string|null
+   * @return string
+   *   The Uuid reference, or unchanged value.
    */
   protected function referenceSingle(string $property_id, $value) {
     $uuid = $this->checkExistingReference($property_id, $value);
@@ -129,18 +131,22 @@ class ValueReferencer {
       return $uuid;
     }
     else {
+      // In the unlikely case we neither found an existing reference nor could
+      // create a new reference, return the unchanged value.
       return $value;
     }
   }
 
   /**
-   * Checks for existing reference by hashing its value.
+   * Checks for an existing value reference for that property id.
    *
    * @param string $property_id
    *   The dataset property id.
    * @param $data
+   *   The property's value used to find an existing reference.
    *
    * @return string|null
+   *   The existing reference's uuid, or null if not found.
    */
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
@@ -157,13 +163,15 @@ class ValueReferencer {
   }
 
   /**
-   * Creates
+   * Creates a new value reference for that property id in a data node.
    *
    * @param string $property_id
    *   The dataset property id.
    * @param mixed $data
+   *   The property's value.
    *
    * @return string|null
+   *   The new reference's uuid, or null.
    */
   protected function createPropertyReference(string $property_id, $data) {
     // Create json metadata for the reference.
@@ -187,10 +195,10 @@ class ValueReferencer {
   }
 
   /**
-   * Create a simple hash of the json data in string format, to use as a title.
+   * Hashes a property's value, to use as a title and for easier comparison.
    *
    * @param string|stdClass $data
-   *   The json value of a particular dataset property.
+   *   The dataset property value.
    *
    * @return string
    *   Md5 hash.
@@ -200,9 +208,9 @@ class ValueReferencer {
   }
 
   /**
-   * Replaces references with their values in an entire dataset.
+   * Replaces value references in a dataset with with their actual values.
    *
-   * @param \stdClass $data
+   * @param stdClass $data
    *   The json metadata object.
    *
    * @return mixed
@@ -219,10 +227,12 @@ class ValueReferencer {
   }
 
   /**
+   * Replaces a property reference with its actual value, general case.
+   *
    * @param string $property_id
    *   The dataset property id.
    * @param $data
-   *   An array or string of uuid's.
+   *   An array or string of reference uuids.
    *
    * @return array|string
    *   An array or string of dereferenced values.
@@ -237,15 +247,15 @@ class ValueReferencer {
   }
 
   /**
-   * Process the dereferencing of the items in an array.
+   * Replaces a property reference with its actual value, array case.
    *
    * @param string $property_id
    *   A dataset property id.
    * @param array $data
-   *   An array of references.
+   *   An array of reference uuids.
    *
    * @return array
-   *   An array of unreferenced values.
+   *   An array of dereferenced values.
    */
   protected function dereferenceMultiple(string $property_id, array $data) : array {
     $result = [];
@@ -256,7 +266,7 @@ class ValueReferencer {
   }
 
   /**
-   * Returns the string or object value of a reference.
+   * Replaces a property reference with its actual value, string or object case.
    *
    * @param string $property_id
    *   The dataset property id.
