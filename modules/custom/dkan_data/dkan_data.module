@@ -68,15 +68,16 @@ function dkan_data_entity_presave(EntityInterface $entity) {
     $entity->set('uuid', $metadata->identifier);
   }
 
+  // Reference the dataset's values, and update our json metadata.
   $referencer = Drupal::service("dkan_data.value_referencer");
   $metadata = $referencer->reference($metadata);
   $entity->set('field_json_metadata', json_encode($metadata));
 
-  // If updating an existing entity, check for orphan property references.
+  // Check for possible orphan property references when updating a dataset.
   if (isset($entity->original)) {
     $referencer->processUpdatedDataset(
-      $entity->referenced_metadata,
-      $entity->get('field_json_metadata')->value
+      json_decode($entity->referenced_metadata),
+      $metadata
     );
   }
 }
@@ -85,7 +86,7 @@ function dkan_data_entity_presave(EntityInterface $entity) {
  * Implements hook_ENTITY_TYPE_predelete().
  */
 function dkan_data_node_predelete(EntityInterface $entity) {
-  // Check for orphan references when datasets are deleted.
+  // Check for possible orphan property references when deleting a dataset.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
     $referenced_dataset = json_decode($entity->referenced_metadata);
     $referencer = Drupal::service("dkan_data.value_referencer");
