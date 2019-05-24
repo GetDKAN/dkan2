@@ -313,7 +313,7 @@ class ValueReferencer {
    * @return array
    *   Array of references.
    */
-  public function referencesRemoved($old, $new = "{}") {
+  protected function referencesRemoved($old, $new = "{}") {
     $old_data = json_decode($old);
     if (!isset($old_data->theme)) {
       // No theme to potentially delete nor check for orphan.
