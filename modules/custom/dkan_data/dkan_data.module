@@ -16,7 +16,7 @@ function dkan_data_node_load(array $entities) {
     if ($entity->bundle() == "data" && $entity->field_data_type->value == "dataset") {
       // Temporarily save the raw json metadata, for later use.
       $metadata_string = $entity->get('field_json_metadata')->value;
-      $entity->unreferenced_json_metadata = $metadata_string;
+      $entity->referenced_metadata = $metadata_string;
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
       $referencer = Drupal::service("dkan_data.value_referencer");
@@ -74,8 +74,8 @@ function dkan_data_entity_presave(EntityInterface $entity) {
 
   // If updating an existing entity, check for orphan property references.
   if (isset($entity->original)) {
-    $referencer->processModifiedDataset(
-      $entity->unreferenced_json_metadata,
+    $referencer->processUpdatedDataset(
+      $entity->referenced_metadata,
       $entity->get('field_json_metadata')->value
     );
   }
@@ -87,8 +87,9 @@ function dkan_data_entity_presave(EntityInterface $entity) {
 function dkan_data_node_predelete(EntityInterface $entity) {
   // Check for orphan references when datasets are deleted.
   if ($entity->bundle() == 'data' && $entity->get('field_data_type')->value == 'dataset') {
+    $referenced_dataset = json_decode($entity->referenced_metadata);
     $referencer = Drupal::service("dkan_data.value_referencer");
-    $referencer->processModifiedDataset($entity->unreferenced_json_metadata);
+    $referencer->processDeletedDataset($referenced_dataset);
   }
 }
 

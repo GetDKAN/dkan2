@@ -295,6 +295,59 @@ class ValueReferencer {
   }
 
   /**
+   * Check for orphan references when a dataset is being deleted.
+   *
+   * @param stdClass $data
+   *   Dataset to be deleted.
+   */
+  public function processDeletedDataset(stdClass $data) {
+    // Cycle through the dataset properties we seek to reference.
+    foreach ($this->getPropertyList() as $property_id) {
+      if (isset($data->{$property_id})) {
+        $this->processDeletedProperty($property_id, $data->{$property_id});
+      }
+    }
+  }
+
+  protected function processDeletedProperty($property_id, $data) {
+    if (is_array($data)) {
+      foreach ($data as $uuid) {
+        $this->processDeletedReference($property_id, $uuid);
+      }
+    }
+    else {
+      $this->processDeletedReference($property_id, $data);
+    }
+  }
+
+  protected function processDeletedReference($property_id, $uuid) {
+    $this->queueService->get('orphan_property_processor')
+      ->createItem([
+        $property_id,
+        $uuid,
+      ]);
+  }
+
+  /**
+   * Check for orphan references when a dataset is being updated.
+   *
+   * @param stdClass $old_data
+   *   The original dataset.
+   * @param stdClass $new_data
+   *   The updated dataset.
+   */
+  public function processUpdatedDataset(stdClass $old_data, stdClass $new_data) {
+//    ddl($old_dataset, 'old dataset');
+//    ddl($new_dataset, 'new dataset');
+    // Cycle through the dataset properties being referenced.
+//    foreach ($this->getPropertyList() as $property_id) {
+//      if (isset($data->{$property_id})) {
+//        $data->{$property_id} = $this->referenceProperty($property_id, $data->{$property_id});
+//      }
+//    }
+  }
+
+  /**
    * Queue deleted references for processing, as they may be orphans.
    *
    * @param string $old
@@ -302,15 +355,15 @@ class ValueReferencer {
    * @param string $new
    *   Json string of item doing the replacing.
    */
-  public function processModifiedDataset(string $old, $new = "{}") {
-    $references_removed = $this->referencesRemoved($old, $new);
-
-    $orphan_reference_queue = $this->queueService->get('orphan_property_processor');
-    foreach ($references_removed as $reference_removed) {
-      // @Todo: Only add to the queue when uuid doesn't already exists in it.
-      $orphan_reference_queue->createItem($reference_removed);
-    }
-  }
+//  public function processUpdatedDataset(string $old, $new = "{}") {
+//    $references_removed = $this->referencesRemoved($old, $new);
+//
+//    $orphan_reference_queue = $this->queueService->get('orphan_property_processor');
+//    foreach ($references_removed as $reference_removed) {
+//       @Todo: Only add to the queue when uuid doesn't already exists in it.
+//      $orphan_reference_queue->createItem($reference_removed);
+//    }
+//  }
 
   /**
    * Returns an array of references being removed as the data changes.

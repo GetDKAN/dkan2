@@ -59,29 +59,35 @@ class OrphanPropertyProcessor extends QueueWorkerBase implements ContainerFactor
   /**
    * {@inheritdoc}
    */
-  public function processItem($uuid) {
+  public function processItem($data) {
+    $property_id = $data[0];
+    $uuid = $data[1];
+
+    // Search datasets using this uuid for this property id.
     $datasets = $this->entityTypeManager->getStorage('node')
       ->loadByProperties([
         'field_data_type' => 'dataset',
       ]);
-
     foreach ($datasets as $dataset) {
-      $data = json_decode($dataset->unreferenced_json_metadata);
-      $themes = $data->theme ?? [];
-      if (in_array($uuid, $themes)) {
+      $data = json_decode($dataset->referenced_metadata);
+      $value = $data->{$property_id};
+      // Check if uuid is found either directly or in an array.
+      $uuid_is_value = $uuid == $value;
+      $uuid_found_in_array = is_array($value) && in_array($uuid, $value);
+      if ($uuid_is_value || $uuid_found_in_array) {
         // Uuid found in use, abort.
         return;
       }
     }
 
-    // Theme uuid not found in any dataset, safe to delete.
-    $themes = $this->entityTypeManager->getStorage('node')
+    // Value reference uuid not found in any dataset, therefore safe to delete.
+    $references = $this->entityTypeManager->getStorage('node')
       ->loadByProperties([
-        'field_data_type' => 'theme',
+        'field_data_type' => $property_id,
         'uuid' => $uuid,
       ]);
-    if (FALSE !== ($theme = reset($themes))) {
-      $theme->delete();
+    if (FALSE !== ($reference = reset($references))) {
+      $reference->delete();
     }
   }
 
