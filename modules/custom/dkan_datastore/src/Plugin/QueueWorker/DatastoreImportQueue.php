@@ -52,7 +52,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
     // it shouldn't go backwards but just in case..
     if ($newRowsDone - $rowsDone <= 0) {
       $importFailCount++;
-      $this->log(RfcLogLevel::WARNING, "Import for {$uuid} seemd to be lagging behind {$importFailCount} times.");
+      $this->log(RfcLogLevel::WARNING, "Import for {$uuid} seemd to be lagging behind {$importFailCount} times. Rows done:{$rowsDone} vs {$newRowsDone}");
     }
 
     switch ($status) {
