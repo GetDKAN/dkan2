@@ -115,7 +115,9 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * $config has the following valid params:
+   * Fixes some default import config.
+   *
+   * $importConfig has the following valid defaults:
    *
    * - 'delimiter' => ",",
    * - 'quote'     => '"',
@@ -135,7 +137,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
     return $sanitised;
   }
 
-  protected function log($level, $message, array $context) {
+  protected function log($level, $message, array $context=[]) {
     $this->getLogger($this->getPluginId())
       ->log($level, $message, $context);
   }
