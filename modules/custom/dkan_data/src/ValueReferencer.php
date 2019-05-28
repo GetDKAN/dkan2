@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\dkan_data;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Component\Uuid\UuidInterface;
 use Drupal\Core\Queue\QueueFactory;
 use stdClass;
@@ -26,30 +27,40 @@ class ValueReferencer {
   /**
    * The uuid service.
    *
-   * @var Drupal\Component\Uuid\UuidInterface
+   * @var \Drupal\Component\Uuid\UuidInterface
    */
   protected $uuidService;
 
   /**
+   * The config factory service.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configService;
+
+  /**
    * The queue service.
    *
-   * @var Drupal\Core\Queue\QueueFactory
+   * @var \Drupal\Core\Queue\QueueFactory
    */
   protected $queueService;
 
   /**
-   * Constructor.
+   * ValueReferencer constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
    * @param \Drupal\Component\Uuid\UuidInterface $uuidService
    *   Injected uuid service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
+   *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, UuidInterface $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
+    $this->configService = $configService;
     $this->queueService = $queueService;
   }
 
@@ -87,7 +98,8 @@ class ValueReferencer {
     if (is_array($data)) {
       return $this->referenceMultiple($property_id, $data);
     }
-    if (is_object($data) || is_string($data)) {
+    else {
+      // Object or string.
       return $this->referenceSingle($property_id, $data);
     }
   }
@@ -153,7 +165,7 @@ class ValueReferencer {
       ->getStorage('node')
       ->loadByProperties([
         'field_data_type' => $property_id,
-        'title' => $this->titleHash($data),
+        'title' => md5(json_encode($data)),
       ]);
 
     if ($node = reset($nodes)) {
@@ -167,44 +179,31 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param mixed $data
+   * @param mixed $value
    *   The property's value.
    *
    * @return string|null
    *   The new reference's uuid, or null.
    */
-  protected function createPropertyReference(string $property_id, $data) {
+  protected function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
-    $ref = new stdClass();
-    $ref->identifier = $this->uuidService->generate();
-    $ref->data = $data;
+    $data = new stdClass();
+    $data->identifier = $this->uuidService->generate();
+    $data->data = $value;
 
     // Create node to store this reference.
     $node = $this->entityTypeManager
       ->getStorage('node')
       ->create([
-        'title' => $this->titleHash($data),
+        'title' => md5(json_encode($value)),
         'type' => 'data',
-        'uuid' => $ref->identifier,
+        'uuid' => $data->identifier,
         'field_data_type' => $property_id,
-        'field_json_metadata' => json_encode($ref),
+        'field_json_metadata' => json_encode($data),
       ]);
     $node->save();
 
     return $node->uuid();
-  }
-
-  /**
-   * Hashes a property's value, to use as a title and for easier comparison.
-   *
-   * @param string|stdClass $data
-   *   The dataset property value.
-   *
-   * @return string
-   *   Md5 hash.
-   */
-  protected function titleHash($data) {
-    return md5(json_encode($data));
   }
 
   /**
@@ -231,11 +230,11 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param $data
-   *   An array or string of reference uuids.
+   * @param string|array $uuids
+   *   A single reference uuid string, or an array reference uuids.
    *
-   * @return array|string
-   *   An array or string of dereferenced values.
+   * @return string|array
+   *   An array of dereferenced values, or a single one.
    */
   protected function dereferenceProperty(string $property_id, $data) {
     if (is_array($data)) {
@@ -251,16 +250,16 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   A dataset property id.
-   * @param array $data
+   * @param array $uuids
    *   An array of reference uuids.
    *
    * @return array
    *   An array of dereferenced values.
    */
-  protected function dereferenceMultiple(string $property_id, array $data) : array {
+  protected function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
-    foreach ($data as $datum) {
-      $result[] = $this->dereferenceSingle($property_id, $datum);
+    foreach ($uuids as $uuid) {
+      $result[] = $this->dereferenceSingle($property_id, $uuid);
     }
     return $result;
   }
@@ -276,12 +275,12 @@ class ValueReferencer {
    * @return string
    *   The data from this reference.
    */
-  protected function dereferenceSingle(string $property_id, string $str) {
+  protected function dereferenceSingle(string $property_id, string $uuid) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
       ->loadByProperties([
         'field_data_type' => $property_id,
-        'uuid' => $str,
+        'uuid' => $uuid,
       ]);
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
@@ -291,7 +290,7 @@ class ValueReferencer {
     }
     // If str was not found, it's unlikely it was a uuid to begin with. It was
     // most likely never referenced to begin with, so return unchanged.
-    return $str;
+    return $uuid;
   }
 
   /**
@@ -319,6 +318,12 @@ class ValueReferencer {
     }
   }
 
+  /**
+   * @param $property_id
+   * @param $uuid
+   *
+   * @codeCoverageIgnore since no logic, single call to queue worker.
+   */
   protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')
       ->createItem([
@@ -352,15 +357,16 @@ class ValueReferencer {
     }
   }
 
+  /**
+   * @param $data
+   *
+   * @return array|string
+   */
   protected function emptyPropertyOfSameType($data) {
-    switch (gettype($data)) {
-      case 'array':
-        return [];
-      case 'string':
-        return "";
-      case 'object':
-        return (object) [];
+    if (is_array($data)) {
+      return [];
     }
+    return "";
   }
 
   /**
@@ -370,13 +376,12 @@ class ValueReferencer {
    *   List of dataset properties.
    */
   protected function getPropertyList() {
-    $config = \Drupal::config('dkan_data.settings');
-    $config_property_list = trim($config->get('property_list'));
+    $list = $this->configService->get('dkan_data.settings')->get('property_list');
 
     // Trim and split list on newlines whether Windows, MacOS or Linux.
     $property_list = preg_split(
       '/\s*\r\n\s*|\s*\r\s*|\s*\n\s*/',
-      $config_property_list,
+      trim($list),
       -1,
       PREG_SPLIT_NO_EMPTY
     );

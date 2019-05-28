@@ -8,4 +8,5 @@ services:
     arguments:
       - '@entity_type.manager'
       - '@uuid'
+      - '@config.factory'
       - '@queue'
