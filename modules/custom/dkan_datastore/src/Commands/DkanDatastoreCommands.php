@@ -13,7 +13,7 @@ use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 
 /**
- *
+ * @codeCoverageIgnore
  */
 class DkanDatastoreCommands extends DrushCommands {
 
@@ -31,17 +31,18 @@ class DkanDatastoreCommands extends DrushCommands {
    *
    * @param string $uuid
    *   The uuid of a dataset.
-   * @param boolean $deferred
+   * @param bool $deferred
    *   Whether or not the process should be deferred to a queue.
+   *
    * @TODO pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan-datastore:import
    */
-  public function import($uuid, $deferred=false) {
+  public function import($uuid, $deferred = FALSE) {
     $database = \Drupal::service('dkan_datastore.database');
     $this->output->writeln("Database instance created.");
 
     try {
-      
+
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
 
       if (!isset($entity)) {
@@ -51,7 +52,7 @@ class DkanDatastoreCommands extends DrushCommands {
 
       $this->output->writeln("Got entity {$entity->id()}.");
       if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-        
+
         $this->output->writeln("And it is a dataset.");
         $dataset = $entity;
 
@@ -61,8 +62,8 @@ class DkanDatastoreCommands extends DrushCommands {
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
         $this->output->writeln("And created a resource.");
 
-        // handle the command differently if deferred.
-        if(!empty($deferred)) {
+        // Handle the command differently if deferred.
+        if (!empty($deferred)) {
           $this->output->writeln("Using deferred processing. Items will be pocessed by queue.");
           /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
           $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');

@@ -12,7 +12,7 @@ use Dkan\Datastore\Manager\Factory;
 use Dkan\Datastore\Locker;
 
 /**
- *
+ * @codeCoverageIgnore
  */
 class Util {
 
