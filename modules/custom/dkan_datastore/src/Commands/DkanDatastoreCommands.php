@@ -33,7 +33,7 @@ class DkanDatastoreCommands extends DrushCommands {
    *   The uuid of a dataset.
    * @param boolean $deferred
    *   Whether or not the process should be deferred to a queue.
-   *
+   * @TODO pass configurable options for csv delimiter, quite, and escape characters.
    * @command dkan-datastore:import
    */
   public function import($uuid, $deferred=false) {
@@ -62,12 +62,12 @@ class DkanDatastoreCommands extends DrushCommands {
         $this->output->writeln("And created a resource.");
 
         // handle the command differently if deferred.
-        // @TODO pass configuration s
         if(!empty($deferred)) {
           $this->output->writeln("Using deferred processing. Items will be pocessed by queue.");
           /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
           $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
-          $deferredImporter->createQueueItemsForResource($uuid, $resource);
+          $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
+          $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
         }
         else {
           $provider = new InfoProvider();

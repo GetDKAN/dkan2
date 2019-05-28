@@ -73,7 +73,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
           'import_fail_count' => $importFailCount,
         ]);
         $this->log(RfcLogLevel::INFO, "Import for {$uuid} is requeueing {$newQueueIteratation} times. (ID:{$newQueueItemId}).");
-        
+
         break;
       case IManager::DATA_IMPORT_ERROR:
         $this->log(RfcLogLevel::ERROR, "Import for {$uuid} returned an error.");
@@ -106,12 +106,33 @@ class DatastoreImportQueue extends QueueWorkerBase {
       ->build($uuid);
 
     // forward config if applicable
-    $manager->setConfigurableProperties($importConfig);
+    $manager->setConfigurableProperties($this->sanitiseImportConfig($importConfig));
 
     // set a slightly shorter time limit than cron run.
     $manager->setImportTimelimit(55);
 
     return $manager;
+  }
+
+  /**
+   * $config has the following valid params:
+   *
+   * - 'delimiter' => ",",
+   * - 'quote'     => '"',
+   * - 'escape'    => "\\",
+   *
+   * @param array $importConfig
+   * @return array Sanitised properties.
+   * @todo this kind of validation should be moved to datastore manager.
+   */
+  public function sanitiseImportConfig(array $importConfig): array {
+    $sanitised = array_merge([
+      'delimiter' => ",",
+      'quote'     => '"',
+      'escape'    => "\\",
+      ], $importConfig);
+
+    return $sanitised;
   }
 
   protected function log($level, $message, array $context) {
