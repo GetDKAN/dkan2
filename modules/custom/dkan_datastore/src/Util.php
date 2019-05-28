@@ -20,25 +20,32 @@ class Util {
    * Instantiates a datastore manager.
    *
    * @param string $uuid
-   * @return IManager
+   *
+   * @return \Dkan\Datastore\Manager\IManager
+   *
    * @deprecated see dkan_datastore.manager.datastore_manager_builder service.
    */
   public static function getDatastoreManager(string $uuid) : IManager {
-    $database = \Drupal::service('dkan_datastore.database');
 
-    $dataset =  \Drupal::service('entity.repository')
-      ->loadEntityByUuid('node', $uuid);
+    /** @var Manager\DatastoreManagerBuilder $builder */
+    $builder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
+    return $builder->build($uuid);
 
-    $metadata = json_decode($dataset->field_json_metadata->value);
-    $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-
-    $provider = new InfoProvider();
-    $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-
-    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-    $factory = new Factory($resource, $provider, $bin_storage, $database);
-
-    return $factory->get();
+//    $database = \Drupal::service('dkan_datastore.database');
+//
+//    $dataset = \Drupal::service('entity.repository')
+//      ->loadEntityByUuid('node', $uuid);
+//
+//    $metadata = json_decode($dataset->field_json_metadata->value);
+//    $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
+//
+//    $provider = new InfoProvider();
+//    $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
+//
+//    $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
+//    $factory = new Factory($resource, $provider, $bin_storage, $database);
+//
+//    return $factory->get();
   }
 
 }
