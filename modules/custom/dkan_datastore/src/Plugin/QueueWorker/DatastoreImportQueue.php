@@ -4,7 +4,6 @@ namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
 use Dkan\Datastore\Manager\IManager;
-use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
 
@@ -26,6 +25,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
    */
   const STALL_LIMIT = 5;
 
+  /**
+   * {@inheritdocs}.
+   *
+   * @todo refactor to reduce CRAP score.
+   */
   public function processItem($data) {
 
     $uuid            = $data['uuid'];
@@ -33,9 +37,9 @@ class DatastoreImportQueue extends QueueWorkerBase {
     $fileIdentifier  = $data['file_identifier'];
     $filePath        = $data['file_path'];
     $importConfig    = $data['import_config'];
-    $fileIsTemporary = $data['file_is_temporary'] ?? false;
+    $fileIsTemporary = $data['file_is_temporary'] ?? FALSE;
 
-    // state of process
+    // State of process.
     $queueIteratation = $data['queue_iteration'] ?? 0;
     $rowsDone         = $data['rows_done'] ?? 0;
     $importFailCount  = $data['import_fail_count'] ?? 0;
@@ -44,11 +48,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
     $status = $manager->import();
 
-    // update the state as it were.
+    // Update the state as it were.
     $newRowsDone         = $manager->numberOfRecordsImported();
     $newQueueIteratation = $queueIteratation + 1;
 
-    // try to detect if import is stalled.
+    // Try to detect if import is stalled.
     // it shouldn't go backwards but just in case..
     if ($newRowsDone - $rowsDone <= 0) {
       $importFailCount++;
@@ -59,13 +63,13 @@ class DatastoreImportQueue extends QueueWorkerBase {
       case IManager::DATA_IMPORT_IN_PROGRESS:
       case IManager::DATA_IMPORT_PAUSED:
 
-        // suspend further processing.
+        // Suspend further processing.
         if ($importFailCount > static::STALL_LIMIT) {
           $this->log(RfcLogLevel::ERROR, "Import for {$uuid} lagged for {$importFailCount} times. Suspending.");
           throw new SuspendQueueException("Import for {$uuid}[{$filePath}] appears to have stalled past allowed limits.");
         }
 
-        // requeue for next iteration.
+        // Requeue for next iteration.
         // queue is self calling and should keep going until complete.
         $newQueueItemId = $this->requeue($data, [
           'queue_iteration'   => $newQueueIteratation,
@@ -75,6 +79,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
         $this->log(RfcLogLevel::INFO, "Import for {$uuid} is requeueing {$newQueueIteratation} times. (ID:{$newQueueItemId}).");
 
         break;
+
       case IManager::DATA_IMPORT_ERROR:
         $this->log(RfcLogLevel::ERROR, "Import for {$uuid} returned an error.");
 
@@ -91,11 +96,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
   /**
    *
-   * @param type $uuid
-   * @param type $resourceId
+   * @param mixed $uuid
+   * @param mixed $resourceId
    * @param string $filePath
    * @param array $importConfig
-   * @return IManager
+   * @return \Dkan\Datastore\Manager\IManager
    */
   protected function getManager($uuid, $resourceId, string $filePath, array $importConfig) {
     /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
@@ -105,10 +110,10 @@ class DatastoreImportQueue extends QueueWorkerBase {
     $manager = $managerBuilder->setResource($resourceId, $filePath)
       ->build($uuid);
 
-    // forward config if applicable
+    // Forward config if applicable.
     $manager->setConfigurableProperties($this->sanitiseImportConfig($importConfig));
 
-    // set a slightly shorter time limit than cron run.
+    // Set a slightly shorter time limit than cron run.
     $manager->setImportTimelimit(55);
 
     return $manager;
@@ -124,7 +129,9 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * - 'escape'    => "\\",
    *
    * @param array $importConfig
+   *
    * @return array Sanitised properties.
+   *
    * @todo this kind of validation should be moved to datastore manager.
    */
   public function sanitiseImportConfig(array $importConfig): array {
@@ -132,12 +139,15 @@ class DatastoreImportQueue extends QueueWorkerBase {
       'delimiter' => ",",
       'quote'     => '"',
       'escape'    => "\\",
-      ], $importConfig);
+    ], $importConfig);
 
     return $sanitised;
   }
 
-  protected function log($level, $message, array $context=[]) {
+  /**
+   *
+   */
+  protected function log($level, $message, array $context = []) {
     $this->getLogger($this->getPluginId())
       ->log($level, $message, $context);
   }
@@ -145,13 +155,17 @@ class DatastoreImportQueue extends QueueWorkerBase {
   /**
    * Requeues the job with extra state information.
    *
-   * @param array $data queue data
-   * @param array $newState information on queue state.
+   * @param array $data
+   *   queue data.
+   * @param array $newState
+   *   information on queue state.
+   *
    * @return mixed
    */
   protected function requeue(array $data, array $newState) {
-    return \Drupal::queue($this->getPluginId())
-        ->createItem(array_merge($data, $newState));
+    return \Drupal::service('queue')
+      ->get($this->getPluginId())
+      ->createItem(array_merge($data, $newState));
   }
 
 }

@@ -3,7 +3,6 @@
 namespace Drupal\interra_api\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
-use Drupal\dkan_datastore\Util;
 use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
