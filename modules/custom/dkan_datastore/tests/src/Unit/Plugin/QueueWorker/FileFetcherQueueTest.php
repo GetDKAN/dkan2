@@ -450,7 +450,50 @@ class FileFetcherQueueTest extends DkanTestBase {
     $this->assertEquals($expected, $actual);
   }
 
-  
+  /**
+   *
+   * @return array Array of array of arguments
+   */
+  public function dataIsFileTemporary() {
+    $tmpDir = uniqid('/temp/foo');
+    return [
+      [
+        $tmpDir . uniqid('/dkan-resource-'),
+        $tmpDir,
+        true
+      ],
+      [
+        $tmpDir . uniqid('/not-true'),
+        $tmpDir,
+        false
+      ]
+    ];
+  }
+
+  /**
+   * Tests IsFileTemporary().
+   *
+   * @dataProvider dataIsFileTemporary
+   */
+  public function testIsFileTemporary($filePath, $tmpDir, $expected) {
+    //setup
+    $mock = $this->getMockBuilder(FileFetcherQueue::class)
+      ->setMethods([
+        'getTemporaryDirectory',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    // expects
+    $mock->expects($this->once())
+      ->method('getTemporaryDirectory')
+      ->willReturn($tmpDir);
+
+    // assert
+    $actual = $this->invokeProtectedMethod($mock, 'isFileTemporary', $filePath);
+
+    $this->assertEquals($expected, $actual);
+  }
 
   /**
    * Tests getImporterQueue().
