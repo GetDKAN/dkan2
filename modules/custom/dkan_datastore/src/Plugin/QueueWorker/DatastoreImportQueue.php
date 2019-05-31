@@ -32,65 +32,107 @@ class DatastoreImportQueue extends QueueWorkerBase {
    */
   public function processItem($data) {
 
-    $uuid            = $data['uuid'];
-    $resourceId      = $data['resource_id'];
-    $fileIdentifier  = $data['file_identifier'];
-    $filePath        = $data['file_path'];
-    $importConfig    = $data['import_config'];
-    $fileIsTemporary = $data['file_is_temporary'] ?? FALSE;
+    $data = $this->sanitizeData($data);
 
-    // State of process.
-    $queueIteratation = $data['queue_iteration'] ?? 0;
-    $rowsDone         = $data['rows_done'] ?? 0;
-    $importFailCount  = $data['import_fail_count'] ?? 0;
-
-    $manager = $this->getManager($uuid, $resourceId, $filePath, $importConfig);
+    $manager = $this->getManager($data['uuid'], $data['resource_id'], $data['file_path'], $data['import_config']);
 
     $status = $manager->import();
-
-    // Update the state as it were.
-    $newRowsDone         = $manager->numberOfRecordsImported();
-    $newQueueIteratation = $queueIteratation + 1;
-
-    // Try to detect if import is stalled.
-    // it shouldn't go backwards but just in case..
-    if ($newRowsDone - $rowsDone <= 0) {
-      $importFailCount++;
-      $this->log(RfcLogLevel::WARNING, "Import for {$uuid} seemd to be lagging behind {$importFailCount} times. Rows done:{$rowsDone} vs {$newRowsDone}");
-    }
 
     switch ($status) {
       case IManager::DATA_IMPORT_IN_PROGRESS:
       case IManager::DATA_IMPORT_PAUSED:
 
-        // Suspend further processing.
-        if ($importFailCount > static::STALL_LIMIT) {
-          $this->log(RfcLogLevel::ERROR, "Import for {$uuid} lagged for {$importFailCount} times. Suspending.");
-          throw new SuspendQueueException("Import for {$uuid}[{$filePath}] appears to have stalled past allowed limits.");
-        }
+        $data = $this->refreshQueueState($data, $manager);
 
         // Requeue for next iteration.
         // queue is self calling and should keep going until complete.
-        $newQueueItemId = $this->requeue($data, [
-          'queue_iteration'   => $newQueueIteratation,
-          'rows_done'         => $newRowsDone,
-          'import_fail_count' => $importFailCount,
-        ]);
-        $this->log(RfcLogLevel::INFO, "Import for {$uuid} is requeueing {$newQueueIteratation} times. (ID:{$newQueueItemId}).");
+        $newQueueItemId = $this->requeue($data);
+
+        $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
 
         break;
 
       case IManager::DATA_IMPORT_ERROR:
-        $this->log(RfcLogLevel::ERROR, "Import for {$uuid} returned an error.");
+        
+        $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
+        // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
 
       case IManager::DATA_IMPORT_DONE:
-        $this->log(RfcLogLevel::INFO, "Import for {$uuid} complete/stopped.");
+        
+        $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
+
         // cleanup.
-        if ($fileIsTemporary) {
-          \Drupal::service('file_system')
-            ->unlink($filePath);
-        }
+        $this->cleanup($data);
+
         break;
+    }
+  }
+
+  /**
+   * 
+   * Sanitise input data for item processing.
+   * 
+   * @param array $data
+   * @return array
+   */
+  protected function sanitizeData(array $data): array {
+
+    if (!isset($data['uuid'], $data['resource_id'], $data['file_path'])) {
+      throw new SuspendQueueException('Queue input data is invalid. Missing required `uuid` or `resource_id`, `file_path`');
+    }
+
+    $data['import_config']     = $data['import_config'] ?? [];
+    $data['file_is_temporary'] = $data['file_is_temporary'] ?? FALSE;
+
+    // State of process.
+    $data['queue_iteration']   = $data['queue_iteration'] ?? 0;
+    $data['rows_done']         = $data['rows_done'] ?? 0;
+    $data['import_fail_count'] = $data['import_fail_count'] ?? 0;
+
+    return $data;
+  }
+
+  /**
+   * Update and validate the state of the queue on success/pause.
+   *
+   * @param array $data The state of the queue.
+   * @param IManager $manager Import manager
+   * @return array Data with updated state info.
+   * @throws SuspendQueueException If the state is invalid.
+   */
+  protected function refreshQueueState(array $data, IManager $manager): array {
+    // Update the state as it were.
+    $newRowsDone = $manager->numberOfRecordsImported();
+
+    // Try to detect if import is stalled.
+    // it shouldn't go backwards but just in case..
+    if ($newRowsDone - $data['rows_done'] <= 0) {
+      $data['import_fail_count'] ++;
+      $this->log(RfcLogLevel::WARNING, "Import for {$data['uuid']} seemd to be lagging behind {$data['import_fail_count']} times. Rows done:{$data['rows_done']} vs {$newRowsDone}");
+    }
+
+    // Suspend further processing.
+    if ($data['import_fail_count'] > static::STALL_LIMIT) {
+      $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} lagged for {$data['import_fail_count']} times. Suspending.");
+      throw new SuspendQueueException("Import for {$data['uuid']}[{$data['file_path']}] appears to have stalled past allowed limits.");
+    }
+
+    // otherwise we can keep going.
+    $data['queue_iteration']++;
+    $data['rows_done'] = $newRowsDone;
+
+    return $data;
+  }
+
+  /**
+   * Perfoms cleanup based on iput data.
+   *
+   * @param array $data
+   */
+  protected function cleanup(array $data) {
+    if ($data['file_is_temporary']) {
+      \Drupal::service('file_system')
+        ->unlink($data['file_path']);
     }
   }
 
@@ -111,7 +153,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
       ->build($uuid);
 
     // Forward config if applicable.
-    $manager->setConfigurableProperties($this->sanitiseImportConfig($importConfig));
+    $manager->setConfigurableProperties($this->sanitizeImportConfig($importConfig));
 
     // Set a slightly shorter time limit than cron run.
     $manager->setImportTimelimit(55);
@@ -134,14 +176,14 @@ class DatastoreImportQueue extends QueueWorkerBase {
    *
    * @todo this kind of validation should be moved to datastore manager.
    */
-  public function sanitiseImportConfig(array $importConfig): array {
-    $sanitised = array_merge([
+  public function sanitizeImportConfig(array $importConfig): array {
+    $sanitized = array_merge([
       'delimiter' => ",",
       'quote'     => '"',
       'escape'    => "\\",
-    ], $importConfig);
+      ], $importConfig);
 
-    return $sanitised;
+    return $sanitized;
   }
 
   /**
@@ -157,15 +199,13 @@ class DatastoreImportQueue extends QueueWorkerBase {
    *
    * @param array $data
    *   queue data.
-   * @param array $newState
-   *   information on queue state.
    *
    * @return mixed
    */
-  protected function requeue(array $data, array $newState) {
+  protected function requeue(array $data) {
     return \Drupal::service('queue')
-      ->get($this->getPluginId())
-      ->createItem(array_merge($data, $newState));
+        ->get($this->getPluginId())
+        ->createItem($data);
   }
 
 }
