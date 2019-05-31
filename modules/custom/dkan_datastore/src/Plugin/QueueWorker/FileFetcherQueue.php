@@ -34,14 +34,14 @@ class FileFetcherQueue extends QueueWorkerBase {
 
     // Queue is self calling and should keep going until complete.
     return $queue->createItem([
-      'uuid'              => $uuid,
+        'uuid'              => $uuid,
         // Resource id is used to create table.
         // and has to be same as original.
-      'resource_id'       => $resourceId,
-      'file_identifier'   => $this->sanitiseString($actualFilePath),
-      'file_path'         => $actualFilePath,
-      'import_config'     => $importConfig,
-      'file_is_temporary' => $this->isFileTemporary($actualFilePath),
+        'resource_id'       => $resourceId,
+        'file_identifier'   => $this->sanitizeString($actualFilePath),
+        'file_path'         => $actualFilePath,
+        'import_config'     => $importConfig,
+        'file_is_temporary' => $this->isFileTemporary($actualFilePath),
     ]);
   }
 
@@ -57,7 +57,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    *
    * @throws \Exception If fails to get a usable file.
    */
-  public function fetchFile(string $uuid, string $filePath): string {
+  protected function fetchFile(string $uuid, string $filePath): string {
 
     try {
 
@@ -76,8 +76,7 @@ class FileFetcherQueue extends QueueWorkerBase {
       $this->fileCopy($source, $dest);
 
       return $tmpFile;
-    }
-    catch (\Exception $e) {
+    } catch (\Exception $e) {
       // Failed to get the file.
       throw new SuspendQueueException("Unable to fetch {$filePath} for resource {$uuid}. Reason: " . $e->getMessage(), 0, $e);
     }
@@ -109,13 +108,13 @@ class FileFetcherQueue extends QueueWorkerBase {
       $read = $source->fread(128 * 1024);
 
       if (FALSE === $read) {
-        throw new RuntimeException("Failed to read from source " . $source->getPath());
+        throw new \RuntimeException("Failed to read from source " . $source->getPath());
       }
 
       $bytesWritten = $dest->fwrite($read);
 
       if ($bytesWritten !== strlen($read)) {
-        throw new RuntimeException("Failed to write to destination " . $dest->getPath());
+        throw new \RuntimeException("Failed to write to destination " . $dest->getPath());
       }
 
       $total += $bytesWritten;
@@ -133,7 +132,7 @@ class FileFetcherQueue extends QueueWorkerBase {
    * @return string
    */
   protected function getTemporaryFile(string $uuid): string {
-    return file_directory_temp() . '/dkan-resource-' . $this->sanitiseString($uuid);
+    return $this->getTemporaryDirectory() . '/dkan-resource-' . $this->sanitizeString($uuid);
   }
 
   /**
@@ -144,7 +143,16 @@ class FileFetcherQueue extends QueueWorkerBase {
    * @return bool
    */
   protected function isFileTemporary(string $filePath): bool {
-    return 0 === strpos($filePath, file_directory_temp() . '/dkan-resource-');
+    return 0 === strpos($filePath, $this->getTemporaryDirectory() . '/dkan-resource-');
+  }
+
+  /**
+   * returns the temporary directory used by drupal.
+   *
+   * @return string
+   */
+  protected function getTemporaryDirectory() {
+    return file_directory_temp();
   }
 
   /**
@@ -154,13 +162,15 @@ class FileFetcherQueue extends QueueWorkerBase {
    */
   public function getImporterQueue(): QueueInterface {
     return \Drupal::service('queue')
-      ->get('dkan_datastore_import_queue');
+        ->get('dkan_datastore_import_queue');
   }
 
   /**
    *
+   * @param string $string
+   * @return string
    */
-  protected function sanitiseString($string) {
+  protected function sanitizeString($string) {
     return preg_replace('~[^a-z0-9]+~', '_', strtolower($string));
   }
 
