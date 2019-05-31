@@ -52,6 +52,9 @@ class DkanDataSettingsForm extends ConfigFormBase {
     $this->config('dkan_data.settings')
       ->set('property_list', $form_state->getValue('property_list'))
       ->save();
+
+    // Rebuild routes, without clearing all caches.
+    \Drupal::service("router.builder")->rebuild();
   }
 
 }
