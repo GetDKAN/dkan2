@@ -86,7 +86,7 @@ class RouteProvider {
         '_controller' => '\Drupal\dkan_api\Controller\Dataset::patch',
         'schema_id' => $schema,
       ]);
-      $patch->setMethods(['PUT']);
+      $patch->setMethods(['PATCH']);
       $patch->addRequirements(['_permission' => 'post put delete datasets through the api']);
       $patch->addOptions(['_auth' => ['basic_auth']]);
       $routes->add("dkan_api.{$schema}.patch", $patch);
