@@ -26,7 +26,6 @@ class RouteProvider {
       -1,
       PREG_SPLIT_NO_EMPTY
     );
-    ddl($property_list);
     return $property_list;
   }
 
