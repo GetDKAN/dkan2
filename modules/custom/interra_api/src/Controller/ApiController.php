@@ -255,7 +255,7 @@ class ApiController extends ControllerBase {
     /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
     $managerBuilder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
 
-    $manager = $managerBuilder->build($uuid);
+    $manager = $managerBuilder->buildFromUuid($uuid);
 
     return $manager;
   }
