@@ -11,7 +11,7 @@ use Drupal\Core\Queue\QueueInterface;
  *
  * @QueueWorker(
  *   id = "dkan_datastore_file_fetcher_queue",
- *   title = @Translation("Fetches the file if necesary"),
+ *   title = @Translation("Fetches the file if necessary."),
  *   cron = {"time" = 1200}
  * )
  */

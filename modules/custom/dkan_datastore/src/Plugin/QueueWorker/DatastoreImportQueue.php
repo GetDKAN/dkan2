@@ -34,7 +34,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
     $data = $this->sanitizeData($data);
 
-    $manager = $this->getManager($data['uuid'], $data['resource_id'], $data['file_path'], $data['import_config']);
+    $manager = $this->getManager($data['resource_id'], $data['file_path'], $data['import_config']);
 
     $status = $manager->import();
 
@@ -138,19 +138,18 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
   /**
    *
-   * @param mixed $uuid
    * @param mixed $resourceId
    * @param string $filePath
    * @param array $importConfig
    * @return \Dkan\Datastore\Manager\IManager
    */
-  protected function getManager($uuid, $resourceId, string $filePath, array $importConfig) {
+  protected function getManager($resourceId, string $filePath, array $importConfig) {
     /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder $managerBuilder */
     $managerBuilder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
 
     /** @var \Dkan\Datastore\Manager\IManager $manager */
-    $manager = $managerBuilder->setResource($resourceId, $filePath)
-      ->build($uuid);
+    $manager = $managerBuilder->setResourceFromFilePath($resourceId, $filePath)
+      ->build();
 
     // Forward config if applicable.
     $manager->setConfigurableProperties($this->sanitizeImportConfig($importConfig));

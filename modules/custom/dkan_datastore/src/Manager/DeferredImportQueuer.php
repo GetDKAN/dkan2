@@ -14,7 +14,7 @@ class DeferredImportQueuer {
   /**
    * Split the resource to be processed by queue.
    *
-   * @param string $uuid
+   * @param string $uuid Usually UUID of resource being imported or simple job identifier.
    * @param \Dkan\Datastore\Resource $resource
    * @param array $importConfig
    *

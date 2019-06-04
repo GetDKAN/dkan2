@@ -11,6 +11,7 @@ use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Factory as DatastoreManagerFactory;
 use Dkan\Datastore\Locker;
+use Drupal\dkan_datastore\Storage\Database as DatastoreDatabase;
 
 /**
  * DatastoreManagerBuilder.
@@ -28,7 +29,8 @@ class DatastoreManagerBuilder {
   protected $resource;
 
   /**
-   *
+   * 
+   * @param ContainerInterface $container
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -42,10 +44,12 @@ class DatastoreManagerBuilder {
     return new Info(SimpleImport::class, "simple_import", "SimpleImport");
   }
 
+
   /**
    *
+   * @return InfoProvider
    */
-  protected function getInfoProvider() {
+  protected function getInfoProvider(): InfoProvider {
     $infoProvider = new \Dkan\Datastore\Manager\InfoProvider();
     $infoProvider->addInfo($this->getInfo());
     return $infoProvider;
@@ -58,29 +62,46 @@ class DatastoreManagerBuilder {
    */
   protected function loadEntityByUuid(string $uuid) {
     return $this->container
-      ->get('entity.repository')
-      ->loadEntityByUuid('node', $uuid);
+        ->get('entity.repository')
+        ->loadEntityByUuid('node', $uuid);
   }
 
   /**
+   * Set Resource from file path and id.
    *
+   * @param mixed $id identifier for file.
+   * @param string $filePath
+   * @return static
    */
-  public function setResource($id, $filePath) {
+  public function setResourceFromFilePath($id, $filePath) {
     $this->resource = new Resource($id, $filePath);
     return $this;
   }
 
   /**
-   *
+   * Set resource.
+   * 
+   * @param Resource $resource
+   * @return static
    */
-  protected function getResource() {
+  public function setResource(Resource $resource) {
+    $this->resource = $resource;
+    return $this;
+  }
+
+  /**
+   *
+   * @return Resource
+   */
+  protected function getResource(): ?Resource {
     return $this->resource;
   }
 
   /**
    *
+   * @return LockableBinStorage
    */
-  public function getLockableStorage() {
+  protected function getLockableStorage(): LockableBinStorage {
     return new LockableBinStorage(
       "dkan_datastore",
       new Locker("dkan_datastore"),
@@ -89,9 +110,20 @@ class DatastoreManagerBuilder {
   }
 
   /**
+   * Gets the Manager Factory.
    *
+   * @param Resource $resource
+   * @param InfoProvider $provider
+   * @param LockableBinStorage $bin_storage
+   * @param DatastoreDatabase $database
+   * @return DatastoreManagerFactory
    */
-  protected function getFactory($resource, $provider, $bin_storage, $database) {
+  protected function getFactory(
+    Resource $resource,
+    InfoProvider $provider,
+    LockableBinStorage $bin_storage,
+    DatastoreDatabase $database
+  ) {
     return new DatastoreManagerFactory($resource, $provider, $bin_storage, $database);
   }
 
@@ -100,7 +132,36 @@ class DatastoreManagerBuilder {
    */
   protected function getDatabase() {
     return $this->container
-      ->get('dkan_datastore.database');
+        ->get('dkan_datastore.database');
+  }
+
+  /**
+   * Build datastore manager using uuid to load some information.
+   *
+   * @param string $uuid
+   * @todo seems li
+   * @return \Dkan\Datastore\Manager\IManager
+   */
+  public function buildFromUuid($uuid): IManager {
+    $dataset  = $this->loadEntityByUuid($uuid);
+    $metadata = json_decode($dataset->field_json_metadata->value);
+
+    $this->setResourceFromFilePath(
+      $dataset->id(),
+      $metadata->distribution[0]->downloadURL
+    );
+
+    return $this->build();
+  }
+
+  public function setResourceFromEntity($uuid) {
+        $dataset  = $this->loadEntityByUuid($uuid);
+    $metadata = json_decode($dataset->field_json_metadata->value);
+
+    $this->setResourceFromFilePath(
+      $dataset->id(),
+      $metadata->distribution[0]->downloadURL
+    );
   }
 
   /**
@@ -110,18 +171,12 @@ class DatastoreManagerBuilder {
    *
    * @return \Dkan\Datastore\Manager\IManager
    */
-  public function build(string $uuid): IManager {
+  public function build(): IManager {
 
-    $resource = $this->getResource();
+    $resource    = $this->getResource();
 
     if (!($resource instanceof Resource)) {
-      $dataset = $this->loadEntityByUuid($uuid);
-      $metadata = json_decode($dataset->field_json_metadata->value);
-      $resource = $this->setResource(
-          $dataset->id(),
-          $metadata->distribution[0]->downloadURL
-        )
-        ->getResource();
+      throw new \Exception('Resource is invalid or uninitialized.');
     }
 
     $provider    = $this->getInfoProvider();

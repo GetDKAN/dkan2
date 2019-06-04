@@ -71,7 +71,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mock->expects($this->once())
       ->method('getManager')
-      ->with($dataSanitized['uuid'], $dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
+      ->with($dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
       ->willReturn($mockManager);
 
     $mockManager->expects($this->once())
@@ -138,7 +138,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mock->expects($this->once())
       ->method('getManager')
-      ->with($dataSanitized['uuid'], $dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
+      ->with($dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
       ->willReturn($mockManager);
 
     $mockManager->expects($this->once())
@@ -208,7 +208,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mock->expects($this->once())
       ->method('getManager')
-      ->with($dataSanitized['uuid'], $dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
+      ->with($dataSanitized['resource_id'], $dataSanitized['file_path'], $dataSanitized['import_config'])
       ->willReturn($mockManager);
 
     $mockManager->expects($this->once())
@@ -490,7 +490,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mockManagerBuilder = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
-        'setResource',
+        'setResourceFromFilePath',
         'build',
       ])
       ->disableOriginalConstructor()
@@ -507,7 +507,6 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $uuid                  = uniqid('uuid');
     $resourceId            = 42;
     $filePath              = uniqid('/path/to/foo');
     $importConfig          = ['foo'];
@@ -515,13 +514,12 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     // expect
     $mockManagerBuilder->expects($this->once())
-      ->method('setResource')
+      ->method('setResourceFromFilePath')
       ->with($resourceId, $filePath)
       ->willReturnSelf();
 
     $mockManagerBuilder->expects($this->once())
       ->method('build')
-      ->with($uuid)
       ->willReturn($mockManager);
 
     $mockManager->expects($this->once())
@@ -538,7 +536,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->with(55);
 
     // assert
-    $actual = $this->invokeProtectedMethod($mock, 'getManager', $uuid, $resourceId, $filePath, $importConfig);
+    $actual = $this->invokeProtectedMethod($mock, 'getManager', $resourceId, $filePath, $importConfig);
     $this->assertSame($mockManager, $actual);
   }
 

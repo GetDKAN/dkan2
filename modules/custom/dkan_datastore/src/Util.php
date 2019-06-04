@@ -22,7 +22,7 @@ class Util {
 
     /** @var Manager\DatastoreManagerBuilder $builder */
     $builder = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
-    return $builder->build($uuid);
+    return $builder->buildFromUuid($uuid);
   }
 
 }

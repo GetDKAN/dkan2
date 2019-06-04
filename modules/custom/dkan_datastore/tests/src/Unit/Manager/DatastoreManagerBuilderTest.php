@@ -85,6 +85,23 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
   }
 
   /**
+   * Tests SetResource().
+   */
+  public function testSetResource() {
+    // setup
+    $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
+      ->setMethods(null)
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $mockResource = $this->createMock(Resource::class);
+
+    // assert
+    $mock->setResource($mockResource);
+    $this->assertSame($mockResource, $this->readAttribute($mock, 'resource'));
+  }
+
+  /**
    * Tests GetResource().
    */
   public function testGetResource() {
@@ -128,19 +145,15 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
   }
 
   /**
-   * Tests Build() with default resource.
+   * Tests BuildFromUuid().
    */
-  public function testBuildDefaultResource() {
+  public function testBuildFromUuid() {
     // setup
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
         'loadEntityByUuid',
-        'getResource',
-        'setResource',
-        'getInfoProvider',
-        'getLockableStorage',
-        'getDatabase',
-        'getFactory',
+        'setResourceFromFilePath',
+        'build',
       ])
       ->disableOriginalConstructor()
       ->getMock();
@@ -151,6 +164,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
+
 
     $downloadUrl = 'http://foo.bar';
 
@@ -171,27 +185,9 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
     $datasetEntityId = 42;
     $uuid            = uniqid('foo-uuid');
 
-    $mockResource        = $this->createMock(Resource::class);
-    $mockInfoProvider    = $this->createMock(InfoProvider::class);
-    $mockLockableStorage = $this->createMock(LockableBinStorage::class);
-    $mockDatabase        = $this->createMock(Database::class);
-
-    $mockFactory = $this->getMockBuilder(DatastoreManagerFactory::class)
-      ->setMethods(['get'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
     $expected = $this->createMock(IManager::class);
 
     // expect
-
-    $mock->expects($this->exactly(2))
-      ->method('getResource')
-      ->willReturnOnConsecutiveCalls(
-        null,
-        $mockResource
-    );
-
     $mock->expects($this->once())
       ->method('loadEntityByUuid')
       ->with($uuid)
@@ -202,51 +198,28 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->willReturn($datasetEntityId);
 
     $mock->expects($this->once())
-      ->method('setResource')
+      ->method('setResourceFromFilePath')
       ->with($datasetEntityId, $downloadUrl)
       ->willReturnSelf();
 
     $mock->expects($this->once())
-      ->method('getInfoProvider')
-      ->willReturn($mockInfoProvider);
-
-    $mock->expects($this->once())
-      ->method('getLockableStorage')
-      ->willReturn($mockLockableStorage);
-
-    $mock->expects($this->once())
-      ->method('getDatabase')
-      ->willReturn($mockDatabase);
-
-    $mock->expects($this->once())
-      ->method('getFactory')
-      ->with(
-        $mockResource,
-        $mockInfoProvider,
-        $mockLockableStorage,
-        $mockDatabase
-      )
-      ->willReturn($mockFactory);
-
-    $mockFactory->expects($this->once())
-      ->method('get')
+      ->method('build')
       ->willReturn($expected);
 
     // assert
-    $actual = $mock->build($uuid);
+    $actual = $mock->buildFromUuid($uuid);
     $this->assertSame($expected, $actual);
   }
 
   /**
-   * Tests Build() with custom resource set.
+   * Tests Build() with default resource.
    */
-  public function testBuildWithCustomResource() {
+  public function testBuild() {
     // setup
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
         'loadEntityByUuid',
         'getResource',
-        'setResource',
         'getInfoProvider',
         'getLockableStorage',
         'getDatabase',
@@ -255,7 +228,6 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockDatasetEntity   = $this->createMock(EntityInterface::class);
     $mockResource        = $this->createMock(Resource::class);
     $mockInfoProvider    = $this->createMock(InfoProvider::class);
     $mockLockableStorage = $this->createMock(LockableBinStorage::class);
@@ -267,19 +239,12 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->getMock();
 
     $expected = $this->createMock(IManager::class);
-    $uuid     = uniqid('foo-uuid');
 
     // expect
 
     $mock->expects($this->once())
       ->method('getResource')
       ->willReturn($mockResource);
-
-    $mock->expects($this->never())
-      ->method('loadEntityByUuid');
-
-    $mock->expects($this->never())
-      ->method('setResource');
 
     $mock->expects($this->once())
       ->method('getInfoProvider')
@@ -308,8 +273,48 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->willReturn($expected);
 
     // assert
-    $actual = $mock->build($uuid);
+    $actual = $mock->build();
     $this->assertSame($expected, $actual);
+  }
+
+  /**
+   * Tests Build() with invalid resource.
+   */
+  public function testBuildWithInvalidResource() {
+    // setup
+    $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
+      ->setMethods([
+        'loadEntityByUuid',
+        'getResource',
+        'getInfoProvider',
+        'getLockableStorage',
+        'getDatabase',
+        'getFactory',
+      ])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    // expect
+    $mock->expects($this->once())
+      ->method('getResource')
+      ->willReturn(null);
+
+    $this->setExpectedException(\Exception::class, 'Resource is invalid or uninitialized.');
+
+    $mock->expects($this->never())
+      ->method('getInfoProvider');
+
+    $mock->expects($this->never())
+      ->method('getLockableStorage');
+
+    $mock->expects($this->never())
+      ->method('getDatabase');
+
+    $mock->expects($this->never())
+      ->method('getFactory');
+
+    // assert
+    $mock->build();
   }
 
 }
