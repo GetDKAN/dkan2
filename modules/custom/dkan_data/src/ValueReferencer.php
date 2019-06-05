@@ -383,18 +383,23 @@ class ValueReferencer {
    *
    * @return array
    *   List of dataset properties.
+   *
+   * @Todo: consolidate with dkan_api RouteProvider's getPropertyList.
    */
   protected function getPropertyList() : array {
     $list = $this->configService->get('dkan_data.settings')->get('property_list');
-
-    // Trim and split list on newlines whether Windows, MacOS or Linux.
-    $property_list = preg_split(
-      '/\s*\r\n\s*|\s*\r\s*|\s*\n\s*/',
-      trim($list),
-      -1,
-      PREG_SPLIT_NO_EMPTY
-    );
-    return $property_list;
+    if ($list) {
+      // Trim and split list on newlines whether Windows, MacOS or Linux.
+      return preg_split(
+        '/\s*\r\n\s*|\s*\r\s*|\s*\n\s*/',
+        trim($list),
+        -1,
+        PREG_SPLIT_NO_EMPTY
+      );
+    }
+    else {
+      return [];
+    }
   }
 
 }

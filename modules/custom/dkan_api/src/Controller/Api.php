@@ -60,7 +60,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function getAll($schema_id) {
+  public function getAll($schema_id = 'dataset') {
     $this->schemaId = $schema_id;
 
     $datasets = $this->getEngine()
@@ -93,7 +93,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function get($schema_id, $uuid) {
+  public function get($uuid, $schema_id = 'dataset') {
     $this->schemaId = $schema_id;
 
     try {
@@ -123,7 +123,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function post($schema_id) {
+  public function post($schema_id = 'dataset') {
     $this->schemaId = $schema_id;
 
     /* @var $engine \Sae\Sae */
@@ -173,7 +173,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function put($schema_id, $uuid) {
+  public function put($uuid, $schema_id = 'dataset') {
     $this->schemaId = $schema_id;
 
     /* @var $engine \Sae\Sae */
@@ -220,7 +220,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function patch($schema_id, $uuid) {
+  public function patch($uuid, $schema_id = 'dataset') {
     $this->schemaId = $schema_id;
 
     /* @var $engine \Sae\Sae */
@@ -270,7 +270,7 @@ abstract class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function delete($schema_id, $uuid) {
+  public function delete($uuid, $schema_id = 'dataset') {
     /* @var $engine \Sae\Sae */
     $engine = $this->getEngine();
 

@@ -71,6 +71,10 @@ class DrupalNodeDataset implements Storage {
    */
   public function retrieve(string $id): ?string {
 
+    if (!isset($this->schemaId)) {
+      throw new \Exception("DrupalNodeDataset schemaId not set in retrieve().");
+    }
+
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
       return $node->field_json_metadata->value;
     }
@@ -82,6 +86,10 @@ class DrupalNodeDataset implements Storage {
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
+
+    if (!isset($this->schemaId)) {
+      throw new \Exception("DrupalNodeDataset schemaId not set in retrieveAll().");
+    }
 
     $nodeStorage = $this->getNodeStorage();
 
@@ -112,6 +120,10 @@ class DrupalNodeDataset implements Storage {
    * {@inheritDoc}.
    */
   public function store(string $data, string $id = NULL): string {
+
+    if (!isset($this->schemaId)) {
+      $this->schemaId = 'dataset';
+    }
 
     $data = json_decode($data);
 
