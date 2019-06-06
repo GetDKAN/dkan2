@@ -105,7 +105,7 @@ class DatastoreManagerBuilderHelper {
    * @param string $uuid
    * @return \Drupal\Core\Entity\EntityInterface
    */
-  protected function loadEntityByUuid(string $uuid): EntityInterface {
+  public function loadEntityByUuid(string $uuid): EntityInterface {
     $entity = $this->container
       ->get('entity.repository')
       ->loadEntityByUuid('node', $uuid);
@@ -117,17 +117,36 @@ class DatastoreManagerBuilderHelper {
     return $entity;
   }
 
-  /**
-   *
-   */
-  public function newResourceFromEntity($uuid) {
+  public function newResourceFromEntity($uuid): Resource {
     $dataset = $this->loadEntityByUuid($uuid);
-    $metadata = json_decode($dataset->field_json_metadata->value);
 
     return $this->newResourceFromFilePath(
         $dataset->id(),
-        $metadata->distribution[0]->downloadURL
+        $this->getResourceFilePathFromEntity($dataset)
     );
+  }
+
+  /**
+   * 
+   * @param EntityInterface $entity
+   * @return string
+   * @throws \Exception if validation of entity or data fails.
+   */
+  public function getResourceFilePathFromEntity(EntityInterface $entity): string {
+    if (!isset($entity->field_json_metadata->value)) {
+      throw new \Exception("Entity for {$entity->uuid} does not have required field `field_json_metadata`.");
+    }
+    $metadata = json_decode($entity->field_json_metadata->value);
+
+    if (
+      ! ($metadata instanceof \stdClass)
+      // @todo need to validate that it is a usable file/mime instead
+      || !isset($metadata->distribution[0]->downloadURL)
+    ) {
+      throw new \Exception("Invalid metadata information or missing file information.");
+    }
+
+    return $metadata->distribution[0]->downloadURL;
   }
 
 }

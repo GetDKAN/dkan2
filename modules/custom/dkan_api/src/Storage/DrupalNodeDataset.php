@@ -4,11 +4,14 @@ namespace Drupal\dkan_api\Storage;
 
 use Harvest\Storage\Storage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Logger\RfcLogLevel;
 
 /**
  * DrupalNodeDataset.
  */
 class DrupalNodeDataset implements Storage {
+
+  use \Drupal\Core\Logger\LoggerChannelTrait;
 
   /**
    * Entity Type Manager.
@@ -172,16 +175,23 @@ class DrupalNodeDataset implements Storage {
    */
   protected function enqueueDeferredImport(string $uuid) {
 
-    // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
-    /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper $managerBuilderHelper */
-    $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
+    try {
+      // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
+      /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper $managerBuilderHelper */
+      $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
 
-    /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
-    $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
+      $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
 
-    $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
+      /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
+      $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
 
-    return $deferredImporter->createDeferredResourceImport($uuid, $resource);
+      return $deferredImporter->createDeferredResourceImport($uuid, $resource);
+    } catch (\Exception $e) {
+      $logger = $this->getLogger('dkan_api');
+
+      $logger->log(RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $e->getMessage());
+      $logger->log(RfcLogLevel::DEBUG, $e->getTraceAsString());
+    }
   }
 
   /**
