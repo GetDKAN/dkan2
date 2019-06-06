@@ -150,10 +150,34 @@ class DrupalNodeDataset implements Storage {
           'field_json_metadata' => json_encode($data),
         ]);
       $node->save();
+
+      $uuid = $node->uuid();
+      $this->enqueueDeferredImport($uuid);
       return $node->uuid();
     }
 
     return NULL;
+  }
+
+  /**
+   * Enqueue the dataset for further processing.
+   *
+   * @param string $uuid
+   * @todo pass import config.
+   * @return int|bool new queue ID or false on failure
+   */
+  protected function enqueueDeferredImport(string $uuid) {
+
+    // using \Drupal::service() to avoid overloading constructor with single use dependencies.
+    /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper $managerBuilderHelper */
+    $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
+
+    /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
+    $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
+
+    $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
+
+    return $deferredImporter->createDeferredResourceImport($uuid, $resource);
   }
 
   /**
