@@ -12,8 +12,6 @@ use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\LockableBinStorage;
 use Dkan\Datastore\Manager\Factory as DatastoreManagerFactory;
 use Dkan\Datastore\Locker;
-use Drupal\Core\Entity\EntityRepositoryInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper as Helper;
 use Dkan\Datastore\Storage\IKeyValue;
@@ -28,23 +26,23 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests __construct().
    */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockContainer = $this->getMockContainer();
     $mockHelper    = $this->createMock(Helper::class);
 
-    // expect
-    // nothing is fetch at construct
+    // Expect.
+    // Nothing is fetch at construct.
     $mockContainer->expects($this->once())
       ->method('get')
       ->with('dkan_datastore.manager.datastore_manager_builder_helper')
       ->willReturn($mockHelper);
 
-    // assert
+    // Assert.
     $mock->__construct($mockContainer);
     $this->assertSame(
       $mockContainer,
@@ -60,9 +58,9 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests GetInfo().
    */
   public function testGetInfo() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -74,13 +72,13 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
 
     $mockInfo = $this->createMock(Info::class);
 
-    // expect
+    // Expect.
     $mockHelper->expects($this->once())
       ->method('newInfo')
       ->with(SimpleImport::class, "simple_import", "SimpleImport")
       ->willReturn($mockInfo);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getInfo');
     $this->assertSame($mockInfo, $actual);
   }
@@ -89,7 +87,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests GetInfoProvider().
    */
   public function testGetInfoProvider() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods(['getInfo'])
       ->disableOriginalConstructor()
@@ -107,8 +105,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    // expect
-
+    // Expect.
     $mockHelper->expects($this->once())
       ->method('newInfoProvider')
       ->willReturn($mockInfoProvider);
@@ -121,7 +118,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->method('addInfo')
       ->with($mockInfo);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getInfoProvider');
     $this->assertSame($mockInfoProvider, $actual);
   }
@@ -130,7 +127,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests setResourceFromFilePath().
    */
   public function testSetResourceFromFilePath() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods(['setResource'])
       ->disableOriginalConstructor()
@@ -146,8 +143,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
     $id           = uniqid('id');
     $filePath     = uniqid('file-path');
 
-    // expect
-
+    // Expect.
     $mockHelper->expects($this->once())
       ->method('newResourceFromFilePath')
       ->with($id, $filePath)
@@ -157,7 +153,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->method('setResource')
       ->with($mockResource);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'setResourceFromFilePath', $id, $filePath);
     $this->assertSame($mock, $actual);
   }
@@ -166,15 +162,15 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests SetResource().
    */
   public function testSetResource() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockResource = $this->createMock(Resource::class);
 
-    // assert
+    // Assert.
     $mock->setResource($mockResource);
     $this->assertSame($mockResource, $this->readAttribute($mock, 'resource'));
   }
@@ -183,16 +179,16 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests GetResource().
    */
   public function testGetResource() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockResource = $this->createMock(Resource::class);
     $this->writeProtectedProperty($mock, 'resource', $mockResource);
-    // assert
-    $actual       = $this->invokeProtectedMethod($mock, 'getResource');
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'getResource');
     $this->assertSame($mockResource, $actual);
   }
 
@@ -200,9 +196,9 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests getLockableStorage().
    */
   public function testGetLockableStorage() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -223,8 +219,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
     $mockLockableStorage = $this->createMock(LockableBinStorage::class);
     $name                = 'dkan_datastore';
 
-    // expect
-
+    // Expect.
     $mockHelper->expects($this->once())
       ->method('newLocker')
       ->with($name)
@@ -239,7 +234,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->method('newLockableStorage')
       ->with($name, $mockLocker, $mockKeyValueStore)
       ->willReturn($mockLockableStorage);
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getLockableStorage');
     $this->assertSame($mockLockableStorage, $actual);
   }
@@ -248,9 +243,9 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests GetDatabase().
    */
   public function testGetDatabase() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -259,13 +254,13 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
 
     $mockDatabase = $this->createMock(Database::class);
 
-    // expect
+    // Expect.
     $mockContainer->expects($this->once())
       ->method('get')
       ->with('dkan_datastore.database')
       ->willReturn($mockDatabase);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getDatabase');
     $this->assertSame($mockDatabase, $actual);
   }
@@ -274,7 +269,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests BuildFromUuid().
    */
   public function testBuildFromUuid() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
         'setResource',
@@ -296,8 +291,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
     $mockResource = $this->createMock(Resource::class);
     $expected     = $this->createMock(IManager::class);
 
-    // expect
-
+    // Expect.
     $mockHelper->expects($this->once())
       ->method('newResourceFromEntity')
       ->with($uuid)
@@ -311,7 +305,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->method('build')
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $mock->buildFromUuid($uuid);
     $this->assertSame($expected, $actual);
   }
@@ -320,7 +314,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests Build() with default resource.
    */
   public function testBuild() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
         'getResource',
@@ -349,8 +343,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
 
     $expected = $this->createMock(IManager::class);
 
-    // expect
-
+    // Expect.
     $mock->expects($this->once())
       ->method('getResource')
       ->willReturn($mockResource);
@@ -381,7 +374,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->method('get')
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $mock->build();
     $this->assertSame($expected, $actual);
   }
@@ -390,7 +383,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
    * Tests Build() with invalid resource.
    */
   public function testBuildWithInvalidResource() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilder::class)
       ->setMethods([
         'getResource',
@@ -401,10 +394,10 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('getResource')
-      ->willReturn(null);
+      ->willReturn(NULL);
 
     $this->setExpectedException(\Exception::class, 'Resource is invalid or uninitialized.');
 
@@ -417,7 +410,7 @@ class DatastoreManagerBuilderTest extends DkanTestBase {
     $mock->expects($this->never())
       ->method('getDatabase');
 
-    // assert
+    // Assert.
     $mock->build();
   }
 

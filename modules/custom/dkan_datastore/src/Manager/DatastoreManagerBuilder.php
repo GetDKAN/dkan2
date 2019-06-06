@@ -9,10 +9,6 @@ use Dkan\Datastore\Manager\Info;
 use Dkan\Datastore\Manager\InfoProvider;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\LockableBinStorage;
-use Dkan\Datastore\Manager\Factory as DatastoreManagerFactory;
-use Dkan\Datastore\Locker;
-use Drupal\dkan_datastore\Storage\Database as DatastoreDatabase;
-use Dkan\Datastore\Storage\IKeyValue;
 use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper as Helper;
 
 /**
@@ -31,15 +27,15 @@ class DatastoreManagerBuilder {
   protected $resource;
 
   /**
-   * Helper
-   * 
-   * @var Helper
+   * Helper.
+   *
+   * @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper
    */
   protected $helper;
 
   /**
-   * 
-   * @param ContainerInterface $container
+   *
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -57,7 +53,7 @@ class DatastoreManagerBuilder {
 
   /**
    *
-   * @return InfoProvider
+   * @return \Dkan\Datastore\Manager\InfoProvider
    */
   protected function getInfoProvider(): InfoProvider {
     $infoProvider = $this->helper->newInfoProvider();
@@ -68,8 +64,10 @@ class DatastoreManagerBuilder {
   /**
    * Set Resource from file path and id.
    *
-   * @param mixed $id identifier for file.
+   * @param mixed $id
+   *   identifier for file.
    * @param string $filePath
+   *
    * @return static
    */
   public function setResourceFromFilePath($id, $filePath) {
@@ -82,8 +80,9 @@ class DatastoreManagerBuilder {
 
   /**
    * Set resource.
-   * 
-   * @param Resource $resource
+   *
+   * @param \Dkan\Datastore\Resource $resource
+   *
    * @return static
    */
   public function setResource(Resource $resource) {
@@ -93,7 +92,7 @@ class DatastoreManagerBuilder {
 
   /**
    *
-   * @return Resource
+   * @return \Dkan\Datastore\Resource
    */
   protected function getResource(): ?Resource {
     return $this->resource;
@@ -101,7 +100,7 @@ class DatastoreManagerBuilder {
 
   /**
    *
-   * @return LockableBinStorage
+   * @return \Dkan\Datastore\LockableBinStorage
    */
   protected function getLockableStorage(): LockableBinStorage {
     $name = 'dkan_datastore';
@@ -117,14 +116,16 @@ class DatastoreManagerBuilder {
    */
   protected function getDatabase() {
     return $this->container
-        ->get('dkan_datastore.database');
+      ->get('dkan_datastore.database');
   }
 
   /**
    * Build datastore manager using uuid to load some information.
    *
    * @param string $uuid
+   *
    * @todo seems li
+   *
    * @return \Dkan\Datastore\Manager\IManager
    */
   public function buildFromUuid($uuid): IManager {

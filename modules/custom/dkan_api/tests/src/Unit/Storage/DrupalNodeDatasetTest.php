@@ -16,7 +16,6 @@ use Dkan\Datastore\Resource;
  *
  * @coversDefaultClass \Drupal\dkan_api\Storage\DrupalNodeDataset
  * @group dkan_api
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 class DrupalNodeDatasetTest extends DkanTestBase {
 
@@ -97,9 +96,9 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    * Tests EnqueueDeferredImport().
    */
   public function testEnqueueDeferredImport() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DrupalNodeDataset::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -121,7 +120,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $uuid         = uniqid('foo');
     $expected     = 42;
 
-    // expect
+    // Expect.
     $mockBuilderHelper->expects($this->once())
       ->method('newResourceFromEntity')
       ->with($uuid)
@@ -132,7 +131,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ->with($uuid, $mockResource)
       ->willReturn($expected);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
     $this->assertEquals($expected, $actual);
   }

@@ -163,12 +163,16 @@ class DrupalNodeDataset implements Storage {
    * Enqueue the dataset for further processing.
    *
    * @param string $uuid
+   *   Uuid of node.
+   *
    * @todo pass import config.
-   * @return int|bool new queue ID or false on failure
+   *
+   * @return int|bool
+   *   New queue ID or false on failure
    */
   protected function enqueueDeferredImport(string $uuid) {
 
-    // using \Drupal::service() to avoid overloading constructor with single use dependencies.
+    // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
     /** @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper $managerBuilderHelper */
     $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder');
 

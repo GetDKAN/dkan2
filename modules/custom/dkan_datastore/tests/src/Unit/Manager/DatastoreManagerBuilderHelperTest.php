@@ -4,18 +4,7 @@ namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
 use Drupal\dkan_datastore\Manager\DatastoreManagerBuilderHelper;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Dkan\Datastore\Manager\IManager;
 use Dkan\Datastore\Resource;
-use Dkan\Datastore\Manager\Info;
-use Dkan\Datastore\Manager\InfoProvider;
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Dkan\Datastore\LockableBinStorage;
-use Dkan\Datastore\Manager\Factory as DatastoreManagerFactory;
-use Dkan\Datastore\Locker;
-use Drupal\dkan_datastore\Storage\Database as DatastoreDatabase;
-use Dkan\Datastore\Storage\IKeyValue;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityRepositoryInterface;
 
 /**
@@ -28,20 +17,20 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
    * Tests __construct().
    */
   public function testConstruct() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
     $mockContainer = $this->getMockContainer();
 
-    // expect
-    // nothing is fetch at construct
+    // Expect
+    // Nothing is fetch at construct.
     $mockContainer->expects($this->never())
       ->method('get');
 
-    // assert
+    // Assert.
     $mock->__construct($mockContainer);
     $this->assertSame(
       $mockContainer,
@@ -53,9 +42,9 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
    * Tests LoadEntityByUuid().
    */
   public function testLoadEntityByUuid() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -70,7 +59,7 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
 
     $uuid = uniqid('foobar');
 
-    // expect
+    // Expect.
     $mockContainer->expects($this->once())
       ->method('get')
       ->with('entity.repository')
@@ -81,7 +70,7 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
       ->with('node', $uuid)
       ->willReturn($mockEntity);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'loadEntityByUuid', $uuid);
     $this->assertSame($mockEntity, $actual);
   }
@@ -90,9 +79,9 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
    * Tests LoadEntityByUuid() on exception condition.
    */
   public function testLoadEntityByUuidOnException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -103,11 +92,11 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
       ->setMethods(['loadEntityByUuid'])
       ->getMockForAbstractClass();
 
-    $mockEntity = null;
+    $mockEntity = NULL;
 
     $uuid = uniqid('foobar');
 
-    // expect
+    // Expect.
     $mockContainer->expects($this->once())
       ->method('get')
       ->with('entity.repository')
@@ -120,17 +109,16 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
 
     $this->setExpectedException(\Exception::class, "Enitity {$uuid} could not be loaded.");
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'loadEntityByUuid', $uuid);
   }
 
   /**
    * Tests NewResourceFromEntity().
- */
-
+   */
   public function testNewResourceFromEntity() {
 
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreManagerBuilderHelper::class)
       ->setMethods([
         'loadEntityByUuid',
@@ -140,9 +128,7 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
       ->getMock();
 
     $mockDatasetEntity = $this->getMockBuilder(EntityInterface::class)
-      ->setMethods([
-        'id'
-      ])
+      ->setMethods(['id'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
@@ -151,23 +137,23 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
     $downloadUrl = 'http://foo.bar';
 
     $datasetValue = (object) [
-        'distribution' => [
-          (object) [
-            'downloadURL' => $downloadUrl,
-          ],
+      'distribution' => [
+        (object) [
+          'downloadURL' => $downloadUrl,
         ],
+      ],
     ];
 
     $encodedDatasetValue = json_encode($datasetValue);
 
     $mockDatasetEntity->field_json_metadata = (object) [
-        'value' => $encodedDatasetValue,
+      'value' => $encodedDatasetValue,
     ];
 
     $datasetEntityId = 42;
     $uuid            = uniqid('foo-uuid');
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('loadEntityByUuid')
       ->with($uuid)
@@ -182,9 +168,9 @@ class DatastoreManagerBuilderHelperTest extends DkanTestBase {
       ->with($datasetEntityId, $downloadUrl)
       ->willReturn($mockResource);
 
-    // assert
+    // Assert.
     $actual = $mock->newResourceFromEntity($uuid);
     $this->assertSame($mockResource, $actual);
-
   }
+
 }
