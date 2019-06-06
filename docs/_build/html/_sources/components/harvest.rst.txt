@@ -4,6 +4,8 @@ Harvest
 To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own. 
 For example, `Data.gov <https://data.gov/>`_ harvests all of its datasets from the `data.json <https://project-open-data.cio.gov/v1.1/schema/>`_ files of `hundreds of U.S. federal, state and local data portals <https://catalog.data.gov/harvest>`_.
 
+DKAN Harvest uses the local file system to store source information in cache and plan files.
+
 Drush Commands
 --------------
 
@@ -15,7 +17,7 @@ Drush Commands
     =======================   ===========  ======= 
     dkan-harvest:list         n/a          Lists avaialble harvests.
     dkan-harvest:register     $config      Register a new harvest, file saved to *dkan_harvest/plans* directory.
-    dkan-harvest:deregister   $identifier  Deletes the cache file.
+    dkan-harvest:deregister   $identifier  Deletes the cached plan file.
     dkan-harvest:cache        $identifier  This will fetch the source data, apply the source configuration and cache the data to a local file.
     dkan-harvest:run          $identifier  This will harvest the current cache for the selected sources.
     dkan-harvest:revert       $identifier  Reverts harvest.

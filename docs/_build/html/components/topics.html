@@ -38,7 +38,14 @@
             
   <div class="section" id="topics">
 <h1>Topics<a class="headerlink" href="#topics" title="Permalink to this headline">¶</a></h1>
-<p>Main thematic category of the dataset.</p>
+<p>Topics is the term used to reference the metadata property that <a class="reference external" href="https://project-open-data.cio.gov">Project Open Data</a> calls “theme”.
+The <a class="reference external" href="https://project-open-data.cio.gov/v1.1/schema/#theme">theme</a> is the main thematic category of the dataset.</p>
+<p>DKAN will create a <em>data</em> node for each theme specified in the datasets.</p>
+<p>When the value of themes change or become outdated, the corresponding data node will be removed by the <strong>orphan_reference_processor</strong> queue task.
+If you prefer to run it manually, you may do so with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">drush</span> <span class="n">queue</span><span class="o">-</span><span class="n">run</span> <span class="n">orphan_reference_processor</span>
+</pre></div>
+</div>
 </div>
 
 

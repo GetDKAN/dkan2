@@ -40,6 +40,7 @@
 <h1>Harvest<a class="headerlink" href="#harvest" title="Permalink to this headline">¶</a></h1>
 <p>To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own.
 For example, <a class="reference external" href="https://data.gov/">Data.gov</a> harvests all of its datasets from the <a class="reference external" href="https://project-open-data.cio.gov/v1.1/schema/">data.json</a> files of <a class="reference external" href="https://catalog.data.gov/harvest">hundreds of U.S. federal, state and local data portals</a>.</p>
+<p>DKAN Harvest uses the local file system to store source information in cache and plan files.</p>
 <div class="section" id="drush-commands">
 <h2>Drush Commands<a class="headerlink" href="#drush-commands" title="Permalink to this headline">¶</a></h2>
 <table class="colwidths-given docutils align-center">
@@ -65,7 +66,7 @@ For example, <a class="reference external" href="https://data.gov/">Data.gov</a>
 </tr>
 <tr class="row-even"><td><p>dkan-harvest:deregister</p></td>
 <td><p>$identifier</p></td>
-<td><p>Deletes the cache file.</p></td>
+<td><p>Deletes the cached plan file.</p></td>
 </tr>
 <tr class="row-odd"><td><p>dkan-harvest:cache</p></td>
 <td><p>$identifier</p></td>

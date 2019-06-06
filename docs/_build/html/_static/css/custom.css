@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:400,700|Varela+Round&display=swap');
 
+pre, tt, code { 
+  color: #E74C3C;
+  padding: 2px 5px;
+  background-color: #fafafa;
+  border: solid 1px #e1e4e5;
+}
 a, a.reference {
   color: #0071bc;
   border: none;

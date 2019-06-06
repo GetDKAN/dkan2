@@ -101,6 +101,6 @@ Transforms
 The transform options include four multi-value fields to help you fine tune the results of your harvest.
 
 :Filters: Filters restrict the datasets imported by a particular field. For instance, if you are harvesting a data.json source and want only to harvest health-related datasets, you might add a filter with "keyword" in the first text box, and "heatlh" in the second.
-:Excludes: Excludes are the inverse of filters. For example, if you know there is one publisher listed on the source whose datasets you do **not** want to bring into your data portal, you might add "publisher.name" with value "Governor's Office of Terrible Data"
+:Excludes: Excludes are the inverse of filters. For example, if you know there is one publisher listed on the source whose datasets you do **not** want to bring into your data portal, you might add "publisher.name" with value "Governor's Office of Untidy Data"
 :Overrides: Overrides will replace values from the source when you harvest. For instance, if you want to take responsibility for the datasets once harvested and add your agency's name as the publisher, you might add "publisher.name" with your agency's name as the value.
 :Defaults: Defaults work the same as overrides, but will only be used if the relevant field is empty in the source
