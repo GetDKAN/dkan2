@@ -19,8 +19,9 @@ function dkan_data_node_load(array $entities) {
       $entity->referenced_metadata = $metadata_string;
       // Dereference dataset properties.
       $metadata_obj = json_decode($metadata_string);
+      $query_params = Drupal::request()->query->all();
       $referencer = Drupal::service("dkan_data.value_referencer");
-      $metadata_obj = $referencer->dereference($metadata_obj);
+      $metadata_obj = $referencer->dereference($metadata_obj, $query_params);
       $entity->set('field_json_metadata', json_encode($metadata_obj));
     }
   }
