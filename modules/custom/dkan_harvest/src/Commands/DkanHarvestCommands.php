@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_harvest\Commands;
 
+use Harvest\ETL\Factory;
 use Harvest\EtlWorkerFactory;
 use Harvest\Harvester;
 use Harvest\Storage\Storage;
@@ -30,22 +31,11 @@ class DkanHarvestCommands extends DrushCommands {
    *   List available harvests.
    */
   public function index() {
-    $store = $this->getPlanStorage();
-    $items = $store->retrieveAll();
+    $rows = array_map(function($id) {
+      return [$id];
+    }, array_keys($this->getPlanStorage()->retrieveAll()));
 
-    $rows = [];
-
-    foreach (array_keys($items) as $id) {
-      $rows[] = [$id];
-    }
-
-    $table = new Table(new ConsoleOutput());
-
-    $table
-      ->setHeaders(['plan id'])
-      ->setRows($rows);
-
-    $table->render();
+    (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
   }
 
   /**
@@ -53,15 +43,17 @@ class DkanHarvestCommands extends DrushCommands {
    *
    * @command dkan-harvest:register
    */
-  public function register($config) {
-    $storage = $this->getPlanStorage();
+  public function register($harvest_plan) {
+    try {
+      Factory::validateHarvestPlan($harvest_plan);
+      $this->getPlanStorage()->store(json_encode($harvest_plan), $harvest_plan->identifier);
+      $message = "Succesfully registered the {$harvest_plan->identifier} harvest.";
+    }
+    catch (\Exception $e) {
+      $message = $e->getMessage();
+    }
 
-    $schema_path = DRUPAL_ROOT . "/" . drupal_get_path("module", "dkan_harvest") . "/schema/schema.json";
-    $schema = file_get_contents($schema_path);
-
-    $engine = new Sae($storage, $schema);
-    $engine->setIdGenerator(new IdGenerator($config));
-    $engine->post($config);
+    (new ConsoleOutput())->write($message);
   }
 
   /**
@@ -177,7 +169,7 @@ class DkanHarvestCommands extends DrushCommands {
   }
 
   /**
-   *
+   * Private.
    */
   private function getPlanStorage(): Storage {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
