@@ -3,13 +3,9 @@
 namespace Drupal\dkan_harvest\Drush;
 
 use Harvest\ETL\Factory;
-use Harvest\Harvester;
 use Harvest\ResultInterpreter;
-use Harvest\Storage\Storage;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
-;
-use Drupal\dkan_harvest\Storage\File;
 
 use Drush\Commands\DrushCommands;
 
@@ -17,6 +13,7 @@ use Drush\Commands\DrushCommands;
  *
  */
 class Commands extends DrushCommands {
+  use Helper;
 
   /**
    * Lists avaialble harvests.
@@ -92,17 +89,7 @@ class Commands extends DrushCommands {
 
     $this->getStorage($id, "run")->store(json_encode($result), time());
 
-    $interpreter = new ResultInterpreter($result);
-
-    $table = new Table(new ConsoleOutput());
-    $table->setHeaders(['processed', 'created', 'updated', 'errors']);
-    $table->addRow([
-      $interpreter->countProcessed(),
-      $interpreter->countCreated(),
-      $interpreter->countUpdated(),
-      $interpreter->countFailed(),
-    ]);
-    $table->render();
+    $this->renderResult($result);
   }
 
   /**
@@ -149,33 +136,10 @@ class Commands extends DrushCommands {
     (new ConsoleOutput())->write("{$result} items reverted for the '{$id}' harvest plan." . PHP_EOL);
   }
 
-  private function getHarvester($id) {
-    return new Harvester(new Factory($this->getHarvestPlan($id),
-      $this->getStorage($id, "item"),
-      $this->getStorage($id,"hash")));
-  }
-
   /**
    *
    */
   private function getHarvestPlan($id) {
     return json_decode($this->getPlanStorage()->retrieve($id));
   }
-
-  /**
-   * Private.
-   */
-  private function getPlanStorage(): Storage {
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    return new File("{$path}/dkan_harvest/plans");
-  }
-
-  /**
-   * Private.
-   */
-  private function getStorage($id, $type) {
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    return new File("{$path}/dkan_harvest/{$id}-{$type}");
-  }
-
 }
