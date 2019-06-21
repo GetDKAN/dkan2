@@ -626,7 +626,6 @@ class ValueReferencerTest extends DkanTestBase {
         'uuid'           => $uuid,
       ])
       ->willReturn($nodes);
-//    $this->dereferenceMethod = $dereferenceMethod;
     $this->writeProtectedProperty($mock, 'dereferenceMethod', $dereferenceMethod);
 
     // Assert.
@@ -697,10 +696,11 @@ class ValueReferencerTest extends DkanTestBase {
       'another to dereference' => $uuid2,
       'other property' => 'Some other value',
     ];
-    $params = ['values' => 'identifier'];
+    // DEREFERENCE_OUTPUT_IDENTIFIER
+    $method = 1;
 
     // Assert the dereferencing left the data unchanged, with identifiers.
-    $actual = $this->invokeProtectedMethod($mock, 'dereference', $data, $params);
+    $actual = $this->invokeProtectedMethod($mock, 'dereference', $data, $method);
     $this->assertEquals($data, $actual);
   }
 
@@ -861,19 +861,13 @@ class ValueReferencerTest extends DkanTestBase {
   public function dataSetDereferenceMethod() {
     return [
       [
-        [], 0,
+        0, 0,
       ],
       [
-        ['values' => 'foobar'], 0,
+        1, 1,
       ],
       [
-        ['values' => 'data'], 0,
-      ],
-      [
-        ['values' => 'identifier'], 1,
-      ],
-      [
-        ['values' => 'both'], 2,
+        2, 2,
       ],
     ];
   }
@@ -883,7 +877,7 @@ class ValueReferencerTest extends DkanTestBase {
    *
    * @dataProvider dataSetDereferenceMethod
    */
-  public function testSetDereferenceMethod(array $params, $expected) {
+  public function testSetDereferenceMethod(int $method, int $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
@@ -891,8 +885,9 @@ class ValueReferencerTest extends DkanTestBase {
       ->getMock();
 
     // Assert.
-    $actual = $this->invokeProtectedMethod($mock, 'setDereferenceMethod', $params);
-    $this->assertEquals($expected, $actual);
+    $actual = $this->invokeProtectedMethod($mock, 'setDereferenceMethod', $method);
+    $this->assertEquals($method, $actual);
+    $this->assertEquals($method, $this->accessProtectedProperty($mock, 'dereferenceMethod'));
   }
 
 }

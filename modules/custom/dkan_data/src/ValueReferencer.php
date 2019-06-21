@@ -235,20 +235,14 @@ class ValueReferencer {
   }
 
   /**
+   * Setter for dereferencing method.
    *
+   * @param int $method
    *
-   * @param array $params
+   * @return int
    */
-  protected function setDereferenceMethod(array $params) {
-    if (isset($params['values']) && $params['values'] == 'both') {
-      return $this->dereferenceMethod = self::DEREFERENCE_OUTPUT_BOTH;
-    }
-    elseif (isset($params['values']) && $params['values'] == 'identifier') {
-      return $this->dereferenceMethod = self::DEREFERENCE_OUTPUT_IDENTIFIER;
-    }
-    else {
-      return $this->dereferenceMethod = self::DEREFERENCE_OUTPUT_DATA;
-    }
+  protected function setDereferenceMethod(int $method) {
+    return $this->dereferenceMethod = $method;
   }
 
   /**
@@ -256,18 +250,19 @@ class ValueReferencer {
    *
    * @param \stdClass $data
    *   The json metadata object.
-   * @param array $params
-   *   An array with the http request's query parameters, if any.
+   * @param int $method
+   *   Represents the dereferencing method, data, identifier or both.
    *
    * @return mixed
    *   Modified json metadata object.
    */
-  public function dereference(stdClass $data, array $params = []) {
-    $this->setDereferenceMethod($params);
+  public function dereference(stdClass $data, int $method = self::DEREFERENCE_OUTPUT_DATA) {
     // Skip data dereferencing when only seeking identifiers.
-    if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_IDENTIFIER) {
+    if ($method == self::DEREFERENCE_OUTPUT_IDENTIFIER) {
       return $data;
     }
+
+    $this->setDereferenceMethod($method);
     // Cycle through the dataset properties we seek to dereference.
     foreach ($this->getPropertyList() as $property_id) {
       if (isset($data->{$property_id})) {
