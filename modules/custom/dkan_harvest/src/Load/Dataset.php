@@ -2,18 +2,22 @@
 
 namespace Drupal\dkan_harvest\Load;
 
-use Harvest\Load\Load;
+use Harvest\ETL\Load\Load;
 
 /**
  *
  */
 class Dataset extends Load {
 
+  public function removeItem($id) {
+    $engine = $this->getDatasetEngine();
+    $engine->delete($id);
+  }
+
   /**
    *
    */
   protected function saveItem($item) {
-
     $engine = $this->getDatasetEngine();
     $engine->post(json_encode($item));
   }
