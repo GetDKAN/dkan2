@@ -28,6 +28,8 @@ class Dataset extends Load {
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
    *
    * @return \Sae\Sae
+   *
+   * @codeCoverageIgnore
    */
   protected function getDatasetEngine() {
     /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
