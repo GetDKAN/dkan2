@@ -50,7 +50,16 @@ class DkanDatastoreCommands extends DrushCommands {
         return;
       }
 
-      if ($node->field_data_type->value == "dataset") {
+      // Verify data is of expected type.
+      $expectedTypes = [
+        'dataset',
+        'distribution',
+      ];
+      if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
+        $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
+        return;
+      }
+
         $dataset = $node;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
@@ -73,10 +82,6 @@ class DkanDatastoreCommands extends DrushCommands {
           $datastore = $factory->get();
           $datastore->import();
         }
-      }
-      else {
-        $this->output->writeln("We can not work with non-dataset entities.");
-      }
     }
     catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
@@ -105,7 +110,16 @@ class DkanDatastoreCommands extends DrushCommands {
         return;
       }
 
-      if ($node->field_data_type->value == "dataset") {
+      // Verify data is of expected type.
+      $expectedTypes = [
+        'dataset',
+        'distribution',
+      ];
+      if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
+        $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
+        return;
+      }
+
         $database = \Drupal::service('dkan_datastore.database');
         $dataset = $node;
 
@@ -119,10 +133,6 @@ class DkanDatastoreCommands extends DrushCommands {
         /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
         $datastore = $factory->get();
         $datastore->drop();
-      }
-      else {
-        $this->output->writeln("We can not work with non-dataset entities.");
-      }
     }
     catch (\Exception $e) {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
