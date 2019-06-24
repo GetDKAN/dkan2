@@ -39,15 +39,19 @@ class DkanDatastoreCommands extends DrushCommands {
    */
   public function import($uuid, $deferred = FALSE) {
     try {
-      $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
-
-      if (!isset($entity)) {
-        $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
+      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+      $nodes = $nodeStorage->loadByProperties([
+        'uuid' => $uuid,
+        'type' => 'data',
+      ]);
+      $node = reset($nodes);
+      if (!$node) {
+        $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
         return;
       }
 
-      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-        $dataset = $entity;
+      if ($node->field_data_type->value == "dataset") {
+        $dataset = $node;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
@@ -90,16 +94,20 @@ class DkanDatastoreCommands extends DrushCommands {
    */
   public function drop($uuid) {
     try {
-      $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
-
-      if (!isset($entity)) {
-        $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
+      $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
+      $nodes = $nodeStorage->loadByProperties([
+        'uuid' => $uuid,
+        'type' => 'data',
+      ]);
+      $node = reset($nodes);
+      if (!$node) {
+        $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
         return;
       }
 
-      if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
+      if ($node->field_data_type->value == "dataset") {
         $database = \Drupal::service('dkan_datastore.database');
-        $dataset = $entity;
+        $dataset = $node;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
