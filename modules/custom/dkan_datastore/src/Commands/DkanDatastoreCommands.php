@@ -39,10 +39,8 @@ class DkanDatastoreCommands extends DrushCommands {
    */
   public function import($uuid, $deferred = FALSE) {
     $database = \Drupal::service('dkan_datastore.database');
-    $this->output->writeln("Database instance created.");
 
     try {
-
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
 
       if (!isset($entity)) {
@@ -50,21 +48,13 @@ class DkanDatastoreCommands extends DrushCommands {
         return;
       }
 
-      $this->output->writeln("Got entity {$entity->id()}.");
       if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-
-        $this->output->writeln("And it is a dataset.");
         $dataset = $entity;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
-        $this->output->writeln("Got the metadata.");
-
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-        $this->output->writeln("And created a resource.");
-
         // Handle the command differently if deferred.
         if (!empty($deferred)) {
-          $this->output->writeln("Using deferred processing. Items will be pocessed by queue.");
           /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
           $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
           $queueId = $deferredImporter->createDeferredResourceImport($uuid, $resource);
@@ -73,23 +63,12 @@ class DkanDatastoreCommands extends DrushCommands {
         else {
           $provider = new InfoProvider();
           $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-          $this->output->writeln("Provider set.");
-
           $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-          $this->output->writeln("Bin Storage is set.");
-
           $factory = new Factory($resource, $provider, $bin_storage, $database);
-          $this->output->writeln("Factory is set.");
 
           /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
           $datastore = $factory->get();
-          $this->output->writeln("Got a datastore.");
-
           $datastore->import();
-
-          $status = $datastore->getStatus();
-
-          $this->output->writeln(json_encode($status));
         }
       }
       else {
@@ -112,7 +91,6 @@ class DkanDatastoreCommands extends DrushCommands {
    */
   public function drop($uuid) {
     $database = \Drupal::service('dkan_datastore.database');
-    $this->output->writeln("Database instance created.");
 
     try {
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
@@ -122,38 +100,19 @@ class DkanDatastoreCommands extends DrushCommands {
         return;
       }
 
-      $this->output->writeln("Got entity {$entity->id()}.");
-
       if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
-
-        $this->output->writeln("And it is a dataset.");
         $dataset = $entity;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
-        $this->output->writeln("Got the metadata.");
-
         $resource = new Resource($dataset->id(), $metadata->distribution[0]->downloadURL);
-        $this->output->writeln("And created a resource.");
-
         $provider = new InfoProvider();
         $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
-        $this->output->writeln("Provider set.");
-
         $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
-        $this->output->writeln("Bin Storage is set.");
-
         $factory = new Factory($resource, $provider, $bin_storage, $database);
-        $this->output->writeln("Factory is set.");
 
         /* @var $datastore \Dkan\Datastore\Manager\SimpleImport\SimpleImport */
         $datastore = $factory->get();
-        $this->output->writeln("Got a datastore.");
-
         $datastore->drop();
-
-        $status = $datastore->getStatus();
-
-        $this->output->writeln(json_encode($status));
       }
       else {
         $this->output->writeln("We can not work with non-dataset entities.");
