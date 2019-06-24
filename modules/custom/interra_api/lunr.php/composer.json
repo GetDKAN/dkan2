@@ -1,0 +1,7 @@
+{
+    "name": "partisan/lunrtest",
+    "require": {
+        "markfullmer/porter2": "^1.0",
+        "phpunit/phpunit": "^8.2"
+    }
+}
