@@ -12,6 +12,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_data\ValueReferencer;
+use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
  * @codeCoverageIgnore
@@ -21,7 +22,7 @@ class DkanDatastoreCommands extends DrushCommands {
   protected $output;
 
   /**
-   *
+   * Constructor for DkanDatastoreCommands.
    */
   public function __construct() {
     $this->output = new ConsoleOutput();
@@ -43,35 +44,7 @@ class DkanDatastoreCommands extends DrushCommands {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
       $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-      $nodes = $nodeStorage->loadByProperties([
-        'uuid' => $uuid,
-        'type' => 'data',
-      ]);
-      $node = reset($nodes);
-      if (!$node) {
-        $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
-        return;
-      }
-
-      // Verify data is of expected type.
-      $expectedTypes = [
-        'dataset',
-        'distribution',
-      ];
-      if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
-        $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
-        return;
-      }
-
-      // Standardize whether single resource object or several in a dataset.
-      $metadata = json_decode($node->field_json_metadata->value);
-      $distributions = [];
-      if ($node->field_data_type->value == 'dataset') {
-        $distributions = $metadata->distribution;
-      }
-      if ($node->field_data_type->value == 'distribution') {
-        $distributions[] = $metadata;
-      }
+      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
       foreach ($distributions as $dist) {
         // Use this distribution's nid to decorate the dkan_datastore sql table.
@@ -122,35 +95,7 @@ class DkanDatastoreCommands extends DrushCommands {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
       $nodeStorage = \Drupal::entityTypeManager()->getStorage('node');
-      $nodes = $nodeStorage->loadByProperties([
-        'uuid' => $uuid,
-        'type' => 'data',
-      ]);
-      $node = reset($nodes);
-      if (!$node) {
-        $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
-        return;
-      }
-
-      // Verify data is of expected type.
-      $expectedTypes = [
-        'dataset',
-        'distribution',
-      ];
-      if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
-        $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
-        return;
-      }
-
-      // Standardize whether single resource object or several in a dataset.
-      $metadata = json_decode($node->field_json_metadata->value);
-      $distributions = [];
-      if ($node->field_data_type->value == 'dataset') {
-        $distributions = $metadata->distribution;
-      }
-      if ($node->field_data_type->value == 'distribution') {
-        $distributions[] = $metadata;
-      }
+      $distributions = $this->getDistributionsFromUuid($nodeStorage, $uuid);
 
       foreach ($distributions as $dist) {
         // Use this distribution's nid to decorate the dkan_datastore sql table.
@@ -177,6 +122,46 @@ class DkanDatastoreCommands extends DrushCommands {
       $this->output->writeln("We were not able to load the entity with uuid {$uuid}");
       $this->output->writeln($e->getMessage());
     }
+  }
+
+  /**
+   * Get one or more distributions (aka resources) from a uuid.
+   *
+   * @param \Drupal\Core\Entity\EntityStorageInterface $nodeStorage
+   * @param string $uuid
+   *
+   * @return array
+   */
+  protected function getDistributionsFromUuid(EntityStorageInterface $nodeStorage, $uuid) {
+    $nodes = $nodeStorage->loadByProperties([
+      'uuid' => $uuid,
+      'type' => 'data',
+    ]);
+    $node = reset($nodes);
+    if (!$node) {
+      $this->output->writeln("We were not able to load a data node with uuid {$uuid}.");
+      return [];
+    }
+    // Verify data is of expected type.
+    $expectedTypes = [
+      'dataset',
+      'distribution',
+    ];
+    if (!isset($node->field_data_type->value) || !in_array($node->field_data_type->value, $expectedTypes)) {
+      $this->output->writeln("Data not among expected types: " . implode(" ", $expectedTypes));
+      return [];
+    }
+    // Standardize whether single resource object or several in a dataset.
+    $metadata = json_decode($node->field_json_metadata->value);
+    $distributions = [];
+    if ($node->field_data_type->value == 'dataset') {
+      $distributions = $metadata->distribution;
+    }
+    if ($node->field_data_type->value == 'distribution') {
+      $distributions[] = $metadata;
+    }
+
+    return $distributions;
   }
 
 }
