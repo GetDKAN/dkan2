@@ -6,7 +6,7 @@ use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
 use Drupal\dkan_datastore\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Query;
-use Drupal\dkan_datastore\SqlParser;
+use SqlParser\SqlParser;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
