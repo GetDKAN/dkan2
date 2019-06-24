@@ -38,8 +38,6 @@ class DkanDatastoreCommands extends DrushCommands {
    * @command dkan-datastore:import
    */
   public function import($uuid, $deferred = FALSE) {
-    $database = \Drupal::service('dkan_datastore.database');
-
     try {
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
 
@@ -61,6 +59,7 @@ class DkanDatastoreCommands extends DrushCommands {
           $this->output->writeln("New queue (ID:{$queueId}) was created for `{$uuid}`");
         }
         else {
+          $database = \Drupal::service('dkan_datastore.database');
           $provider = new InfoProvider();
           $provider->addInfo(new Info(SimpleImport::class, "simple_import", "SimpleImport"));
           $bin_storage = new LockableBinStorage("dkan_datastore", new Locker("dkan_datastore"), \Drupal::service('dkan_datastore.storage.variable'));
@@ -90,8 +89,6 @@ class DkanDatastoreCommands extends DrushCommands {
    * @command dkan-datastore:drop
    */
   public function drop($uuid) {
-    $database = \Drupal::service('dkan_datastore.database');
-
     try {
       $entity = \Drupal::entityManager()->loadEntityByUuid('node', $uuid);
 
@@ -101,6 +98,7 @@ class DkanDatastoreCommands extends DrushCommands {
       }
 
       if ($entity->getType() == "data" && $entity->field_data_type->value == "dataset") {
+        $database = \Drupal::service('dkan_datastore.database');
         $dataset = $entity;
 
         $metadata = json_decode($dataset->field_json_metadata->value);
