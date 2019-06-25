@@ -141,12 +141,19 @@ class DatastoreManagerBuilderHelper {
     if (
       ! ($metadata instanceof \stdClass)
       // @todo need to validate that it is a usable file/mime instead
-      || !isset($metadata->data->downloadURL)
     ) {
       throw new \Exception("Invalid metadata information or missing file information.");
     }
 
-    return $metadata->data->downloadURL;
+    if (isset($metadata->data->downloadURL)) {
+      return $metadata->data->downloadURL;
+    }
+
+    if (isset($metadata->distribution[0]->downloadURL)) {
+      return $metadata->distribution[0]->downloadURL;
+    }
+
+    throw new \Exception("Invalid metadata information or missing file information.");
   }
 
 }
