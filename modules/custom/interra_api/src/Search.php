@@ -1,68 +1,45 @@
 <?php
+/**
+ * @file
+ * Creates search index using Lunr.php.
+ */
 
 namespace Drupal\interra_api;
 
+use LunrPHP\Pipeline;
+use LunrPHP\LunrDefaultPipelines;
+use LunrPHP\BuildLunrIndex;
+
+
 /**
- * @codeCoverageIgnore 
+ * Indexes datasets using Lunr.php.
+ * @codeCoverageIgnore
  */
 class Search {
 
-  /**
-   *
-   */
-  public function formatDocs($docs) {
-    $index = [];
-    foreach ($docs as $id => $doc) {
-      $index[] = $this->formatSearchDoc($doc);
-    }
-    return $index;
-  }
 
   /**
-   *
-   */
-  public function formatSearchDoc($value) {
-    $formatted      = new \stdClass();
-    $formatted->doc = $value;
-    $formatted->ref = "";
-    return $formatted;
-  }
-
-  /**
-   *
+   * Indexes the available datasets.
    */
   public function index() {
-    $datasets = [];
+    // TODO: Make this configurable.
+    $build = new BuildLunrIndex();
+    $build->ref('identifier');
+    $build->field("title");
+    $build->field("description");
+    $build->field("theme");
+    $build->field("keyword");
 
-    /** @var Service\DatasetModifier $dataset_modifier */
-    $dataset_modifier = \Drupal::service('interra_api.service.dataset_modifier');
+    $build->addPipeline('LunrPHP\LunrDefaultPipelines::trimmer');
+    $build->addPipeline('LunrPHP\LunrDefaultPipelines::stop_word_filter');
+    $build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');
 
-    foreach ($this->getDatasets() as $dataset) {
-      $datasets[] = $dataset_modifier->modifyDataset($dataset);
+    $datasets = $this->getDatasets();
+
+    foreach ($datasets as $dataset) {
+      $build->add((array)$dataset);
     }
 
-    return $this->formatDocs($datasets);
+    return $build->output();
   }
-
-  /**
-   * Get datasets.
-   *
-   * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
-   *
-   * @return array Array of dataset objects
-   */
-  protected function getDatasets() {
-    /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-    $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
-
-    // Engine returns array of json strings.
-    return array_map(
-            function ($item) {
-              return json_decode($item);
-            },
-            $dataset_controller->getEngine()
-              ->get()
-    );
-  }
-
 }
