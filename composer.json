@@ -15,7 +15,7 @@
         "fmizzell/json_form": "dev-8.x-1.x",
         "fmizzell/json-schema-provider": "0.0.1",
         "fmizzell/sae" : "1.0.0",
-        "fmizzell/sql-parser": "1.0.0",
+        "fmizzell/sql-parser": "1.0.1",
         "guzzlehttp/guzzle" : "6.3",
         "oomphinc/composer-installers-extender": "^1.1"
     },
