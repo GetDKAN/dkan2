@@ -5,19 +5,19 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
+        "bower-asset/json-forms": "1.6.3",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
-        "oomphinc/composer-installers-extender": "^1.1",
-        "drupal/entity": "1.0.0-rc1",
         "drupal/config_update": "1.x-dev",
-	    "fmizzell/json_form": "dev-8.x-1.x",
-        "bower-asset/json-forms": "1.6.3",
-        "fmizzell/sae" : "dev-master",
-        "fmizzell/datastore" : "dev-master",
-        "fmizzell/json-schema-provider": "dev-master",
+        "drupal/entity": "1.0.0-rc1",
+        "fmizzell/datastore" : "0.0.1",
         "fmizzell/harvest": "0.1.2",
+        "fmizzell/json_form": "dev-8.x-1.x",
+        "fmizzell/json-schema-provider": "dev-master",
+        "fmizzell/sae" : "dev-master",
         "fmizzell/sql-parser": "dev-master",
-        "guzzlehttp/guzzle" : "6.3"
+        "guzzlehttp/guzzle" : "6.3",
+        "oomphinc/composer-installers-extender": "^1.1"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
