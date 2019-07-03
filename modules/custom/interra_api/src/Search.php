@@ -26,6 +26,8 @@ class Search {
    */
   public $searchIndexFields = [
     "title",
+    "keyword",
+    "theme",
     "description"
   ];
 
@@ -80,13 +82,28 @@ class Search {
 
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::trimmer');
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::stop_word_filter');
-    $build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');
+    // Stemmer doesn't work with wildcard search.
+    //$build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');
 
+    /** @var Service\DatasetModifier $dataset_modifier */
+    $dataset_modifier = \Drupal::service('interra_api.service.dataset_modifier');
     $datasets = $this->getDatasets();
-
     foreach ($datasets as $dataset) {
-      $build->add((array)$dataset);
+      $doc = [];
+      array_push($this->searchIndexFields, $this->ref);
+      foreach($this->searchIndexFields as $field) {
+        if (isset($dataset->{$field})) {
+          if (is_array($dataset->{$field})) {
+            $doc[$field] = $dataset->{$field};
+          }
+          else {
+            $doc[$field] = strtolower(strip_tags($dataset->{$field}));
+          }
+        }
+      }
+      $build->add($doc);
     }
+
 
     return $build->output();
 	}
