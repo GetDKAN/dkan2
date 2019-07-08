@@ -46,32 +46,32 @@ class Api implements ContainerInjectionInterface {
 
     $parser = $this->getParser();
 
-    if ($parser->validate($query_string) === TRUE) {
-      $state_machine = $parser->getValidatingMachine();
-
-      try {
-        $query_object = $this->getQueryObject($state_machine);
-      }
-      catch (\Exception $e) {
-        return $this->response("No datastore.", 500);
-      }
-
-      /** @var  $database Database */
-      $database = $this->getDatabase();
-      $database->setResource($this->getResource($state_machine));
-
-      try {
-        $result = $database->query($query_object);
-      }
-      catch(\Exception $e) {
-        $this->response("Querying a datastore that does not exist.", 500);
-      }
-
-      return $this->response($result, 200);
-    }
-    else {
+    if ($parser->validate($query_string) === FALSE) {
       return $this->response("Invalid query string.", 500);
     }
+
+    $state_machine = $parser->getValidatingMachine();
+
+    try {
+      $query_object = $this->getQueryObject($state_machine);
+    }
+    catch (\Exception $e) {
+      return $this->response("No datastore.", 500);
+    }
+
+    /** @var  $database Database */
+    $database = $this->getDatabase();
+    $database->setResource($this->getResource($state_machine));
+
+    try {
+      $result = $database->query($query_object);
+    }
+    catch(\Exception $e) {
+      $this->response("Querying a datastore that does not exist.", 500);
+    }
+
+    return $this->response($result, 200);
+
   }
 
   private function getResource(MachineOfMachines $state_machine) {
