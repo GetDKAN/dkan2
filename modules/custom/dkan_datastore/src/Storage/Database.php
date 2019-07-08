@@ -61,34 +61,6 @@ class Database implements Storage, Schemed {
     return "SUCCESS";
   }
 
-  private function checkRequirementsAndPrepare() {
-    if (!$this->resource) {
-      throw new \Exception("Resource is required.");
-    }
-
-    if (!$this->schema) {
-      throw new \Exception("Schema is required.");
-    }
-
-    if (!$this->tableExist($this->getTableName())) {
-      $this->tableCreate($this->getTableName(), $this->schema);
-    }
-  }
-
-  /**
-   * Get table schema.
-   */
-  private function getTableSchema($fields) {
-    $schema = [];
-    $header = $fields;
-    foreach ($header as $field) {
-      $schema['fields'][$field] = [
-        'type' => "text",
-      ];
-    }
-    return $schema;
-  }
-
   public function remove(string $id)
   {
     // TODO: Implement remove() method.
@@ -112,42 +84,6 @@ class Database implements Storage, Schemed {
     }
     else {
       return "";
-    }
-  }
-
-  /**
-   *
-   */
-  private function tableExist($table_name) {
-    $exists = $this->connection->schema()->tableExists($table_name);
-    return $exists;
-  }
-
-  /**
-   *
-   */
-  private function tableCreate($table_name, $schema) {
-    db_create_table($table_name, $schema);
-  }
-
-  /**
-   *
-   */
-  private function tableDrop($table_name) {
-    $this->connection->schema()->dropTable($table_name);
-  }
-
-  /**
-   *
-   */
-  private function insert(Insert $query) {
-    if ($this->tableExist($query->tableName)) {
-      $q = db_insert($query->tableName);
-      $q->fields($query->fields);
-      foreach ($query->values as $values) {
-        $q->values($values);
-      }
-      $q->execute();
     }
   }
 
@@ -196,5 +132,71 @@ class Database implements Storage, Schemed {
     $this->schema = $schema;
   }
 
+  public function getSchema() {
+    return $this->schema;
+  }
 
+  private function checkRequirementsAndPrepare() {
+    if (!$this->resource) {
+      throw new \Exception("Resource is required.");
+    }
+
+    if (!$this->schema) {
+      throw new \Exception("Schema is required.");
+    }
+
+    if (!$this->tableExist($this->getTableName())) {
+      $this->tableCreate($this->getTableName(), $this->schema);
+    }
+  }
+
+  /**
+   * Get table schema.
+   */
+  private function getTableSchema($fields) {
+    $schema = [];
+    $header = $fields;
+    foreach ($header as $field) {
+      $schema['fields'][$field] = [
+        'type' => "text",
+      ];
+    }
+    return $schema;
+  }
+
+  /**
+   *
+   */
+  private function tableExist($table_name) {
+    $exists = $this->connection->schema()->tableExists($table_name);
+    return $exists;
+  }
+
+  /**
+   *
+   */
+  private function tableCreate($table_name, $schema) {
+    db_create_table($table_name, $schema);
+  }
+
+  /**
+   *
+   */
+  private function tableDrop($table_name) {
+    $this->connection->schema()->dropTable($table_name);
+  }
+
+  /**
+   *
+   */
+  private function insert(Insert $query) {
+    if ($this->tableExist($query->tableName)) {
+      $q = db_insert($query->tableName);
+      $q->fields($query->fields);
+      foreach ($query->values as $values) {
+        $q->values($values);
+      }
+      $q->execute();
+    }
+  }
 }

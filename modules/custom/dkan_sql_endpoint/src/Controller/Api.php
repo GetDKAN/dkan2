@@ -214,7 +214,7 @@ class Api implements ContainerInjectionInterface {
    */
   protected function getDatabase(): Database {
     return $this->container
-      ->get('dkan_datastore.storage.database2');
+      ->get('dkan_datastore.storage.database');
   }
 
   /**
