@@ -29,15 +29,24 @@ class Database implements Storage, Schemed {
   public function setResource(Resource $resource) {
     $this->resource = $resource;
     if (!$this->schema && $this->tableExist($this->getTableName())) {
-      $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
-      if (!empty($fields_info)) {
-        $fields = [];
-        foreach ($fields_info as $info) {
-          $fields[] = $info->Field;
-        }
-        $this->setSchema($this->getTableSchema($fields));
-      }
+      $this->setSchemaFromTable();
     }
+  }
+
+  private function setSchemaFromTable() {
+    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    if (!empty($fields_info)) {
+      $fields = $this->getFieldsFromFieldsInfo($fields_info);
+      $this->setSchema($this->getTableSchema($fields));
+    }
+  }
+
+  private function getFieldsFromFieldsInfo($fields_info) {
+    $fields = [];
+    foreach ($fields_info as $info) {
+      $fields[] = $info->Field;
+    }
+    return $fields;
   }
 
   public function retrieveAll(): array
