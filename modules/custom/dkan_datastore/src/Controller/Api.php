@@ -2,21 +2,18 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
-use Dkan\Datastore\Manager\Manager;
-use Drupal\dkan_datastore\Query;
-use Drupal\dkan_datastore\Storage\Database;
-use Drupal\dkan_datastore\Util;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Api class.
+ * Class Api.
+ *
+ * @package Drupal\dkan_datastore\Controller
  */
-class Api implements ContainerInjectionInterface {
+class Api extends ControllerBase {
 
   /**
-   * Service container.
+   * Drupal service container.
    *
    * @var \Symfony\Component\DependencyInjection\ContainerInterface
    */
@@ -30,215 +27,88 @@ class Api implements ContainerInjectionInterface {
   protected $dkanFactory;
 
   /**
-   * Constructor.
+   * Drupal node dataset storage.
+   *
+   * @var \Drupal\dkan_api\Storage\DrupalNodeDataset
+   */
+  protected $storage;
+
+  /**
+   * Datastore manager builder.
+   *
+   * @var \Drupal\dkan_datastore\Manager\DatastoreManagerBuilder
+   */
+  protected $managerBuilder;
+
+  /**
+   * Api constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
     $this->dkanFactory = $container->get('dkan.factory');
+    $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
+    $this->storage->setSchema('dataset');
+    $this->managerBuilder = $container->get('dkan_datastore.manager.datastore_manager_builder');
   }
 
   /**
-   * Method called by the router.
-   */
-  public function runQuery($query_string) {
-
-    $parser = $this->container->get('dkan_datastore.sql_parser');
-
-    if ($parser->validate($query_string) === TRUE) {
-      $state_machine = $parser->getValidatingMachine();
-      $query_object = $this->getQueryObject($state_machine);
-      $database = $this->getDatabase();
-
-      try {
-        $result = $database->query($query_object);
-      }
-      catch(\Exception $e) {
-        return $this->dkanFactory
-        ->newJsonResponse(
-          "Querying a datastore that does not exist.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
-      }
-
-      return $this->dkanFactory
-        ->newJsonResponse(
-          $result,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
-    }
-    else {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          "Invalid query string.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
-    }
-  }
-
-  /**
-   * Private.
-   */
-  protected function getQueryObject($state_machine) {
-
-    $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
-    try {
-      $manager = $this->getDatastoreManager($uuid);
-    }
-    catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          "No datastore.",
-          500,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
-    }
-
-    $object = new Query();
-    $table = $manager->getTableName();
-    $object->setThingToRetrieve($table);
-    $this->setQueryObjectSelect($object, $state_machine->gsm('select'));
-    $this->setQueryObjectWhere($object, $state_machine->gsm('where'));
-    $this->setQueryObjectOrderBy($object, $state_machine->gsm('order_by'));
-    $this->setQueryObjectLimit($object, $state_machine->gsm('limit'));
-
-    return $object;
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryObjectSelect(Query $object, $state_machine) {
-    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
-    if (!empty($strings)) {
-      $object->count();
-      return;
-    }
-
-    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var_all'));
-    if (!empty($strings)) {
-      return;
-    }
-
-    $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_var'));
-    foreach ($strings as $property) {
-      $object->filterByProperty($property);
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryObjectWhere(Query $object, $state_machine) {
-    $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
-    $values = $this->getStringsFromStringMachine($state_machine->gsm('quoted_string')->gsm('string'));
-
-    foreach ($properties as $index => $property) {
-      $value = $values[$index];
-      if ($value) {
-        $object->conditionByIsEqualTo($property, $value);
-      }
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryObjectOrderBy(Query $object, $state_machine) {
-    $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
-
-    $direction = $this->getStringsFromStringMachine($state_machine->gsm('order_asc'));
-    if (!empty($direction)) {
-      foreach ($properties as $property) {
-        $object->sortByAscending($property);
-      }
-    }
-    else {
-      foreach ($properties as $property) {
-        $object->sortByDescending($property);
-      }
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryObjectLimit(Query $object, $state_machine) {
-    $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
-    if (!empty($limit)) {
-      $object->limitTo($limit[0]);
-    }
-
-    $offset = $this->getStringsFromStringMachine($state_machine->gsm('numeric2'));
-    if (!empty($offset)) {
-      $object->offsetBy($offset[0]);
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function getUuidFromSelect($machine) {
-    $strings = $this->getStringsFromStringMachine($machine);
-    if (empty($strings)) {
-      throw new \Exception("No UUID given");
-    }
-    return $strings[0];
-  }
-
-  /**
-   * Private.
-   */
-  private function getStringsFromStringMachine($machine) {
-    $strings = [];
-    $current_string = "";
-    $array = $machine->execution;
-
-    foreach ($array as $states_or_input) {
-      if (is_array($states_or_input)) {
-        $states = $states_or_input;
-        if (in_array(0, $states) && !empty($current_string)) {
-          $strings[] = $current_string;
-          $current_string = "";
-        }
-      }
-      else {
-        $input = $states_or_input;
-        $current_string .= $input;
-      }
-    }
-
-    if (!empty($current_string)) {
-      $strings[] = $current_string;
-    }
-
-    return $strings;
-  }
-
-  /**
-   * Private.
-   */
-  protected function getDatabase(): Database {
-    return $this->container
-      ->get('dkan_datastore.database');
-  }
-
-  /**
-   * Private.
-   */
-  protected function getDatastoreManager(string $uuid): Manager {
-    return Util::getDatastoreManager($uuid);
-  }
-
-  /**
-   * @{inheritdocs}
+   * {@inheritdoc}
    *
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
     return new static($container);
+  }
+
+  /**
+   * Returns the dataset along with datastore headers and statistics.
+   *
+   * @param string $uuid
+   *   Identifier.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   The json response.
+   */
+  public function datasetWithSummary($uuid) {
+    try {
+      $dataset = $this->storage->retrieve($uuid);
+      $data = json_decode($dataset);
+
+      // For now, use the first resource's uuid or that of the dataset.
+      // @Todo: Address datasets with multiple resources once frontend is set.
+      if (isset($data->distribution[0]->identifier)) {
+        $dist_uuid = $data->distribution[0]->identifier;
+      }
+      else {
+        $dist_uuid = $uuid;
+      }
+      // Add columns and datastore_statistics to dataset.
+      $manager = $this->managerBuilder->buildFromUuid($dist_uuid);
+      if ($manager) {
+        $headers = $manager->getTableHeaders();
+        $data->columns = $headers;
+        $data->datastore_statistics = [
+          'rows' => $manager->numberOfRecordsImported(),
+          'columns' => count($headers),
+        ];
+      }
+
+      return $this->dkanFactory
+        ->newJsonResponse(
+          $data,
+          200,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+    }
+    catch (\Exception $e) {
+      return $this->dkanFactory
+        ->newJsonResponse(
+          (object) [
+            'message' => $e->getMessage(),
+          ],
+          404
+        );
+    }
   }
 
 }

@@ -1,7 +1,7 @@
-dkan_datastore.query:
-  path: '/api/v1/sql/{query_string}'
+dkan_datastore.dataset_with_summary:
+  path: '/api/v1/datastore/{uuid}'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_datastore\Controller\Api::runQuery'}
+    { _controller: '\Drupal\dkan_datastore\Controller\Api::datasetWithSummary'}
   requirements:
-    _access: 'TRUE'
+    _permission: 'access content'

@@ -2,109 +2,219 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
-use Dkan\Datastore\Manager\SimpleImport\SimpleImport;
-use Drupal\dkan_datastore\Controller\Api;
+use Dkan\Datastore\Manager\IManager;
+use Drupal\dkan_api\Storage\DrupalNodeDataset;
+use Drupal\dkan_common\Service\Factory;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Query;
-use Drupal\dkan_datastore\SqlParser;
+use Drupal\dkan_datastore\Controller\Api;
+use Drupal\dkan_datastore\Manager\DatastoreManagerBuilder;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
- * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
- * @group dkan
+ * @coversDefaultClass Drupal\dkan_datastore\Controller\Api
+ * @group dkan_datastore
  */
 class ApiTest extends DkanTestBase {
 
   /**
-   * Data provider.
+   * Tests constructor.
    */
-  public function dataTest() {
+  public function testConstructor() {
+    // Setup.
+    $mock = $this->getMockBuilder(Api::class)
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+    $mockContainer = $this->getMockContainer();
+    $mockDkanFactory = $this->createMock(Factory::class);
+    $mockStorage = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->disableOriginalConstructor()
+      ->setMethods([
+        'setSchema',
+      ])
+      ->getMock();
+    $mockManagerBuilder = $this->createMock(DatastoreManagerBuilder::class);
 
-    $o1 = new Query();
-    $o1->setThingToRetrieve("dkan_datastore_1");
+    // Expect.
+    $mockContainer->expects($this->exactly(3))
+      ->method('get')
+      ->withConsecutive(
+        ['dkan.factory'],
+        ['dkan_api.storage.drupal_node_dataset'],
+        ['dkan_datastore.manager.datastore_manager_builder']
+      )
+      ->willReturnOnConsecutiveCalls(
+        $mockDkanFactory,
+        $mockStorage,
+        $mockManagerBuilder
+      );
 
-    $o2 = clone $o1;
-    $o2->filterByProperty('city');
-    $o2->filterByProperty('state');
+    // Assert.
+    $mock->__construct($mockContainer);
+    $this->assertSame(
+      $mockContainer,
+      $this->readAttribute($mock, 'container')
+    );
+    $this->assertSame(
+      $mockDkanFactory,
+      $this->readAttribute($mock, 'dkanFactory')
+    );
+    $this->assertSame(
+      $mockStorage,
+      $this->readAttribute($mock, 'storage')
+    );
+    $this->assertSame(
+      $mockManagerBuilder,
+      $this->readAttribute($mock, 'managerBuilder')
+    );
+  }
 
-    $o3 = clone $o2;
-    $o3->conditionByIsEqualTo('def', 'hij');
-    $o3->conditionByIsEqualTo('klm', 'nop');
+  /**
+   * Provides data for testDatasetWithSummary.
+   */
+  public function dataTestDatasetWithSummary() {
 
-    $o4 = clone $o2;
-    $o4->sortByAscending('qrs');
+    $uuid = uniqid('some-uuid-');
+    $resource_uuid = uniqid('resource-uuid-');
 
-    $o5 = clone $o2;
-    $o5->sortByDescending('qrs');
+    $json_object_with_resource = (object) [
+      'identifier' => $uuid,
+      'distribution' => [
+        (object) [
+          'identifier' => $resource_uuid,
+        ],
+      ],
+    ];
+    $encoded_with_resource = json_encode($json_object_with_resource);
 
-    $o6 = clone $o2;
-    $o6->limitTo(4);
-    $o6->offsetBy(5);
-
-    $o7 = clone $o1;
-    $o7->count();
+    $json_object_without_resource = (object) [
+      'identifier' => $uuid,
+    ];
+    $encoded_without_resource = json_encode($json_object_without_resource);
 
     return [
-      [
-        '[SELECT * FROM abc];',
-        $o1,
+      'dataset with resource uuid' => [
+        $uuid,
+        $encoded_with_resource,
       ],
-      [
-        '[SELECT COUNT(*) FROM abc];',
-        $o7,
-      ],
-      [
-        '[SELECT city,state FROM abc];',
-        $o2,
-      ],
-      [
-        "[SELECT city,state FROM abc][WHERE def = 'hij' AND klm = 'nop'];",
-        $o3,
-      ],
-      [
-        "[SELECT city,state FROM abc][ORDER BY qrs ASC];",
-        $o4,
-      ],
-      [
-        "[SELECT city,state FROM abc][ORDER BY qrs DESC];",
-        $o5,
-      ],
-      [
-        "[SELECT city,state FROM abc][LIMIT 4 OFFSET 5];",
-        $o6,
+      'dataset without resource uuid' => [
+        $uuid,
+        $encoded_without_resource,
       ],
     ];
   }
 
   /**
-   * Tests explode().
+   * Tests function datasetWithSummary.
    *
-   * @param string $sqlString
-   *   A sql string.
-   * @param mixed $expected
-   *   The object that the getQueryObject function should return.
-   *
-   * @dataProvider dataTest
+   * @dataProvider dataTestDatasetWithSummary
    */
-  public function testGetQueryObject($sqlString, $expected) {
-    $controller = $this->getMockBuilder(Api::class)
+  public function testDatasetWithSummary($uuid, $dataEncoded) {
+    // Setup.
+    $mock = $this->getMockBuilder(Api::class)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
-      ->setMethods(['getDatastoreManager'])
       ->getMock();
 
-    $manager = $this->getMockBuilder(SimpleImport::class)
+    $mockStorage = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->setMethods(['retrieve'])
       ->disableOriginalConstructor()
-      ->setMethods(['getTableName'])
+      ->getMock();
+    $this->writeProtectedProperty($mock, 'storage', $mockStorage);
+
+    $mockManagerBuilder = $this->getMockBuilder(IManager::class)
+      ->setMethods(['buildFromUuid'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'managerBuilder', $mockManagerBuilder);
+
+    $mockManager = $this->getMockBuilder(IManager::class)
+      ->setMethods([
+        'getTableHeaders',
+        'numberOfRecordsImported'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $headers = [
+      'foo',
+      'bar',
+    ];
+    $rowCount = 42;
+
+    $mockDkanFactory = $this->getMockBuilder(Factory::class)
+      ->setMethods(['newJsonResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->writeProtectedProperty($mock, 'dkanFactory', $mockDkanFactory);
+    $mockJsonResponse = $this->createMock(JsonResponse::class);
+
+    // Expect.
+    $mockStorage->expects($this->once())
+      ->method('retrieve')
+      ->with($uuid)
+      ->willReturn($dataEncoded);
+
+    $mockManagerBuilder->expects($this->once())
+      ->method('buildFromUuid')
+      ->willReturn($mockManager);
+
+    $mockManager->expects($this->once())
+      ->method('getTableHeaders')
+      ->willReturn($headers);
+
+    $mockManager->expects($this->any())
+      ->method('numberOfRecordsImported')
+      ->willReturn($rowCount);
+
+    $mockDkanFactory->expects($this->once())
+      ->method('newJsonResponse')
+      ->willReturn($mockJsonResponse);
+
+    // Assert.
+    $actual = $mock->datasetWithSummary($uuid);
+    $this->assertEquals($mockJsonResponse, $actual);
+  }
+
+  /**
+   * Tests exception in function datasetWithSummary
+   */
+  public function testDatasetWithSummaryException() {
+    // Setup.
+    $uuid = uniqid('uuid-');
+
+    $exceptionMessage = __METHOD__ . " exception message";
+    $expectedException = new \Exception($exceptionMessage);
+
+    $mock = $this->getMockBuilder(Api::class)
+      ->setMethods(NULL)
+      ->disableOriginalConstructor()
       ->getMock();
 
-    $manager->expects($this->once())->method('getTableName')->willReturn("dkan_datastore_1");
+    $mockStorage = $this->getMockBuilder(DrupalNodeDataset::class)
+      ->setMethods(['retrieve'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->writeProtectedProperty($mock, 'storage', $mockStorage);
 
-    $controller->expects($this->once())->method("getDatastoreManager")->willReturn($manager);
+    $mockDkanFactory = $this->getMockBuilder(Factory::class)
+      ->setMethods(['newJsonResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->writeProtectedProperty($mock, 'dkanFactory', $mockDkanFactory);
+    $mockJsonResponse = $this->createMock(JsonResponse::class);
 
-    $parser = new SqlParser();
-    $parser->validate($sqlString);
-    $object = $this->invokeProtectedMethod($controller, 'getQueryObject', $parser->getValidatingMachine());
+    // Expect.
+    $mockStorage->expects($this->once())
+      ->method('retrieve')
+      ->with($uuid)
+      ->willThrowException($expectedException);
 
-    $this->assertEquals(json_encode($expected), json_encode($object));
+    $mockDkanFactory->expects($this->once())
+      ->method('newJsonResponse')
+      ->willReturn($mockJsonResponse);
+
+    // Assert.
+    $actual = $mock->datasetWithSummary($uuid);
+    $this->assertEquals($mockJsonResponse, $actual);
   }
 
 }
