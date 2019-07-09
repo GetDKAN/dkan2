@@ -93,6 +93,23 @@ class Commands extends DrushCommands {
   }
 
   /**
+   * Runs all pending harvests.
+   *
+   * @command dkan-harvest:run-all
+   *
+   * @usage dkan-harvest:run-all
+   *   Runs all pending harvests.
+   */
+  public function runAll() {
+
+    $ids = array_keys($this->getPlanStorage()->retrieveAll());
+
+    foreach($ids as $id){
+        $this->run($id);
+    }
+  }
+
+  /**
    * Gives information about a previous harvest run.
    *
    * @param string $id
