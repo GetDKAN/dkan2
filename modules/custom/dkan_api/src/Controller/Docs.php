@@ -54,6 +54,7 @@ class Docs implements ContainerInjectionInterface {
     $response = $this->dkanFactory
       ->newJsonResponse();
     $response->headers->set('Content-type', 'text/plain');
+    $response->headers->set('Access-Control-Allow-Origin', '*');
     $response->setContent($ymlSpec);
 
     return $response;
