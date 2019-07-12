@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\interra_api\Controller;
+namespace Drupal\dkan_lunr\Controller;
 
 use Dkan\Datastore\Manager;
 use Drupal\Core\Controller\ControllerBase;

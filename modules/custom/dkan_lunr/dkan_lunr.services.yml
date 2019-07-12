@@ -1,5 +1,6 @@
 services:
     dkan_lunr.search:
-        class: Drupal\interra_api\Search
+        class: Drupal\dkan_lunr\Search
         shared: false
-        
+    dkan_lunr.dataset_modifier:
+        class: Drupal\dkan_lunr\Service\DatasetModifier

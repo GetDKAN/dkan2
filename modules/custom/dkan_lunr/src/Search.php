@@ -4,12 +4,11 @@
  * Creates search index using Lunr.php.
  */
 
-namespace Drupal\interra_api;
+namespace Drupal\dkan_lunr;
 
 use LunrPHP\Pipeline;
 use LunrPHP\LunrDefaultPipelines;
 use LunrPHP\BuildLunrIndex;
-
 
 /**
  * Indexes datasets using Lunr.php.
@@ -85,8 +84,6 @@ class Search {
     // Stemmer doesn't work with wildcard search.
     //$build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');
 
-    /** @var Service\DatasetModifier $dataset_modifier */
-    $dataset_modifier = \Drupal::service('interra_api.service.dataset_modifier');
     $datasets = $this->getDatasets();
     foreach ($datasets as $dataset) {
       $doc = [];
@@ -111,7 +108,7 @@ class Search {
 	public function docs() {
 	  $datasets = [];
     /** @var Service\DatasetModifier $dataset_modifier */
-    $dataset_modifier = \Drupal::service('interra_api.service.dataset_modifier');
+    $dataset_modifier = \Drupal::service('dkan_lunr.dataset_modifier');
     foreach ($this->getDatasets() as $dataset) {
       $datasets[] = $dataset_modifier->modifyDataset($dataset);
     }
