@@ -1,0 +1,5 @@
+services:
+    dkan_lunr.search:
+        class: Drupal\interra_api\Search
+        shared: false
+        
