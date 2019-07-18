@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\dkan_datastore\Controller
  */
 class Api extends ControllerBase {
-
+use \Drupal\dkan_common\Util\RequestTrait;
   /**
    * Drupal service container.
    *
@@ -40,6 +40,13 @@ class Api extends ControllerBase {
    */
   protected $managerBuilder;
 
+    /**
+     * Datastore Service.
+     *
+     * @var \Drupa\dkan_datastore\Service\Datastore
+     */
+  protected $datastoreService;
+
   /**
    * Api constructor.
    */
@@ -49,6 +56,7 @@ class Api extends ControllerBase {
     $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
     $this->storage->setSchema('dataset');
     $this->managerBuilder = $container->get('dkan_datastore.manager.builder');
+    $this->datastoreService = $container->get('dkan_datastore.service');
   }
 
   /**
@@ -114,4 +122,63 @@ class Api extends ControllerBase {
     }
   }
 
+  /**
+   * Import.
+   *
+   * @param string $uuid
+   *   The uuid of a dataset.
+   * @param bool $deferred
+   *   Whether or not the process should be deferred to a queue.
+   */
+  public function import($uuid, $deferred = FALSE) {
+
+    try {
+      $this->datastoreService->import($uuid, $deferred);
+
+      return $this->dkanFactory
+        ->newJsonResponse(
+          (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
+          200, // assume always new even if this is a PUT?
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+    }
+    catch (\Exception $e) {
+      return $this->dkanFactory
+        ->newJsonResponse(
+          (object) [
+            'message' => $e->getMessage(),
+          ],
+          500
+        );
+    }
+  }
+
+  /**
+   * Drop.
+   *
+   * @param string $uuid
+   *   The uuid of a dataset.
+   *
+   */
+  public function delete($uuid) {
+      var_dump($uuid);die;
+    try {
+        $this->datastoreService->drop($uuid);
+        return $this->dkanFactory
+            ->newJsonResponse(
+              (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
+              200,
+              ["Access-Control-Allow-Origin" => "*"]
+            );
+    }
+    catch (\Exception $e) {
+      return $this->dkanFactory
+        ->newJsonResponse(
+          (object) [
+            'message' => $e->getMessage(),
+          ],
+          500
+        );
+    }
+  }
 }

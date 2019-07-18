@@ -36,7 +36,11 @@ class Helper {
 
   public function getResourceFromEntity($uuid): Resource {
     $node = $this->loadNodeByUuid($uuid);
-    return new Resource($node->id(), $this->getResourceFilePathFromNode($node));
+    return $this->newResource($node->id(), $this->getResourceFilePathFromNode($node));
+  }
+
+  public function newResource($id, $filePath) {
+      return new Resource($id, $filePath);
   }
 
   /**
@@ -89,7 +93,7 @@ class Helper {
    *
    * @throws \Exception
    */
-  private function loadNodeByUuid(string $uuid): EntityInterface {
+  public function loadNodeByUuid(string $uuid): EntityInterface {
     $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
 
     if (!($node instanceof Node)) {
