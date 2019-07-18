@@ -5,7 +5,6 @@ namespace Drupal\dkan_api\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Docs implements ContainerInjectionInterface {
 
@@ -33,7 +32,7 @@ class Docs implements ContainerInjectionInterface {
   /**
    * Serializer to translate yaml to json.
    *
-   * @var Drupal\Component\Serialization\SerializationInterface
+   * @var \Symfony\Component\Serializer\Serializer
    */
   protected $ymlSerializer;
 
