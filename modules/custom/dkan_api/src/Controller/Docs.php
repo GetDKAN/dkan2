@@ -47,8 +47,6 @@ class Docs implements ContainerInjectionInterface {
 
   /**
    * Constructor.
-   *
-   * @codeCoverageIgnore
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
@@ -67,9 +65,22 @@ class Docs implements ContainerInjectionInterface {
   protected function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
     $ymlSpecPath = $modulePath . '/docs/dkan_api_openapi_spec.yml';
-    $ymlSpec = file_get_contents($ymlSpecPath);
+    $ymlSpec = $this->fileGetContents($ymlSpecPath);
 
     return $this->ymlSerializer->decode($ymlSpec);
+  }
+
+  /**
+   * Wrapper around file_get_contents to facilitate testing.
+   *
+   * @param string $path
+   *
+   * @return false|string
+   *
+   * @codeCoverageIgnore
+   */
+  protected function fileGetContents($path) {
+    return file_get_contents($path);
   }
 
   /**
@@ -80,13 +91,7 @@ class Docs implements ContainerInjectionInterface {
   public function getComplete() {
     $jsonSpec = json_encode($this->spec);
 
-    $response = $this->dkanFactory
-      ->newJsonResponse();
-    $response->headers->set('Content-type', 'application/json');
-    $response->headers->set('Access-Control-Allow-Origin', '*');
-    $response->setContent($jsonSpec);
-
-    return $response;
+    return $this->sendResponse($jsonSpec);
   }
 
   /**
@@ -98,6 +103,17 @@ class Docs implements ContainerInjectionInterface {
     $specAnon =  $this->filterSpecOperations($this->spec, ['get']);
     $jsonSpecAnon = json_encode($specAnon);
 
+    return $this->sendResponse($jsonSpecAnon);
+  }
+
+  /**
+   * Helper function to set headers and send response.
+   *
+   * @param string $jsonSpecAnon
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   */
+  public function sendResponse(string $jsonSpecAnon) {
     $response = $this->dkanFactory
       ->newJsonResponse();
     $response->headers->set('Content-type', 'application/json');
