@@ -6,6 +6,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_datastore\Manager\Helper as DatastoreHelper;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
+use Dkan\Datastore\Resource;
 
 /**
  * Main services for the datastore
@@ -30,10 +31,14 @@ class Datastore {
      */
     protected $helper;
 
-    public function __construct(EntityTypeManagerInterface $entityTypeManager, LoggerChannelInterface $logger) {
+    public function __construct(
+            EntityTypeManagerInterface $entityTypeManager,
+            LoggerChannelInterface $logger,
+            DatastoreHelper $helper
+    ) {
         $this->entityTypeManager = $entityTypeManager;
         $this->logger            = $logger;
-        $this->helper = \Drupal::service('dkan_datastore.manager.helper');
+        $this->helper            = $helper;
     }
 
     public function import($uuid, $deferred = FALSE) {
@@ -65,21 +70,20 @@ class Datastore {
         $datastore->import();
     }
 
-   protected function processDrop($distribution) {
+    protected function processDrop($distribution) {
         $datastore = $this->getDatastore($this->getResource($distribution));
         $datastore->drop();
     }
 
-   protected function getResource($distribution) {
+    protected function getResource($distribution) {
         $distribution_node = $this->helper
                 ->loadNodeByUuid($distribution->identifier);
 
         return $this->helper
-                ->newResource($distribution_node->id(), $distribution->data->downloadURL);
+               ->newResource($distribution_node->id(), $distribution->data->downloadURL);
     }
 
-
-   protected function getDatastore($resource) {
+    protected function getDatastore($resource) {
         /** @var  $builder  Builder */
         $builder = \Drupal::service('dkan_datastore.manager.builder');
         $builder->setResource($resource);
@@ -99,9 +103,8 @@ class Datastore {
         $node = $this->helper
                 ->loadNodeByUuid($uuid);
 
-        if (!($node instanceof NodeInterface)
-                || 'data' !== $node->getType()) {
-           $this->logger->error("We were not able to load a data node with uuid {$uuid}.");
+        if (!($node instanceof NodeInterface) || 'data' !== $node->getType()) {
+            $this->logger->error("We were not able to load a data node with uuid {$uuid}.");
             return [];
         }
         // Verify data is of expected type.

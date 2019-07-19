@@ -39,6 +39,13 @@ class Helper {
     return $this->newResource($node->id(), $this->getResourceFilePathFromNode($node));
   }
 
+  /**
+   * Creates a new resource object.
+   *
+   * @param int $id
+   * @param string $filePath
+   * @return Resource
+   */
   public function newResource($id, $filePath) {
       return new Resource($id, $filePath);
   }

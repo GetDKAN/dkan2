@@ -161,7 +161,6 @@ use \Drupal\dkan_common\Util\RequestTrait;
    *
    */
   public function delete($uuid) {
-      var_dump($uuid);die;
     try {
         $this->datastoreService->drop($uuid);
         return $this->dkanFactory
