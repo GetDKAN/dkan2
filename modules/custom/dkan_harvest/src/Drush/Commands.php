@@ -50,7 +50,13 @@ class Commands extends DrushCommands {
    *   List available harvests.
    */
   public function index() {
-    $rows = $this->harvestService->getAllHarvestIds();
+    // each row needs to be an array for display.
+    $rows = array_map(
+      function($id) {
+      return [$id];
+    },
+      $this->harvestService->getAllHarvestIds()
+      );
     (new Table(new ConsoleOutput()))->setHeaders(['plan id'])->setRows($rows)->render();
   }
 

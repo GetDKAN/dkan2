@@ -188,25 +188,51 @@ class Api extends ControllerBase {
   }
 
   /**
-   * Gives information about a previous harvest run.
+   * Gives list of previous runs for a harvest id.
    *
    * @param string $id
    *   The harvest id.
-   * @param string $runId
-   *   The run's id
    */
-  public function info($id, $runId = null) {
+  public function info($id) {
 
-var_dump(func_get_args());
     try {
 
-      if (!isset($runId)) {
+
         $response = $this->harvestService
           ->getAllHarvestRunInfo($id);
-      } else {
+
+
+      return $this->dkanFactory
+          ->newJsonResponse(
+            $response,
+            200,
+            ["Access-Control-Allow-Origin" => "*"]
+      );
+    } catch (\Exception $e) {
+      return $this->dkanFactory
+          ->newJsonResponse(
+            (object) [
+              'message' => $e->getMessage(),
+            ],
+            500
+      );
+    }
+  }
+
+  /**
+   * Gives information about a single previous harvest run.
+   *
+   * @param string $id
+   *   The harvest id.
+   * @param string $run_id
+   *   The run's id
+   */
+  public function infoRun($id, $run_id) {
+
+    try {
+
         $response = $this->harvestService
-          ->getHarvestRunInfo($id, $runId);
-      }
+          ->getHarvestRunInfo($id, $run_id);
 
       return $this->dkanFactory
           ->newJsonResponse(
