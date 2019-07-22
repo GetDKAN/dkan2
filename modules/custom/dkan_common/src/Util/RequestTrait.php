@@ -25,4 +25,13 @@ trait RequestTrait {
         return $this->getCurrentRequest()
                 ->getRequestUri();
     }
+    /**
+     * Current request body.
+     *
+     * @return string|resource
+     */
+    protected function getCurrentRequestContent() {
+        return $this->getCurrentRequest()
+                ->getContent();
+    }
 }
