@@ -127,6 +127,9 @@ class Docs implements ContainerInjectionInterface {
     ]);
     // Remove the security schemes.
     unset($spec['components']);
+    // Remove required parameters, since now part of path.
+    unset($spec['paths']['/api/v1/sql/{query}']['get']['parameters']);
+    unset($spec['paths']['/api/v1/dataset/{uuid}']['get']['parameters']);
     // Keep only the tags needed, so remove the properties tag.
     $spec['tags'] = [
       ["name" => "Dataset"],
