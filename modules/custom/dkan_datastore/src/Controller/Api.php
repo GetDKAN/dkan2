@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Class Api.
  *
  * @package Drupal\dkan_datastore\Controller
+ * @codeCoverageIgnore
  */
 class Api extends ControllerBase {
 use \Drupal\dkan_common\Util\RequestTrait;

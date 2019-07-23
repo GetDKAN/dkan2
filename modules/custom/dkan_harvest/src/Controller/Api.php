@@ -13,6 +13,7 @@ use Drupal\dkan_common\Service\Factory as DkanFactory;
  * Class Api.
  *
  * @package Drupal\dkan_harvest\Controller
+ * @codeCoverageIgnore
  */
 class Api extends ControllerBase {
 
