@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Drupal\dkan_api\Controller;
 
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Docs implements ContainerInjectionInterface {
@@ -37,6 +38,13 @@ class Docs implements ContainerInjectionInterface {
   protected $ymlSerializer;
 
   /**
+   * Drupal node dataset storage.
+   *
+   * @var \Drupal\dkan_api\Storage\DrupalNodeDataset
+   */
+  protected $storage;
+
+  /**
    * @{inheritdocs}
    *
    * @codeCoverageIgnore
@@ -49,10 +57,12 @@ class Docs implements ContainerInjectionInterface {
    * Constructor.
    */
   public function __construct(ContainerInterface $container) {
-    $this->container = $container;
     $this->moduleHandler = $container->get('module_handler');
     $this->dkanFactory = $container->get('dkan.factory');
     $this->ymlSerializer = $container->get('serialization.yaml');
+
+    $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
+    $this->storage->setSchema('dataset');
 
     $this->spec = $this->getJsonFromYmlFile();
   }
@@ -95,15 +105,41 @@ class Docs implements ContainerInjectionInterface {
   }
 
   /**
-   * Returns only the publicly accessible GET requests for the API spec.
+   * Returns only dataset-specific GET requests for the API spec.
+   *
+   * @param \Drupal\dkan_api\Controller\string $uuid
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
-  public function getUnauthenticated() {
-    $specAnon =  $this->filterSpecOperations($this->spec, ['get']);
-    $jsonSpecAnon = json_encode($specAnon);
+  public function getDatasetSpecific(string $uuid) {
+    // Keep only the GET requests.
+    $spec =  $this->removeSpecOperations($this->spec, [
+      'post',
+      'put',
+      'patch',
+      'delete',
+    ]);
+    // Remove GET dataset collection endpoint as well as property-related ones.
+    $spec = $this->removeSpecPaths($spec, [
+      '/api/v1/dataset',
+      '/api/v1/{property}',
+      '/api/v1/{property}/{uuid}',
+    ]);
+    // Remove the security schemes.
+    unset($spec['components']);
+    // Keep only the tags needed, so remove the properties tag.
+    $spec['tags'] = [
+      ["name" => "Dataset"],
+      ["name" => "SQL Query"],
+    ];
+    // Replace the dataset uuid placeholder.
+    $spec['paths']['/api/v1/dataset/' . $uuid] = $spec['paths']['/api/v1/dataset/{uuid}'];
+    unset($spec['paths']['/api/v1/dataset/{uuid}']);
+    // Replace the sql endpoint query placeholder.
+    $spec = $this->replaceDistributions($spec, $uuid);
 
-    return $this->sendResponse($jsonSpecAnon);
+    $jsonSpec = json_encode($spec);
+    return $this->sendResponse($jsonSpec);
   }
 
   /**
@@ -124,29 +160,77 @@ class Docs implements ContainerInjectionInterface {
   }
 
   /**
-   * Removes from the api spec's paths the operations not whitelisted.
+   * Removes operations from the api spec's paths.
    *
-   * @param \stdClass $original
+   * @param array $spec
    *   The original spec array.
-   * @param array $operations_allowed
-   *   Array of operations allowed.
+   * @param array $ops_to_remove
+   *   Array of operations to be removed.
    *
    * @return array
-   *   Modified spec, keeping only the specified operations.
+   *   Modified spec.
    */
-  protected function filterSpecOperations(array $original, array $operations_allowed) {
-    $spec = $original;
-
+  protected function removeSpecOperations(array $spec, array $ops_to_remove) {
     foreach ($spec['paths'] as $path => $operations) {
-      foreach ($operations as $verb => $details) {
-        if (!in_array($verb, $operations_allowed)) {
-          unset($spec['paths'][$path][$verb]);
+      foreach ($operations as $op => $details) {
+        if (in_array($op, $ops_to_remove)) {
+          unset($spec['paths'][$path][$op]);
         }
       }
       if (empty($spec['paths'][$path])) {
         unset($spec['paths'][$path]);
       }
     }
+
+    return $spec;
+  }
+
+  /**
+   * Remove paths from the api spec.
+   *
+   * @param array $spec
+   *   The original spec array.
+   * @param array $paths_to_remove
+   *   Array of paths to be removed.
+   *
+   * @return array
+   *   Modified spec.
+   */
+  protected function removeSpecPaths(array $spec, array $paths_to_remove) {
+    foreach ($spec['paths'] as $path => $ops) {
+      if (in_array($path, $paths_to_remove)) {
+        unset($spec['paths'][$path]);
+      }
+    }
+    return $spec;
+  }
+
+  /**
+   * Replace the sql {query} placeholder with dataset-specific distributions.
+   *
+   * @param array $spec
+   *   The original spec array.
+   * @param \Drupal\dkan_api\Controller\string $uuid
+   *   The dataset uuid.
+   *
+   * @return array
+   *   Modified spec.
+   */
+  protected function replaceDistributions(array $spec, string $uuid) {
+    // Load this dataset's metadata with both data and identifiers.
+    drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
+    $dataset = $this->storage->retrieve($uuid);
+    $data = json_decode($dataset);
+
+    // Create and customize a path for each dataset distribution/resource.
+    foreach ($data->distribution as $dist) {
+      $path = "/api/v1/sql/[SELECT * FROM {$dist->identifier}];";
+
+      $spec['paths'][$path] = $spec['paths']['/api/v1/sql/{query}'];
+      $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
+      $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
+    }
+    unset($spec['paths']['/api/v1/sql/{query}']);
 
     return $spec;
   }
