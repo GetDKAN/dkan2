@@ -12,13 +12,6 @@ dkan_harvest.register:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::register'}
   requirements:
     _permission: 'access content'
-dkan_harvest.register:
-  path: '/api/v1/harvest/{id}'
-  methods: [POST]
-  defaults:
-    { _controller: '\Drupal\dkan_harvest\Controller\Api::register'}
-  requirements:
-    _permission: 'access content'
 dkan_harvest.run:
   path: '/api/v1/harvest/run/{id}'
   methods: [PUT]
