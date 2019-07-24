@@ -199,8 +199,8 @@ class Api extends ControllerBase {
     try {
 
 
-        $response = $this->harvestService
-          ->getAllHarvestRunInfo($id);
+        $response = array_keys($this->harvestService
+          ->getAllHarvestRunInfo($id));
 
 
       return $this->dkanFactory
