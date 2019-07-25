@@ -165,7 +165,7 @@ class Api extends ControllerBase {
     try {
 
       $result = $this->harvestService
-        ->deregisterHarvest($id);
+        ->runHarvest($id);
 
       return $this->dkanFactory
           ->newJsonResponse(
