@@ -63,6 +63,9 @@ class Api extends ControllerBase {
     return new static($container);
   }
 
+  /**
+   * List harvest ids
+   */
   public function index() {
 
     try {
@@ -89,8 +92,6 @@ class Api extends ControllerBase {
 
   /**
    * Register a new harvest.
-   *
-   * @command dkan-harvest:register
    */
   public function register() {
     try {
@@ -125,8 +126,6 @@ class Api extends ControllerBase {
 
   /**
    * Deregister a harvest.
-   *
-   * @command dkan-harvest:deregister
    */
   public function deregister($id) {
 
@@ -257,11 +256,6 @@ class Api extends ControllerBase {
    *
    * @param string $id
    *   The source to revert.
-   *
-   * @command dkan-harvest:revert
-   *
-   * @usage dkan-harvest:revert
-   *   Removes harvested entities.
    */
   public function revert($id) {
     try {

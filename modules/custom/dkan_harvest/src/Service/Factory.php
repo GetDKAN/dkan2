@@ -71,7 +71,7 @@ class Factory {
     );
       }
 
-    return new Harvester(new Factory($harvestPlan,
+    return new Harvester(new EtlFactory($harvestPlan,
       $this->getStorage($id, "item"),
       $this->getStorage($id,"hash")));
   }
