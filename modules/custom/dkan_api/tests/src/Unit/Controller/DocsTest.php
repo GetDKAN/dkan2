@@ -143,6 +143,40 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($mockJsonResponse, $actual);
   }
 
+  public function testSendResponse() {
+    // Setup
+    $mock = $this->getMockBuilder(Docs::class)
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $mockDkanFactory = $this->getMockBuilder(Factory::class)
+      ->setMethods(['newJsonResponse'])
+      ->disableOriginalConstructor()
+      ->getMock();
+    $this->writeProtectedProperty($mock, 'dkanFactory', $mockDkanFactory);
+
+    $mockJsonResponse = $this->createMock(JsonResponse::class);
+
+    $data = '{}';
+
+    // Expect
+    $mockDkanFactory->expects($this->once())
+      ->method('newJsonResponse')
+      ->with(
+        $data,
+        200,
+        [
+          'Content-type' => 'application/json',
+          'Access-Control-Allow-Origin' => '*',
+        ]
+      )
+      ->willReturn($mockJsonResponse);
+
+    // Asset
+    $actual = $mock->sendResponse($data);
+    $this->assertSame($mockJsonResponse, $actual);
+  }
+
   /**
    * Provides data to test removeSpecOperations.
    */
