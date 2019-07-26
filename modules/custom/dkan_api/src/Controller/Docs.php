@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 namespace Drupal\dkan_api\Controller;
 
@@ -7,6 +8,9 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Serves openapi spec for dataset-related endpoints.
+ */
 class Docs implements ContainerInjectionInterface {
 
   /**
@@ -68,9 +72,10 @@ class Docs implements ContainerInjectionInterface {
   }
 
   /**
-   * Load the yaml spec file and convert it to an array
+   * Load the yaml spec file and convert it to an array.
    *
    * @return array
+   *   The openapi spec.
    */
   protected function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
@@ -84,8 +89,10 @@ class Docs implements ContainerInjectionInterface {
    * Wrapper around file_get_contents to facilitate testing.
    *
    * @param string $path
+   *   Path for our yml spec.
    *
    * @return false|string
+   *   Our yml file, or FALSE.
    *
    * @codeCoverageIgnore
    */
@@ -97,6 +104,7 @@ class Docs implements ContainerInjectionInterface {
    * Returns the complete API spec.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   OpenAPI spec response.
    */
   public function getComplete() {
     $jsonSpec = json_encode($this->spec);
@@ -108,12 +116,14 @@ class Docs implements ContainerInjectionInterface {
    * Returns only dataset-specific GET requests for the API spec.
    *
    * @param \Drupal\dkan_api\Controller\string $uuid
+   *   Dataset uuid.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   OpenAPI spec response.
    */
   public function getDatasetSpecific(string $uuid) {
     // Keep only the GET requests.
-    $spec =  $this->removeSpecOperations($this->spec, [
+    $spec = $this->removeSpecOperations($this->spec, [
       'post',
       'put',
       'patch',
@@ -148,18 +158,23 @@ class Docs implements ContainerInjectionInterface {
   /**
    * Helper function to set headers and send response.
    *
-   * @param string $jsonSpecAnon
+   * @param string $jsonSpec
+   *   OpenAPI spec encoded json response.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   OpenAPI spec response.
    */
-  public function sendResponse(string $jsonSpecAnon) {
-    $response = $this->dkanFactory
-      ->newJsonResponse();
-    $response->headers->set('Content-type', 'application/json');
-    $response->headers->set('Access-Control-Allow-Origin', '*');
-    $response->setContent($jsonSpecAnon);
-
-    return $response;
+  public function sendResponse(string $jsonSpec) {
+    return $this->dkanFactory
+      ->newJsonResponse(
+        $jsonSpec,
+        200,
+        [
+          'Content-type' => 'application/json',
+          'Access-Control-Allow-Origin' => '*',
+        ],
+        TRUE
+      );
   }
 
   /**
