@@ -22,10 +22,10 @@ class Commands extends DrushCommands {
      * @var HarvestFactory
      */
     protected $harvestFactory;
-    
+
     /**
      *
-     * @var HarvestService 
+     * @var HarvestService
      */
     protected $harvestService;
     /**
@@ -42,7 +42,7 @@ class Commands extends DrushCommands {
     }
 
   /**
-   * Lists avaialble harvests.
+   * Lists available harvests.
    *
    * @command dkan-harvest:list
    *
@@ -70,7 +70,7 @@ class Commands extends DrushCommands {
             $plan       = json_decode($harvest_plan);
             $identifier = $this->harvestService
                     ->registerHarvest($plan);
-            $this->logger->notice("Succesfully registered the {$identifier} harvest.");
+            $this->logger->notice("Successfully registered the {$identifier} harvest.");
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             $this->logger->debug($e->getTraceAsString());
@@ -86,7 +86,7 @@ class Commands extends DrushCommands {
     try {
       if($this->harvestService->deregisterHarvest($id))
       {
-        $message = "Succesfully deregistered the {$id} harvest.";
+        $message = "Successfully deregistered the {$id} harvest.";
       }
     }
     catch(\Exception $e) {
@@ -182,5 +182,5 @@ class Commands extends DrushCommands {
     (new ConsoleOutput())->write("{$result} items reverted for the '{$id}' harvest plan." . PHP_EOL);
   }
 
- 
+
 }
