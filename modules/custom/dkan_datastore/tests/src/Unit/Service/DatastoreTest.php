@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
-use Dkan\Datastore\Importer;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Service\Datastore;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -11,11 +10,12 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\DeferredImportQueuer;
+use Dkan\Datastore\Manager;
 use Drupal\dkan_datastore\Manager\Builder;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Service\Datastore
- * @group              dkan_datastore
+ * @group dkan_datastore
  */
 class DatastoreTest extends DkanTestBase {
 
@@ -233,7 +233,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->getMockBuilder(Importer::class)
+    $mockDatastoreManager = $this->getMockBuilder(Manager::class)
       ->setMethods(['import'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -251,7 +251,8 @@ class DatastoreTest extends DkanTestBase {
       ->with($mockResource)
       ->willReturn($mockDatastoreManager);
 
-    $mockDatastoreManager->method('import');
+    $mockDatastoreManager->expects($this->once())
+      ->method('import');
 
     // Assert.
     $this->invokeProtectedMethod($mock, 'processImport', $distribution);
@@ -269,7 +270,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->getMockBuilder(Importer::class)
+    $mockDatastoreManager = $this->getMockBuilder(Manager::class)
       ->setMethods(['drop'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -375,7 +376,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->createMock(Importer::class);
+    $mockDatastoreManager = $this->createMock(Manager::class);
 
     // Expect.
     $mockBuilder->expects($this->once())

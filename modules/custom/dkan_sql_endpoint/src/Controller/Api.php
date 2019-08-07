@@ -59,7 +59,7 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    /* @var $database Database */
+    /** @var  $database Database */
     $database = $this->getDatabase();
     $database->setResource($this->getResource($state_machine));
 
@@ -75,7 +75,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private.
+   *
    */
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
@@ -83,14 +83,14 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Get datastore manger builder helper.
+   *
    */
   protected function getDatastoreManagerBuilderHelper(): Helper {
     return $this->container->get('dkan_datastore.manager.helper');
   }
 
   /**
-   * Private..
+   * Private.
    */
   protected function getQueryObject($state_machine) {
     $object = new Query();
@@ -103,7 +103,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function setQueryObjectSelect(Query $object, $state_machine) {
     $strings = $this->getStringsFromStringMachine($state_machine->gsm('select_count_all'));
@@ -124,7 +124,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function setQueryObjectWhere(Query $object, $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('where_column'));
@@ -139,7 +139,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function setQueryObjectOrderBy(Query $object, $state_machine) {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
@@ -158,7 +158,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function setQueryObjectLimit(Query $object, $state_machine) {
     $limit = $this->getStringsFromStringMachine($state_machine->gsm('numeric1'));
@@ -173,7 +173,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function getUuidFromSelect($machine) {
     $strings = $this->getStringsFromStringMachine($machine);
@@ -184,7 +184,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    */
   private function getStringsFromStringMachine($machine) {
     $strings = [];
@@ -213,7 +213,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    *
    * @codeCoverageIgnore
    */
@@ -223,7 +223,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Private..
+   * Private.
    *
    * @codeCoverageIgnore
    */
@@ -232,22 +232,18 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Response.
-   *
    * @codeCoverageIgnore
    */
   protected function response($message, $code) {
     return $this->dkanFactory
       ->newJsonResponse(
-              $message,
-              $code,
-              ["Access-Control-Allow-Origin" => "*"]
-          );
+        $message,
+        $code,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
   }
 
   /**
-   * Get parser.
-   *
    * @codeCoverageIgnore
    */
   protected function getParser() {
@@ -255,8 +251,6 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   * Create.
-   *
    * @{inheritdocs}
    *
    * @codeCoverageIgnore

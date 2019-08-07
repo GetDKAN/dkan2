@@ -2,15 +2,15 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Contracts\SorterInterface;
-use Contracts\ConditionerInterface;
-use Contracts\OffsetterInterface;
-use Contracts\LimiterInterface;
+use Contracts\Sorter;
+use Contracts\Conditioner;
+use Contracts\Offsetter;
+use Contracts\Limiter;
 
 /**
  * Query class.
  */
-class Query implements SorterInterface, ConditionerInterface, OffsetterInterface, LimiterInterface {
+class Query implements Sorter, Conditioner, Offsetter, Limiter {
   public $thing;
   public $properties = [];
   public $conditions = [];
@@ -72,7 +72,7 @@ class Query implements SorterInterface, ConditionerInterface, OffsetterInterface
   }
 
   /**
-   * Mark query as a count query.
+   *
    */
   public function count() {
     $this->count = TRUE;

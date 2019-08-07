@@ -2,15 +2,15 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Plugin\QueueWorker;
 
-use Dkan\Datastore\Importer;
+use Dkan\Datastore\Manager;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Plugin\QueueWorker\DatastoreImportQueue;
 use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_common\Tests\DkanTestBase;
+use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\File\FileSystem;
-use Procrastinator\Result;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueInterface;
@@ -22,12 +22,12 @@ use Drupal\Core\Queue\QueueInterface;
 class DatastoreImportQueueTest extends DkanTestBase {
 
   /**
-   * Public.
+   *
    */
   public function dataProcessItem() {
     return [
-      [Result::IN_PROGRESS],
-      [Result::STOPPED],
+      [IManager::DATA_IMPORT_IN_PROGRESS],
+      [IManager::DATA_IMPORT_PAUSED],
     ];
   }
 
@@ -50,7 +50,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(IManager::class)
       ->setMethods(['import'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -121,7 +121,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(IManager::class)
       ->setMethods(['import'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -148,7 +148,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mockManager->expects($this->once())
       ->method('import')
-      ->willReturn(Result::ERROR);
+      ->willReturn(IManager::DATA_IMPORT_ERROR);
 
     $mock->expects($this->never())
       ->method('refreshQueueState');
@@ -191,7 +191,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(IManager::class)
       ->setMethods(['import'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -218,7 +218,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $mockManager->expects($this->once())
       ->method('import')
-      ->willReturn(Result::DONE);
+      ->willReturn(IManager::DATA_IMPORT_DONE);
 
     $mock->expects($this->never())
       ->method('refreshQueueState');
@@ -330,7 +330,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(IManager::class)
       ->setMethods(['numberOfRecordsImported'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -381,7 +381,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMock();
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(IManager::class)
       ->setMethods(['numberOfRecordsImported'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -502,7 +502,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       'dkan_datastore.manager.builder' => $mockManagerBuilder,
     ]);
 
-    $mockManager = $this->getMockBuilder(Importer::class)
+    $mockManager = $this->getMockBuilder(Manager::class)
       ->setMethods([
         'setConfigurableProperties',
         'setImportTimelimit',

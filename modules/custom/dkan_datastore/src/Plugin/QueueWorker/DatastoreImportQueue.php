@@ -2,12 +2,11 @@
 
 namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
-use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueWorkerBase;
+use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
-use Procrastinator\Result;
 
 /**
  * Processes resource import.
@@ -28,7 +27,9 @@ class DatastoreImportQueue extends QueueWorkerBase {
   const STALL_LIMIT = 5;
 
   /**
-   * {@inheritdoc}
+   * {@inheritdocs}.
+   *
+   * @todo refactor to reduce CRAP score.
    */
   public function processItem($data) {
 
@@ -39,8 +40,8 @@ class DatastoreImportQueue extends QueueWorkerBase {
     $status = $manager->import();
 
     switch ($status) {
-      case Result::IN_PROGRESS:
-      case Result::STOPPED:
+      case IManager::DATA_IMPORT_IN_PROGRESS:
+      case IManager::DATA_IMPORT_PAUSED:
 
         $data = $this->refreshQueueState($data, $manager);
 
@@ -52,11 +53,12 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
         break;
 
-      case Result::ERROR:
+      case IManager::DATA_IMPORT_ERROR:
 
         $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
         // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
-      case Result::DONE:
+
+      case IManager::DATA_IMPORT_DONE:
 
         $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
 
@@ -71,10 +73,8 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * Sanitise input data for item processing.
    *
    * @param array $data
-   *   Incoming data array.
    *
    * @return array
-   *   Sanatized version of data array.
    */
   protected function sanitizeData(array $data): array {
 
@@ -101,13 +101,11 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @param \Dkan\Datastore\Manager\IManager $manager
    *   Import manager.
    *
-   * @return array
-   *   Data with updated state info.
+   * @return array Data with updated state info.
    *
-   * @throws \Drupal\Core\Queue\SuspendQueueException
-   *   If the state is invalid.
+   * @throws SuspendQueueException If the state is invalid.
    */
-  protected function refreshQueueState(array $data, Importer $manager): array {
+  protected function refreshQueueState(array $data, IManager $manager): array {
     // Update the state as it were.
     $newRowsDone = $manager->numberOfRecordsImported();
 
@@ -132,31 +130,23 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * Perfoms cleanup based on input data.
-   *
-   * @todo Document more clearly cleanup/sanitize.
+   * Perfoms cleanup based on iput data.
    *
    * @param array $data
-   *   Data array to clean up.
    */
   protected function cleanup(array $data) {
     if ($data['file_is_temporary']) {
-      \Drupal::service('file_system')->unlink($data['file_path']);
+      \Drupal::service('file_system')
+        ->unlink($data['file_path']);
     }
   }
 
   /**
-   * Create a datastore manager object.
    *
    * @param mixed $resourceId
-   *   Node ID for resource node.
    * @param string $filePath
-   *   File path for resource.
    * @param array $importConfig
-   *   Import configuration. @todo Document better.
-   *
    * @return \Dkan\Datastore\Manager\IManager
-   *   Datastore manager object.
    */
   protected function getManager($resourceId, string $filePath, array $importConfig) {
     /** @var \Drupal\dkan_datastore\Manager\Builder $managerBuilder */
@@ -178,14 +168,15 @@ class DatastoreImportQueue extends QueueWorkerBase {
   /**
    * Fixes some default import config.
    *
-   * @param array $importConfig
-   *   Import configuration array containging:
-   *   - delimiter:  CSV delimiter (",")
-   *   - quote:  Field wrapper ('"')
-   *   - escape  Escape character ("\\")
+   * $importConfig has the following valid defaults:
    *
-   * @return array
-   *   Sanitised properties.
+   * - 'delimiter' => ",",
+   * - 'quote'     => '"',
+   * - 'escape'    => "\\",
+   *
+   * @param array $importConfig
+   *
+   * @return array Sanitised properties.
    *
    * @todo this kind of validation should be moved to datastore manager.
    */
@@ -200,7 +191,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * Log a datastore event.
+   *
    */
   protected function log($level, $message, array $context = []) {
     $this->getLogger($this->getPluginId())
@@ -211,12 +202,9 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * Requeues the job with extra state information.
    *
    * @param array $data
-   *   Queue data.
+   *   queue data.
    *
    * @return mixed
-   *   Queue ID or false if unsuccessfull.
-   *
-   * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
     return \Drupal::service('queue')
