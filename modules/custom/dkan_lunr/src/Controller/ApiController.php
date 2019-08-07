@@ -2,16 +2,12 @@
 
 namespace Drupal\dkan_lunr\Controller;
 
-use Dkan\Datastore\Manager;
 use Drupal\Core\Controller\ControllerBase;
-use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\dkan_schema\Schema;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * An ample controller.
+ *
  * @codeCoverageIgnore
  */
 class ApiController extends ControllerBase {
@@ -39,4 +35,5 @@ class ApiController extends ControllerBase {
     $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
     return $response;
   }
+
 }

@@ -319,7 +319,7 @@ class ValueReferencer {
    * @param string $str
    *   Either a uuid or an actual json value.
    *
-   * @return stdClass|string
+   * @return \stdClass|string
    *   The data from this reference.
    */
   protected function dereferenceSingle(string $property_id, string $uuid) {

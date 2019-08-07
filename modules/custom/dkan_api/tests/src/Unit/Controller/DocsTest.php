@@ -10,8 +10,14 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 
+/**
+ *
+ */
 class DocsTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function testConstruct() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
@@ -74,6 +80,9 @@ class DocsTest extends DkanTestBase {
 
   }
 
+  /**
+   *
+   */
   public function testGetComplete() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
@@ -85,7 +94,7 @@ class DocsTest extends DkanTestBase {
       "openapi" => "3.0.1",
       "info" => [
         "title" => "Test API",
-      ]
+      ],
     ];
     $this->writeProtectedProperty($mock, 'spec', $test);
 
@@ -102,6 +111,9 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($mockJsonResponse, $actual);
   }
 
+  /**
+   *
+   */
   public function testGetDatasetSpecific() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
@@ -143,8 +155,11 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($mockJsonResponse, $actual);
   }
 
+  /**
+   *
+   */
   public function testSendResponse() {
-    // Setup
+    // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
@@ -159,7 +174,7 @@ class DocsTest extends DkanTestBase {
 
     $data = '{}';
 
-    // Expect
+    // Expect.
     $mockDkanFactory->expects($this->once())
       ->method('newJsonResponse')
       ->with(
@@ -172,7 +187,7 @@ class DocsTest extends DkanTestBase {
       )
       ->willReturn($mockJsonResponse);
 
-    // Asset
+    // Asset.
     $actual = $mock->sendResponse($data);
     $this->assertSame($mockJsonResponse, $actual);
   }
@@ -183,7 +198,8 @@ class DocsTest extends DkanTestBase {
   public function dataTestRemoveSpecOperations() {
     return [
       'Removing `foo` resulting empty path' => [
-        ['paths' => [
+        [
+          'paths' => [
             'pathWithOnlyFoo' => [
               'foo' => 'one',
             ],
@@ -191,15 +207,16 @@ class DocsTest extends DkanTestBase {
               'bar' => 'two',
               'foo' => 'three',
             ],
-          ]
+          ],
         ],
         ['foo'],
-        ['paths' => [
+        [
+          'paths' => [
             'pathWithBothFooAndBar' => [
               'bar' => 'two',
             ],
-          ]
-        ]
+          ],
+        ],
       ],
     ];
   }
@@ -222,18 +239,25 @@ class DocsTest extends DkanTestBase {
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   *
+   */
   public function testRemoveSpecPaths() {
     // Setup.
     $mock = $this->getMockBuilder(Docs::class)
       ->disableOriginalConstructor()
       ->getMock();
-    $test = ['paths' => [
-      'keep' => [],
-      'remove' => [],
-    ]];
-    $expected = ['paths' => [
-      'keep' => [],
-    ]];
+    $test = [
+      'paths' => [
+        'keep' => [],
+        'remove' => [],
+      ],
+    ];
+    $expected = [
+      'paths' => [
+        'keep' => [],
+      ],
+    ];
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'removeSpecPaths', $test, ['remove']);

@@ -41,7 +41,7 @@ class DrupalNodeDataset implements Storage {
   /**
    * Sets the data type.
    *
-   * @param $schema_id string
+   * @param string $schema_id
    *   The HTTP request's schema or data type.
    */
   public function setSchema($schema_id) {
@@ -191,7 +191,8 @@ class DrupalNodeDataset implements Storage {
       $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
 
       return $deferredImporter->createDeferredResourceImport($uuid, $resource);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       $logger = $this->getLogger('dkan_api');
 
       $logger->log(RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $e->getMessage());

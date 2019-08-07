@@ -71,6 +71,9 @@ class Query implements Sorter, Conditioner, Offsetter, Limiter {
     $this->sort['DESC'][] = $property;
   }
 
+  /**
+   *
+   */
   public function count() {
     $this->count = TRUE;
   }

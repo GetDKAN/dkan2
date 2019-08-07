@@ -4,7 +4,6 @@ namespace Drupal\dkan_common\Service;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Sae\Sae;
 use Contracts\Storage as ContractsStorageInterface;
 

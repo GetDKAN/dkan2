@@ -65,7 +65,7 @@ class RouteProvider {
    * @param string $path
    * @param string $datasetMethod
    * @param string $httpVerb
-   * @return Route
+   * @return \Symfony\Component\Routing\Route
    */
   protected function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(

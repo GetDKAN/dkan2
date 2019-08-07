@@ -20,7 +20,7 @@ class RouteProvider {
     $possible_pages = $this->expandDirectories($base);
 
     foreach ($possible_pages as $possible_page) {
-      if (file_exists($possible_page ."/index.html")) {
+      if (file_exists($possible_page . "/index.html")) {
         $name = self::getNameFromPath($possible_page);
         $path = str_replace($base, "", $possible_page);
         $routes->add($name, $this->routeHelper($path, $name));
@@ -42,19 +42,27 @@ class RouteProvider {
     return $routes;
   }
 
+  /**
+   *
+   */
   public static function getNameFromPath($path) {
     $base = \Drupal::service('app.root') . "/data-catalog-frontend/public/";
     $sub = str_replace($base, "", $path);
     return str_replace("/", "__", $sub);
   }
 
+  /**
+   *
+   */
   private function expandDirectories($base_dir) {
-    $directories = array();
-    foreach(scandir($base_dir) as $file) {
-      if($file == '.' || $file == '..') continue;
-      $dir = $base_dir.DIRECTORY_SEPARATOR.$file;
-      if(is_dir($dir)) {
-        $directories []= $dir;
+    $directories = [];
+    foreach (scandir($base_dir) as $file) {
+      if ($file == '.' || $file == '..') {
+        continue;
+      }
+      $dir = $base_dir . DIRECTORY_SEPARATOR . $file;
+      if (is_dir($dir)) {
+        $directories[] = $dir;
         $directories = array_merge($directories, $this->expandDirectories($dir));
       }
     }
@@ -63,10 +71,9 @@ class RouteProvider {
 
   /**
    * @param string $name
-   * @return Route
+   * @return \Symfony\Component\Routing\Route
    */
-  protected function routeHelper(string $path, string $name) : Route
-  {
+  protected function routeHelper(string $path, string $name) : Route {
     $route = new Route(
       "/$path",
       [

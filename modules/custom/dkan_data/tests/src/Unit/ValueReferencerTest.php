@@ -571,7 +571,7 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNode = $this->createMock(NodeInterface::class);
     $uuid = uniqid('some-property-uuid-');
     $expected = "Some Property Value";
-    $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "'.$uuid.'", "data": "Some Property Value"}'];
+    $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "' . $uuid . '", "data": "Some Property Value"}'];
 
     return [
       ['someProperty', $uuid, [$mockNode], 1, $expected],
@@ -696,7 +696,7 @@ class ValueReferencerTest extends DkanTestBase {
       'another to dereference' => $uuid2,
       'other property' => 'Some other value',
     ];
-    // DEREFERENCE_OUTPUT_IDENTIFIER
+    // DEREFERENCE_OUTPUT_IDENTIFIER.
     $method = 1;
 
     // Assert the dereferencing left the data unchanged, with identifiers.

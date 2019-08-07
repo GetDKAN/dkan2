@@ -2,15 +2,10 @@
 
 namespace Drupal\dkan_datastore\Drush;
 
-use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_data\ValueReferencer;
-use Dkan\Datastore\Resource;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 use Drush\Commands\DrushCommands;
-use Drupa\dkan_datastore\Service\Datastore;
-use Drupal\Core\Logger\LoggerChannelInterface;
 
 /**
  * @codeCoverageIgnore
@@ -65,11 +60,12 @@ class Commands extends DrushCommands {
     try {
       // Load metadata with both identifier and data for this request.
       drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_BOTH);
-$this->datastoreService->drop($uuid);
+      $this->datastoreService->drop($uuid);
     }
     catch (\Exception $e) {
       $this->logger->error("We were not able to load the entity with uuid {$uuid}");
       $this->logger->debug($e->getMessage());
     }
   }
+
 }

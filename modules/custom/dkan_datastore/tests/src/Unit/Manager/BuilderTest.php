@@ -4,10 +4,8 @@ namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
 use Dkan\Datastore\Manager;
 use Dkan\Datastore\Resource;
-use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemList;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Manager\Builder;
@@ -21,19 +19,24 @@ use Drupal\node\Entity\Node;
  */
 class BuilderTest extends DkanTestBase {
 
-  /** @var Builder */
+  /**
+   * @var \Drupal\dkan_datastore\Manager\Builder*/
   private $builder;
 
-  public function setUp()
-  {
+  /**
+   *
+   */
+  public function setUp() {
     parent::setUp();
 
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(['value' =>
-      json_encode((object) ['data' => (object) ['downloadURL' => "http://blah"]])]
+    $field->method('getValue')->willReturn([
+      'value' =>
+      json_encode((object) ['data' => (object) ['downloadURL' => "http://blah"]]),
+    ]
     );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
@@ -64,15 +67,22 @@ class BuilderTest extends DkanTestBase {
     $this->builder = new Builder($helper);
   }
 
+  /**
+   *
+   */
   public function testBuild() {
     $this->builder->setResource(new Resource("1", "blah.txt"));
     $manager = $this->builder->build();
     $this->assertEquals(get_class($manager), Manager::class);
   }
 
+  /**
+   *
+   */
   public function testUuidBuil() {
     $this->builder->setResourceFromUUid("blah");
     $manager = $this->builder->build();
     $this->assertEquals(get_class($manager), Manager::class);
   }
+
 }

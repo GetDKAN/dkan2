@@ -4,6 +4,7 @@ namespace Drupal\dkan_lunr\Service;
 
 /**
  * Refactor of some static methods out of the Interra API controller.
+ *
  * @codeCoverageIgnore
  */
 class DatasetModifier {
@@ -30,15 +31,24 @@ class DatasetModifier {
     return $dataset;
   }
 
+  /**
+   *
+   */
   private function isCsv($distribution) {
     return $this->getFormat($distribution) === "csv";
   }
 
+  /**
+   *
+   */
   private function addFormat($distribution) {
     $distribution->format = $this->getFormat($distribution);
     return $distribution;
   }
 
+  /**
+   *
+   */
   private function getFormat($distribution) {
     return str_replace("text/", "", $distribution->mediaType);
   }

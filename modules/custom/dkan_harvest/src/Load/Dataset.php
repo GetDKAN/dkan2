@@ -9,6 +9,9 @@ use Harvest\ETL\Load\Load;
  */
 class Dataset extends Load {
 
+  /**
+   *
+   */
   public function removeItem($id) {
     $engine = $this->getDatasetEngine();
     $engine->delete($id);

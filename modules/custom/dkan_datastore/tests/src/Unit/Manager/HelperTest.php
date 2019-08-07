@@ -2,15 +2,10 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
-use Dkan\Datastore\Manager;
-use Dkan\Datastore\Resource;
-use Drupal\Core\Entity\Entity;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemList;
-use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\node\Entity\Node;
@@ -21,12 +16,15 @@ use Drupal\node\Entity\Node;
  */
 class HelperTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function testNoMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(null);
+    $field->method('getValue')->willReturn(NULL);
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
       ->disableOriginalConstructor()
@@ -59,13 +57,18 @@ class HelperTest extends DkanTestBase {
     $helper->getResourceFromEntity("blah");
   }
 
+  /**
+   *
+   */
   public function testNoObjectMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(['value' =>
-      json_encode([])]
+    $field->method('getValue')->willReturn([
+      'value' =>
+      json_encode([]),
+    ]
     );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
@@ -99,13 +102,18 @@ class HelperTest extends DkanTestBase {
     $helper->getResourceFromEntity("blah");
   }
 
+  /**
+   *
+   */
   public function testBadMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(['value' =>
-      json_encode((object) [])]
+    $field->method('getValue')->willReturn([
+      'value' =>
+      json_encode((object) []),
+    ]
     );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
@@ -138,4 +146,5 @@ class HelperTest extends DkanTestBase {
     $this->expectExceptionMessage("Invalid metadata information or missing file information.");
     $helper->getResourceFromEntity("blah");
   }
+
 }

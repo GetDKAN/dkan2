@@ -158,12 +158,12 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     ]);
 
     $mockLogger = $this->getMockBuilder(LoggerInterface::class)
-    ->setMethods(['log'])
+      ->setMethods(['log'])
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $uuid         = uniqid('foo');
-    $exceptionMessage     = 'something went fubar.';
+    $uuid             = uniqid('foo');
+    $exceptionMessage = 'something went fubar.';
 
     // Expect.
     $mockBuilderHelper->expects($this->once())
@@ -182,13 +182,13 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $mockLogger->expects($this->exactly(2))
       ->method('log')
       ->withConsecutive(
-        [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " .$exceptionMessage],
-          // value of trace may change depending of debugger so just assume it's a string.
+        [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $exceptionMessage],
+          // Value of trace may change depending of debugger so just assume it's a string.
           [RfcLogLevel::DEBUG, $this->isType('string')]
         );
 
     // Assert.
-   $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
+    $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
 
   }
 
@@ -225,6 +225,9 @@ class DrupalNodeDatasetTest extends DkanTestBase {
     $this->assertEquals($expected, $actual);
   }
 
+  /**
+   *
+   */
   public function dataTestFilterHtml() {
     return [
       "Test with integer" => [
@@ -238,7 +241,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
       ],
       'Test with stdClass' => [
         (object) ['key' => 'value'], (object) ['key' => "purified"],
-      ]
+      ],
     ];
   }
 

@@ -7,7 +7,6 @@ use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Plugin\QueueWorker\DatastoreImportQueue;
 use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\Core\Queue\QueueWorkerBase;
 use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -22,6 +21,9 @@ use Drupal\Core\Queue\QueueInterface;
  */
 class DatastoreImportQueueTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function dataProcessItem() {
     return [
       [IManager::DATA_IMPORT_IN_PROGRESS],
@@ -31,10 +33,11 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
   /**
    * Tests ProcessItem() for successful operation.
+   *
    * @dataProvider dataProcessItem
    */
   public function testProcessItem($status) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
         'sanitizeData',
@@ -52,7 +55,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    // barebones dummy.
+    // Barebones dummy.
     $data          = [
       'uuid'            => uniqid('uuid'),
       'resource_id'     => uniqid('resource_id'),
@@ -65,7 +68,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $newQueueItemId = 42;
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('sanitizeData')
       ->with($data)
@@ -94,16 +97,17 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('log')
       ->with(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
 
-    // assert
+    // Assert.
     $mock->processItem($data);
   }
 
   /**
    * Tests ProcessItem() on import error.
+   *
    * @dataProvider dataProcessItem
    */
   public function testProcessItemError() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
         'sanitizeData',
@@ -122,7 +126,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    // barebones dummy.
+    // Barebones dummy.
     $data          = [
       'uuid'          => uniqid('uuid'),
       'resource_id'   => uniqid('resource_id'),
@@ -131,8 +135,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     ];
     $dataSanitized = array_merge($data, ['sanitized' => 1]);
 
-
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('sanitizeData')
       ->with($data)
@@ -164,16 +167,17 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('cleanup')
       ->willReturn($dataSanitized);
 
-    // assert
+    // Assert.
     $mock->processItem($data);
   }
 
   /**
    * Tests ProcessItem() for when import done.
+   *
    * @dataProvider dataProcessItem
    */
   public function testProcessItemDone() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
         'sanitizeData',
@@ -192,7 +196,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    // barebones dummy.
+    // Barebones dummy.
     $data          = [
       'uuid'          => uniqid('uuid'),
       'resource_id'   => uniqid('resource_id'),
@@ -201,8 +205,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     ];
     $dataSanitized = array_merge($data, ['sanitized' => 1]);
 
-
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('sanitizeData')
       ->with($data)
@@ -231,13 +234,13 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('cleanup')
       ->willReturn($dataSanitized);
 
-    // assert
+    // Assert.
     $mock->processItem($data);
   }
 
   /**
    * Data provider for testSanitizeData.
-   * 
+   *
    * @return array
    *   Array of arguments.
    */
@@ -250,29 +253,29 @@ class DatastoreImportQueueTest extends DkanTestBase {
     ];
 
     return [
-      // if missing optional fields.
+      // If missing optional fields.
       [
         $requiredFields,
         array_merge($requiredFields, [
           'import_config'     => [],
-          'file_is_temporary' => False,
+          'file_is_temporary' => FALSE,
           'queue_iteration'   => 0,
           'rows_done'         => 0,
           'import_fail_count' => 0,
-        ])
+        ]),
       ],
-      // with all optional fields, should be identical
+      // With all optional fields, should be identical.
       [
         array_merge($requiredFields, [
           'import_config'     => ['fooo-bar'],
-          'file_is_temporary' => true,
+          'file_is_temporary' => TRUE,
           'queue_iteration'   => 42,
           'rows_done'         => 43,
           'import_fail_count' => 44,
         ]),
         array_merge($requiredFields, [
           'import_config'     => ['fooo-bar'],
-          'file_is_temporary' => true,
+          'file_is_temporary' => TRUE,
           'queue_iteration'   => 42,
           'rows_done'         => 43,
           'import_fail_count' => 44,
@@ -287,13 +290,13 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * @dataProvider dataSanitizeData
    */
   public function testSanitizeData(array $data, array $expected) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'sanitizeData', $data);
     $this->assertEquals($expected, $actual);
   }
@@ -302,18 +305,18 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests SanitizeData() on exception.
    */
   public function testSanitizeDataOnException() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
     $data = [];
 
-    // expect
+    // Expect.
     $this->setExpectedException(SuspendQueueException::class, 'Queue input data is invalid. Missing required `uuid` or `resource_id`, `file_path`');
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'sanitizeData', $data);
   }
 
@@ -321,8 +324,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests RefreshQueueState() if stalling.
    */
   public function testRefreshQueueStateIfStalling() {
-    // setup
-
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods(['log'])
       ->disableOriginalConstructor()
@@ -333,9 +335,9 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $rowsDone                = 42;
-    $newRowsDone             = 42;
-    //must be less than stall limit
+    $rowsDone    = 42;
+    $newRowsDone = 42;
+    // Must be less than stall limit.
     $importFailCount         = 0;
     $queueIteration          = 7;
     $expectedImportFailCount = $importFailCount + 1;
@@ -355,7 +357,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       'queue_iteration'   => $expectedQueueInteration,
     ];
 
-    // expect
+    // Expect.
     $mockManager->expects($this->once())
       ->method('numberOfRecordsImported')
       ->willReturn($newRowsDone);
@@ -364,7 +366,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('log')
       ->with(RfcLogLevel::WARNING, "Import for {$data['uuid']} seemd to be lagging behind {$expectedImportFailCount} times. Rows done:{$rowsDone} vs {$newRowsDone}");
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'refreshQueueState', $data, $mockManager);
     $this->assertEquals($expected, $actual);
   }
@@ -373,8 +375,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests RefreshQueueState() if stalled.
    */
   public function testRefreshQueueStateIfStalled() {
-    // setup
-
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods(['log'])
       ->disableOriginalConstructor()
@@ -385,9 +386,9 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->getMockForAbstractClass();
 
-    $rowsDone        = 0;
-    $newRowsDone     = 40;
-    //must be less than stall limit
+    $rowsDone    = 0;
+    $newRowsDone = 40;
+    // Must be less than stall limit.
     $importFailCount = DatastoreImportQueue::STALL_LIMIT + 1;
 
     $data = [
@@ -398,7 +399,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       'file_path'         => '/foo/bar',
     ];
 
-    // expect
+    // Expect.
     $mockManager->expects($this->once())
       ->method('numberOfRecordsImported')
       ->willReturn($newRowsDone);
@@ -409,7 +410,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
 
     $this->setExpectedException(SuspendQueueException::class, "Import for {$data['uuid']}[{$data['file_path']}] appears to have stalled past allowed limits.");
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'refreshQueueState', $data, $mockManager);
   }
 
@@ -417,9 +418,9 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests Cleanup().
    */
   public function testCleanup() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -433,16 +434,16 @@ class DatastoreImportQueueTest extends DkanTestBase {
     ]);
 
     $data = [
-      'file_is_temporary' => true,
+      'file_is_temporary' => TRUE,
       'file_path'         => uniqid('/path/to/thing'),
     ];
 
-    // expect
+    // Expect.
     $mockFileSystem->expects($this->once())
       ->method('unlink')
       ->with($data['file_path']);
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'cleanup', $data);
   }
 
@@ -450,9 +451,9 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests Cleanup() with nothing to do.
    */
   public function testCleanupNothingToDo() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -466,15 +467,15 @@ class DatastoreImportQueueTest extends DkanTestBase {
     ]);
 
     $data = [
-      'file_is_temporary' => false,
+      'file_is_temporary' => FALSE,
       'file_path'         => uniqid('/path/to/thing'),
     ];
 
-    // expect
+    // Expect.
     $mockFileSystem->expects($this->never())
       ->method('unlink');
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'cleanup', $data);
   }
 
@@ -482,10 +483,10 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests GetManager().
    */
   public function testGetManager() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
-        'sanitizeImportConfig'
+        'sanitizeImportConfig',
       ])
       ->disableOriginalConstructor()
       ->getMock();
@@ -514,7 +515,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     $importConfig          = ['foo'];
     $sanitizedImportConfig = ['foo-sanitised'];
 
-    // expect
+    // Expect.
     $mockManagerBuilder->expects($this->once())
       ->method('setResource')
       ->with(new Resource($resourceId, $filePath))
@@ -537,7 +538,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('setImportTimelimit')
       ->with(55);
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'getManager', $resourceId, $filePath, $importConfig);
     $this->assertSame($mockManager, $actual);
   }
@@ -561,7 +562,8 @@ class DatastoreImportQueueTest extends DkanTestBase {
       [
         [
           'delimiter' => "foo",
-          'escape'    => "bar",],
+          'escape'    => "bar",
+        ],
         [
           'delimiter' => "foo",
           'quote'     => '"',
@@ -577,13 +579,13 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * @dataProvider dataSanitizeImportConfig
    */
   public function testSanitizeImportConfig(array $importConfig, array $expected) {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
-      ->setMethods(null)
+      ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
 
-    // assert
+    // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'sanitizeImportConfig', $importConfig);
     $this->assertEquals($expected, $actual);
   }
@@ -592,7 +594,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests Log().
    */
   public function testLog() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods([
         'getLogger',
@@ -611,7 +613,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     $message  = uniqid('message');
     $context  = [];
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('getPluginId')
       ->willReturn($pluginId);
@@ -625,7 +627,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->method('log')
       ->with($level, $message, $context);
 
-    // assert
+    // Assert.
     $this->invokeProtectedMethod($mock, 'log', $level, $message, $context);
   }
 
@@ -633,7 +635,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
    * Tests Requeue().
    */
   public function testRequeue() {
-    // setup
+    // Setup.
     $mock = $this->getMockBuilder(DatastoreImportQueue::class)
       ->setMethods(['getPluginId'])
       ->disableOriginalConstructor()
@@ -658,7 +660,7 @@ class DatastoreImportQueueTest extends DkanTestBase {
     $data     = ['foo'];
     $expected = uniqid('queueid');
 
-    // expect
+    // Expect.
     $mock->expects($this->once())
       ->method('getPluginId')
       ->willReturn($pluginId);
@@ -673,8 +675,8 @@ class DatastoreImportQueueTest extends DkanTestBase {
       ->with($data)
       ->willReturn($expected);
 
-    // assert
-    $actual = $this->invokeProtectedMethod($mock, 'requeue',$data);
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'requeue', $data);
     $this->assertEquals($expected, $actual);
   }
 

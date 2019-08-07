@@ -8,14 +8,14 @@ use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Resource;
 
-
 /**
  * @codeCoverageIgnore
  */
 class Database implements Storage, Schemed {
   private $connection;
 
-  /** @var Resource */
+  /**
+   * @var \Dkan\Datastore\Resource*/
   private $resource;
   private $schema;
 
@@ -26,6 +26,9 @@ class Database implements Storage, Schemed {
     $this->connection = $connection;
   }
 
+  /**
+   *
+   */
   public function setResource(Resource $resource) {
     $this->resource = $resource;
     if (!$this->schema && $this->tableExist($this->getTableName())) {
@@ -33,6 +36,9 @@ class Database implements Storage, Schemed {
     }
   }
 
+  /**
+   *
+   */
   private function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
     if (!empty($fields_info)) {
@@ -41,6 +47,9 @@ class Database implements Storage, Schemed {
     }
   }
 
+  /**
+   *
+   */
   private function getFieldsFromFieldsInfo($fields_info) {
     $fields = [];
     foreach ($fields_info as $info) {
@@ -49,18 +58,24 @@ class Database implements Storage, Schemed {
     return $fields;
   }
 
-  public function retrieveAll(): array
-  {
+  /**
+   *
+   */
+  public function retrieveAll(): array {
     // TODO: Implement retrieveAll() method.
   }
 
-  public function retrieve(string $id): ?string
-  {
+  /**
+   *
+   */
+  public function retrieve(string $id): ?string {
     // TODO: Implement retrieve() method.
   }
 
-  public function store(string $data, string $id = null): string
-  {
+  /**
+   *
+   */
+  public function store(string $data, string $id = NULL): string {
     $this->checkRequirementsAndPrepare();
     $data = json_decode($data);
     $insert = new Insert($this->getTableName());
@@ -70,16 +85,17 @@ class Database implements Storage, Schemed {
     return "SUCCESS";
   }
 
-  public function remove(string $id)
-  {
+  /**
+   *
+   */
+  public function remove(string $id) {
     // TODO: Implement remove() method.
   }
 
   /**
    *
    */
-  public function count(): int
-  {
+  public function count(): int {
     if ($this->tableExist($this->getTableName())) {
       $query = db_select($this->getTableName());
       return $query->countQuery()->execute()->fetchField();
@@ -87,6 +103,9 @@ class Database implements Storage, Schemed {
     throw new \Exception("Table {$this->getTableName()} does not exist.");
   }
 
+  /**
+   *
+   */
   private function getTableName() {
     if ($this->resource) {
       return "dkan_datastore_{$this->resource->getId()}";
@@ -136,15 +155,23 @@ class Database implements Storage, Schemed {
     return $result;
   }
 
-  public function setSchema($schema)
-  {
+  /**
+   *
+   */
+  public function setSchema($schema) {
     $this->schema = $schema;
   }
 
+  /**
+   *
+   */
   public function getSchema() {
     return $this->schema;
   }
 
+  /**
+   *
+   */
   private function checkRequirementsAndPrepare() {
     if (!$this->resource) {
       throw new \Exception("Resource is required.");
@@ -208,4 +235,5 @@ class Database implements Storage, Schemed {
       $q->execute();
     }
   }
+
 }
