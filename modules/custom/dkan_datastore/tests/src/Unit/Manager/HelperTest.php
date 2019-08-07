@@ -12,12 +12,12 @@ use Drupal\node\Entity\Node;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Manager\Helper
- * @group              dkan_datastore
+ * @group dkan_datastore
  */
 class HelperTest extends DkanTestBase {
 
   /**
-   * Public.
+   *
    */
   public function testNoMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
@@ -58,19 +58,18 @@ class HelperTest extends DkanTestBase {
   }
 
   /**
-   * Public.
+   *
    */
   public function testNoObjectMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(
-          [
-            'value' =>
-            json_encode([]),
-          ]
-      );
+    $field->method('getValue')->willReturn([
+      'value' =>
+      json_encode([]),
+    ]
+    );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
       ->disableOriginalConstructor()
@@ -104,19 +103,18 @@ class HelperTest extends DkanTestBase {
   }
 
   /**
-   * Public.
+   *
    */
   public function testBadMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
       ->disableOriginalConstructor()
       ->setMethods(['getValue'])
       ->getMock();
-    $field->method('getValue')->willReturn(
-          [
-            'value' =>
-            json_encode((object) []),
-          ]
-      );
+    $field->method('getValue')->willReturn([
+      'value' =>
+      json_encode((object) []),
+    ]
+    );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
       ->disableOriginalConstructor()
