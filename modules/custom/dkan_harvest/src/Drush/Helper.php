@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Drupal\dkan_harvest\Drush;
 
 use Drupal\dkan_harvest\Storage\File;
@@ -12,24 +11,24 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
- * Trait Helper
+ * Trait Helper.
  *
  * @codeCoverageIgnore
  */
-trait Helper
-{
+trait Helper {
+
   /**
    * Private.
    */
   private function getHarvester($id) {
 
-    if (!method_exists($this,'getHarvestPlan')) {
+    if (!method_exists($this, 'getHarvestPlan')) {
       throw new \Exception("Drupal\dkan_harvest\Drush\Helper requires the host to implement the getHarvestPlan method.");
     }
 
     return new Harvester(new Factory($this->getHarvestPlan($id),
       $this->getStorage($id, "item"),
-      $this->getStorage($id,"hash")));
+      $this->getStorage($id, "hash")));
   }
 
   /**
@@ -64,6 +63,5 @@ trait Helper
     ]);
     $table->render();
   }
-
 
 }

@@ -42,12 +42,14 @@ class ProperJsonValidatorTest extends TestCase {
 
     $validator->expects($this->once())
       ->method("isProper")
-      ->willReturn([
-        'valid' => FALSE,
-        'errors' => [
-          ['message' => "yep"],
-        ],
-      ]);
+      ->willReturn(
+              [
+                'valid' => FALSE,
+                'errors' => [
+              ['message' => "yep"],
+                ],
+              ]
+          );
 
     $context = $this->getMockBuilder(ExecutionContext::class)
       ->setMethods(["addViolation"])

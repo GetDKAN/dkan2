@@ -41,7 +41,7 @@ class DrupalNodeDataset implements Storage {
   /**
    * Sets the data type.
    *
-   * @param $schema_id string
+   * @param string $schema_id
    *   The HTTP request's schema or data type.
    */
   public function setSchema($schema_id) {
@@ -138,7 +138,7 @@ class DrupalNodeDataset implements Storage {
     }
 
     /* @var $node \Drupal\node\NodeInterface */
-    // update existing node
+    // Update existing node.
     if ($node) {
       $node->field_data_type = $this->schemaId;
       $new_data = json_encode($data);
@@ -150,13 +150,15 @@ class DrupalNodeDataset implements Storage {
     else {
       $title = isset($data->title) ? $data->title : $data->name;
       $node = $this->getNodeStorage()
-        ->create([
-          'title' => $title,
-          'type' => 'data',
-          'uuid' => $id,
-          'field_data_type' => $this->schemaId,
-          'field_json_metadata' => json_encode($data),
-        ]);
+        ->create(
+                [
+                  'title' => $title,
+                  'type' => 'data',
+                  'uuid' => $id,
+                  'field_data_type' => $this->schemaId,
+                  'field_json_metadata' => json_encode($data),
+                ]
+            );
       $node->save();
 
       $uuid = $node->uuid();
@@ -182,16 +184,21 @@ class DrupalNodeDataset implements Storage {
 
     try {
       // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
-      /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
+      /**
+* @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper
+*/
       $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
 
       $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
 
-      /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
+      /**
+* @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter
+*/
       $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
 
       return $deferredImporter->createDeferredResourceImport($uuid, $resource);
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e) {
       $logger = $this->getLogger('dkan_api');
 
       $logger->log(RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $e->getMessage());
@@ -208,10 +215,12 @@ class DrupalNodeDataset implements Storage {
   protected function getNodeByUuid($uuid) {
 
     $nodes = $this->getNodeStorage()
-      ->loadByProperties([
-        'type' => $this->getType(),
-        'uuid' => $uuid,
-      ]);
+      ->loadByProperties(
+              [
+                'type' => $this->getType(),
+                'uuid' => $uuid,
+              ]
+          );
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);

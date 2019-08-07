@@ -45,7 +45,7 @@ class IdGeneratorTest extends DkanTestBase {
 
   /**
    *
-   * @param \stdClass $data
+   * @param object $data
    * @param mixed $expected
    *
    * @dataProvider dataTestGenerate

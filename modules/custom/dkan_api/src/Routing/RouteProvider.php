@@ -62,19 +62,19 @@ class RouteProvider {
   }
 
   /**
-   * @param string $path
-   * @param string $datasetMethod
-   * @param string $httpVerb
-   * @return Route
+   * @param  string $path
+   * @param  string $datasetMethod
+   * @param  string $httpVerb
+   * @return \Symfony\Component\Routing\Route
    */
   protected function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(
-      $path,
-      [
-        '_controller' => '\Drupal\dkan_api\Controller\Dataset::' . $datasetMethod,
-        'schema_id' => $schema,
-      ]
-    );
+          $path,
+          [
+            '_controller' => '\Drupal\dkan_api\Controller\Dataset::' . $datasetMethod,
+            'schema_id' => $schema,
+          ]
+      );
     $route->setMethods([$httpVerb]);
     return $route;
   }

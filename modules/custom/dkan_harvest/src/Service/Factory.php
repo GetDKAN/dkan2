@@ -22,57 +22,60 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class Factory {
 
-    /**
-     * New instance of Reverter.
-     *
-     * @param mixed $harvest_plan
-     *   Harvest plan.
-     *
-     * @codeCoverageIgnore
-     *
-     * @return \Drupal\dkan_harvest\Reverter Reverter
-     */
-    public function newReverter($sourceId, Storage $hash_storage) {
-        return new Reverter($sourceId, $hash_storage);
+  /**
+   * New instance of Reverter.
+   *
+   * @param mixed $harvest_plan
+   *   Harvest plan.
+   *
+   * @codeCoverageIgnore
+   *
+   * @return \Drupal\dkan_harvest\Reverter Reverter
+   */
+  public function newReverter($sourceId, Storage $hash_storage) {
+    return new Reverter($sourceId, $hash_storage);
+  }
+
+  /**
+   *
+   * @return \Drupal\dkan_harvest\Storage\File
+   */
+  public function getPlanStorage(): Storage {
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    return new File("{$path}/dkan_harvest/plans");
+  }
+
+  /**
+   *
+   * @param mixed $id
+   * @param mixed $type
+   * @return \Drupal\dkan_harvest\Storage\File
+   */
+  public function getStorage($id, $type) {
+    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+    return new File("{$path}/dkan_harvest/{$id}-{$type}");
+  }
+
+  /**
+   * Get Harvestter from id and harvest plan.
+   *
+   * @param string $id
+   * @param object $harvestPlan
+   *
+   * @return \Harvest\Harvester
+   */
+  public function getHarvester(string $id, \stdClass $harvestPlan = NULL): Harvester {
+
+    if (empty($harvestPlan)) {
+      $harvestPlan = json_decode(
+      $this->getPlanStorage()
+        ->retrieve($id)
+      );
     }
-
-    /**
-     *
-     * @return File
-     */
-    public function getPlanStorage(): Storage {
-        $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-        return new File("{$path}/dkan_harvest/plans");
-    }
-
-    /**
-     *
-     * @param type $id
-     * @param type $type
-     * @return File
-     */
-    public function getStorage($id, $type) {
-        $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-        return new File("{$path}/dkan_harvest/{$id}-{$type}");
-    }
-
-/**
- * Get Harvestter from id and harvest plan.
- * @param string $id
- * @param \stdClass $harvestPlan
- * @return Harvester
- */
-  public function getHarvester(string $id, \stdClass $harvestPlan=null): Harvester {
-
-      if(empty($harvestPlan)){
-          $harvestPlan = json_decode(
-        $this->getPlanStorage()
-            ->retrieve($id)
-    );
-      }
 
     return new Harvester(new EtlFactory($harvestPlan,
       $this->getStorage($id, "item"),
-      $this->getStorage($id,"hash")));
+      $this->getStorage($id, "hash")));
   }
+
 }

@@ -55,7 +55,9 @@ class Dataset extends Api {
       // @codeCoverageIgnoreEnd
     }
 
-    /** @var \Drupal\dkan_schema\SchemaRetriever $retriever */
+    /**
+* @var \Drupal\dkan_schema\SchemaRetriever $retriever
+*/
     $retriever = $this->container
       ->get('dkan_schema.schema_retriever');
     return $retriever->retrieve('dataset');

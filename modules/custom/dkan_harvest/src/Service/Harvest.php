@@ -18,23 +18,25 @@ class Harvest {
 
   /**
    *
-   * @var HarvestFactory
+   * @var \Drupal\dkan_harvest\Service\Factory
    */
   protected $factory;
 
   /**
    *
-   * @var JsonUtil
+   * @var \Drupal\dkan_common\Service\JsonUtil
    */
   protected $jsonUtil;
 
   /**
    *
-   * @var TimeInterface
+   * @var \Drupal\Component\Datetime\TimeInterface
    */
   protected $time;
 
-
+  /**
+   *
+   */
   public function __construct(HarvestFactory $factory, JsonUtil $jsonUtil, TimeInterface $time) {
     $this->factory = $factory;
     $this->jsonUtil = $jsonUtil;
@@ -43,6 +45,7 @@ class Harvest {
 
   /**
    * Get all available harvests.
+   *
    * @return array
    */
   public function getAllHarvestIds() {
@@ -56,43 +59,53 @@ class Harvest {
 
   /**
    * Register a new harvest plan.
-   * 
-   * @param \stdClass $plan usually an \stdClass representation.
+   *
+   * @param object $plan
+   *   usually an \stdClass representation.
+   *
    * @return string identifier.
+   *
    * @throws \Exception exceptions may be thrown if validation fails.
    */
   public function registerHarvest(\stdClass $plan) {
 
     $this->validateHarvestPlan($plan);
     return $this->factory
-        ->getPlanStorage()
-        ->store(json_encode($plan), $plan->identifier);
+      ->getPlanStorage()
+      ->store(json_encode($plan), $plan->identifier);
   }
 
   /**
    * Deregister harvest.
-   * 
+   *
    * @param string $id
+   *
    * @return bool
    */
   public function deregisterHarvest(string $id) {
     $this->revertHarvest($id);
     return $this->factory
-        ->getPlanStorage()
-        ->remove($id);
+      ->getPlanStorage()
+      ->remove($id);
   }
 
+  /**
+   *
+   */
   public function revertHarvest($id) {
     return $this->factory
-        ->getHarvester($id)
-        ->revert();
+      ->getHarvester($id)
+      ->revert();
   }
 
+  /**
+   *
+   */
   public function runHarvest($id) {
     $result = $this->factory
       ->getHarvester($id)
       ->harvest();
-    // store result of the run.
+    // Store result of the run.
     $this->factory
       ->getStorage($id, "run")
       ->store(json_encode($result), $this->time->getCurrentTime());
@@ -101,9 +114,11 @@ class Harvest {
   }
 
   /**
-   *      *
+   * *.
+   *
    * @param mixed $id
    * @param mixed $runId
+   *
    * @return mixed FALSE if no matching runID is found.
    */
   public function getHarvestRunInfo($id, $runId) {
@@ -111,20 +126,24 @@ class Harvest {
     return isset($allRuns[$runId]) ? $allRuns[$runId] : FALSE;
   }
 
+  /**
+   *
+   */
   public function getAllHarvestRunInfo($id) {
     return $this->jsonUtil
-        ->decodeArrayOfJson(
+      ->decodeArrayOfJson(
           $this->factory
-          ->getStorage($id, 'run')
-          ->retrieveAll()
+            ->getStorage($id, 'run')
+            ->retrieveAll()
     );
   }
 
   /**
    * Proxy to Etl Factory to validate harvest plan.
-   * 
+   *
    * @todo is calling a static class.
-   * @param \stdClass $plan
+   * @param object $plan
+   *
    * @return bool Throws exceptions instead of false it seems.
    */
   public function validateHarvestPlan(\stdClass $plan) {

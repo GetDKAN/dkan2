@@ -9,7 +9,7 @@ class Page {
 
   /**
    *
-   * @TODO /data-catalog-frontend/build/index.html may not always exist.
+   * @TODO   /data-catalog-frontend/build/index.html may not always exist.
    * @return string|boolean false if file doesn't exist.
    */
   public function build($name) {

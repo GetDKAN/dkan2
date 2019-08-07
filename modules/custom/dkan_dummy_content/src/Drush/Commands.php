@@ -43,6 +43,9 @@ class Commands extends DrushCommands {
     $output->write("{$count} items reverted for the 'dummy' harvest plan.");
   }
 
+  /**
+   *
+   */
   private function getHarvestPlan() {
     $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content');
 
@@ -55,6 +58,9 @@ class Commands extends DrushCommands {
     return $plan;
   }
 
+  /**
+   *
+   */
   private function createDummyJson() {
     $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.template.json";
     $content = file_get_contents($dummy_template);
@@ -62,6 +68,9 @@ class Commands extends DrushCommands {
     file_put_contents(DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.json", $new);
   }
 
+  /**
+   *
+   */
   private function detokenize($content) {
     $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/files";
     return str_replace("<!*path*!>", $absolute_module_path, $content);

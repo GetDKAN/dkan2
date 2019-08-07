@@ -95,10 +95,10 @@ class ValueReferencer {
   /**
    * Replaces some dataset property values with references.
    *
-   * @param \stdClass $data
+   * @param object $data
    *   Dataset json object.
    *
-   * @return \stdClass
+   * @return object
    *   Json object modified with references to some of its properties' values.
    */
   public function reference(stdClass $data) {
@@ -191,10 +191,12 @@ class ValueReferencer {
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'title' => md5(json_encode($data)),
-      ]);
+      ->loadByProperties(
+              [
+                'field_data_type' => $property_id,
+                'title' => md5(json_encode($data)),
+              ]
+          );
 
     if ($node = reset($nodes)) {
       return $node->uuid->value;
@@ -222,13 +224,15 @@ class ValueReferencer {
     // Create node to store this reference.
     $node = $this->entityTypeManager
       ->getStorage('node')
-      ->create([
-        'title' => md5(json_encode($value)),
-        'type' => 'data',
-        'uuid' => $data->identifier,
-        'field_data_type' => $property_id,
-        'field_json_metadata' => json_encode($data),
-      ]);
+      ->create(
+              [
+                'title' => md5(json_encode($value)),
+                'type' => 'data',
+                'uuid' => $data->identifier,
+                'field_data_type' => $property_id,
+                'field_json_metadata' => json_encode($data),
+              ]
+          );
     $node->save();
 
     return $node->uuid();
@@ -248,7 +252,7 @@ class ValueReferencer {
   /**
    * Replaces value references in a dataset with with their actual values.
    *
-   * @param \stdClass $data
+   * @param object $data
    *   The json metadata object.
    * @param int $method
    *   Represents the dereferencing method, data, identifier or both.
@@ -319,16 +323,18 @@ class ValueReferencer {
    * @param string $str
    *   Either a uuid or an actual json value.
    *
-   * @return stdClass|string
+   * @return object|string
    *   The data from this reference.
    */
   protected function dereferenceSingle(string $property_id, string $uuid) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties([
-        'field_data_type' => $property_id,
-        'uuid' => $uuid,
-      ]);
+      ->loadByProperties(
+              [
+                'field_data_type' => $property_id,
+                'uuid' => $uuid,
+              ]
+          );
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
@@ -348,7 +354,7 @@ class ValueReferencer {
   /**
    * Check for orphan references when a dataset is being deleted.
    *
-   * @param \stdClass $data
+   * @param object $data
    *   Dataset to be deleted.
    */
   public function processReferencesInDeletedDataset(stdClass $data) {
@@ -381,10 +387,12 @@ class ValueReferencer {
    */
   protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')
-      ->createItem([
-        $property_id,
-        $uuid,
-      ]);
+      ->createItem(
+              [
+                $property_id,
+                $uuid,
+              ]
+          );
   }
 
   /**

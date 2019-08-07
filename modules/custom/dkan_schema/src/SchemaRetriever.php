@@ -45,10 +45,9 @@ class SchemaRetriever implements Retriever {
 
     $filename = $this->getSchemaDirectory() . "/collections/{$id}.json";
 
-    if (
-            in_array($id, $this->getAllIds())
-            && is_readable($filename)
-        ) {
+    if (in_array($id, $this->getAllIds())
+          && is_readable($filename)
+      ) {
       return file_get_contents($filename);
     }
     throw new \Exception("Schema {$id} not found.");
@@ -64,10 +63,9 @@ class SchemaRetriever implements Retriever {
     if (is_dir($drupalRoot . "/schema")) {
       $this->directory = $drupalRoot . "/schema";
     }
-    elseif (
-      ($directory = $this->getDefaultSchemaDirectory())
-       && is_dir($directory)
-    ) {
+    elseif (($directory = $this->getDefaultSchemaDirectory())
+          && is_dir($directory)
+      ) {
       $this->directory = $directory;
     }
     else {
@@ -85,7 +83,9 @@ class SchemaRetriever implements Retriever {
   protected function getDefaultSchemaDirectory() {
 
     // Try to determine root `info.yml` of dkan profile.
-    /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
+    /**
+* @var \Drupal\Core\Extension\ExtensionList $extensionList
+*/
     $extensionList = \Drupal::service('extension.list.profile');
     $infoFile = $extensionList->getPathname('dkan2');
 

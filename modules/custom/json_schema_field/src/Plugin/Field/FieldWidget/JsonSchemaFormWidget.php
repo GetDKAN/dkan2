@@ -34,7 +34,7 @@ class JsonSchemaFormWidget extends WidgetBase {
       '#size' => 7,
       '#maxlength' => 7,
       '#element_validate' => [
-        [$this, 'validate'],
+      [$this, 'validate'],
       ],
     ];
     return ['value' => $element];

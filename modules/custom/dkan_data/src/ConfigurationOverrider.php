@@ -21,15 +21,15 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
         "core.entity_form_display.node.data.default" =>
         [
           'content' =>
+        [
+          'field_json_metadata' =>
+        [
+          'settings' =>
           [
-            'field_json_metadata' =>
-            [
-              'settings' =>
-              [
-                'json_form' => $schema,
-              ],
-            ],
+            'json_form' => $schema,
           ],
+        ],
+        ],
         ],
       ];
     }
@@ -43,7 +43,9 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
    *   Schema.
    */
   protected function getSchema() {
-    /** @var \Drupal\dkan_schema\SchemaRetriever $schemaRetriever */
+    /**
+* @var \Drupal\dkan_schema\SchemaRetriever $schemaRetriever
+*/
     $schemaRetriever = \Drupal::service('dkan_schema.schema_retriever');
     return $schemaRetriever->retrieve("dataset");
   }

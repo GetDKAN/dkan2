@@ -12,6 +12,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * An ample controller.
+ *
  * @codeCoverageIgnore
  */
 class ApiController extends ControllerBase {
@@ -20,18 +21,22 @@ class ApiController extends ControllerBase {
    *
    */
   public function search(Request $request) {
-    /** @var \Drupal\dkan_lunr\Search $search */
+    /**
+* @var \Drupal\dkan_lunr\Search $search
+*/
     $search = \Drupal::service('dkan_lunr.search');
     return $this->response($search->index());
   }
 
   /**
    *
-   * @param mixed $resp
+   * @param  mixed $resp
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
   protected function response($resp) {
-    /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
+    /**
+* @var \Symfony\Component\HttpFoundation\JsonResponse $response
+*/
     $response = \Drupal::service('dkan.factory')
       ->newJsonResponse($resp);
     $response->headers->set('Access-Control-Allow-Origin', '*');
@@ -39,4 +44,5 @@ class ApiController extends ControllerBase {
     $response->headers->set('Access-Control-Allow-Headers', 'Authorization');
     return $response;
   }
+
 }

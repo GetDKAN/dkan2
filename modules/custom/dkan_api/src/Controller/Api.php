@@ -5,6 +5,9 @@ namespace Drupal\dkan_api\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 abstract class Api extends ControllerBase {
 
   /**
@@ -63,18 +66,18 @@ abstract class Api extends ControllerBase {
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-        function ($json_string) {
-          return json_decode($json_string);
-        },
-        $datasets
-    );
+          function ($json_string) {
+              return json_decode($json_string);
+          },
+          $datasets
+      );
 
     return $this->dkanFactory
       ->newJsonResponse(
-          $unflattened,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-      );
+              $unflattened,
+              200,
+              ["Access-Control-Allow-Origin" => "*"]
+          );
   }
 
   /**
@@ -101,7 +104,7 @@ abstract class Api extends ControllerBase {
                 json_decode($data),
                 200,
                 ["Access-Control-Allow-Origin" => "*"]
-        );
+            );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
@@ -139,7 +142,8 @@ abstract class Api extends ControllerBase {
       if ($existing) {
         return $this->dkanFactory
           ->newJsonResponse(
-          (object) ["endpoint" => "{$uri}/{$uuid}"], 409);
+                  (object) ["endpoint" => "{$uri}/{$uuid}"], 409
+              );
       }
     }
 
@@ -147,9 +151,9 @@ abstract class Api extends ControllerBase {
       $uuid = $engine->post($data);
       return $this->dkanFactory
         ->newJsonResponse(
-        (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
-        201
-      );
+                (object) ["endpoint" => "{$uri}/{$uuid}", "identifier" => $uuid],
+                201
+            );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
@@ -193,10 +197,10 @@ abstract class Api extends ControllerBase {
       $uri = $request->getRequestUri();
       return $this->dkanFactory
         ->newJsonResponse(
-        (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-        // If a new resource is created, inform the user agent via 201 Created.
-        empty($existing) ? 201 : 200
-      );
+                (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
+                // If a new resource is created, inform the user agent via 201 Created.
+                empty($existing) ? 201 : 200
+            );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
@@ -245,8 +249,8 @@ abstract class Api extends ControllerBase {
       $uri = $request->getRequestUri();
       return $this->dkanFactory
         ->newJsonResponse(
-        (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
-      );
+                (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
+            );
     }
     catch (\Exception $e) {
       return $this->dkanFactory
