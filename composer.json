@@ -11,7 +11,7 @@
         "drupal/config_update": "1.x-dev",
         "drupal/entity": "1.0.0-rc1",
         "fmizzell/json_form": "dev-8.x-1.x",
-        "getdkan/datastore" : "~0.0.2",
+        "getdkan/datastore" : "~0.1.0",
         "getdkan/harvest": "~0.1.4",
         "getdkan/json-schema-provider": "~0.0.2",
         "getdkan/sae" : "~1.0.1",
