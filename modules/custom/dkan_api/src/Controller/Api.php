@@ -5,11 +5,6 @@ namespace Drupal\dkan_api\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-/**
- * Class Api.
- *
- * @package Drupal\dkan_api\Controller
- */
 abstract class Api extends ControllerBase {
 
   /**
