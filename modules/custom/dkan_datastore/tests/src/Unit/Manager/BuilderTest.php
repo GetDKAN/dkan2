@@ -27,7 +27,7 @@ class BuilderTest extends DkanTestBase {
   private $builder;
 
   /**
-   * Public
+   * Public.
    */
   public function setUp() {
     parent::setUp();
@@ -72,7 +72,7 @@ class BuilderTest extends DkanTestBase {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function testBuild() {
     $this->builder->setResource(new Resource("1", "blah.txt"));
@@ -81,7 +81,7 @@ class BuilderTest extends DkanTestBase {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function testUuidBuil() {
     $this->builder->setResourceFromUUid("blah");

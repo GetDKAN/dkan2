@@ -43,7 +43,7 @@ class RouteProvider {
   }
 
   /**
-   * Public
+   * Public.
    */
   public static function getNameFromPath($path) {
     $base = \Drupal::service('app.root') . "/data-catalog-frontend/public/";
@@ -52,7 +52,7 @@ class RouteProvider {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function expandDirectories($base_dir) {
     $directories = [];

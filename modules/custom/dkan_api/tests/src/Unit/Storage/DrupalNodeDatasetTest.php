@@ -232,7 +232,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function dataTestFilterHtml() {
     return [

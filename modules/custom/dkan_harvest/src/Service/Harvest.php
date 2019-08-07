@@ -35,7 +35,7 @@ class Harvest {
   protected $time;
 
   /**
-   * Public
+   * Public.
    */
   public function __construct(HarvestFactory $factory, JsonUtil $jsonUtil, TimeInterface $time) {
     $this->factory = $factory;
@@ -90,7 +90,7 @@ class Harvest {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function revertHarvest($id) {
     return $this->factory
@@ -99,7 +99,7 @@ class Harvest {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function runHarvest($id) {
     $result = $this->factory
@@ -127,7 +127,7 @@ class Harvest {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function getAllHarvestRunInfo($id) {
     return $this->jsonUtil

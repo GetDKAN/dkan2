@@ -8,7 +8,7 @@ namespace Drupal\dkan_harvest\Load;
 class FileHelper implements IFileHelper {
 
   /**
-   * Public
+   * Public.
    */
   public function getRealPath($path) {
     return \Drupal::service('file_system')
@@ -16,14 +16,14 @@ class FileHelper implements IFileHelper {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY) {
     file_prepare_directory($directory, $options);
   }
 
   /**
-   * Public
+   * Public.
    */
   public function retrieveFile($url, $destination = NULL, $managed = FALSE) {
     if (substr_count($url, "file://") > 0) {
@@ -39,14 +39,14 @@ class FileHelper implements IFileHelper {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function fileCreate($uri) {
     return file_create_url($uri);
   }
 
   /**
-   * Public
+   * Public.
    */
   public function defaultSchemeDirectory() {
     // @todo this might not always work.
@@ -58,7 +58,7 @@ class FileHelper implements IFileHelper {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function fileGetContents($path) {
     return (is_readable($path) && is_file($path))
@@ -67,14 +67,14 @@ class FileHelper implements IFileHelper {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function filePutContents($path, $content) {
     return file_put_contents($path, $content);
   }
 
   /**
-   * Public
+   * Public.
    */
   public function fileDelete($uri) {
     if (file_exists($uri)) {
@@ -83,7 +83,7 @@ class FileHelper implements IFileHelper {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function fileGlob($pattern, $flags = 0) {
     return glob($pattern, $flags);

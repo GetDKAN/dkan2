@@ -46,7 +46,7 @@ class Search {
   public $ref = "identifier";
 
   /**
-   * Public
+   * Public.
    */
   public function formatDocs($docs) {
     $index = [];
@@ -57,7 +57,7 @@ class Search {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function formatSearchDoc($value) {
     $formatted = new \stdClass();
@@ -71,7 +71,7 @@ class Search {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function lunrIndex() {
     // TODO: Make this configurable.
@@ -107,7 +107,7 @@ class Search {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function docs() {
     $datasets = [];

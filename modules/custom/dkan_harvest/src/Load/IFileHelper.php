@@ -8,7 +8,7 @@ namespace Drupal\dkan_harvest\Load;
 interface IFileHelper {
 
   /**
-   * Public
+   * Public.
    */
   public function getRealPath($path);
 
@@ -18,37 +18,37 @@ interface IFileHelper {
   public function fileGetContents($path);
 
   /**
-   * Public
+   * Public.
    */
   public function filePutContents($path, $content);
 
   /**
-   * Public
+   * Public.
    */
   public function prepareDir(&$directory, $options = FILE_CREATE_DIRECTORY);
 
   /**
-   * Public
+   * Public.
    */
   public function retrieveFile($url, $destination = NULL, $managed = FALSE);
 
   /**
-   * Public
+   * Public.
    */
   public function fileCreate($uri);
 
   /**
-   * Public
+   * Public.
    */
   public function fileDelete($uri);
 
   /**
-   * Public
+   * Public.
    */
   public function fileGlob($pattern, $flags = 0);
 
   /**
-   * Public
+   * Public.
    */
   public function defaultSchemeDirectory();
 

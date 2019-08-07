@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class ApiController extends ControllerBase {
 
   /**
-   * Public
+   * Public.
    */
   public function search(Request $request) {
     /**

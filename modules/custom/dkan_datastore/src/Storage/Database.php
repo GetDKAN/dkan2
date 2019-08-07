@@ -20,14 +20,14 @@ class Database implements Storage, Schemed {
   private $schema;
 
   /**
-   * Public
+   * Public.
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
   /**
-   * Public
+   * Public.
    */
   public function setResource(Resource $resource) {
     $this->resource = $resource;
@@ -37,7 +37,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
@@ -48,7 +48,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function getFieldsFromFieldsInfo($fields_info) {
     $fields = [];
@@ -59,21 +59,21 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function retrieveAll(): array {
     // TODO: Implement retrieveAll() method.
   }
 
   /**
-   * Public
+   * Public.
    */
   public function retrieve(string $id): ?string {
     // TODO: Implement retrieve() method.
   }
 
   /**
-   * Public
+   * Public.
    */
   public function store(string $data, string $id = NULL): string {
     $this->checkRequirementsAndPrepare();
@@ -86,14 +86,14 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function remove(string $id) {
     // TODO: Implement remove() method.
   }
 
   /**
-   * Public
+   * Public.
    */
   public function count(): int {
     if ($this->tableExist($this->getTableName())) {
@@ -104,7 +104,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function getTableName() {
     if ($this->resource) {
@@ -116,7 +116,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function query(Query $query): array {
     $db_query = $this->connection->select($this->getTableName(), 't');
@@ -156,21 +156,21 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function setSchema($schema) {
     $this->schema = $schema;
   }
 
   /**
-   * Public
+   * Public.
    */
   public function getSchema() {
     return $this->schema;
   }
 
   /**
-   * Private
+   * Private.
    */
   private function checkRequirementsAndPrepare() {
     if (!$this->resource) {
@@ -201,7 +201,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function tableExist($table_name) {
     $exists = $this->connection->schema()->tableExists($table_name);
@@ -209,21 +209,21 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function tableCreate($table_name, $schema) {
     db_create_table($table_name, $schema);
   }
 
   /**
-   * Private
+   * Private.
    */
   private function tableDrop($table_name) {
     $this->connection->schema()->dropTable($table_name);
   }
 
   /**
-   * Private
+   * Private.
    */
   private function insert(Insert $query) {
     if ($this->tableExist($query->tableName)) {

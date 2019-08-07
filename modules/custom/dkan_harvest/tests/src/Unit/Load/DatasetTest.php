@@ -16,7 +16,7 @@ use Sae\Sae;
 class DatasetTest extends DkanTestBase {
 
   /**
-   * Public
+   * Public.
    */
   public function test() {
     $load = $this->getMockBuilder(Dataset::class)

@@ -110,7 +110,7 @@ class ApiTest extends DkanTestBase {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function testRunQuery() {
 

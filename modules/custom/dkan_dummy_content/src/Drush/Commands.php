@@ -44,7 +44,7 @@ class Commands extends DrushCommands {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function getHarvestPlan() {
     $module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content');
@@ -59,7 +59,7 @@ class Commands extends DrushCommands {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function createDummyJson() {
     $dummy_template = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/dummy.template.json";
@@ -69,7 +69,7 @@ class Commands extends DrushCommands {
   }
 
   /**
-   * Private
+   * Private.
    */
   private function detokenize($content) {
     $absolute_module_path = DRUPAL_ROOT . "/" . drupal_get_path('module', 'dkan_dummy_content') . "/files";

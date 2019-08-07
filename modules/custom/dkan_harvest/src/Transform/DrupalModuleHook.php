@@ -12,14 +12,14 @@ class DrupalModuleHook extends Transform {
   protected $harvestPlan;
 
   /**
-   * Public
+   * Public.
    */
   public function __construct($harvest_plan) {
     parent::__construct($harvest_plan);
   }
 
   /**
-   * Public
+   * Public.
    */
   public function run($item) {
     return $this->hook($item);

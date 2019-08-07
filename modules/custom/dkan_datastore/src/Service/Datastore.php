@@ -32,7 +32,7 @@ class Datastore {
   protected $helper;
 
   /**
-   * Public
+   * Public.
    */
   public function __construct(
             EntityTypeManagerInterface $entityTypeManager,
@@ -45,7 +45,7 @@ class Datastore {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function import($uuid, $deferred = FALSE) {
     foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
@@ -59,7 +59,7 @@ class Datastore {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function drop($uuid) {
 

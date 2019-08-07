@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class ProperJsonValidatorTest extends TestCase {
 
   /**
-   * Public
+   * Public.
    */
   public function testValidationSuccess() {
     $validator = $this->getMockBuilder(ProperJsonValidator::class)
@@ -33,7 +33,7 @@ class ProperJsonValidatorTest extends TestCase {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function testValidationFailure() {
     $validator = $this->getMockBuilder(ProperJsonValidator::class)

@@ -14,7 +14,7 @@ class File implements Storage {
   use FileHelperTrait;
 
   /**
-   * Public
+   * Public.
    */
   public function __construct($directory_path) {
     $this->directoryPath = $directory_path;
@@ -26,7 +26,7 @@ class File implements Storage {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function retrieve(string $id): ?string {
     $file_path = "{$this->directoryPath}/{$id}.json";
@@ -35,7 +35,7 @@ class File implements Storage {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function store(string $data, string $id = NULL): string {
     $file_path = "{$this->directoryPath}/{$id}.json";
@@ -45,7 +45,7 @@ class File implements Storage {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function remove(string $id) {
     $file_path = "{$this->directoryPath}/{$id}.json";
@@ -54,7 +54,7 @@ class File implements Storage {
   }
 
   /**
-   * Public
+   * Public.
    */
   public function retrieveAll(): array {
     $files_pattern = "{$this->directoryPath}/*.json";
