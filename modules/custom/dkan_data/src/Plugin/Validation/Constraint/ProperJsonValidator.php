@@ -11,6 +11,8 @@ use Symfony\Component\Validator\ConstraintValidator;
 class ProperJsonValidator extends ConstraintValidator {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function validate($items, Constraint $constraint) {

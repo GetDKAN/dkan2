@@ -23,6 +23,8 @@ class RouteProvider {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function routes() {

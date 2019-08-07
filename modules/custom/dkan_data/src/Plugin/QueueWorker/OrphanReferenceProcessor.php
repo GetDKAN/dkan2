@@ -47,6 +47,8 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
@@ -59,6 +61,8 @@ class OrphanReferenceProcessor extends QueueWorkerBase implements ContainerFacto
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function processItem($data) {

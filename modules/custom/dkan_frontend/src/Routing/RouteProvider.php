@@ -11,6 +11,8 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteProvider {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function routes() {

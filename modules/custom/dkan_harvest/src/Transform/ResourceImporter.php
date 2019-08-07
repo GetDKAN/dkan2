@@ -14,6 +14,8 @@ class ResourceImporter extends Transform {
   use FileHelperTrait;
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function run($dataset) {

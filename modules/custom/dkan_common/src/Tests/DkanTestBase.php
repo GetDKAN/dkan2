@@ -14,6 +14,8 @@ class DkanTestBase extends UnitTestCase {
   protected $dkanDirectory;
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function setUp() {
