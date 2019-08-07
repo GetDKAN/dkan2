@@ -22,7 +22,7 @@ use Drupal\node\Entity\Node;
 class HelperTest extends DkanTestBase {
 
   /**
-   *
+   * Public
    */
   public function testNoMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
@@ -63,7 +63,7 @@ class HelperTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testNoObjectMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)
@@ -109,7 +109,7 @@ class HelperTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testBadMetadata() {
     $field = $this->getMockBuilder(FieldItem::class)

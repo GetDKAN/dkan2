@@ -20,14 +20,14 @@ class Database implements Storage, Schemed {
   private $schema;
 
   /**
-   *
+   * Public
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
   /**
-   *
+   * Public
    */
   public function setResource(Resource $resource) {
     $this->resource = $resource;
@@ -59,21 +59,21 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Public
    */
   public function retrieveAll(): array {
     // TODO: Implement retrieveAll() method.
   }
 
   /**
-   *
+   * Public
    */
   public function retrieve(string $id): ?string {
     // TODO: Implement retrieve() method.
   }
 
   /**
-   *
+   * Public
    */
   public function store(string $data, string $id = NULL): string {
     $this->checkRequirementsAndPrepare();
@@ -86,14 +86,14 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Public
    */
   public function remove(string $id) {
     // TODO: Implement remove() method.
   }
 
   /**
-   *
+   * Public
    */
   public function count(): int {
     if ($this->tableExist($this->getTableName())) {
@@ -116,7 +116,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Public
    */
   public function query(Query $query): array {
     $db_query = $this->connection->select($this->getTableName(), 't');
@@ -156,14 +156,14 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Public
    */
   public function setSchema($schema) {
     $this->schema = $schema;
   }
 
   /**
-   *
+   * Public
    */
   public function getSchema() {
     return $this->schema;

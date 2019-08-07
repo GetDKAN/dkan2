@@ -34,7 +34,7 @@ class Helper {
   }
 
   /**
-   *
+   * Public
    */
   public function getResourceFromEntity($uuid): Resource {
     $node = $this->loadNodeByUuid($uuid);

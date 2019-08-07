@@ -10,7 +10,7 @@ use Harvest\ETL\Load\Load;
 class Dataset extends Load {
 
   /**
-   *
+   * Public
    */
   public function removeItem($id) {
     $engine = $this->getDatasetEngine();

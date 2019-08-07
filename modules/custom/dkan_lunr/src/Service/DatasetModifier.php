@@ -54,7 +54,7 @@ class DatasetModifier {
   }
 
   /**
-   *
+   * Public
    */
   public function objectifyStringsArray(array $array) {
     $objects = [];

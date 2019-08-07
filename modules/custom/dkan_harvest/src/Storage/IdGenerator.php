@@ -12,14 +12,14 @@ class IdGenerator implements ContractsIdGenerator {
   protected  $data;
 
   /**
-   *
+   * Public
    */
   public function __construct($json) {
     $this->data = json_decode($json);
   }
 
   /**
-   *
+   * Public
    */
   public function generate() {
     return isset($this->data->identifier) ? $this->data->identifier : NULL;

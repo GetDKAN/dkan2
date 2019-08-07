@@ -396,7 +396,7 @@ class ValueReferencer {
   }
 
   /**
-   *
+   * Public
    */
   public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
     // Cycle through the dataset properties being referenced, check for orphans.

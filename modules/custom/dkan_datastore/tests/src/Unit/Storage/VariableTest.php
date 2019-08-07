@@ -16,7 +16,7 @@ use Drupal\Core\Config\Config;
 class VariableTest extends DkanTestBase {
 
   /**
-   *
+   * Public
    */
   public function dataTestConstruct() {
 
@@ -63,7 +63,7 @@ class VariableTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testSet() {
 

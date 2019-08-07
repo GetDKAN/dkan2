@@ -47,7 +47,7 @@ class Builder {
   }
 
   /**
-   *
+   * Public
    */
   public function setResourceFromUUid(string $uuid) {
     $this->resource = $this->helper->getResourceFromEntity($uuid);

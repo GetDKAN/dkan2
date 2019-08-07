@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class DocsTest extends DkanTestBase {
 
   /**
-   *
+   * Public
    */
   public function testConstruct() {
     // Setup.
@@ -85,7 +85,7 @@ class DocsTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testGetComplete() {
     // Setup.
@@ -116,7 +116,7 @@ class DocsTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testGetDatasetSpecific() {
     // Setup.
@@ -162,7 +162,7 @@ class DocsTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testSendResponse() {
     // Setup.
@@ -246,7 +246,7 @@ class DocsTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public
    */
   public function testRemoveSpecPaths() {
     // Setup.

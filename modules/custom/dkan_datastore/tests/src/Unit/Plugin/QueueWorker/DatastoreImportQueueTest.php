@@ -23,7 +23,7 @@ use Drupal\Core\Queue\QueueInterface;
 class DatastoreImportQueueTest extends DkanTestBase {
 
   /**
-   *
+   * Public
    */
   public function dataProcessItem() {
     return [

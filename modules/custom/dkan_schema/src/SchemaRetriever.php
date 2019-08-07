@@ -16,14 +16,14 @@ class SchemaRetriever implements Retriever {
   protected $directory;
 
   /**
-   *
+   * Public
    */
   public function __construct() {
     $this->findSchemaDirectory();
   }
 
   /**
-   *
+   * Public
    */
   public function getAllIds() {
     return [
@@ -32,14 +32,14 @@ class SchemaRetriever implements Retriever {
   }
 
   /**
-   *
+   * Public
    */
   public function getSchemaDirectory() {
     return $this->directory;
   }
 
   /**
-   *
+   * Public
    */
   public function retrieve(string $id): ?string {
 

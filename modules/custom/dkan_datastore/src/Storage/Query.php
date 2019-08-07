@@ -72,7 +72,7 @@ class Query implements Sorter, Conditioner, Offsetter, Limiter {
   }
 
   /**
-   *
+   * Public
    */
   public function count() {
     $this->count = TRUE;
