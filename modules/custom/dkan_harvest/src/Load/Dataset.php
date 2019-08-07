@@ -18,7 +18,7 @@ class Dataset extends Load {
   }
 
   /**
-   *
+   * Private.
    */
   protected function saveItem($item) {
     $engine = $this->getDatasetEngine();
@@ -26,11 +26,12 @@ class Dataset extends Load {
   }
 
   /**
-   * Get the engine from the Datset Controller.
+   * Get the engine from the Dataset Controller.
    *
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
    *
    * @return \Sae\Sae
+   *   Sae object.
    *
    * @codeCoverageIgnore
    */

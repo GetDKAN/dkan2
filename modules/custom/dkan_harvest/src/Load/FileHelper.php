@@ -3,6 +3,8 @@
 namespace Drupal\dkan_harvest\Load;
 
 /**
+ * Class.
+ *
  * @codeCoverageIgnore
  */
 class FileHelper implements IFileHelper {

@@ -9,6 +9,11 @@ use Harvest\ETL\Transform\Transform;
  */
 class DrupalModuleHook extends Transform {
 
+  /**
+   * Harvest plan.
+   *
+   * @var string
+   */
   protected $harvestPlan;
 
   /**
@@ -26,6 +31,8 @@ class DrupalModuleHook extends Transform {
   }
 
   /**
+   * Hook.
+   *
    * @codeCoverageIgnore
    */
   public function hook($item) {

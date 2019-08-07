@@ -3,7 +3,7 @@
 namespace Drupal\dkan_harvest\Load;
 
 /**
- *
+ * Interface.
  */
 interface IFileHelper {
 
@@ -13,7 +13,10 @@ interface IFileHelper {
   public function getRealPath($path);
 
   /**
-   * @return string|null return null if file doesn't exist or not readable
+   * File get contents.
+   *
+   * @return string|null
+   *   return null if file doesn't exist or not readable
    */
   public function fileGetContents($path);
 

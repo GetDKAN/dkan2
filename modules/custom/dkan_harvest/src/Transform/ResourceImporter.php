@@ -24,6 +24,8 @@ class ResourceImporter extends Transform {
   }
 
   /**
+   * Test Environment.
+   *
    * @codeCoverageIgnore
    */
   protected function testEnvironment() {

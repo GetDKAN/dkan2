@@ -9,6 +9,11 @@ use Contracts\IdGenerator as ContractsIdGenerator;
  */
 class IdGenerator implements ContractsIdGenerator {
 
+  /**
+   * Data.
+   *
+   * @var mixed
+   */
   protected  $data;
 
   /**

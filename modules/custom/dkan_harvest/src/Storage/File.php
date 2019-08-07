@@ -9,9 +9,14 @@ use Drupal\dkan_harvest\Load\FileHelperTrait;
  * Class.
  */
 class File implements Storage {
-
-  protected $directoryPath;
   use FileHelperTrait;
+
+  /**
+   * Directory path.
+   *
+   * @var string
+   */
+  protected $directoryPath;
 
   /**
    * Public.

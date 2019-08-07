@@ -17,18 +17,21 @@ use Drupal\Component\Datetime\TimeInterface;
 class Harvest {
 
   /**
+   * Factory.
    *
    * @var \Drupal\dkan_harvest\Service\Factory
    */
   protected $factory;
 
   /**
+   * JsonUtil.
    *
    * @var \Drupal\dkan_common\Service\JsonUtil
    */
   protected $jsonUtil;
 
   /**
+   * Time.
    *
    * @var \Drupal\Component\Datetime\TimeInterface
    */
@@ -47,6 +50,7 @@ class Harvest {
    * Get all available harvests.
    *
    * @return array
+   *   All ids.
    */
   public function getAllHarvestIds() {
 
@@ -63,9 +67,11 @@ class Harvest {
    * @param object $plan
    *   usually an \stdClass representation.
    *
-   * @return string identifier.
+   * @return string
+   *   Identifier.
    *
-   * @throws \Exception exceptions may be thrown if validation fails.
+   * @throws \Exception
+   *   Exceptions may be thrown if validation fails.
    */
   public function registerHarvest(\stdClass $plan) {
 
@@ -79,8 +85,10 @@ class Harvest {
    * Deregister harvest.
    *
    * @param string $id
+   *   Id.
    *
    * @return bool
+   *   Boolean.
    */
   public function deregisterHarvest(string $id) {
     $this->revertHarvest($id);
@@ -114,12 +122,10 @@ class Harvest {
   }
 
   /**
-   * *.
+   * Get Harvest Run Info.
    *
-   * @param mixed $id
-   * @param mixed $runId
-   *
-   * @return mixed FALSE if no matching runID is found.
+   * @return mixed
+   *   FALSE if no matching runID is found.
    */
   public function getHarvestRunInfo($id, $runId) {
     $allRuns = $this->getAllHarvestRunInfo($id);
@@ -141,10 +147,11 @@ class Harvest {
   /**
    * Proxy to Etl Factory to validate harvest plan.
    *
-   * @todo is calling a static class.
    * @param object $plan
+   *   Plan.
    *
-   * @return bool Throws exceptions instead of false it seems.
+   * @return bool
+   *   Throws exceptions instead of false it seems.
    */
   public function validateHarvestPlan(\stdClass $plan) {
     return EtlFactory::validateHarvestPlan($plan);

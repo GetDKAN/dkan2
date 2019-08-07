@@ -25,20 +25,20 @@ class Factory {
   /**
    * New instance of Reverter.
    *
-   * @param mixed $harvest_plan
-   *   Harvest plan.
+   * @return \Drupal\dkan_harvest\Reverter
+   *   Reverter.
    *
    * @codeCoverageIgnore
-   *
-   * @return \Drupal\dkan_harvest\Reverter Reverter
    */
   public function newReverter($sourceId, Storage $hash_storage) {
     return new Reverter($sourceId, $hash_storage);
   }
 
   /**
+   * Get plan storage.
    *
    * @return \Drupal\dkan_harvest\Storage\File
+   *   File.
    */
   public function getPlanStorage(): Storage {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
@@ -46,10 +46,15 @@ class Factory {
   }
 
   /**
+   * Get Storage.
    *
    * @param mixed $id
+   *   Id.
    * @param mixed $type
+   *   Type.
+   *
    * @return \Drupal\dkan_harvest\Storage\File
+   *   File.
    */
   public function getStorage($id, $type) {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
@@ -60,9 +65,12 @@ class Factory {
    * Get Harvestter from id and harvest plan.
    *
    * @param string $id
+   *   Id.
    * @param object $harvestPlan
+   *   Harvest plan.
    *
    * @return \Harvest\Harvester
+   *   Harvester.
    */
   public function getHarvester(string $id, \stdClass $harvestPlan = NULL): Harvester {
 
