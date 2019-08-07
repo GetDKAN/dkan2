@@ -37,7 +37,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function setSchemaFromTable() {
     $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
@@ -48,7 +48,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function getFieldsFromFieldsInfo($fields_info) {
     $fields = [];
@@ -104,7 +104,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function getTableName() {
     if ($this->resource) {
@@ -170,7 +170,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function checkRequirementsAndPrepare() {
     if (!$this->resource) {
@@ -201,7 +201,7 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function tableExist($table_name) {
     $exists = $this->connection->schema()->tableExists($table_name);
@@ -209,21 +209,21 @@ class Database implements Storage, Schemed {
   }
 
   /**
-   *
+   * Private
    */
   private function tableCreate($table_name, $schema) {
     db_create_table($table_name, $schema);
   }
 
   /**
-   *
+   * Private
    */
   private function tableDrop($table_name) {
     $this->connection->schema()->dropTable($table_name);
   }
 
   /**
-   *
+   * Private
    */
   private function insert(Insert $query) {
     if ($this->tableExist($query->tableName)) {

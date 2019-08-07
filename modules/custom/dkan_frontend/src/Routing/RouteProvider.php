@@ -52,7 +52,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Private
    */
   private function expandDirectories($base_dir) {
     $directories = [];

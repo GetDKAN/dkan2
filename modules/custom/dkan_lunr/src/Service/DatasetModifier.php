@@ -32,14 +32,14 @@ class DatasetModifier {
   }
 
   /**
-   *
+   * Private
    */
   private function isCsv($distribution) {
     return $this->getFormat($distribution) === "csv";
   }
 
   /**
-   *
+   * Private
    */
   private function addFormat($distribution) {
     $distribution->format = $this->getFormat($distribution);
@@ -47,7 +47,7 @@ class DatasetModifier {
   }
 
   /**
-   *
+   * Private
    */
   private function getFormat($distribution) {
     return str_replace("text/", "", $distribution->mediaType);
