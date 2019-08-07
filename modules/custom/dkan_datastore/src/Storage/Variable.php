@@ -6,7 +6,7 @@ use Dkan\Datastore\Storage\IKeyValue;
 use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
- *
+ * Class.
  */
 class Variable implements IKeyValue {
 

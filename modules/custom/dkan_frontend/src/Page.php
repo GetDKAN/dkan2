@@ -3,7 +3,7 @@
 namespace Drupal\dkan_frontend;
 
 /**
- *
+ * Class.
  */
 class Page {
 

@@ -5,7 +5,7 @@ namespace Drupal\dkan_harvest\Load;
 use Harvest\ETL\Load\Load;
 
 /**
- *
+ * Class.
  */
 class Dataset extends Load {
 

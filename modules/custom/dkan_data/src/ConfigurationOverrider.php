@@ -6,7 +6,7 @@ use Drupal\Core\Config\ConfigFactoryOverrideInterface;
 use Drupal\Core\Config\StorageInterface;
 
 /**
- *
+ * Class.
  */
 class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
 

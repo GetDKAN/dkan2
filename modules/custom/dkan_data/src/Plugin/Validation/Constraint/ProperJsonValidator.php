@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
 /**
- *
+ * Class.
  */
 class ProperJsonValidator extends ConstraintValidator {
 

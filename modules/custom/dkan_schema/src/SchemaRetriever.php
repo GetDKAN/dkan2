@@ -5,7 +5,7 @@ namespace Drupal\dkan_schema;
 use Contracts\Retriever;
 
 /**
- *
+ * Class.
  */
 class SchemaRetriever implements Retriever {
 

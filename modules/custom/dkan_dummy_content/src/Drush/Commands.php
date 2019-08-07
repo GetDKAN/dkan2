@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Commands\DrushCommands;
 
 /**
- *
+ * Class.
  */
 class Commands extends DrushCommands {
   use Helper;

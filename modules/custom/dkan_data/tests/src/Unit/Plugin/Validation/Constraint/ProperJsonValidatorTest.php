@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Context\ExecutionContext;
 use PHPUnit\Framework\TestCase;
 
 /**
- *
+ * Class.
  */
 class ProperJsonValidatorTest extends TestCase {
 

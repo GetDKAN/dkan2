@@ -5,7 +5,7 @@ namespace Drupal\dkan_harvest\Transform;
 use Harvest\ETL\Transform\Transform;
 
 /**
- *
+ * Class.
  */
 class DrupalModuleHook extends Transform {
 

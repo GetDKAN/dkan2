@@ -6,7 +6,7 @@ use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Load\FileHelperTrait;
 
 /**
- *
+ * Class.
  */
 class File implements Storage {
 
