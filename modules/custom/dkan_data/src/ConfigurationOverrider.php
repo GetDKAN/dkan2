@@ -11,6 +11,8 @@ use Drupal\Core\Config\StorageInterface;
 class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function loadOverrides($names) {
@@ -51,18 +53,24 @@ class ConfigurationOverrider implements ConfigFactoryOverrideInterface {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function getCacheSuffix() {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function createConfigObject($name, $collection = StorageInterface::DEFAULT_COLLECTION) {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function getCacheableMetadata($name) {

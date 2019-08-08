@@ -182,7 +182,7 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param $data
+   * @param string $data
    *   The property's value used to find an existing reference.
    *
    * @return string|null
@@ -242,8 +242,10 @@ class ValueReferencer {
    * Setter for dereferencing method.
    *
    * @param int $method
+   *   Method.
    *
    * @return int
+   *   Int.
    */
   protected function setDereferenceMethod(int $method) {
     return $this->dereferenceMethod = $method;
@@ -281,7 +283,7 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string|array $uuids
+   * @param string|array $data
    *   A single reference uuid string, or an array reference uuids.
    *
    * @return string|array
@@ -320,7 +322,7 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string $str
+   * @param string $uuid
    *   Either a uuid or an actual json value.
    *
    * @return object|string
@@ -367,7 +369,7 @@ class ValueReferencer {
   }
 
   /**
-   *
+   * Private.
    */
   protected function processReferencesInDeletedProperty($property_id, $uuids) {
     // Treat single uuid as an array of one uuid.
@@ -380,10 +382,9 @@ class ValueReferencer {
   }
 
   /**
-   * @param $property_id
-   * @param $uuid
+   * Private.
    *
-   * @codeCoverageIgnore since no logic, single call to queue worker.
+   * @codeCoverageIgnore
    */
   protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')
@@ -414,7 +415,7 @@ class ValueReferencer {
   }
 
   /**
-   *
+   * Private.
    */
   protected function processReferencesInUpdatedProperty($property_id, $old_value, $new_value) {
     if (!is_array($old_value)) {
@@ -427,9 +428,7 @@ class ValueReferencer {
   }
 
   /**
-   * @param $data
-   *
-   * @return array|string
+   * Private.
    */
   protected function emptyPropertyOfSameType($data) {
     if (is_array($data)) {

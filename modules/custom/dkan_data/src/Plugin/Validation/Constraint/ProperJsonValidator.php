@@ -28,6 +28,7 @@ class ProperJsonValidator extends ConstraintValidator {
    * Is proper JSON?
    *
    * @param string $value
+   *   Value.
    */
   protected function isProper($value) {
     // @codeCoverageIgnoreStart

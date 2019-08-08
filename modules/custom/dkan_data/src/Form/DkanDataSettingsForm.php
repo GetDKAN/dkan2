@@ -52,6 +52,8 @@ class DkanDataSettingsForm extends ConfigFormBase {
   }
 
   /**
+   * Retrieve schema properties.
+   *
    * @return array
    *   List of schema properties' title and description.
    */
