@@ -72,8 +72,15 @@ class RouteProvider {
   }
 
   /**
-   * @param  string $name
+   * Route Helper.
+   *
+   * @param string $path
+   *   Path.
+   * @param string $name
+   *   Name.
+   *
    * @return \Symfony\Component\Routing\Route
+   *   Route.
    */
   protected function routeHelper(string $path, string $name) : Route {
     $route = new Route(
