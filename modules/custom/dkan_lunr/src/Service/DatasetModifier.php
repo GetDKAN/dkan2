@@ -18,9 +18,8 @@ class DatasetModifier {
    * @return object
    *   Object.
    */
-  public function modifyDataset(\stdClass $dataset) {
+  public function modifyDataset($dataset) {
     // @todo validate json via schema first?
-
     $only_csvs = array_filter($dataset->distribution, [$this, "isCsv"]);
     $dataset->distribution = array_map([$this, "addFormat"], $only_csvs);
 

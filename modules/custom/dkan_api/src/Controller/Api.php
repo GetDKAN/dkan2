@@ -195,12 +195,13 @@ abstract class Api extends ControllerBase {
     try {
       $engine->put($uuid, $data);
       $uri = $request->getRequestUri();
+
+      // If a new resource is created, inform the user agent via 201 Created.
       return $this->dkanFactory
         ->newJsonResponse(
-                (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-                // If a new resource is created, inform the user agent via 201 Created.
-                empty($existing) ? 201 : 200
-            );
+          (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
+          empty($existing) ? 201 : 200
+        );
     }
     catch (\Exception $e) {
       return $this->dkanFactory

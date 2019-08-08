@@ -48,7 +48,7 @@ class Search {
     "modified",
     "distribution",
     "keyword",
-    "theme"
+    "theme",
     ];
 
   /**
@@ -63,7 +63,7 @@ class Search {
    */
   public function formatDocs($docs) {
     $index = [];
-    foreach ($docs as $id => $doc) {
+    foreach ($docs as $doc) {
       $index[] = $this->formatSearchDoc($doc);
     }
     return $index;
@@ -96,8 +96,6 @@ class Search {
 
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::trimmer');
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::stop_word_filter');
-    // Stemmer doesn't work with wildcard search.
-    // $build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');.
 
     $datasets = $this->getDatasets();
     foreach ($datasets as $dataset) {
@@ -124,9 +122,7 @@ class Search {
    */
   public function docs() {
     $datasets = [];
-    /**
-* @var Service\DatasetModifier $dataset_modifier
-*/
+    /**@var Service\DatasetModifier $dataset_modifier */
     $dataset_modifier = \Drupal::service('dkan_lunr.dataset_modifier');
     foreach ($this->getDatasets() as $dataset) {
       $datasets[] = $dataset_modifier->modifyDataset($dataset);
@@ -140,7 +136,7 @@ class Search {
   public function index() {
     return [
       'index' => $this->lunrIndex(),
-      'docs' => $this->docs()
+      'docs' => $this->docs(),
       ];
   }
 
@@ -153,9 +149,7 @@ class Search {
    *   Array of dataset objects.
    */
   protected function getDatasets() {
-    /**
-* @var \Drupal\dkan_api\Controller\Dataset $dataset_controller
-*/
+    /**@var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
     $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
 
     // Engine returns array of json strings.
