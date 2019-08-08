@@ -8,6 +8,8 @@ use Drupal\dkan_data\ValueReferencer;
 use Drush\Commands\DrushCommands;
 
 /**
+ * Drush commands for controlling the datastore.
+ *
  * @codeCoverageIgnore
  */
 class Commands extends DrushCommands {
