@@ -2,11 +2,8 @@
 
 namespace Drupal\dkan_harvest\Service;
 
-use Drupal\dkan_harvest\Storage\File;
 use Harvest\ETL\Factory as EtlFactory;
 use Harvest\Harvester;
-use Harvest\ResultInterpreter;
-use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Service\Factory as HarvestFactory;
 use Drupal\dkan_common\Service\JsonUtil;
 use Drupal\Component\Datetime\TimeInterface;
@@ -73,7 +70,7 @@ class Harvest {
    * @throws \Exception
    *   Exceptions may be thrown if validation fails.
    */
-  public function registerHarvest(\stdClass $plan) {
+  public function registerHarvest($plan) {
 
     $this->validateHarvestPlan($plan);
     return $this->factory

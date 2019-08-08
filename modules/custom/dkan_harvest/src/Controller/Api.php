@@ -6,7 +6,6 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_common\Util\RequestTrait;
 use Drupal\dkan_harvest\Service\Harvest as HarvestService;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_common\Service\Factory as DkanFactory;
 
 /**
@@ -110,11 +109,11 @@ class Api extends ControllerBase {
         ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
-              "identifier" => $identifier
+              "identifier" => $identifier,
             ],
             200,
             [
-              "Access-Control-Allow-Origin" => "*"
+              "Access-Control-Allow-Origin" => "*",
             ]
       );
     }
@@ -143,7 +142,7 @@ class Api extends ControllerBase {
         ->newJsonResponse(
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
-              "identifier" => $id
+              "identifier" => $id,
             ],
             200,
             ["Access-Control-Allow-Origin" => "*"]
@@ -275,11 +274,11 @@ class Api extends ControllerBase {
             (object) [
               "endpoint"   => $this->getCurrentRequestUri(),
               "identifier" => $id,
-              'result'     => $result
+              'result'     => $result,
             ],
             200,
             [
-              "Access-Control-Allow-Origin" => "*"
+              "Access-Control-Allow-Origin" => "*",
             ]
       );
     }

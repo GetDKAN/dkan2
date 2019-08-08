@@ -8,9 +8,7 @@ use Drupal\dkan_harvest\Storage\File;
 
 use Harvest\ETL\Factory as EtlFactory;
 use Harvest\Harvester;
-use Harvest\ResultInterpreter;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Factory class for bits and pieces of dkan_harvest.
@@ -72,7 +70,7 @@ class Factory {
    * @return \Harvest\Harvester
    *   Harvester.
    */
-  public function getHarvester(string $id, \stdClass $harvestPlan = NULL): Harvester {
+  public function getHarvester(string $id, $harvestPlan = NULL): Harvester {
 
     if (empty($harvestPlan)) {
       $harvestPlan = json_decode(
