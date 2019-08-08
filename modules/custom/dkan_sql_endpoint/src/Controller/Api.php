@@ -59,7 +59,7 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    /** @var $database Database */
+    /* @var $database Database */
     $database = $this->getDatabase();
     $database->setResource($this->getResource($state_machine));
 
