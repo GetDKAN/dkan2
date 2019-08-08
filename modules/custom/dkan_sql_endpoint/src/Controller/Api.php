@@ -85,7 +85,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Get datastore manger builder helper.
    */
   protected function getDatastoreManagerBuilderHelper(): Helper {
     return $this->container->get('dkan_datastore.manager.helper');
@@ -234,6 +234,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Response.
+   *
    * @codeCoverageIgnore
    */
   protected function response($message, $code) {
@@ -246,6 +248,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Get parser.
+   *
    * @codeCoverageIgnore
    */
   protected function getParser() {
@@ -253,6 +257,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Create.
+   *
    * @{inheritdocs}
    *
    * @codeCoverageIgnore
