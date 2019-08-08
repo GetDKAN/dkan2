@@ -6,11 +6,13 @@ use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 /**
- *
+ * Class.
  */
 class RouteProvider {
 
   /**
+   * Inherited.
+   *
    * {@inheritdoc}
    */
   public function routes() {
@@ -28,12 +30,12 @@ class RouteProvider {
     }
 
     $route = new Route(
-      "/home",
-      [
-        '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
-        'name' => 'home',
-      ]
-    );
+          "/home",
+          [
+            '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
+            'name' => 'home',
+          ]
+      );
     $route->setMethods(['GET']);
     $routes->add('home', $route);
 
@@ -43,7 +45,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Public.
    */
   public static function getNameFromPath($path) {
     $base = \Drupal::service('app.root') . "/data-catalog-frontend/public/";
@@ -52,7 +54,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Private.
    */
   private function expandDirectories($base_dir) {
     $directories = [];
@@ -70,17 +72,24 @@ class RouteProvider {
   }
 
   /**
+   * Route Helper.
+   *
+   * @param string $path
+   *   Path.
    * @param string $name
+   *   Name.
+   *
    * @return \Symfony\Component\Routing\Route
+   *   Route.
    */
   protected function routeHelper(string $path, string $name) : Route {
     $route = new Route(
-      "/$path",
-      [
-        '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
-        'name' => $name,
-      ]
-    );
+          "/$path",
+          [
+            '_controller' => '\Drupal\dkan_frontend\Controller\Page::page',
+            'name' => $name,
+          ]
+      );
     $route->setMethods(['GET']);
     return $route;
   }

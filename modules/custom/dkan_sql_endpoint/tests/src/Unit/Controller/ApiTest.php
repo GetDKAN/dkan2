@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
- * @group dkan
+ * @group              dkan
  */
 class ApiTest extends DkanTestBase {
 
@@ -110,7 +110,7 @@ class ApiTest extends DkanTestBase {
   }
 
   /**
-   *
+   * Public.
    */
   public function testRunQuery() {
 

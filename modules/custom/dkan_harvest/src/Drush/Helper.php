@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 trait Helper {
 
   /**
-   * Private.
+   * Private..
    */
   private function getHarvester($id) {
 
@@ -32,7 +32,7 @@ trait Helper {
   }
 
   /**
-   * Private.
+   * Private..
    */
   private function getPlanStorage(): Storage {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
@@ -40,7 +40,7 @@ trait Helper {
   }
 
   /**
-   * Private.
+   * Private..
    */
   private function getStorage($id, $type) {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
@@ -48,7 +48,7 @@ trait Helper {
   }
 
   /**
-   * Private.
+   * Private..
    */
   private function renderResult($result) {
     $interpreter = new ResultInterpreter($result);

@@ -9,7 +9,7 @@ use Drupal\Core\Queue\QueueInterface;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\DeferredImportQueuer
- * @group dkan_datastore
+ * @group              dkan_datastore
  */
 class DeferredImportQueuerTest extends DkanTestBase {
 
@@ -31,10 +31,12 @@ class DeferredImportQueuerTest extends DkanTestBase {
       ->getMockForAbstractClass();
 
     $mockResource = $this->getMockBuilder(Resource::class)
-      ->setMethods([
-        'getId',
-        'getFilePath',
-      ])
+      ->setMethods(
+              [
+                'getId',
+                'getFilePath',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -59,20 +61,22 @@ class DeferredImportQueuerTest extends DkanTestBase {
 
     $mockQueue->expects($this->once())
       ->method('createItem')
-      ->with([
-        'uuid'          => $uuid,
-        'resource_id'   => $resourceId,
-        'file_path'     => $resourceFilePath,
-        'import_config' => $importConfig,
-      ])
+      ->with(
+              [
+                'uuid'          => $uuid,
+                'resource_id'   => $resourceId,
+                'file_path'     => $resourceFilePath,
+                'import_config' => $importConfig,
+              ]
+          )
       ->willReturn($expected);
 
     // Assert.
     $actual = $mock->createDeferredResourceImport(
-      $uuid,
-      $mockResource,
-      $importConfig
-    );
+          $uuid,
+          $mockResource,
+          $importConfig
+      );
     $this->assertEquals($expected, $actual);
   }
 
@@ -94,10 +98,12 @@ class DeferredImportQueuerTest extends DkanTestBase {
       ->getMockForAbstractClass();
 
     $mockResource = $this->getMockBuilder(Resource::class)
-      ->setMethods([
-        'getId',
-        'getFilePath',
-      ])
+      ->setMethods(
+              [
+                'getId',
+                'getFilePath',
+              ]
+          )
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -122,22 +128,24 @@ class DeferredImportQueuerTest extends DkanTestBase {
 
     $mockQueue->expects($this->once())
       ->method('createItem')
-      ->with([
-        'uuid'          => $uuid,
-        'resource_id'   => $resourceId,
-        'file_path'     => $resourceFilePath,
-        'import_config' => $importConfig,
-      ])
+      ->with(
+              [
+                'uuid'          => $uuid,
+                'resource_id'   => $resourceId,
+                'file_path'     => $resourceFilePath,
+                'import_config' => $importConfig,
+              ]
+          )
       ->willReturn($queueId);
 
     $this->setExpectedException(\RuntimeException::class, "Failed to create file fetcher queue for {$uuid}");
 
     // Assert.
     $actual = $mock->createDeferredResourceImport(
-      $uuid,
-      $mockResource,
-      $importConfig
-    );
+          $uuid,
+          $mockResource,
+          $importConfig
+      );
     $this->assertEquals($queueId, $actual);
   }
 

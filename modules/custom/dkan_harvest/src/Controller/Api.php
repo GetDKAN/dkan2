@@ -26,18 +26,21 @@ class Api extends ControllerBase {
   protected $container;
 
   /**
+   * Harvest.
    *
    * @var \Drupal\dkan_harvest\Service\Harvest
    */
   protected $harvestService;
 
   /**
+   * Logger.
    *
    * @var \Drupal\Core\Logger\LoggerChannelInterface
    */
   protected $logger;
 
   /**
+   * Dkan Factory.
    *
    * @var \Drupal\dkan_common\Service\Factory
    */

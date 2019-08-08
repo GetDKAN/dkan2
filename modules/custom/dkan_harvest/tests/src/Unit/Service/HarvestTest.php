@@ -300,7 +300,7 @@ class HarvestTest extends DkanTestBase {
       [
         'invalidRunId',
         [],
-        FALSE,
+        FALSE
       ],
     ];
   }

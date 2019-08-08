@@ -13,10 +13,14 @@ class Search {
 
 
   /**
+   * Search index fields.
+   *
+   * @var array
+   *
    * Fields to be searched for in the Lunr index. The more fields added the
    * bigger the index.
    *
-   * TODO: Make configurable.
+   * @todo Make configurable.
    */
   public $searchIndexFields = [
     "title",
@@ -26,10 +30,14 @@ class Search {
   ];
 
   /**
+   * Search doc fields.
+   *
+   * @var array
+   *
    * Fields to be available in search results. The more fields added the
    * bigger the index.
    *
-   * TODO: Make configurable.
+   * @todo Make configurable.
    */
   public $searchDocFields = [
     "title",
@@ -41,21 +49,26 @@ class Search {
     "theme",
   ];
 
+  /**
+   * Ref.
+   *
+   * @var string
+   */
   public $ref = "identifier";
 
   /**
-   *
+   * Public.
    */
   public function formatDocs($docs) {
     $index = [];
-    foreach ($docs as $id => $doc) {
+    foreach ($docs as $doc) {
       $index[] = $this->formatSearchDoc($doc);
     }
     return $index;
   }
 
   /**
-   *
+   * Public.
    */
   public function formatSearchDoc($value) {
     $formatted = new \stdClass();
@@ -69,7 +82,7 @@ class Search {
   }
 
   /**
-   *
+   * Public.
    */
   public function lunrIndex() {
     // TODO: Make this configurable.
@@ -81,8 +94,6 @@ class Search {
 
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::trimmer');
     $build->addPipeline('LunrPHP\LunrDefaultPipelines::stop_word_filter');
-    // Stemmer doesn't work with wildcard search.
-    // $build->addPipeline('LunrPHP\LunrDefaultPipelines::stemmer');.
     $datasets = $this->getDatasets();
     foreach ($datasets as $dataset) {
       $doc = [];
@@ -104,11 +115,11 @@ class Search {
   }
 
   /**
-   *
+   * Public.
    */
   public function docs() {
     $datasets = [];
-    /** @var Service\DatasetModifier $dataset_modifier */
+    /* @var Service\DatasetModifier $dataset_modifier */
     $dataset_modifier = \Drupal::service('dkan_lunr.dataset_modifier');
     foreach ($this->getDatasets() as $dataset) {
       $datasets[] = $dataset_modifier->modifyDataset($dataset);
@@ -131,20 +142,21 @@ class Search {
    *
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
    *
-   * @return array Array of dataset objects
+   * @return array
+   *   Array of dataset objects.
    */
   protected function getDatasets() {
-    /** @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
+    /* @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
     $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
 
     // Engine returns array of json strings.
     return array_map(
-            function ($item) {
+          function ($item) {
               return json_decode($item);
-            },
-            $dataset_controller->getEngine()
-              ->get()
-    );
+          },
+          $dataset_controller->getEngine()
+            ->get()
+      );
   }
 
 }

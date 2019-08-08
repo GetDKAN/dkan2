@@ -15,7 +15,7 @@ use Drupal\dkan_datastore\Manager\Builder;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Service\Datastore
- * @group dkan_datastore
+ * @group              dkan_datastore
  */
 class DatastoreTest extends DkanTestBase {
 

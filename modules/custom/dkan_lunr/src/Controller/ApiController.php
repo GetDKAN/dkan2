@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 class ApiController extends ControllerBase {
 
   /**
-   *
+   * Public.
    */
   public function search(Request $request) {
     /** @var \Drupal\dkan_lunr\Search $search */
@@ -22,9 +22,13 @@ class ApiController extends ControllerBase {
   }
 
   /**
+   * Response.
    *
    * @param mixed $resp
+   *   Response.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Json Response.
    */
   protected function response($resp) {
     /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */

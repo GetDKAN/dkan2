@@ -11,7 +11,6 @@ use HTMLPurifier;
  * DrupalNodeDataset.
  */
 class DrupalNodeDataset implements Storage {
-
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
   /**
@@ -60,6 +59,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Get type.
+   *
    * @return string
    *   Type of node.
    */
@@ -68,6 +69,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function retrieve(string $id): ?string {
@@ -84,6 +87,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
@@ -108,6 +113,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function remove(string $id) {
@@ -118,6 +125,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function store(string $data, string $id = NULL): string {
@@ -138,7 +147,7 @@ class DrupalNodeDataset implements Storage {
     }
 
     /* @var $node \Drupal\node\NodeInterface */
-    // update existing node
+    // Update existing node.
     if ($node) {
       $node->field_data_type = $this->schemaId;
       $new_data = json_encode($data);
@@ -150,13 +159,15 @@ class DrupalNodeDataset implements Storage {
     else {
       $title = isset($data->title) ? $data->title : $data->name;
       $node = $this->getNodeStorage()
-        ->create([
-          'title' => $title,
-          'type' => 'data',
-          'uuid' => $id,
-          'field_data_type' => $this->schemaId,
-          'field_json_metadata' => json_encode($data),
-        ]);
+        ->create(
+                [
+                  'title' => $title,
+                  'type' => 'data',
+                  'uuid' => $id,
+                  'field_data_type' => $this->schemaId,
+                  'field_json_metadata' => json_encode($data),
+                ]
+            );
       $node->save();
 
       $uuid = $node->uuid();
@@ -181,7 +192,6 @@ class DrupalNodeDataset implements Storage {
   protected function enqueueDeferredImport(string $uuid) {
 
     try {
-      // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
       /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
       $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
 
@@ -209,10 +219,12 @@ class DrupalNodeDataset implements Storage {
   protected function getNodeByUuid($uuid) {
 
     $nodes = $this->getNodeStorage()
-      ->loadByProperties([
-        'type' => $this->getType(),
-        'uuid' => $uuid,
-      ]);
+      ->loadByProperties(
+              [
+                'type' => $this->getType(),
+                'uuid' => $uuid,
+              ]
+          );
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);
@@ -234,7 +246,7 @@ class DrupalNodeDataset implements Storage {
 
       case "array":
       case "object":
-        foreach ($input as $key => &$value) {
+        foreach ($input as &$value) {
           $value = $this->filterHtml($value);
         }
         return $input;

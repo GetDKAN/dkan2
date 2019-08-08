@@ -15,7 +15,7 @@ use Drupal\node\Entity\Node;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Manager\Builder
- * @group dkan_datastore
+ * @group              dkan_datastore
  */
 class BuilderTest extends DkanTestBase {
 
