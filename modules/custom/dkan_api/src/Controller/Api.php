@@ -6,7 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- *
+ * Class Api.
  */
 abstract class Api extends ControllerBase {
 
@@ -291,6 +291,8 @@ abstract class Api extends ControllerBase {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritdocs}.
    *
    * @codeCoverageIgnore

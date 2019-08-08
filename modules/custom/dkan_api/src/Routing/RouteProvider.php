@@ -11,6 +11,8 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteProvider {
 
   /**
+   * Get property list.
+   *
    * @return array
    *   list of json properties being considered from DKAN json property api
    *   config value.
@@ -64,10 +66,7 @@ class RouteProvider {
   }
 
   /**
-   * @param  string $path
-   * @param  string $datasetMethod
-   * @param  string $httpVerb
-   * @return \Symfony\Component\Routing\Route
+   * Private.
    */
   protected function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(

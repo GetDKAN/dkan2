@@ -11,7 +11,6 @@ use HTMLPurifier;
  * DrupalNodeDataset.
  */
 class DrupalNodeDataset implements Storage {
-
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
   /**
@@ -60,6 +59,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Get type.
+   *
    * @return string
    *   Type of node.
    */
@@ -68,6 +69,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function retrieve(string $id): ?string {
@@ -84,6 +87,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function retrieveAll(): array {
@@ -108,6 +113,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function remove(string $id) {
@@ -118,6 +125,8 @@ class DrupalNodeDataset implements Storage {
   }
 
   /**
+   * Inherited.
+   *
    * {@inheritDoc}.
    */
   public function store(string $data, string $id = NULL): string {

@@ -49,6 +49,8 @@ class Docs implements ContainerInjectionInterface {
   protected $storage;
 
   /**
+   * Inherited.
+   *
    * @{inheritdocs}
    *
    * @codeCoverageIgnore
