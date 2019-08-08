@@ -3,7 +3,6 @@
 namespace Drupal\dkan_harvest\Service;
 
 use Harvest\ETL\Factory as EtlFactory;
-use Harvest\Harvester;
 use Drupal\dkan_harvest\Service\Factory as HarvestFactory;
 use Drupal\dkan_common\Service\JsonUtil;
 use Drupal\Component\Datetime\TimeInterface;
@@ -150,7 +149,7 @@ class Harvest {
    * @return bool
    *   Throws exceptions instead of false it seems.
    */
-  public function validateHarvestPlan(\stdClass $plan) {
+  public function validateHarvestPlan($plan) {
     return EtlFactory::validateHarvestPlan($plan);
   }
 

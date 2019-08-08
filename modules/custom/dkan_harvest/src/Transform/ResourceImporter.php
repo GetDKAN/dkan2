@@ -54,7 +54,7 @@ class ResourceImporter extends Transform {
     $distributions = [];
 
     // Loop through distributions.
-    foreach ($dataset->distribution as $dist_index => $dist) {
+    foreach ($dataset->distribution as $dist) {
       $distributions[] = $this->updateDownloadUrl($dataset, $dist);
     }
 

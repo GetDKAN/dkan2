@@ -2,12 +2,9 @@
 
 namespace Drupal\dkan_dummy_content\Drush;
 
-use Drupal\Core\Site\Settings;
-use Drupal\dkan_harvest\Drush\Helper;
-
-use Symfony\Component\Console\Output\ConsoleOutput;
-
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Drupal\dkan_harvest\Drush\Helper;
 
 /**
  * Class.

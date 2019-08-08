@@ -83,11 +83,7 @@ class SchemaRetriever implements Retriever {
    *   Path.
    */
   protected function getDefaultSchemaDirectory() {
-
-    // Try to determine root `info.yml` of dkan profile.
-    /**
-* @var \Drupal\Core\Extension\ExtensionList $extensionList
-*/
+    /** @var \Drupal\Core\Extension\ExtensionList $extensionList */
     $extensionList = \Drupal::service('extension.list.profile');
     $infoFile = $extensionList->getPathname('dkan2');
 

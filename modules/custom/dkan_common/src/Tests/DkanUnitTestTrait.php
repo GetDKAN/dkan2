@@ -8,8 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Trait to sideload some utilities into other Unit tests.
- *
- * @author Yaasir Ketwaroo <yaasir.ketwaroo@semanticbits.com>
  */
 trait DkanUnitTestTrait {
 

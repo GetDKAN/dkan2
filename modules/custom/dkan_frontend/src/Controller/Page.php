@@ -11,13 +11,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class Page extends ControllerBase {
 
   /**
-   * Page constructor.
-   */
-  public function __construct() {
-    parent::__construct();
-  }
-
-  /**
    * Controller method.
    */
   public function page($name) {

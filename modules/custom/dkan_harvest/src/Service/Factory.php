@@ -7,8 +7,6 @@ use Harvest\Storage\Storage;
 use Drupal\dkan_harvest\Storage\File;
 
 use Harvest\ETL\Factory as EtlFactory;
-use Harvest\Harvester;
-use Symfony\Component\Console\Helper\Table;
 
 /**
  * Factory class for bits and pieces of dkan_harvest.
