@@ -214,7 +214,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
    *   Queue data.
    *
    * @return mixed
-   *   Queue object.
+   *   Queue ID or false if unsuccessfull.
    *
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
