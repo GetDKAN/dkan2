@@ -10,6 +10,7 @@ use Contracts\Retriever;
 class SchemaRetriever implements Retriever {
 
   /**
+   * Directory.
    *
    * @var string
    */
@@ -54,7 +55,7 @@ class SchemaRetriever implements Retriever {
   }
 
   /**
-   *
+   * Private.
    */
   protected function findSchemaDirectory() {
 
@@ -78,7 +79,8 @@ class SchemaRetriever implements Retriever {
    *
    * @todo There may be easier way to do this and without hardcoding paths.
    *
-   * @return string path.
+   * @return string
+   *   Path.
    */
   protected function getDefaultSchemaDirectory() {
 
