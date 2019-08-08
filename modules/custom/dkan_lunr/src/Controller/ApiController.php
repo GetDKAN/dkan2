@@ -29,9 +29,13 @@ class ApiController extends ControllerBase {
   }
 
   /**
+   * Response.
    *
-   * @param  mixed $resp
+   * @param mixed $resp
+   *   Response.
+   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Json Response.
    */
   protected function response($resp) {
     /**

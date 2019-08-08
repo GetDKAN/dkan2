@@ -15,10 +15,14 @@ class Search {
 
 
   /**
+   * Search index fields.
+   *
+   * @var array
+   *
    * Fields to be searched for in the Lunr index. The more fields added the
    * bigger the index.
    *
-   * TODO: Make configurable.
+   * @todo Make configurable.
    */
   public $searchIndexFields = [
     "title",
@@ -28,10 +32,14 @@ class Search {
     ];
 
   /**
+   * Search doc fields.
+   *
+   * @var array
+   *
    * Fields to be available in search results. The more fields added the
    * bigger the index.
    *
-   * TODO: Make configurable.
+   * @todo Make configurable.
    */
   public $searchDocFields = [
     "title",
@@ -43,6 +51,11 @@ class Search {
     "theme"
     ];
 
+  /**
+   * Ref.
+   *
+   * @var string
+   */
   public $ref = "identifier";
 
   /**
@@ -136,7 +149,8 @@ class Search {
    *
    * @TODO Shouldn't use controller inner workings like this. Should refactor to service.
    *
-   * @return array Array of dataset objects
+   * @return array
+   *   Array of dataset objects.
    */
   protected function getDatasets() {
     /**

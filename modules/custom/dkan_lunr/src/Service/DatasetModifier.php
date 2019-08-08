@@ -10,9 +10,13 @@ namespace Drupal\dkan_lunr\Service;
 class DatasetModifier {
 
   /**
+   * Modify Dataset.
    *
-   * @param  object $dataset
+   * @param object $dataset
+   *   Dataset.
+   *
    * @return object
+   *   Object.
    */
   public function modifyDataset(\stdClass $dataset) {
     // @todo validate json via schema first?
@@ -60,9 +64,10 @@ class DatasetModifier {
     $objects = [];
     foreach ($array as $string) {
 
-      // @todo identifier is not immune to collisions.
-      //   consider using https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Component%21Utility%21Html.php/function/Html%3A%3AcleanCssIdentifier/8.6.x
-      //       or some kind of hash.
+      /* @todo identifier is not immune to collisions.
+       *
+       * Consider using https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Component%21Utility%21Html.php/function/Html%3A%3AcleanCssIdentifier/8.6.x
+       * or some kind of hash. */
       $identifier = strtolower(str_replace(" ", "", $string));
 
       $objects[] = (object) ['identifier' => $identifier, 'title' => $string];
