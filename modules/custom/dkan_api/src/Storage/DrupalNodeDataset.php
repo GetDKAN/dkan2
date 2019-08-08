@@ -192,17 +192,12 @@ class DrupalNodeDataset implements Storage {
   protected function enqueueDeferredImport(string $uuid) {
 
     try {
-      // Using \Drupal::service() to avoid overloading constructor with single use dependencies.
-      /**
-* @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper
-*/
+      /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
       $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
 
       $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
 
-      /**
-* @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter
-*/
+      /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
       $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
 
       return $deferredImporter->createDeferredResourceImport($uuid, $resource);
@@ -251,7 +246,7 @@ class DrupalNodeDataset implements Storage {
 
       case "array":
       case "object":
-        foreach ($input as $key => &$value) {
+        foreach ($input as &$value) {
           $value = $this->filterHtml($value);
         }
         return $input;

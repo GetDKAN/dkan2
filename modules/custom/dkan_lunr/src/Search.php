@@ -2,8 +2,6 @@
 
 namespace Drupal\dkan_lunr;
 
-use LunrPHP\Pipeline;
-use LunrPHP\LunrDefaultPipelines;
 use LunrPHP\BuildLunrIndex;
 
 /**
@@ -28,8 +26,8 @@ class Search {
     "title",
     "keyword",
     "theme",
-    "description"
-    ];
+    "description",
+  ];
 
   /**
    * Search doc fields.
@@ -49,7 +47,7 @@ class Search {
     "distribution",
     "keyword",
     "theme",
-    ];
+  ];
 
   /**
    * Ref.
@@ -137,7 +135,7 @@ class Search {
     return [
       'index' => $this->lunrIndex(),
       'docs' => $this->docs(),
-      ];
+    ];
   }
 
   /**

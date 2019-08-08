@@ -2,13 +2,8 @@
 
 namespace Drupal\dkan_lunr\Controller;
 
-use Dkan\Datastore\Manager;
 use Drupal\Core\Controller\ControllerBase;
-use JsonSchemaProvider\Provider;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\dkan_schema\Schema;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * An ample controller.
@@ -21,9 +16,7 @@ class ApiController extends ControllerBase {
    * Public.
    */
   public function search(Request $request) {
-    /**
-* @var \Drupal\dkan_lunr\Search $search
-*/
+    /** @var \Drupal\dkan_lunr\Search $search */
     $search = \Drupal::service('dkan_lunr.search');
     return $this->response($search->index());
   }
@@ -38,9 +31,7 @@ class ApiController extends ControllerBase {
    *   Json Response.
    */
   protected function response($resp) {
-    /**
-* @var \Symfony\Component\HttpFoundation\JsonResponse $response
-*/
+    /** @var \Symfony\Component\HttpFoundation\JsonResponse $response */
     $response = \Drupal::service('dkan.factory')
       ->newJsonResponse($resp);
     $response->headers->set('Access-Control-Allow-Origin', '*');
