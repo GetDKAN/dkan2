@@ -77,14 +77,16 @@ class Database implements Storage, Schemed {
    *
    * @todo Implement.
    */
-  public function retrieveAll(): array;
+  public function retrieveAll(): array {
+  }
 
   /**
    * Retrieve method.
    *
    * @todo Implement.
    */
-  public function retrieve(string $id): ?string;
+  public function retrieve(string $id): ?string {
+  }
 
   /**
    * Store data.
