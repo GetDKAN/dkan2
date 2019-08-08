@@ -8,9 +8,13 @@ use Drupal\Tests\UnitTestCase;
  * Base class for phpunit for dkan modules.
  */
 class DkanTestBase extends UnitTestCase {
-
   use DkanUnitTestTrait;
 
+  /**
+   * Directory.
+   *
+   * @var string
+   */
   protected $dkanDirectory;
 
   /**

@@ -10,9 +10,10 @@ trait RequestTrait {
   /**
    * Request object from current stack.
    *
-   * @codeCoverageIgnore
-   *
    * @return \Symfony\Component\HttpFoundation\Request
+   *   Request.
+   *
+   * @codeCoverageIgnore
    */
   protected function getCurrentRequest() {
     return \Drupal::request();
@@ -22,6 +23,7 @@ trait RequestTrait {
    * Current request uri.
    *
    * @return string
+   *   String.
    */
   protected function getCurrentRequestUri() {
     return $this->getCurrentRequest()
@@ -32,6 +34,7 @@ trait RequestTrait {
    * Current request body.
    *
    * @return string|resource
+   *   String or resource.
    */
   protected function getCurrentRequestContent() {
     return $this->getCurrentRequest()

@@ -13,8 +13,10 @@ class JsonUtil {
    * Used primarily for decoding multi-row results from dkan storage.
    *
    * @param array $arrayOfJson
+   *   Array of JSON.
    *
    * @return array
+   *   Array.
    */
   public function decodeArrayOfJson(array $arrayOfJson) {
 
