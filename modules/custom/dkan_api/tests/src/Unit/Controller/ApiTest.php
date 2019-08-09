@@ -231,7 +231,7 @@ class ApiTest extends DkanTestBase {
     $this->assertSame($mockJsonResponse, $actual);
   }
 
-  public function failingTest() {
+  public function testFail() {
     $this->assertTrue(FALSE);
   }
 
