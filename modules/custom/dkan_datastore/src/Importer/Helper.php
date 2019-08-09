@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_datastore\Manager;
+namespace Drupal\dkan_datastore\Importer;
 
 use Drupal\dkan_datastore\Storage\Database;
 

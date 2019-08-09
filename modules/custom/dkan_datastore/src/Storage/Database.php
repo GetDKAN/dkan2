@@ -2,8 +2,7 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Contracts\Schemed;
-use Dkan\Datastore\Storage\Storage;
+use Dkan\Datastore\Storage\StorageInterface;
 use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Resource;
@@ -11,9 +10,12 @@ use Dkan\Datastore\Resource;
 /**
  * Database storage object.
  *
- * @see Dkan\Datastore\Storage\Storage
+ * @see Dkan\Datastore\Storage\StorageInterface
  */
-class Database implements Storage, Schemed {
+class Database implements StorageInterface {
+
+  use \Dkan\Datastore\Storage\Database\SqlStorageTrait;
+
   private $connection;
 
   /**
@@ -175,20 +177,6 @@ class Database implements Storage, Schemed {
     $result = $db_query->execute()->fetchAll();
 
     return $result;
-  }
-
-  /**
-   * Define the schema for current db table.
-   */
-  public function setSchema($schema) {
-    $this->schema = $schema;
-  }
-
-  /**
-   * Return the scheme for current db table.
-   */
-  public function getSchema() {
-    return $this->schema;
   }
 
   /**
