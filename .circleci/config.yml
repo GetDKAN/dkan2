@@ -61,6 +61,7 @@ jobs:
             cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+            echo $?
       - run:
           name: Run cypress tests
           command: |
