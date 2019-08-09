@@ -1,9 +1,9 @@
 <?php
 
-namespace Drupal\dkan_datastore\Manager;
+namespace Drupal\dkan_datastore\Importer;
 
 use CsvParser\Parser\Csv;
-use Dkan\Datastore\Manager;
+use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource;
 
 /**
@@ -18,14 +18,14 @@ class Builder {
   /**
    * Helper.
    *
-   * @var \Drupal\dkan_datastore\Manager\Helper
+   * @var \Drupal\dkan_datastore\Importer\Helper
    */
   protected $helper;
 
   /**
    * Constructs a builder.
    *
-   * @param Drupal\dkan_datastore\Manager\Helper $helper
+   * @param Drupal\dkan_datastore\Importer\Helper $helper
    *   Helper object.
    */
   public function __construct(Helper $helper) {
@@ -57,12 +57,12 @@ class Builder {
   }
 
   /**
-   * Build datastore manager with set params, otherwise defaults.
+   * Build datastore importer with set params, otherwise defaults.
    *
-   * @return \Dkan\Datastore\Manager\IManager
-   *   A built manager object for the datastore.
+   * @return \Dkan\Datastore\Importer
+   *   A built Importer object for the datastore.
    */
-  public function build(): Manager {
+  public function build(): Importer {
 
     $resource = $this->resource;
 
@@ -70,7 +70,11 @@ class Builder {
       throw new \Exception('Resource is invalid or uninitialized.');
     }
 
-    return new Manager($resource, $this->helper->getDatabaseForResource($resource), Csv::getParser());
+    return new Importer(
+      $resource,
+      $this->helper->getDatabaseForResource($resource),
+      Csv::getParser()
+    );
   }
 
 }
