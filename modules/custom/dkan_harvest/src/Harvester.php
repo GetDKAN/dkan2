@@ -2,10 +2,11 @@
 
 namespace Drupal\dkan_harvest;
 
-use Contracts\BulkRetriever;
-use Contracts\StoreFactoryInterface;
+use Contracts\BulkRetrieverInterface;
+use Contracts\FactoryInterface;
+use Contracts\StorerInterface;
+use Drupal\dkan_common\Service\JsonUtil;
 use Harvest\ETL\Factory;
-use Harvest\ETL\Factory as EtlFactory;
 
 /**
  * Harvester.
@@ -14,7 +15,7 @@ class Harvester {
 
   private $storeFactory;
 
-  public function __construct(StoreFactoryInterface $storeFactory) {
+  public function __construct(FactoryInterface $storeFactory) {
     $this->storeFactory = $storeFactory;
   }
 
@@ -25,12 +26,12 @@ class Harvester {
    *   All ids.
    */
   public function getAllHarvestIds() {
-    $store = $this->storeFactory->get("harvest_plans");
+    $store = $this->storeFactory->getInstance("harvest_plans");
 
-    if ($store instanceof BulkRetriever) {
+    if ($store instanceof BulkRetrieverInterface) {
       return array_keys($store->retrieveAll());
     }
-    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetriever::class}");
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
   }
 
   /**
@@ -49,9 +50,12 @@ class Harvester {
 
     $this->validateHarvestPlan($plan);
 
-    $store = $this->storeFactory->get("harvest_plans");
+    $store = $this->storeFactory->getInstance("harvest_plans");
 
-    return $store->store(json_encode($plan), $plan->identifier);
+    if ($store instanceof StorerInterface) {
+      return $store->store(json_encode($plan), $plan->identifier);
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {StorerInterface::class}");
   }
 
   /**
@@ -65,36 +69,31 @@ class Harvester {
    */
   public function deregisterHarvest(string $id) {
     $this->revertHarvest($id);
-    return $this->factory
-      ->getPlanStorage()
-      ->remove($id);
+
+    $plan_store = $this->storeFactory->getInstance("harvest_plans");
+
+    return $plan_store->remove($id);
   }
 
   /**
    * Public.
    */
   public function revertHarvest($id) {
-    return $this->factory
-      ->getHarvester($id)
-      ->revert();
+    $harvester = $this->getHarvester($id);
+    return $harvester->revert();
   }
 
   /**
    * Public.
    */
   public function runHarvest($id) {
-    $plan_store = $this->storeFactory->get("harvest_plans");
-    $harvestPlan = json_decode($plan_store->retrieve($id));
-
-
-    $item_store = $this->storeFactory->get("harvest_{$id}_items");
-    $hash_store = $this->storeFactory->get("harvest_{$id}_hashes");
-    $harvester = new \Harvest\Harvester(new EtlFactory($harvestPlan, $item_store, $hash_store));
+    $harvester = $this->getHarvester($id);
 
     $result = $harvester->harvest();
 
-    $run_store = $this->storeFactory->get("harvest_{$id}_runs");
-    $run_store->store(json_encode($result), "{time()}");
+    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
+    $current_time = time();
+    $run_store->store(json_encode($result), "{$current_time}");
 
     return $result;
   }
@@ -114,11 +113,10 @@ class Harvester {
    * Public.
    */
   public function getAllHarvestRunInfo($id) {
-    return $this->jsonUtil
-      ->decodeArrayOfJson(
-          $this->factory
-            ->getStorage($id, 'run')
-            ->retrieveAll()
+    $util = new JsonUtil();
+    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
+    return $util->decodeArrayOfJson(
+          $run_store->retrieveAll()
     );
   }
 
@@ -133,6 +131,14 @@ class Harvester {
    */
   public function validateHarvestPlan($plan) {
     return Factory::validateHarvestPlan($plan);
+  }
+
+  private function getHarvester($id) {
+    $plan_store = $this->storeFactory->getInstance("harvest_plans");
+    $harvestPlan = json_decode($plan_store->retrieve($id));
+    $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
+    $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
+    return new \Harvest\Harvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 
 }

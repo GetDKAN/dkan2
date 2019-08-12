@@ -62,7 +62,7 @@ class ApiTest extends DkanTestBase {
     $this->assertEquals($response->getContent(), json_encode(["message" => "Harvest plan must be a php object."]));
   }
 
-  public function testGoodPlanAndIndex() {
+  public function testRegisterAndIndex() {
     $request = $this->getMockBuilder(\Symfony\Component\HttpFoundation\Request::class)
       ->setMethods(['getContent'])
       ->disableOriginalConstructor()
@@ -88,7 +88,7 @@ class ApiTest extends DkanTestBase {
     $this->assertEquals($response->getContent(), json_encode(["test"]));
   }
 
-  public function testGoodPlanAndRun() {
+  public function testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister() {
     $request = $this->getMockBuilder(\Symfony\Component\HttpFoundation\Request::class)
       ->setMethods(['getContent'])
       ->disableOriginalConstructor()
@@ -96,8 +96,8 @@ class ApiTest extends DkanTestBase {
 
     $plan = [
       'identifier' => 'test',
-      'extract' => ['type' => \Harvest\ETL\Extract\DataJson::class, "uri" => "http://blah"],
-      'load' => ['type' => 'blah'],
+      'extract' => ['type' => \Harvest\ETL\Extract\DataJson::class, "uri" => "file://" . __DIR__ . "/data.json"],
+      'load' => ['type' => \Harvest\ETL\Load\Simple::class],
     ];
 
     $request->method('getContent')->willReturn(json_encode($plan));
@@ -111,7 +111,25 @@ class ApiTest extends DkanTestBase {
 
     $response = $controller->run('test');
     $this->assertEquals(\Symfony\Component\HttpFoundation\JsonResponse::class, get_class($response));
-    $this->assertEquals($response->getContent(), json_encode(["test"]));
+    $result = json_decode($response->getContent())->result;
+    $this->assertEquals("NEW", $result->status->load->{"cedcd327-4e5d-43f9-8eb1-c11850fa7c55"});
+
+    $response = $controller->info('test');
+    $runs = json_decode($response->getContent());
+    $run = array_shift($runs);
+
+    $response = $controller->infoRun("test", $run);
+    $result = json_decode($response->getContent());
+    $this->assertEquals("NEW", $result->status->load->{"cedcd327-4e5d-43f9-8eb1-c11850fa7c55"});
+
+    $response = $controller->revert('test');
+    $content = json_decode($response->getContent());
+    $this->assertEquals('test', $content->identifier);
+    $this->assertEquals(1, $content->result);
+
+    $response = $controller->deregister('test');
+    $content = json_decode($response->getContent());
+    $this->assertEquals('test', $content->identifier);
   }
 
 
