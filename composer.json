@@ -5,6 +5,7 @@
     "minimum-stability": "dev",
     "description": "DKAN Open Data Catalog",
     "require": {
+        "ext-json": "*",
         "bower-asset/json-forms": "1.6.3",
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
