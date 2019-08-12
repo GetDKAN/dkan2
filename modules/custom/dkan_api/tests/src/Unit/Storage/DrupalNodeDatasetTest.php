@@ -197,14 +197,6 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   }
 
   /**
-   * Placeholder.
-   */
-  public function testRemainingMethods() {
-
-    $this->markTestIncomplete('Review of other methods in ' . DrupalNodeDataset::class . ' pending review of refactor.');
-  }
-
-  /**
    * @param mixed $input
    * @param $expected
    *
