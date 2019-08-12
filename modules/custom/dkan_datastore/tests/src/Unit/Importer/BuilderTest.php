@@ -1,26 +1,26 @@
 <?php
 
-namespace Drupal\Tests\dkan_datastore\Unit\Manager;
+namespace Drupal\Tests\dkan_datastore\Unit\Importer;
 
+use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemList;
 use Drupal\Core\Field\Plugin\DataType\FieldItem;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Manager\Builder;
-use Drupal\dkan_datastore\Manager\Helper;
+use Drupal\dkan_datastore\Importer\Builder;
+use Drupal\dkan_datastore\Importer\Helper;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\node\Entity\Node;
-use Dkan\Datastore\Importer;
 
 /**
- * @coversDefaultClass Drupal\dkan_datastore\Manager\Builder
+ * @coversDefaultClass Drupal\dkan_datastore\Importer\Builder
  * @group              dkan_datastore
  */
 class BuilderTest extends DkanTestBase {
 
   /**
-   * @var \Drupal\dkan_datastore\Manager\Builder*/
+   * @var \Drupal\dkan_datastore\Importer\Builder*/
   private $builder;
 
   /**
@@ -72,8 +72,8 @@ class BuilderTest extends DkanTestBase {
    */
   public function testBuild() {
     $this->builder->setResource(new Resource("1", "blah.txt"));
-    $manager = $this->builder->build();
-    $this->assertEquals(get_class($manager), Importer::class);
+    $datastore = $this->builder->build();
+    $this->assertEquals(get_class($datastore), Importer::class);
   }
 
   /**
@@ -81,8 +81,8 @@ class BuilderTest extends DkanTestBase {
    */
   public function testUuidBuil() {
     $this->builder->setResourceFromUUid("blah");
-    $manager = $this->builder->build();
-    $this->assertEquals(get_class($manager), Importer::class);
+    $datastore = $this->builder->build();
+    $this->assertEquals(get_class($datastore), Importer::class);
   }
 
 }
