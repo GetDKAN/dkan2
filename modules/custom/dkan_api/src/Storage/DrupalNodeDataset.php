@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_api\Storage;
 
-use Harvest\Storage\Storage;
+use Contracts\Storage;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use HTMLPurifier;
