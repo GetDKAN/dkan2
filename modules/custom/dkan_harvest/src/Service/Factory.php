@@ -31,17 +31,6 @@ class Factory {
   }
 
   /**
-   * Get plan storage.
-   *
-   * @return \Drupal\dkan_harvest\Storage\File
-   *   File.
-   */
-  public function getPlanStorage(): Storage {
-    $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
-    return new File("{$path}/dkan_harvest/plans");
-  }
-
-  /**
    * Get Storage.
    *
    * @param mixed $id
@@ -55,31 +44,6 @@ class Factory {
   public function getStorage($id, $type) {
     $path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
     return new File("{$path}/dkan_harvest/{$id}-{$type}");
-  }
-
-  /**
-   * Get Harvestter from id and harvest plan.
-   *
-   * @param string $id
-   *   Id.
-   * @param object $harvestPlan
-   *   Harvest plan.
-   *
-   * @return \Harvest\Harvester
-   *   Harvester.
-   */
-  public function getHarvester(string $id, $harvestPlan = NULL): Harvester {
-
-    if (empty($harvestPlan)) {
-      $harvestPlan = json_decode(
-      $this->getPlanStorage()
-        ->retrieve($id)
-      );
-    }
-
-    return new Harvester(new EtlFactory($harvestPlan,
-      $this->getStorage($id, "item"),
-      $this->getStorage($id, "hash")));
   }
 
 }
