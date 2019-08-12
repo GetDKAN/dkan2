@@ -14,7 +14,7 @@
             <directory>modules/custom/dkan_common/tests/src/Unit</directory>
             <directory>modules/custom/dkan_data/tests/src/Unit</directory>
             <directory>modules/custom/dkan_datastore/tests/src/Unit</directory>
-            <directory>modules/custom/dkan_harvest/tests/src/Unit</directory>
+            <directory>modules/custom/dkan_harvest/test/src/Unit</directory>
             <directory>modules/custom/dkan_schema/tests/src/Unit</directory>
             <directory>modules/custom/dkan_sql_endpoint/tests/src/Unit</directory>
             <directory>modules/custom/interra_api/tests/src/Unit</directory>

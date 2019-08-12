@@ -4,65 +4,35 @@ namespace Drupal\dkan_harvest\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\dkan_common\Util\RequestTrait;
-use Drupal\dkan_harvest\Service\Harvest as HarvestService;
-use Drupal\dkan_common\Service\Factory as DkanFactory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class Api.
  *
  * @package Drupal\dkan_harvest\Controller
- * @codeCoverageIgnore
  */
 class Api extends ControllerBase {
 
-  use RequestTrait;
-
   /**
-   * Drupal service container.
+   * Request stack.
    *
-   * @var \Symfony\Component\DependencyInjection\ContainerInterface
+   * @var \Symfony\Component\HttpFoundation\RequestStack
    */
-  protected $container;
+  private $requestStack;
 
   /**
    * Harvest.
    *
-   * @var \Drupal\dkan_harvest\Service\Harvest
+   * @var \Drupal\dkan_harvest\Harvester
    */
-  protected $harvestService;
-
-  /**
-   * Logger.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelInterface
-   */
-  protected $logger;
-
-  /**
-   * Dkan Factory.
-   *
-   * @var \Drupal\dkan_common\Service\Factory
-   */
-  protected $dkanFactory;
+  private $harvester;
 
   /**
    * Api constructor.
    */
   public function __construct(ContainerInterface $container) {
-    $this->container      = $container;
-    $this->harvestService = $this->container->get('dkan_harvest.service');
-    $this->logger         = $this->container->get('dkan_harvest.logger_channel');
-    $this->dkanFactory    = $this->container->get('dkan.factory');
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * @codeCoverageIgnore
-   */
-  public static function create(ContainerInterface $container) {
-    return new static($container);
+    $this->requestStack = $container->get('request_stack');
+    $this->harvester = $container->get('dkan_harvest.service');
   }
 
   /**
@@ -72,19 +42,17 @@ class Api extends ControllerBase {
 
     try {
 
-      $rows = $this->harvestService
+      $rows = $this->harvester
         ->getAllHarvestIds();
 
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             $rows,
             200,
             ["Access-Control-Allow-Origin" => "*"]
       );
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
@@ -98,17 +66,13 @@ class Api extends ControllerBase {
    */
   public function register() {
     try {
-
-      // Post data normally.
-      $harvest_plan = $this->getCurrentRequestContent();
-      $plan         = json_decode($harvest_plan);
-      $identifier   = $this->harvestService
+      $harvest_plan = $this->requestStack->getCurrentRequest()->getContent();
+      $plan = json_decode($harvest_plan);
+      $identifier = $this->harvester
         ->registerHarvest($plan);
 
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             (object) [
-              "endpoint"   => $this->getCurrentRequestUri(),
               "identifier" => $identifier,
             ],
             200,
@@ -118,8 +82,7 @@ class Api extends ControllerBase {
       );
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],
@@ -168,13 +131,11 @@ class Api extends ControllerBase {
   public function run($id) {
     try {
 
-      $result = $this->harvestService
+      $result = $this->harvester
         ->runHarvest($id);
 
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             (object) [
-              "endpoint"   => $this->getCurrentRequestUri(),
               "identifier" => $id,
               "result"     => $result,
             ],
@@ -183,8 +144,7 @@ class Api extends ControllerBase {
       );
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
+      return new JsonResponse(
             (object) [
               'message' => $e->getMessage(),
             ],

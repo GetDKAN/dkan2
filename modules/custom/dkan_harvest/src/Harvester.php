@@ -1,45 +1,21 @@
 <?php
 
-namespace Drupal\dkan_harvest\Service;
+namespace Drupal\dkan_harvest;
 
+use Contracts\BulkRetriever;
+use Contracts\StoreFactoryInterface;
+use Harvest\ETL\Factory;
 use Harvest\ETL\Factory as EtlFactory;
-use Drupal\dkan_harvest\Service\Factory as HarvestFactory;
-use Drupal\dkan_common\Service\JsonUtil;
-use Drupal\Component\Datetime\TimeInterface;
 
 /**
- * Base service class for dkan_harvest.
+ * Harvester.
  */
-class Harvest {
+class Harvester {
 
-  /**
-   * Factory.
-   *
-   * @var \Drupal\dkan_harvest\Service\Factory
-   */
-  protected $factory;
+  private $storeFactory;
 
-  /**
-   * JsonUtil.
-   *
-   * @var \Drupal\dkan_common\Service\JsonUtil
-   */
-  protected $jsonUtil;
-
-  /**
-   * Time.
-   *
-   * @var \Drupal\Component\Datetime\TimeInterface
-   */
-  protected $time;
-
-  /**
-   * Public.
-   */
-  public function __construct(HarvestFactory $factory, JsonUtil $jsonUtil, TimeInterface $time) {
-    $this->factory = $factory;
-    $this->jsonUtil = $jsonUtil;
-    $this->time = $time;
+  public function __construct(StoreFactoryInterface $storeFactory) {
+    $this->storeFactory = $storeFactory;
   }
 
   /**
@@ -49,12 +25,12 @@ class Harvest {
    *   All ids.
    */
   public function getAllHarvestIds() {
+    $store = $this->storeFactory->get("harvest_plans");
 
-    return array_keys(
-      $this->factory
-        ->getPlanStorage()
-        ->retrieveAll()
-    );
+    if ($store instanceof BulkRetriever) {
+      return array_keys($store->retrieveAll());
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetriever::class}");
   }
 
   /**
@@ -72,9 +48,10 @@ class Harvest {
   public function registerHarvest($plan) {
 
     $this->validateHarvestPlan($plan);
-    return $this->factory
-      ->getPlanStorage()
-      ->store(json_encode($plan), $plan->identifier);
+
+    $store = $this->storeFactory->get("harvest_plans");
+
+    return $store->store(json_encode($plan), $plan->identifier);
   }
 
   /**
@@ -106,13 +83,18 @@ class Harvest {
    * Public.
    */
   public function runHarvest($id) {
-    $result = $this->factory
-      ->getHarvester($id)
-      ->harvest();
-    // Store result of the run.
-    $this->factory
-      ->getStorage($id, "run")
-      ->store(json_encode($result), $this->time->getCurrentTime());
+    $plan_store = $this->storeFactory->get("harvest_plans");
+    $harvestPlan = json_decode($plan_store->retrieve($id));
+
+
+    $item_store = $this->storeFactory->get("harvest_{$id}_items");
+    $hash_store = $this->storeFactory->get("harvest_{$id}_hashes");
+    $harvester = new \Harvest\Harvester(new EtlFactory($harvestPlan, $item_store, $hash_store));
+
+    $result = $harvester->harvest();
+
+    $run_store = $this->storeFactory->get("harvest_{$id}_runs");
+    $run_store->store(json_encode($result), "{time()}");
 
     return $result;
   }
@@ -150,7 +132,7 @@ class Harvest {
    *   Throws exceptions instead of false it seems.
    */
   public function validateHarvestPlan($plan) {
-    return EtlFactory::validateHarvestPlan($plan);
+    return Factory::validateHarvestPlan($plan);
   }
 
 }
