@@ -4,9 +4,10 @@ namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Dkan\Datastore\Manager\IManager;
+use Dkan\Datastore\Importer;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
+use Procrastinator\Result;
 
 /**
  * Processes resource import.
@@ -33,15 +34,15 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
     $data = $this->sanitizeData($data);
 
-    $manager = $this->getManager($data['resource_id'], $data['file_path'], $data['import_config']);
+    $importer = $this->getImporter($data['resource_id'], $data['file_path'], $data['import_config']);
 
-    $status = $manager->import();
+    $status = $importer->runIt();
 
-    switch ($status) {
-      case IManager::DATA_IMPORT_IN_PROGRESS:
-      case IManager::DATA_IMPORT_PAUSED:
+    switch ($importer->getResult()->getStatus()) {
+      case Result::IN_PROGRESS:
+      case Result::STOPPED:
 
-        $data = $this->refreshQueueState($data, $manager);
+        $data = $this->refreshQueueState($data, $importer);
 
         // Requeue for next iteration.
         // queue is self calling and should keep going until complete.
@@ -51,12 +52,12 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
         break;
 
-      case IManager::DATA_IMPORT_ERROR:
+      case Result::ERROR:
 
+        // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
         $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
-        // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
 
-      case IManager::DATA_IMPORT_DONE:
+      case Result::DONE:
 
         $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
 
@@ -98,18 +99,18 @@ class DatastoreImportQueue extends QueueWorkerBase {
    *
    * @param array $data
    *   The state of the queue.
-   * @param \Dkan\Datastore\Manager\IManager $manager
-   *   Import manager.
+   * @param \Dkan\Datastore\Importer $importer
+   *   Datastore importer.
    *
    * @return array
    *   Data with updated state info.
    *
-   * @throws SuspendQueueException
+   * @throws \SuspendQueueException
    *   If the state is invalid.
    */
-  protected function refreshQueueState(array $data, IManager $manager): array {
+  protected function refreshQueueState(array $data, Importer $importer): array {
     // Update the state as it were.
-    $newRowsDone = $manager->numberOfRecordsImported();
+    $newRowsDone = $importer->numberOfRecordsImported();
 
     // Try to detect if import is stalled.
     // it shouldn't go backwards but just in case..
@@ -146,7 +147,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
   }
 
   /**
-   * Create a datastore manager object.
+   * Create a datastore importer object.
    *
    * @param mixed $resourceId
    *   Node ID for resource node.
@@ -155,24 +156,24 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @param array $importConfig
    *   Import configuration. @todo Document better.
    *
-   * @return \Dkan\Datastore\Manager\IManager
-   *   Datastore manager object.
+   * @return \Dkan\Datastore\Importer
+   *   Datastore importer object.
    */
-  protected function getManager($resourceId, string $filePath, array $importConfig) {
-    /** @var \Drupal\dkan_datastore\Manager\Builder $managerBuilder */
-    $managerBuilder = \Drupal::service('dkan_datastore.manager.builder');
+  protected function getImporter($resourceId, string $filePath, array $importConfig) {
+    /** @var \Drupal\dkan_datastore\Importer\Builder $importerBuilder */
+    $importerBuilder = \Drupal::service('dkan_datastore.importer.builder');
 
-    /** @var \Dkan\Datastore\Manager\IManager $manager */
-    $manager = $managerBuilder->setResource(new Resource($resourceId, $filePath))
+    /** @var \Dkan\Datastore\Importer $importer */
+    $importer = $importerBuilder->setResource(new Resource($resourceId, $filePath))
       ->build();
 
     // Forward config if applicable.
-    $manager->setConfigurableProperties($this->sanitizeImportConfig($importConfig));
+    $importer->setConfigurableProperties($this->sanitizeImportConfig($importConfig));
 
     // Set a slightly shorter time limit than cron run.
-    $manager->setImportTimelimit(55);
+    $importer->setImportTimelimit(55);
 
-    return $manager;
+    return $importer;
   }
 
   /**
@@ -187,7 +188,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @return array
    *   Sanitised properties.
    *
-   * @todo this kind of validation should be moved to datastore manager.
+   * @todo this kind of validation should be moved to datastore importer.
    */
   public function sanitizeImportConfig(array $importConfig): array {
     $sanitized = array_merge([

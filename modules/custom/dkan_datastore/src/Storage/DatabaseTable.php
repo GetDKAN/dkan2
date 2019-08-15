@@ -4,7 +4,6 @@ namespace Drupal\dkan_datastore\Storage;
 
 use Dkan\Datastore\Storage\StorageInterface;
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Resource;
 
 /**
@@ -12,7 +11,7 @@ use Dkan\Datastore\Resource;
  *
  * @see Dkan\Datastore\Storage\StorageInterface
  */
-class Database implements StorageInterface {
+class DatabaseTable implements StorageInterface {
 
   use \Dkan\Datastore\Storage\Database\SqlStorageTrait;
 
@@ -32,17 +31,8 @@ class Database implements StorageInterface {
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
    */
-  public function __construct(Connection $connection) {
+  public function __construct(Connection $connection, Resource $resource) {
     $this->connection = $connection;
-  }
-
-  /**
-   * Define a Resource object for the datastore.
-   *
-   * @param \Dkan\Datastore\Resource $resource
-   *   Datastore resource object.
-   */
-  public function setResource(Resource $resource) {
     $this->resource = $resource;
     if (!$this->schema && $this->tableExist($this->getTableName())) {
       $this->setSchemaFromTable();
@@ -94,12 +84,23 @@ class Database implements StorageInterface {
    * Store data.
    */
   public function store(string $data, string $id = NULL): string {
-    $this->checkRequirementsAndPrepare();
+    if (!$this->schema) {
+      throw new \Exception("Schema is required.");
+    }
+
+    if (!$this->tableExist($this->getTableName())) {
+      $this->tableCreate($this->getTableName(), $this->schema);
+    }
+
     $data = json_decode($data);
-    $insert = new Insert($this->getTableName());
-    $insert->fields(array_keys($this->schema['fields']));
-    $insert->values($data);
-    $this->insert($insert);
+
+    $q = db_insert($this->getTableName());
+    $q->fields(array_keys($this->schema['fields']));
+    foreach ($data as $values) {
+      $q->values($values);
+    }
+    $q->execute();
+
     return "SUCCESS";
   }
 
@@ -119,6 +120,13 @@ class Database implements StorageInterface {
       return $query->countQuery()->execute()->fetchField();
     }
     throw new \Exception("Table {$this->getTableName()} does not exist.");
+  }
+
+  public function getSummary() {
+    $columns = array_keys($this->schema['fields']);
+    $numOfColumns = count($columns);
+    $numOfRows = $this->count();
+    return new TableSummary($numOfColumns, $columns, $numOfRows);
   }
 
   /**
@@ -180,23 +188,6 @@ class Database implements StorageInterface {
   }
 
   /**
-   * Ensure $resource and $schema properties are present and table exists in db.
-   */
-  private function checkRequirementsAndPrepare() {
-    if (!$this->resource) {
-      throw new \Exception("Resource is required.");
-    }
-
-    if (!$this->schema) {
-      throw new \Exception("Schema is required.");
-    }
-
-    if (!$this->tableExist($this->getTableName())) {
-      $this->tableCreate($this->getTableName(), $this->schema);
-    }
-  }
-
-  /**
    * Get table schema.
    */
   private function getTableSchema($fields) {
@@ -230,20 +221,6 @@ class Database implements StorageInterface {
    */
   private function tableDrop($table_name) {
     $this->connection->schema()->dropTable($table_name);
-  }
-
-  /**
-   * Insert a new row of values into a table.
-   */
-  private function insert(Insert $query) {
-    if ($this->tableExist($query->tableName)) {
-      $q = db_insert($query->tableName);
-      $q->fields($query->fields);
-      foreach ($query->values as $values) {
-        $q->values($values);
-      }
-      $q->execute();
-    }
   }
 
 }
