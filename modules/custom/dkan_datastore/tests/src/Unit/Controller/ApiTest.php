@@ -4,11 +4,14 @@ namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Service\Datastore;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_datastore\Controller\Api;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\TypedData\TypedDataInterface;
+use Drupal\node\NodeInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Controller\Datastore
@@ -31,13 +34,70 @@ class DatastoreApiTest extends DkanTestBase {
   public function containerGet($serviceName) {
     switch ($serviceName) {
       case 'dkan_datastore.service':
-        $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
+        $mockEntityRepository = $this->mockEntityRepository(EntityRepository::class);
         $mockLogger = $this->createMock(LoggerChannelInterface::class);
         $mockConnection = $this->createMock(Connection::class);
-        return new Datastore($mockEntityTypeManager, $mockLogger, $mockConnection);
+        return new Datastore($mockEntityRepository, $mockLogger, $mockConnection);
     }
   }
 
+  private function mockEntityRepository() {
+    $mock = $this->getMockBuilder(EntityRepository::class)
+      ->setMethods(['loadEntityByUuid'])
+      ->disableOriginalConstructor()
+      ->getMock();
+
+    $node = $this->mockNodeInterface();
+
+    $mock->method('loadEntityByUuid')
+      ->willReturn($node);
+
+    return $mock;
+  }
+
+  private function mockNodeInterface() {
+    $mock = $this->getMockBuilder(NodeInterface::class)
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $node = $this->mockFieldItemListInterface();
+
+    $mock->method('get')
+      ->willReturn($node);
+
+    return $mock;
+  }
+
+  private function mockFieldItemListInterface() {
+    $mock = $this->getMockBuilder(FieldItemListInterface::class)
+      ->setMethods(['get'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $list = $this->mockTypedDataInterface();
+
+    $mock->method('get')
+      ->willReturn($list);
+
+    return $mock;
+  }
+
+  private function mockTypedDataInterface() {
+    $mock = $this->getMockBuilder(TypedDataInterface::class)
+      ->setMethods(['getValue'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
+    $data = [
+      'value' => json_encode(['data' => ['downloadURL' => 'http://google.com']]),
+    ];
+
+    $mock->method('getValue')
+      ->willReturn($data);
+
+    return $mock;
+  }
 
   /**
    * Tests Construct().
