@@ -44,7 +44,7 @@ class Docs implements ContainerInjectionInterface {
   /**
    * Drupal node dataset storage.
    *
-   * @var \Drupal\dkan_api\Storage\DrupalNodeDataset
+   * @var \Drupal\dkan_api\Storage\Data
    */
   protected $storage;
 

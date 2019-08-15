@@ -4,28 +4,27 @@ namespace Drupal\Tests\dkan_api\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_api\Storage\DrupalNodeDataset;
+use Drupal\dkan_data\Storage\Data;
 use Drupal\node\NodeStorageInterface;
 use Drupal\dkan_datastore\Manager\Helper;
-use Drupal\dkan_datastore\Manager\DeferredImportQueuer;
 use Dkan\Datastore\Resource;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 
 /**
- * Tests Drupal\dkan_api\Storage\DrupalNodeDataset.
+ * Tests Drupal\dkan_data\Storage\Data.
  *
- * @coversDefaultClass \Drupal\dkan_api\Storage\DrupalNodeDataset
+ * @coversDefaultClass \Drupal\dkan_data\Storage\Data
  * @group dkan_api
  */
-class DrupalNodeDatasetTest extends DkanTestBase {
+class DataTest extends DkanTestBase {
 
   /**
    * Tests __construct().
    */
   public function testConstruct() {
     $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->disableOriginalConstructor()
       ->getMock();
 
@@ -44,7 +43,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   public function testGetNodeStorage() {
 
     // Setup.
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
@@ -75,7 +74,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
   public function testGetType() {
 
     // Setup.
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->disableOriginalConstructor()
       ->setMethods(NULL)
       ->getMock();
@@ -93,7 +92,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testEnqueueDeferredImport() {
     // Setup.
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->setMethods(NULL)
       ->disableOriginalConstructor()
       ->getMock();
@@ -139,7 +138,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testEnqueueDeferredImportOnException() {
     // Setup.
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->setMethods(['getLogger'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -204,7 +203,7 @@ class DrupalNodeDatasetTest extends DkanTestBase {
    */
   public function testFilterHtml($input, $expected) {
     // Setup.
-    $mock = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mock = $this->getMockBuilder(Data::class)
       ->setMethods(
               [
                 'htmlPurifier',

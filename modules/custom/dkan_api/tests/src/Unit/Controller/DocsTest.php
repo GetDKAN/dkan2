@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_api\Unit\Controller;
 
 use Drupal\dkan_api\Controller\Docs;
-use Drupal\dkan_api\Storage\DrupalNodeDataset;
+use Drupal\dkan_api\Storage\Data;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_common\Service\Factory;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -34,7 +34,7 @@ class DocsTest extends DkanTestBase {
     $mockDkanFactory = $this->createMock(Factory::class);
     $mockModuleHandler = $this->createMock(ModuleHandlerInterface::class);
     $mockYmlSerializer = $this->createMock(SerializerInterface::class);
-    $mockStorage = $this->getMockBuilder(DrupalNodeDataset::class)
+    $mockStorage = $this->getMockBuilder(Data::class)
       ->disableOriginalConstructor()
       ->setMethods(
               [
