@@ -1,16 +1,19 @@
 <?php
 
-namespace Drupal\dkan_api\Storage;
+namespace Drupal\dkan_data\Storage;
 
-use Contracts\Storage;
+use Contracts\BulkRetrieverInterface;
+use Contracts\RemoverInterface;
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\RfcLogLevel;
 use HTMLPurifier;
 
 /**
- * DrupalNodeDataset.
+ * Data.
  */
-class DrupalNodeDataset implements Storage {
+class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
   /**
@@ -76,11 +79,11 @@ class DrupalNodeDataset implements Storage {
   public function retrieve(string $id): ?string {
 
     if (!isset($this->schemaId)) {
-      throw new \Exception("DrupalNodeDataset schemaId not set in retrieve().");
+      throw new \Exception("Data schemaId not set in retrieve().");
     }
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $node->field_json_metadata->value;
+      return $node->get('field_json_metadata')->get(0)->getValue();
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");
@@ -94,7 +97,7 @@ class DrupalNodeDataset implements Storage {
   public function retrieveAll(): array {
 
     if (!isset($this->schemaId)) {
-      throw new \Exception("DrupalNodeDataset schemaId not set in retrieveAll().");
+      throw new \Exception("Data schemaId not set in retrieveAll().");
     }
 
     $nodeStorage = $this->getNodeStorage();
@@ -106,8 +109,11 @@ class DrupalNodeDataset implements Storage {
 
     $all = [];
     foreach ($node_ids as $nid) {
+      /* @var $node \Drupal\node\NodeInterface */
       $node = $nodeStorage->load($nid);
-      $all[] = $node->field_json_metadata->value;
+      $fieldList = $node->get('field_json_metadata');
+      $field = $fieldList->get(0);
+      $all[] = $field->getValue();
     }
     return $all;
   }
@@ -218,13 +224,12 @@ class DrupalNodeDataset implements Storage {
    */
   protected function getNodeByUuid($uuid) {
 
-    $nodes = $this->getNodeStorage()
-      ->loadByProperties(
-              [
-                'type' => $this->getType(),
-                'uuid' => $uuid,
-              ]
-          );
+    $nodes = $this->getNodeStorage()->loadByProperties(
+      [
+        'type' => $this->getType(),
+        'uuid' => $uuid,
+      ]
+    );
     // Uuid should be universally unique and always return
     // a single node.
     return current($nodes);

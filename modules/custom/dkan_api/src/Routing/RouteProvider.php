@@ -4,11 +4,18 @@ namespace Drupal\dkan_api\Routing;
 
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
+use Drupal\Core\Config\ConfigFactoryInterface;
 
 /**
  * Class.
  */
 class RouteProvider {
+
+  private $configFactory;
+
+  public function __construct(ConfigFactoryInterface $configFactory) {
+    $this->configFactory = $configFactory;
+  }
 
   /**
    * Get property list.
@@ -20,7 +27,7 @@ class RouteProvider {
    * @Todo: consolidate with dkan_data ValueReferencer's getPropertyList.
    */
   public function getPropertyList() {
-    $list = \Drupal::config('dkan_data.settings')->get('property_list');
+    $list = $this->configFactory->get('dkan_data.settings')->get('property_list');
     return array_values(array_filter($list));
   }
 
@@ -68,11 +75,11 @@ class RouteProvider {
   /**
    * Private.
    */
-  protected function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
+  private function routeHelper(string $schema, string $path, string $httpVerb, string $datasetMethod) : Route {
     $route = new Route(
           $path,
           [
-            '_controller' => '\Drupal\dkan_api\Controller\Dataset::' . $datasetMethod,
+            '_controller' => '\Drupal\dkan_api\Controller\Api::' . $datasetMethod,
             'schema_id' => $schema,
           ]
       );
