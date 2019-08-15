@@ -3,10 +3,11 @@
 namespace Drupal\dkan_datastore\Service;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\dkan_datastore\Manager\Helper as DatastoreHelper;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
+use Drupal\Core\Database\Connection;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 
 /**
  * Main services for the datastore.
@@ -15,7 +16,8 @@ class Datastore {
 
   protected $entityTypeManager;
   protected $logger;
-  protected $helper;
+  private $storage;
+  private $connection;
 
   /**
    * Constructor for datastore service.
@@ -23,11 +25,11 @@ class Datastore {
   public function __construct(
             EntityTypeManagerInterface $entityTypeManager,
             LoggerChannelInterface $logger,
-            DatastoreHelper $helper
-    ) {
+            Connection $connection
+  ) {
     $this->entityTypeManager = $entityTypeManager;
-    $this->logger            = $logger;
-    $this->helper            = $helper;
+    $this->logger = $logger;
+    $this->connection = $connection;
   }
 
   /**
@@ -39,13 +41,11 @@ class Datastore {
    *   Send to the queue for later? Will import immediately if FALSE.
    */
   public function import($uuid, $deferred = FALSE) {
-    foreach ($this->getDistributionsFromUuid($uuid) as $distribution) {
-      if (!empty($deferred)) {
-        $this->queueImport($uuid, $this->getResource($distribution));
-      }
-      else {
-        $this->processImport($distribution);
-      }
+    if (!empty($deferred)) {
+      $this->queueImport($uuid, $this->getResource($uuid));
+    }
+    else {
+      $this->processImport($distribution);
     }
   }
 
@@ -72,8 +72,8 @@ class Datastore {
    *   Datastore resource object.
    */
   protected function queueImport($uuid, Resource $resource) {
-    /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
-    $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
+    /** @var \Drupal\dkan_datastore\Importer\DeferredImportQueuer $deferredImporter */
+    $deferredImporter = \Drupal::service('dkan_datastore.deferred_import_queuer');
     $queueId          = $deferredImporter->createDeferredResourceImport($uuid, $resource);
     $this->logger->notice("New queue (ID:{$queueId}) was created for `{$uuid}`");
   }
@@ -86,7 +86,7 @@ class Datastore {
    */
   protected function processImport($distribution) {
     $datastore = $this->getDatastore($this->getResource($distribution));
-    $datastore->import();
+    $datastore->runIt();
   }
 
   /**
@@ -128,9 +128,14 @@ class Datastore {
    */
   protected function getDatastore(Resource $resource) {
     /* @var  $builder  Builder */
-    $builder = \Drupal::service('dkan_datastore.manager.builder');
+    $builder = \Drupal::service('dkan_datastore.importer.builder');
     $builder->setResource($resource);
     return $builder->build();
+  }
+
+  public function getStorage(string $uuid): DatabaseTable {
+    $resource = $this->getResourceFromUuid($uuid);
+    return new DatabaseTable($this->connection, $resource);
   }
 
   /**
@@ -173,4 +178,91 @@ class Datastore {
     return $distributions;
   }
 
+  /**
+   * Given a Drupal node UUID, will create a resource object.
+   *
+   * @param string $uuid
+   *   The UUID for a resource node.
+   */
+  public function getResourceFromUuid($uuid): Resource {
+    $node = $this->loadNodeByUuid($uuid);
+    return $this->newResource($node->id(), $this->getResourceFilePathFromNode($node));
+  }
+
+  /**
+   * Given a resource node object, return the path to the resource file.
+   *
+   * @param \Drupal\node\Entity\Node $node
+   *   A Drupal node entity (should be of resource type).
+   *
+   * @return string
+   *   File path.
+   *
+   * @throws \Exception
+   *   Throws exception if validation of entity or data fails.
+   */
+  private function getResourceFilePathFromNode(Node $node): string {
+
+    $meta = $node->get('field_json_metadata')->get(0)->getValue();
+
+    if (!isset($meta['value'])) {
+      throw new \Exception("Entity for {$node->uuid()} does not have required field `field_json_metadata`.");
+    }
+
+    $metadata = json_decode($meta['value']);
+
+    if (!($metadata instanceof \stdClass)) {
+      throw new \Exception("Invalid metadata information or missing file information.");
+    }
+
+    if (isset($metadata->data->downloadURL)) {
+      return $metadata->data->downloadURL;
+    }
+
+    if (isset($metadata->distribution[0]->downloadURL)) {
+      return $metadata->distribution[0]->downloadURL;
+    }
+
+    throw new \Exception("Invalid metadata information or missing file information.");
+  }
+
+  /**
+   * Load a node object by its UUID.
+   *
+   * @param string $uuid
+   *   The UUID of the entity.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   A node object.
+   *
+   * @throws \Exception
+   *
+   * @todo probably remove or at least make private
+   */
+  public function loadNodeByUuid(string $uuid): EntityInterface {
+    $node = $this->entityTypeManager->loadEntityByUuid('node', $uuid);
+
+    if (!($node instanceof Node)) {
+      throw new \Exception("Node {$uuid} could not be loaded.");
+    }
+
+    return $node;
+  }
+
+  /**
+   * Build datastore importer with set params, otherwise defaults.
+   *
+   * @return \Dkan\Datastore\Importer
+   *   A built Importer object for the datastore.
+   */
+  public function getImporter(string $uuid): Importer {
+
+    $resource = $this->getResourceFromUuid;
+
+    return new Importer(
+      $resource,
+      $this->getDatabaseForResource($resource),
+      Csv::getParser()
+    );
+  }
 }

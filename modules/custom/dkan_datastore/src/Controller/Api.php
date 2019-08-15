@@ -2,8 +2,10 @@
 
 namespace Drupal\dkan_datastore\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_datastore\Service\Datastore;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class Api.
@@ -11,36 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @package Drupal\dkan_datastore\Controller
  * @codeCoverageIgnore
  */
-class Api extends ControllerBase {
-  use \Drupal\dkan_common\Util\RequestTrait;
-  /**
-   * Drupal service container.
-   *
-   * @var \Symfony\Component\DependencyInjection\ContainerInterface
-   */
-  protected $container;
-
-  /**
-   * Factory to generate various dkan classes.
-   *
-   * @var \Drupal\dkan_common\Service\Factory
-   */
-  protected $dkanFactory;
-
-  /**
-   * Drupal node dataset storage.
-   *
-   * @var \Drupal\dkan_api\Storage\Data
-   */
-  protected $storage;
-
-  /**
-   * Datastore manager builder.
-   *
-   * @var \Drupal\dkan_datastore\Manager\Builder
-   */
-  protected $managerBuilder;
-
+class Api implements ContainerInjectionInterface {
   /**
    * Datastore Service.
    *
@@ -51,22 +24,16 @@ class Api extends ControllerBase {
   /**
    * Api constructor.
    */
-  public function __construct(ContainerInterface $container) {
-    $this->container = $container;
-    $this->dkanFactory = $container->get('dkan.factory');
-    $this->storage = $container->get('dkan_api.storage.drupal_node_dataset');
-    $this->storage->setSchema('dataset');
-    $this->managerBuilder = $container->get('dkan_datastore.manager.builder');
-    $this->datastoreService = $container->get('dkan_datastore.service');
+  public function __construct(Datastore $datastoreService) {
+    $this->datastoreService = $datastoreService;
   }
 
   /**
-   * {@inheritdoc}
-   *
-   * @codeCoverageIgnore
+   * Create controller object from dependency injection container.
    */
   public static function create(ContainerInterface $container) {
-    return new static($container);
+    $datastoreService = $container->get('dkan_datastore.service');
+    return new Api($datastoreService);
   }
 
   /**
@@ -78,48 +45,22 @@ class Api extends ControllerBase {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function datasetWithSummary($uuid) {
+  public function summary($uuid) {
     try {
-      $dataset = $this->storage->retrieve($uuid);
-      $data = json_decode($dataset);
-
-      // For now, use the first resource's uuid or that of the dataset.
-      // @Todo: Address datasets with multiple resources once frontend is set.
-      if (isset($data->distribution[0]->identifier)) {
-        $dist_uuid = $data->distribution[0]->identifier;
-      }
-      else {
-        $dist_uuid = $uuid;
-      }
-      // Add columns and datastore_statistics to dataset.
-      $this->managerBuilder->setResourceFromUUid($dist_uuid);
-      $manager = $this->managerBuilder->build();
-      if ($manager) {
-        // @todo add getSchema to Schemed interface.
-        $schema = $manager->getStorage()->getSchema();
-        $headers = array_keys($schema['fields']);
-        $data->columns = $headers;
-        $data->datastore_statistics = [
-          'rows' => $manager->getStorage()->count(),
-          'columns' => count($headers),
-        ];
-      }
-
-      return $this->dkanFactory
-        ->newJsonResponse(
-          $data,
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+      $data = $this->datastoreService->getStorage($uuid)->getSummary();
+      return new JsonResponse(
+        $data,
+        200,
+        ["Access-Control-Allow-Origin" => "*"]
+      );  
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          (object) [
-            'message' => $e->getMessage(),
-          ],
-          404
-        );
+      return new JsonResponse(
+        (object) [
+          'message' => $e->getMessage(),
+        ],
+        404
+      );
     }
   }
 

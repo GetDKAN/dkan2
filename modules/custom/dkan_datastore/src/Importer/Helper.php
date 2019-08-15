@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_datastore\Importer;
 
-use Drupal\dkan_datastore\Storage\Database;
+use Drupal\dkan_datastore\Storage\DatabaseTable;
 
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityInterface;
@@ -11,7 +11,7 @@ use Dkan\Datastore\Resource;
 use Drupal\node\Entity\Node;
 
 /**
- * Factory class to instantiate classes that are needed to build the manager.
+ * Factory class to instantiate classes that are needed to build the importer.
  *
  * Those classes exist outside of service container.
  *
@@ -65,7 +65,7 @@ class Helper {
    * This will allow the object to provide the correct database table for
    * storage.
    *
-   * @return \Drupal\dkan_datastore\Storage\Database
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   A datastore database storage object.
    *
    * @codeCoverageIgnore
