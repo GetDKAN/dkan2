@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_datastore\Service;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
@@ -14,7 +14,7 @@ use Drupal\dkan_datastore\Storage\DatabaseTable;
  */
 class Datastore {
 
-  protected $entityTypeManager;
+  protected $entityRepository;
   protected $logger;
   private $storage;
   private $connection;
@@ -23,11 +23,11 @@ class Datastore {
    * Constructor for datastore service.
    */
   public function __construct(
-            EntityTypeManagerInterface $entityTypeManager,
+            EntityRepository $entityRepository,
             LoggerChannelInterface $logger,
             Connection $connection
   ) {
-    $this->entityTypeManager = $entityTypeManager;
+    $this->entityRepository = $entityRepository;
     $this->logger = $logger;
     $this->connection = $connection;
   }
@@ -185,8 +185,8 @@ class Datastore {
    *   The UUID for a resource node.
    */
   public function getResourceFromUuid($uuid): Resource {
-    $node = $this->loadNodeByUuid($uuid);
-    return $this->newResource($node->id(), $this->getResourceFilePathFromNode($node));
+    $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
+    return new Resource($node->id(), $this->getResourceFilePathFromNode($node));
   }
 
   /**
@@ -201,7 +201,7 @@ class Datastore {
    * @throws \Exception
    *   Throws exception if validation of entity or data fails.
    */
-  private function getResourceFilePathFromNode(Node $node): string {
+  private function getResourceFilePathFromNode(NodeInterface $node): string {
 
     $meta = $node->get('field_json_metadata')->get(0)->getValue();
 
@@ -240,7 +240,7 @@ class Datastore {
    * @todo probably remove or at least make private
    */
   public function loadNodeByUuid(string $uuid): EntityInterface {
-    $node = $this->entityTypeManager->loadEntityByUuid('node', $uuid);
+    $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
 
     if (!($node instanceof Node)) {
       throw new \Exception("Node {$uuid} could not be loaded.");
