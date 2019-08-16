@@ -52,10 +52,6 @@ paths:
       responses:
         201:
           description: Created
-        409:
-          description: Resource already exists
-        406:
-          description: Something went wrong
   /api/v1/dataset/{uuid}:
     get:
       summary: Get this dataset
@@ -66,8 +62,6 @@ paths:
       responses:
         200:
           description: Ok
-        404:
-          description: Resource not found
     put:
       summary: Replace a dataset
       tags:
@@ -79,12 +73,6 @@ paths:
       responses:
         200:
           description: Ok
-        201:
-          description: Created
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
     patch:
       summary: Update a dataset
       tags:
@@ -96,12 +84,6 @@ paths:
       responses:
         200:
           description: Ok
-        404:
-          description: Resource not found
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
     delete:
       summary: Delete a dataset
       tags:
@@ -144,10 +126,6 @@ paths:
       responses:
         201:
           description: Created
-        409:
-          description: Resource already exists
-        406:
-          description: Something went wrong
   /api/v1/{property}/{uuid}:
     get:
       summary: Get a property
@@ -159,8 +137,6 @@ paths:
       responses:
         200:
           description: Ok
-        404:
-          description: Resource not found
     put:
       summary: Replace a property
       tags:
@@ -173,12 +149,6 @@ paths:
       responses:
         200:
           description: Ok
-        201:
-          description: Created
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
     patch:
       summary: Update a property
       tags:
@@ -191,12 +161,6 @@ paths:
       responses:
         200:
           description: Ok
-        404:
-          description: Resource not found
-        409:
-          description: Identifier cannot be modified
-        406:
-          description: Something went wrong
     delete:
       summary: Delete a property
       tags:
@@ -220,5 +184,3 @@ paths:
       responses:
         200:
           description: Ok
-        500:
-          description: Invalid query string
