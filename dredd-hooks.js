@@ -31,12 +31,12 @@ hooks.before('/api/v1/dataset/{uuid} > Delete a dataset > 200 > application/json
 hooks.before('/api/v1/{property} > Create a property > 201 > application/json', (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
 });
-hooks.before('/api/v1/{property} > Replace a property > 200 > application/json', (transaction) => {
+hooks.before('/api/v1/{property}/{uuid} > Replace a property > 200 > application/json', (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
 });
-hooks.before('/api/v1/{property} > Update a property > 200 > application/json', (transaction) => {
+hooks.before('/api/v1/{property}/{uuid} > Update a property > 200 > application/json', (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
 });
-hooks.before('/api/v1/{property} > Delete a property > 200 > application/json', (transaction) => {
+hooks.before('/api/v1/{property}/{uuid} > Delete a property > 200 > application/json', (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
 });
