@@ -155,6 +155,10 @@ paths:
       responses:
         200:
           description: Dataset has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseMessage"
   /api/v1/{property}:
     get:
       summary: Get properties
