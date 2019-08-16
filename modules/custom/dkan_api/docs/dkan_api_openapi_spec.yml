@@ -220,7 +220,5 @@ paths:
       responses:
         200:
           description: Ok
-        # 500:
-        #   description: Querying a datastore that does not exist
         500:
           description: Invalid query string
