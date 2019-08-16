@@ -147,7 +147,7 @@ class Search {
    */
   protected function getDatasets() {
     /* @var \Drupal\dkan_api\Controller\Dataset $dataset_controller */
-    $dataset_controller = \Drupal::service('dkan_api.controller.dataset');
+    $dataset_controller = \Drupal::service('dkan_api.controller');
 
     // Engine returns array of json strings.
     return array_map(
