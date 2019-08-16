@@ -2,18 +2,14 @@
 
 namespace Drupal\dkan_datastore\Storage;
 
-use Contracts\Schemed;
-use Dkan\Datastore\Storage\Storage;
+use Dkan\Datastore\Storage\StorageInterface;
 use Drupal\Core\Database\Connection;
-use Dkan\Datastore\Storage\Database\Query\Insert;
 use Dkan\Datastore\Resource;
 
 /**
  * Database storage object.
- *
- * @see Dkan\Datastore\Storage\Storage
  */
-class Database implements Storage, Schemed {
+class Database implements StorageInterface {
   private $connection;
 
   /**
