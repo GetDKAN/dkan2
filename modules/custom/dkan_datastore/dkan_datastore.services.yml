@@ -23,7 +23,6 @@ services:
           - '@entity_type.manager'
           - '@dkan_datastore.logger_channel'
           - '@dkan_datastore.manager.helper'
-          - '@dkan.json_util'
   dkan_datastore.logger_channel:
     parent: logger.channel_base
     arguments: ['dkan_datastore']
