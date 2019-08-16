@@ -210,12 +210,7 @@ paths:
       tags:
         - Properties
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/property"
       responses:
         200:
           description: Ok
@@ -232,12 +227,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
+          - $ref: "#/components/parameters/property"
       requestBody:
         required: true
         content:
