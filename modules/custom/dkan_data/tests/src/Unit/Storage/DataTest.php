@@ -160,7 +160,7 @@ class DataTest extends TestCase {
       ->setMethods(['getValue'])
       ->getMockForAbstractClass();
 
-    $item->method('getValue')->willReturn(json_encode(["name" => "blah"]));
+    $item->method('getValue')->willReturn(['value' => json_encode(["name" => "blah"])]);
 
     return $item;
   }

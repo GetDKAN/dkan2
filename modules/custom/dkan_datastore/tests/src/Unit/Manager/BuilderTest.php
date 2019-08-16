@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
-use Dkan\Datastore\Manager;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Field\FieldItemList;
@@ -12,6 +11,7 @@ use Drupal\dkan_datastore\Manager\Builder;
 use Drupal\dkan_datastore\Manager\Helper;
 use Drupal\dkan_datastore\Storage\Database;
 use Drupal\node\Entity\Node;
+use Dkan\Datastore\Importer;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Manager\Builder
@@ -73,7 +73,7 @@ class BuilderTest extends DkanTestBase {
   public function testBuild() {
     $this->builder->setResource(new Resource("1", "blah.txt"));
     $manager = $this->builder->build();
-    $this->assertEquals(get_class($manager), Manager::class);
+    $this->assertEquals(get_class($manager), Importer::class);
   }
 
   /**
@@ -82,7 +82,7 @@ class BuilderTest extends DkanTestBase {
   public function testUuidBuil() {
     $this->builder->setResourceFromUUid("blah");
     $manager = $this->builder->build();
-    $this->assertEquals(get_class($manager), Manager::class);
+    $this->assertEquals(get_class($manager), Importer::class);
   }
 
 }

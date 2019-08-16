@@ -74,7 +74,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       $node = $nodeStorage->load($nid);
       $fieldList = $node->get('field_json_metadata');
       $field = $fieldList->get(0);
-      $all[] = $field->getValue();
+      $data = $field->getValue();
+      $all[] = $data['value'];
     }
     return $all;
   }
@@ -91,7 +92,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $node->get('field_json_metadata')->get(0)->getValue();
+      $value = $node->get('field_json_metadata')->get(0)->getValue();
+      return $value['value'];
     }
 
     throw new \Exception("No data with the identifier {$id} was found.");

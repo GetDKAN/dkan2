@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_datastore\Service;
 
+use Dkan\Datastore\Importer;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\dkan_datastore\Manager\Helper as DatastoreHelper;
 use Drupal\Core\Logger\LoggerChannelInterface;
@@ -86,7 +87,7 @@ class Datastore {
    */
   protected function processImport($distribution) {
     $datastore = $this->getDatastore($this->getResource($distribution));
-    $datastore->import();
+    $datastore;
   }
 
   /**
@@ -123,11 +124,11 @@ class Datastore {
    * @param Dkan\Datastore\Resource $resource
    *   Datastore resource object.
    *
-   * @return Dkan\Datastore\Manager
+   * @return Dkan\Datastore\Importer
    *   Datastore manager object.
    */
-  protected function getDatastore(Resource $resource) {
-    /* @var  $builder  Builder */
+  protected function getDatastore(Resource $resource): Importer {
+    /* @var  $builder  \Drupal\dkan_datastore\Manager\Builder */
     $builder = \Drupal::service('dkan_datastore.manager.builder');
     $builder->setResource($resource);
     return $builder->build();
