@@ -34,6 +34,37 @@ components:
       required: true
       schema:
         type: string
+  schemas:
+    responseMessage:
+      type: object
+      required:
+        - message
+    responseEndpointIdentifier:
+      type: object
+      required:
+        - endpoint
+        - identifier
+    # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
+    Dataset:
+      type: object
+      required:
+        - title
+        - description
+        - identifier
+        - accessLevel
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        identifier:
+          type: string
+        accessLevel:
+          type: string
+          enum:
+            - public
+            - restricted public
+            - non-public
 paths:
   /api/v1/dataset:
     get:
