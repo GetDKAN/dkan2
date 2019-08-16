@@ -2,16 +2,24 @@
 
 namespace Drupal\Tests\dkan_api\Unit\Controller;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\dkan_api\Controller\Api;
 use Drupal\dkan_data\Storage\Data;
 use Drupal\dkan_schema\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class ApiTest extends TestCase {
 
   private $request;
 
+  /**
+   *
+   */
   public function getContainer() {
 
     $container = $this->getMockBuilder(ContainerInterface::class)
@@ -27,15 +35,18 @@ class ApiTest extends TestCase {
           $this->equalTo('request_stack')
         )
       )
-      ->will($this->returnCallback(array($this, 'containerGet')));
+      ->will($this->returnCallback([$this, 'containerGet']));
 
     return $container;
   }
 
+  /**
+   *
+   */
   public function containerGet($input) {
     switch ($input) {
       case 'request_stack':
-        $stack = $this->getMockBuilder(\Symfony\Component\HttpFoundation\RequestStack::class)
+        $stack = $this->getMockBuilder(RequestStack::class)
           ->disableOriginalConstructor()
           ->setMethods(['getCurrentRequest'])
           ->getMock();
@@ -43,7 +54,8 @@ class ApiTest extends TestCase {
         $stack->method("getCurrentRequest")->willReturn($this->request);
 
         return $stack;
-        break;
+
+      break;
       case 'dkan_schema.schema_retriever':
         $schemaRetriever = $this->getMockBuilder(SchemaRetriever::class)
           ->disableOriginalConstructor()
@@ -52,7 +64,8 @@ class ApiTest extends TestCase {
 
         $schemaRetriever->method('retrieve')->willReturn("{ }");
         return $schemaRetriever;
-        break;
+
+      break;
       case 'dkan_data.storage':
         $storage = $this->getMockBuilder(Data::class)
           ->disableOriginalConstructor()
@@ -66,26 +79,36 @@ class ApiTest extends TestCase {
         $storage->method('remove')->willReturn(1);
 
         return $storage;
-        break;
+
+      break;
     }
   }
 
+  /**
+   *
+   */
   public function testGetAll() {
-    $this->request = new \Symfony\Component\HttpFoundation\Request();
+    $this->request = new Request();
     $controller = Api::create($this->getContainer());
     $response = $controller->getAll('dataset');
     $this->assertEquals('[{"name":"hello"},{"name":"hello"},{"name":"hello"}]', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testGet() {
-    $this->request = new \Symfony\Component\HttpFoundation\Request();
+    $this->request = new Request();
     $controller = Api::create($this->getContainer());
     $response = $controller->get(1, 'dataset');
     $this->assertEquals('{"name":"hello"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testPost() {
-    $request = $this->getMockBuilder(\Symfony\Component\HttpFoundation\Request::class)
+    $request = $this->getMockBuilder(Request::class)
       ->setMethods(['getContent', 'getRequestUri'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -101,8 +124,11 @@ class ApiTest extends TestCase {
     $this->assertEquals('{"endpoint":"http:\/\/blah\/1"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testPatch() {
-    $request = $this->getMockBuilder(\Symfony\Component\HttpFoundation\Request::class)
+    $request = $this->getMockBuilder(Request::class)
       ->setMethods(['getContent', 'getRequestUri'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -118,8 +144,11 @@ class ApiTest extends TestCase {
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testPut() {
-    $request = $this->getMockBuilder(\Symfony\Component\HttpFoundation\Request::class)
+    $request = $this->getMockBuilder(Request::class)
       ->setMethods(['getContent', 'getRequestUri'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -135,8 +164,11 @@ class ApiTest extends TestCase {
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":1}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testDelete() {
-    $this->request = new \Symfony\Component\HttpFoundation\Request();
+    $this->request = new Request();
 
     $controller = Api::create($this->getContainer());
     $response = $controller->delete(1, 'dataset');

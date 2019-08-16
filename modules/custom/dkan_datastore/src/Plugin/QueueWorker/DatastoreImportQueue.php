@@ -56,7 +56,6 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
         $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
         // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
-
       case Result::DONE:
 
         $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
@@ -105,7 +104,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @return array
    *   Data with updated state info.
    *
-   * @throws SuspendQueueException
+   * @throws \Drupal\Core\Queue\SuspendQueueException
    *   If the state is invalid.
    */
   protected function refreshQueueState(array $data, Importer $manager): array {

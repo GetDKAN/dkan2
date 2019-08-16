@@ -12,10 +12,16 @@ class RouteProvider {
 
   private $appRoot;
 
+  /**
+   *
+   */
   public function __construct(string $appRoot) {
     $this->appRoot = $appRoot;
   }
 
+  /**
+   *
+   */
   public function routes() {
     $routes = new RouteCollection();
 

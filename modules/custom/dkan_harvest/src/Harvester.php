@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_harvest;
 
+use Harvest\Harvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
@@ -15,6 +16,9 @@ class Harvester {
 
   private $storeFactory;
 
+  /**
+   *
+   */
   public function __construct(FactoryInterface $storeFactory) {
     $this->storeFactory = $storeFactory;
   }
@@ -133,12 +137,15 @@ class Harvester {
     return Factory::validateHarvestPlan($plan);
   }
 
+  /**
+   *
+   */
   private function getHarvester($id) {
     $plan_store = $this->storeFactory->getInstance("harvest_plans");
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
-    return new \Harvest\Harvester(new Factory($harvestPlan, $item_store, $hash_store));
+    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 
 }

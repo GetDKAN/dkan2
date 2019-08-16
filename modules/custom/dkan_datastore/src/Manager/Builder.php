@@ -4,7 +4,6 @@ namespace Drupal\dkan_datastore\Manager;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
-use Dkan\Datastore\Manager;
 use Dkan\Datastore\Resource;
 
 /**
