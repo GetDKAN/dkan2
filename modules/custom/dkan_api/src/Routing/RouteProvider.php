@@ -13,6 +13,9 @@ class RouteProvider {
 
   private $configFactory;
 
+  /**
+   *
+   */
   public function __construct(ConfigFactoryInterface $configFactory) {
     $this->configFactory = $configFactory;
   }

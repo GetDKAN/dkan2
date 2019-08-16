@@ -11,7 +11,6 @@ use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\DeferredImportQueuer;
-use Dkan\Datastore\Manager;
 use Drupal\dkan_datastore\Manager\Builder;
 
 /**

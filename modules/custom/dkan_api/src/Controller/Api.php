@@ -30,6 +30,9 @@ class Api implements ContainerInjectionInterface {
    */
   private $schemaRetriever;
 
+  /**
+   *
+   */
   public static function create(ContainerInterface $container) {
     return new Api($container->get('request_stack'),
       $container->get('dkan_schema.schema_retriever'),
@@ -37,12 +40,14 @@ class Api implements ContainerInjectionInterface {
     );
   }
 
+  /**
+   *
+   */
   public function __construct(RequestStack $requestStack, SchemaRetriever $schemaRetriever, Data $storage) {
     $this->requestStack = $requestStack;
     $this->schemaRetriever = $schemaRetriever;
     $this->storage = $storage;
   }
-
 
   /**
    * Get all.
@@ -130,7 +135,7 @@ class Api implements ContainerInjectionInterface {
             (object) ["endpoint" => "{$uri}/{$uuid}"], 409
         );
       }
-      catch(\Exception $e) {
+      catch (\Exception $e) {
 
       }
     }
@@ -181,7 +186,7 @@ class Api implements ContainerInjectionInterface {
         );
     }
     catch (\Exception $e) {
-      if($e->getMessage() == "No data with the identifier {$uuid} was found.") {
+      if ($e->getMessage() == "No data with the identifier {$uuid} was found.") {
         $engine->put($uuid, $data);
         $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 

@@ -67,9 +67,9 @@ class HelperTest extends DkanTestBase {
       ->getMock();
     $field->method('getValue')->willReturn(
           [
-    'value' =>
-          json_encode([])
-  ]
+            'value' =>
+            json_encode([]),
+          ]
       );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
@@ -113,9 +113,9 @@ class HelperTest extends DkanTestBase {
       ->getMock();
     $field->method('getValue')->willReturn(
           [
-    'value' =>
-          json_encode((object) [])
-  ]
+            'value' =>
+            json_encode((object) []),
+          ]
       );
 
     $field_list = $this->getMockBuilder(FieldItemList::class)
