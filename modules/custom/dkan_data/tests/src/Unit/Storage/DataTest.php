@@ -3,13 +3,14 @@
 namespace Drupal\Tests\dkan_api\Unit\Storage;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\dkan_common\Tests\DkanTestBase;
+use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\dkan_data\Storage\Data;
+use Drupal\node\NodeInterface;
+use Drupal\node\NodeStorage;
 use Drupal\node\NodeStorageInterface;
-use Drupal\dkan_datastore\Manager\Helper;
-use Dkan\Datastore\Resource;
-use Psr\Log\LoggerInterface;
-use Drupal\Core\Logger\RfcLogLevel;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests Drupal\dkan_data\Storage\Data.
@@ -17,229 +18,165 @@ use Drupal\Core\Logger\RfcLogLevel;
  * @coversDefaultClass \Drupal\dkan_data\Storage\Data
  * @group dkan_api
  */
-class DataTest extends DkanTestBase {
+class DataTest extends TestCase {
+  private $node;
 
-  /**
-   * Tests __construct().
-   */
-  public function testConstruct() {
-    $mockEntityTypeManager = $this->createMock(EntityTypeManagerInterface::class);
-    $mock = $this->getMockBuilder(Data::class)
-      ->disableOriginalConstructor()
-      ->getMock();
+  public function testRetrieveAll() {
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->setSchema('dataset');
+    $all = $store->retrieveAll();
 
-    // Assert.
-    $mock->__construct($mockEntityTypeManager);
+    $object = '{"name":"blah"}';
 
-    $this->assertSame(
-          $mockEntityTypeManager,
-          $this->readAttribute($mock, 'entityTypeManager')
-      );
+    $this->assertEquals([$object, $object], $all);
   }
 
-  /**
-   * Tests getNodeStorage.
-   */
-  public function testGetNodeStorage() {
+  public function testRetrieve() {
+    $this->node = $this->getNodeMock();
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->setSchema('dataset');
+    $obj = $store->retrieve(1);
 
-    // Setup.
-    $mock = $this->getMockBuilder(Data::class)
+    $object = '{"name":"blah"}';
+
+    $this->assertEquals($object, $obj);
+  }
+
+  public function testStoreExisting() {
+    $this->node = $this->getNodeMock();
+    $object = '{"name":"blah"}';
+
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->setSchema('dataset');
+    $id = $store->store($object, 1);
+
+    $this->assertEquals(1, $id);
+  }
+
+  public function testStoreNew() {
+    $this->node = null;
+    $object = '{"name":"blah"}';
+
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->setSchema('dataset');
+    $id = $store->store($object, 1);
+
+    $this->assertEquals(1, $id);
+  }
+
+  public function testRemove() {
+    $this->node = $this->getNodeMock();
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->setSchema('dataset');
+    $removed = $store->remove(1);
+
+    $this->assertEquals(null, $removed);
+  }
+
+  public function testRetrieveAllException() {
+    $this->expectExceptionMessage("Data schemaId not set in retrieveAll()");
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->retrieveAll();
+  }
+
+  public function testRetrieveException() {
+    $this->expectExceptionMessage("Data schemaId not set in retrieve()");
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->retrieve(1);
+  }
+
+  public function testStoreException() {
+    $this->expectExceptionMessage("Data schemaId not set in store()");
+    $object = '{"name":"blah"}';
+    $store = new Data($this->getEntityTypeManagerMock());
+    $store->store($object, 1);
+  }
+
+  private function getEntityTypeManagerMock() {
+    $entityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(NULL)
-      ->getMock();
-
-    $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
       ->setMethods(['getStorage'])
       ->getMockForAbstractClass();
 
-    $mockNodeStorage = $this->createMock(NodeStorageInterface::class);
+    $entityTypeManager->method('getStorage')
+      ->willReturn($this->getNodeStorageMock());
 
-    $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
-
-    // Expect.
-    $mockEntityTypeManager->expects($this->once())
-      ->method('getStorage')
-      ->with('node')
-      ->willReturn($mockNodeStorage);
-
-    // Assert.
-    $actual = $this->invokeProtectedMethod($mock, 'getNodeStorage');
-
-    $this->assertSame($mockNodeStorage, $actual);
+    return $entityTypeManager;
   }
 
-  /**
-   * Tests getType().
-   */
-  public function testGetType() {
-
-    // Setup.
-    $mock = $this->getMockBuilder(Data::class)
+  private function getNodeStorageMock() {
+    $nodeStorage = $this->getMockBuilder(NodeStorageInterface::class)
       ->disableOriginalConstructor()
-      ->setMethods(NULL)
-      ->getMock();
-
-    $expected = 'data';
-
-    // Assert.
-    $actual = $this->invokeProtectedMethod($mock, 'getType');
-
-    $this->assertEquals($expected, $actual);
-  }
-
-  /**
-   * Tests EnqueueDeferredImport().
-   */
-  public function testEnqueueDeferredImport() {
-    // Setup.
-    $mock = $this->getMockBuilder(Data::class)
-      ->setMethods(NULL)
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $mockBuilderHelper = $this->getMockBuilder(Helper::class)
-      ->setMethods(['newResourceFromEntity'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $mockDeferredImporter = $this->getMockBuilder(DeferredImportQueuer::class)
-      ->setMethods(['createDeferredResourceImport'])
-      ->disableOriginalConstructor()
-      ->getMock();
-    $this->setActualContainer(
-          [
-            'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
-            'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
-          ]
-      );
-
-    $mockResource = $this->createMock(Resource::class);
-    $uuid         = uniqid('foo');
-    $expected     = 42;
-
-    // Expect.
-    $mockBuilderHelper->expects($this->once())
-      ->method('newResourceFromEntity')
-      ->with($uuid)
-      ->willReturn($mockResource);
-
-    $mockDeferredImporter->expects($this->once())
-      ->method('createDeferredResourceImport')
-      ->with($uuid, $mockResource)
-      ->willReturn($expected);
-
-    // Assert.
-    $actual = $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
-    $this->assertEquals($expected, $actual);
-  }
-
-  /**
-   * Tests EnqueueDeferredImport().
-   */
-  public function testEnqueueDeferredImportOnException() {
-    // Setup.
-    $mock = $this->getMockBuilder(Data::class)
-      ->setMethods(['getLogger'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $mockBuilderHelper = $this->getMockBuilder(Helper::class)
-      ->setMethods(['newResourceFromEntity'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $mockDeferredImporter = $this->getMockBuilder(DeferredImportQueuer::class)
-      ->setMethods(['createDeferredResourceImport'])
-      ->disableOriginalConstructor()
-      ->getMock();
-
-    $this->setActualContainer(
-          [
-            'dkan_datastore.manager.datastore_manager_builder_helper' => $mockBuilderHelper,
-            'dkan_datastore.manager.deferred_import_queuer'    => $mockDeferredImporter,
-          ]
-      );
-
-    $mockLogger = $this->getMockBuilder(LoggerInterface::class)
-      ->setMethods(['log'])
-      ->disableOriginalConstructor()
+      ->setMethods(['getQuery', 'load', 'loadByProperties', 'create'])
       ->getMockForAbstractClass();
 
-    $uuid             = uniqid('foo');
-    $exceptionMessage = 'something went fubar.';
+    $nodeStorage->method('getQuery')
+      ->willReturn($this->getQueryMock());
 
-    // Expect.
-    $mockBuilderHelper->expects($this->once())
-      ->method('newResourceFromEntity')
-      ->with($uuid)
-      ->willThrowException(new \Exception($exceptionMessage));
+    $nodeStorage->method('load')
+      ->willReturn($this->getNodeMock());
 
-    $mockDeferredImporter->expects($this->never())
-      ->method('createDeferredResourceImport');
+    $nodeStorage->method('loadByProperties')
+      ->willReturn([$this->node]);
 
-    $mock->expects($this->once())
-      ->method('getLogger')
-      ->with('dkan_api')
-      ->willReturn($mockLogger);
+    $nodeStorage->method('create')
+      ->willReturn($this->getNodeMock());
 
-    $mockLogger->expects($this->exactly(2))
-      ->method('log')
-      ->withConsecutive(
-              [RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $exceptionMessage],
-              // Value of trace may change depending of debugger so just assume it's a string.
-              [RfcLogLevel::DEBUG, $this->isType('string')]
-          );
-
-    // Assert.
-    $this->invokeProtectedMethod($mock, 'enqueueDeferredImport', $uuid);
-
+    return $nodeStorage;
   }
 
-  /**
-   * @param mixed $input
-   * @param $expected
-   *
-   * @dataProvider dataTestFilterHtml
-   */
-  public function testFilterHtml($input, $expected) {
-    // Setup.
-    $mock = $this->getMockBuilder(Data::class)
-      ->setMethods(
-              [
-                'htmlPurifier',
-              ]
-          )
+  private function getNodeMock() {
+    $node = $this->getMockBuilder(NodeInterface::class)
       ->disableOriginalConstructor()
-      ->getMock();
+      ->setMethods(['get', 'uuid', 'save'])
+      ->getMockForAbstractClass();
 
-    // Expects.
-    $mock->expects($this->any())
-      ->method('htmlPurifier')
-      ->willReturn("purified");
+    $node->method('get')
+      ->willReturn($this->getFieldItemListMock());
 
-    // Asserts.
-    $actual = $this->invokeProtectedMethod($mock, 'filterHtml', $input);
-    $this->assertEquals($expected, $actual);
+    $node->method('uuid')
+      ->willReturn(1);
+
+    $node->method('save')
+      ->willReturn(1);
+
+    return $node;
   }
 
-  /**
-   * Public.
-   */
-  public function dataTestFilterHtml() {
-    return [
-      "Test with integer" => [
-        0, 0,
-      ],
-      "Test with string" => [
-        "Test string", "purified",
-      ],
-      "Test with array" => [
-      ["one" => "two", "three" => "four"], ["one" => "purified", "three" => "purified"],
-      ],
-      'Test with stdClass' => [
-        (object) ['key' => 'value'], (object) ['key' => "purified"],
-      ]
-      ];
+  private function getFieldItemListMock() {
+    $list = $this->getMockBuilder(FieldItemListInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+
+    $list->method('get')->willReturn($this->getFieldItemMock());
+
+    return $list;
+  }
+
+  private function getFieldItemMock() {
+    $item = $this->getMockBuilder(FieldItemInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['getValue'])
+      ->getMockForAbstractClass();
+
+    $item->method('getValue')->willReturn(json_encode(["name" => "blah"]));
+
+    return $item;
+  }
+
+  private function getQueryMock() {
+    $query = $this->getMockBuilder( QueryInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['condition', 'execute'])
+      ->getMockForAbstractClass();
+
+    $query->method('condition')
+      ->willReturn($query);
+
+    $query->method('execute')->willReturn([1, 2]);
+
+    return $query;
   }
 
 }

@@ -21,14 +21,14 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  private $entityTypeManager;
 
   /**
    * Represents the data type passed via the HTTP request url schema_id slug.
    *
    * @var string
    */
-  protected $schemaId;
+  private $schemaId;
 
   /**
    * Constructor.
@@ -44,49 +44,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * Sets the data type.
    *
    * @param string $schema_id
-   *   The HTTP request's schema or data type.
+   *   The data type.
    */
   public function setSchema($schema_id) {
     $this->schemaId = $schema_id;
-  }
-
-  /**
-   * Get the node storage.
-   *
-   * @return \Drupal\node\NodeStorageInterface
-   *   Node Storage.
-   */
-  protected function getNodeStorage() {
-    return $this->entityTypeManager
-      ->getStorage('node');
-  }
-
-  /**
-   * Get type.
-   *
-   * @return string
-   *   Type of node.
-   */
-  protected function getType() {
-    return 'data';
-  }
-
-  /**
-   * Inherited.
-   *
-   * {@inheritDoc}.
-   */
-  public function retrieve(string $id): ?string {
-
-    if (!isset($this->schemaId)) {
-      throw new \Exception("Data schemaId not set in retrieve().");
-    }
-
-    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
-      return $node->get('field_json_metadata')->get(0)->getValue();
-    }
-
-    throw new \Exception("No data with the identifier {$id} was found.");
   }
 
   /**
@@ -123,6 +84,24 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * {@inheritDoc}.
    */
+  public function retrieve(string $id): ?string {
+
+    if (!isset($this->schemaId)) {
+      throw new \Exception("Data schemaId not set in retrieve().");
+    }
+
+    if (FALSE !== ($node = $this->getNodeByUuid($id))) {
+      return $node->get('field_json_metadata')->get(0)->getValue();
+    }
+
+    throw new \Exception("No data with the identifier {$id} was found.");
+  }
+
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}.
+   */
   public function remove(string $id) {
 
     if (FALSE !== ($node = $this->getNodeByUuid($id))) {
@@ -138,7 +117,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   public function store(string $data, string $id = NULL): string {
 
     if (!isset($this->schemaId)) {
-      $this->schemaId = 'dataset';
+      throw new \Exception("Data schemaId not set in store().");
     }
 
     $data = json_decode($data);
@@ -166,22 +145,43 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
       $title = isset($data->title) ? $data->title : $data->name;
       $node = $this->getNodeStorage()
         ->create(
-                [
-                  'title' => $title,
-                  'type' => 'data',
-                  'uuid' => $id,
-                  'field_data_type' => $this->schemaId,
-                  'field_json_metadata' => json_encode($data),
-                ]
-            );
+          [
+            'title' => $title,
+            'type' => 'data',
+            'uuid' => $id,
+            'field_data_type' => $this->schemaId,
+            'field_json_metadata' => json_encode($data),
+          ]
+        );
       $node->save();
 
-      $uuid = $node->uuid();
-      $this->enqueueDeferredImport($uuid);
+      /*$uuid = $node->uuid();
+      $this->enqueueDeferredImport($uuid);*/
       return $node->uuid();
     }
 
     return NULL;
+  }
+
+  /**
+   * Get the node storage.
+   *
+   * @return \Drupal\node\NodeStorageInterface
+   *   Node Storage.
+   */
+  private function getNodeStorage() {
+    return $this->entityTypeManager
+      ->getStorage('node');
+  }
+
+  /**
+   * Get type.
+   *
+   * @return string
+   *   Type of node.
+   */
+  private function getType() {
+    return 'data';
   }
 
   /**
@@ -195,7 +195,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return int|bool
    *   New queue ID or false on failure
    */
-  protected function enqueueDeferredImport(string $uuid) {
+  private function enqueueDeferredImport(string $uuid) {
 
     try {
       /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
@@ -222,7 +222,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return \Drupal\node\Entity\Node|bool
    *   Returns false if no nodes match.
    */
-  protected function getNodeByUuid($uuid) {
+  private function getNodeByUuid($uuid) {
 
     $nodes = $this->getNodeStorage()->loadByProperties(
       [
@@ -244,7 +244,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    * @return mixed
    *   Filtered output.
    */
-  protected function filterHtml($input) {
+  private function filterHtml($input) {
     switch (gettype($input)) {
       case "string":
         return $this->htmlPurifier($input);
@@ -275,7 +275,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    *
    * @codeCoverageIgnore
    */
-  protected function htmlPurifier(string $input) {
+  private function htmlPurifier(string $input) {
     $filter = new HTMLPurifier();
     return $filter->purify($input);
   }
