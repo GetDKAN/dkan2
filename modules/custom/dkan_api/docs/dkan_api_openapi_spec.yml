@@ -20,6 +20,7 @@ components:
       required: true
       schema:
         type: string
+      example: "11111111-1111-4111-1111-111111111111"
     property:
       name: "property"
       in: path
@@ -107,6 +108,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Dataset'
+            example: {
+              "title": "Title for 111111",
+              "description": "Description for 111111",
+              "identifier": "11111111-1111-4111-1111-111111111111",
+              "accessLevel": "public",
+            }
       responses:
         201:
           description: Created
@@ -142,6 +149,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Dataset'
+            example: {
+              "title": "UPDATED Title for 111111",
+              "description": "UPDATED Description for 111111",
+              "identifier": "11111111-1111-4111-1111-111111111111",
+              "accessLevel": "public",
+            }
       responses:
         200:
           description: Ok
@@ -164,6 +177,11 @@ paths:
             schema:
               # Only a subset of Dataset schema
               type: object
+            example: {
+              "theme": [
+                "Some New Theme"
+              ]
+            }
       responses:
         200:
           description: Ok
