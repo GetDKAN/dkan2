@@ -123,11 +123,15 @@ class Api implements ContainerInjectionInterface {
     $params = json_decode($data, TRUE);
     if (isset($params['identifier'])) {
       $uuid = $params['identifier'];
-      $existing = $this->storage->retrieve($uuid);
-      if ($existing) {
+      try {
+        $this->storage->retrieve($uuid);
+
         return new JsonResponse(
             (object) ["endpoint" => "{$uri}/{$uuid}"], 409
         );
+      }
+      catch(\Exception $e) {
+
       }
     }
 
@@ -165,19 +169,29 @@ class Api implements ContainerInjectionInterface {
       return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
     }
 
-    $existing = $this->storage->retrieve($uuid);
-
     try {
+      $this->storage->retrieve($uuid);
       $engine->put($uuid, $data);
       $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
       // If a new resource is created, inform the user agent via 201 Created.
       return new JsonResponse(
           (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-          empty($existing) ? 201 : 200
+          200
         );
     }
     catch (\Exception $e) {
+      if($e->getMessage() == "No data with the identifier {$uuid} was found.") {
+        $engine->put($uuid, $data);
+        $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+
+        // If a new resource is created, inform the user agent via 201 Created.
+        return new JsonResponse(
+          (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
+          201
+        );
+      }
+
       return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
@@ -201,25 +215,29 @@ class Api implements ContainerInjectionInterface {
     $data = $this->requestStack->getCurrentRequest()->getContent();
 
     $obj = json_decode($data);
+
+    if (!$obj) {
+      return new JsonResponse((object) ["message" => "Invalid JSON"], 409);
+    }
+
     if (isset($obj->identifier) && $obj->identifier != $uuid) {
       return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
     }
 
-    $existing = $this->storage->retrieve($uuid);
-
-    if (!$existing) {
-      return new JsonResponse((object) ["message" => "Resource not found"], 404);
-    }
-
     try {
+      $this->storage->retrieve($uuid);
       $engine->patch($uuid, $data);
       $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
       return new JsonResponse(
-                (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
-            );
+          (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
+      );
     }
     catch (\Exception $e) {
-      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+      $status_code = 406;
+      if ($e->getMessage() == "No data with the identifier {$uuid} was found.") {
+        $status_code = 404;
+      }
+      return new JsonResponse((object) ["message" => $e->getMessage()], $status_code);
     }
   }
 

@@ -2,11 +2,12 @@
 
 namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
+use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Queue\QueueWorkerBase;
-use Dkan\Datastore\Manager\IManager;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
+use Procrastinator\Result;
 
 /**
  * Processes resource import.
@@ -38,8 +39,8 @@ class DatastoreImportQueue extends QueueWorkerBase {
     $status = $manager->import();
 
     switch ($status) {
-      case IManager::DATA_IMPORT_IN_PROGRESS:
-      case IManager::DATA_IMPORT_PAUSED:
+      case Result::IN_PROGRESS:
+      case Result::STOPPED:
 
         $data = $this->refreshQueueState($data, $manager);
 
@@ -51,12 +52,12 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
         break;
 
-      case IManager::DATA_IMPORT_ERROR:
+      case Result::ERROR:
 
         $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error.");
         // @TODO fall through to cleanup on error. maybe should not so we can inspect issues further?
 
-      case IManager::DATA_IMPORT_DONE:
+      case Result::DONE:
 
         $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
 
@@ -107,7 +108,7 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @throws SuspendQueueException
    *   If the state is invalid.
    */
-  protected function refreshQueueState(array $data, IManager $manager): array {
+  protected function refreshQueueState(array $data, Importer $manager): array {
     // Update the state as it were.
     $newRowsDone = $manager->numberOfRecordsImported();
 

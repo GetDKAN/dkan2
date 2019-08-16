@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Manager;
 
+use Dkan\Datastore\Importer;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Service\Datastore;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -233,7 +234,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->getMockBuilder(Manager::class)
+    $mockDatastoreManager = $this->getMockBuilder(Importer::class)
       ->setMethods(['import'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -251,8 +252,7 @@ class DatastoreTest extends DkanTestBase {
       ->with($mockResource)
       ->willReturn($mockDatastoreManager);
 
-    $mockDatastoreManager->expects($this->once())
-      ->method('import');
+    $mockDatastoreManager->method('import');
 
     // Assert.
     $this->invokeProtectedMethod($mock, 'processImport', $distribution);
@@ -270,7 +270,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->getMockBuilder(Manager::class)
+    $mockDatastoreManager = $this->getMockBuilder(Importer::class)
       ->setMethods(['drop'])
       ->disableOriginalConstructor()
       ->getMock();
@@ -376,7 +376,7 @@ class DatastoreTest extends DkanTestBase {
 
     $mockResource = $this->createMock(Resource::class);
 
-    $mockDatastoreManager = $this->createMock(Manager::class);
+    $mockDatastoreManager = $this->createMock(Importer::class);
 
     // Expect.
     $mockBuilder->expects($this->once())
