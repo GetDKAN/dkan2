@@ -12,15 +12,16 @@
         "drupal/config_update": "1.x-dev",
         "drupal/entity": "1.0.0-rc1",
         "fmizzell/json_form": "dev-8.x-1.x",
+	"getdkan/contracts": "~0.1.2",
         "getdkan/datastore" : "~0.0.2",
-        "getdkan/harvest": "~0.1.4",
+        "getdkan/harvest": "~0.2.3",
         "getdkan/json-schema-provider": "~0.0.2",
         "getdkan/sae" : "~1.0.1",
         "getdkan/sql-parser": "~1.0.1",
         "getdkan/lunr.php": "~1.0.0",
         "guzzlehttp/guzzle" : "6.3",
-        "ezyang/htmlpurifier" : "^4.11",
-        "oomphinc/composer-installers-extender": "^1.1"
+        "ezyang/htmlpurifier" : "~4.11",
+        "oomphinc/composer-installers-extender": "~1.1"
     },
     "require-dev": {
       "burdamagazinorg/thunder-dev-tools": "dev-master",
