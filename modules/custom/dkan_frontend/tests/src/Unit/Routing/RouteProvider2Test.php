@@ -1,10 +1,20 @@
 <?php
 
+/**
+ *
+ */use Drupal\dkan_frontend\Routing\RouteProvider;
+use PHPUnit\Framework\TestCase;
 
-class RouteProvider2Test extends \PHPUnit\Framework\TestCase {
+/**
+ *
+ */
+class RouteProvider2Test extends TestCase {
 
+  /**
+   *
+   */
   public function test() {
-    $provider = new \Drupal\dkan_frontend\Routing\RouteProvider(__DIR__ . "/../../../app");
+    $provider = new RouteProvider(__DIR__ . "/../../../app");
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
     $routes = $provider->routes();

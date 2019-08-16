@@ -1,14 +1,27 @@
 <?php
 
+/**
+ *
+ */use Drupal\dkan_api\Routing\RouteProvider;
+use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use PHPUnit\Framework\TestCase;
 
-class RouteProviderTest extends \PHPUnit\Framework\TestCase {
+/**
+ *
+ */
+class RouteProviderTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
-    $config_factory = $this->getMockBuilder(\Drupal\Core\Config\ConfigFactoryInterface::class)
+    $config_factory = $this->getMockBuilder(ConfigFactoryInterface::class)
       ->disableOriginalConstructor()
       ->setMethods(['get'])
       ->getMockForAbstractClass();
 
-    $config = $this->getMockBuilder(\Drupal\Core\Config\ImmutableConfig::class)
+    $config = $this->getMockBuilder(ImmutableConfig::class)
       ->disableOriginalConstructor()
       ->setMethods(['get'])
       ->getMock();
@@ -17,7 +30,7 @@ class RouteProviderTest extends \PHPUnit\Framework\TestCase {
 
     $config_factory->method('get')->willReturn($config);
 
-    $provider = new \Drupal\dkan_api\Routing\RouteProvider($config_factory);
+    $provider = new RouteProvider($config_factory);
 
     /* @var $routes \Symfony\Component\Routing\RouteCollection */
     $routes = $provider->routes();

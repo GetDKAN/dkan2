@@ -9,6 +9,9 @@ class Page {
 
   private $appRoot;
 
+  /**
+   *
+   */
   public function __construct(string $appRoot) {
     $this->appRoot = $appRoot;
   }

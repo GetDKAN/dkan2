@@ -208,6 +208,9 @@ class Api extends ControllerBase {
     }
   }
 
+  /**
+   *
+   */
   private function exceptionJsonResponse(\Exception $e) {
     return new JsonResponse(
       (object) [

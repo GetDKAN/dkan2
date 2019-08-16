@@ -64,8 +64,7 @@ class Docs implements ContainerInjectionInterface {
   public function __construct(
     ModuleHandlerInterface $moduleHandler,
     Data $storage
-  )
-  {
+  ) {
     $this->moduleHandler = $moduleHandler;
     $this->serializer = new Yaml();
     $this->storage = $storage;

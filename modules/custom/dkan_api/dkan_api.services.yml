@@ -9,4 +9,3 @@ services:
     class: \Drupal\dkan_api\Routing\RouteProvider
     arguments:
       - '@config.factory'
-
