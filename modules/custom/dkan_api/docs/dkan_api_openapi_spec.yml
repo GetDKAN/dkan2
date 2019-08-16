@@ -101,6 +101,12 @@ paths:
         - Dataset
       security:
         - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dataset'
       responses:
         201:
           description: Created
@@ -130,6 +136,12 @@ paths:
         - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dataset'
       responses:
         200:
           description: Ok
@@ -145,6 +157,13 @@ paths:
         - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              # Only a subset of Dataset schema
+              type: object
       responses:
         200:
           description: Ok
@@ -201,6 +220,12 @@ paths:
           required: true
           schema:
             type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
       responses:
         201:
           description: Created
@@ -232,6 +257,12 @@ paths:
       parameters:
         - $ref: "#/components/parameters/property"
         - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Property'
       responses:
         200:
           description: Ok
@@ -248,6 +279,13 @@ paths:
       parameters:
         - $ref: "#/components/parameters/property"
         - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              # Only a subset of Property schema
+              type: object
       responses:
         200:
           description: Ok
