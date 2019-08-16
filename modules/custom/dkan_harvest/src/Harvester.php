@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_harvest;
 
-use Harvest\Harvester;
+use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
@@ -145,7 +145,7 @@ class Harvester {
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
-    return new Harvester(new Factory($harvestPlan, $item_store, $hash_store));
+    return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 
 }
