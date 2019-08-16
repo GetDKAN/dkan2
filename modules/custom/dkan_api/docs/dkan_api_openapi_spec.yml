@@ -2,26 +2,11 @@ openapi: 3.0.1
 info:
   title: API Documentation
   version: Alpha
-    # description: Description goes here.
-    # license:
-    # name: Apache 2.0
-  # url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
   - name: Dataset
-      # description:
-      # externalDocs:
-      # description:
-    # url:
   - name: Properties
     description: organizations, resources, tags and themes.
-      # externalDocs:
-      # description:
-    # url:
   - name: SQL Query
-      # description:
-      # externalDocs:
-      # description:
-    # url:
 components:
   securitySchemes:
     basicAuth:
@@ -53,7 +38,6 @@ paths:
   /api/v1/dataset:
     get:
       summary: Get all datasets
-      # description:
       tags:
         - Dataset
       responses:
@@ -61,7 +45,6 @@ paths:
           description: Ok
     post:
       summary: Create a dataset
-      # description:
       tags:
         - Dataset
       security:
@@ -76,7 +59,6 @@ paths:
   /api/v1/dataset/{uuid}:
     get:
       summary: Get this dataset
-      # description:
       tags:
         - Dataset
       parameters:
@@ -88,7 +70,6 @@ paths:
           description: Resource not found
     put:
       summary: Replace a dataset
-      # description:
       tags:
         - Dataset
       security:
@@ -106,7 +87,6 @@ paths:
           description: Something went wrong
     patch:
       summary: Update a dataset
-      # description:
       tags:
         - Dataset
       security:
@@ -124,7 +104,6 @@ paths:
           description: Something went wrong
     delete:
       summary: Delete a dataset
-      # description:
       tags:
         - Dataset
       security:
@@ -137,7 +116,6 @@ paths:
   /api/v1/{property}:
     get:
       summary: Get properties
-      # description:
       tags:
         - Properties
       parameters:
@@ -152,7 +130,6 @@ paths:
           description: Ok
     post:
       summary: Create a property
-      # description:
       tags:
         - Properties
       security:
@@ -174,7 +151,6 @@ paths:
   /api/v1/{property}/{uuid}:
     get:
       summary: Get a property
-      # description:
       tags:
         - Properties
       parameters:
@@ -187,7 +163,6 @@ paths:
           description: Resource not found
     put:
       summary: Replace a property
-      # description:
       tags:
         - Properties
       security:
@@ -206,7 +181,6 @@ paths:
           description: Something went wrong
     patch:
       summary: Update a property
-      # description:
       tags:
         - Properties
       security:
@@ -225,7 +199,6 @@ paths:
           description: Something went wrong
     delete:
       summary: Delete a property
-      # description:
       tags:
         - Properties
       security:
