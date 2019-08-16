@@ -65,6 +65,13 @@ components:
             - public
             - restricted public
             - non-public
+    Property:
+      type: object
+      required:
+        - identifier
+      properties:
+        identifier:
+          type: string
 paths:
   /api/v1/dataset:
     get:
@@ -74,6 +81,12 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
     post:
       summary: Create a dataset
       tags:
@@ -83,6 +96,10 @@ paths:
       responses:
         201:
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
   /api/v1/dataset/{uuid}:
     get:
       summary: Get this dataset
@@ -93,6 +110,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
     put:
       summary: Replace a dataset
       tags:
@@ -104,6 +125,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
     patch:
       summary: Update a dataset
       tags:
@@ -115,6 +140,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
     delete:
       summary: Delete a dataset
       tags:
@@ -141,6 +170,12 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Property'
     post:
       summary: Create a property
       tags:
@@ -157,6 +192,10 @@ paths:
       responses:
         201:
           description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
   /api/v1/{property}/{uuid}:
     get:
       summary: Get a property
@@ -168,6 +207,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Property'
     put:
       summary: Replace a property
       tags:
@@ -180,6 +223,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
     patch:
       summary: Update a property
       tags:
@@ -192,6 +239,10 @@ paths:
       responses:
         200:
           description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
     delete:
       summary: Delete a property
       tags:
@@ -203,7 +254,11 @@ paths:
         - $ref: "#/components/parameters/uuid"
       responses:
         200:
-          description: Organization has been deleted
+          description: Property has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseMessage"
   /api/v1/sql/{query}:
     get:
       summary: Query resources in datastore
