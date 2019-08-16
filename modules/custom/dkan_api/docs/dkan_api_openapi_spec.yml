@@ -27,6 +27,28 @@ components:
     basicAuth:
       type: http
       scheme: basic
+  parameters:
+    uuid:
+      name: "uuid"
+      in: path
+      description: A uuid from a dataset or a property
+      required: true
+      schema:
+        type: string
+    property:
+      name: "property"
+      in: path
+      description: Property of a dataset
+      required: true
+      schema:
+        type: string
+    query:
+      name: "query"
+      in: path
+      description: SQL query
+      required: true
+      schema:
+        type: string
 paths:
   /api/v1/dataset:
     get:
@@ -58,12 +80,7 @@ paths:
       tags:
         - Dataset
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -77,12 +94,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -100,12 +112,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -123,12 +130,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "uuid"
-          in: "path"
-          description: "Dataset uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Dataset has been deleted
@@ -176,18 +178,8 @@ paths:
       tags:
         - Properties
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/property"
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -201,18 +193,8 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/property"
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -230,18 +212,8 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/property"
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Ok
@@ -259,18 +231,8 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: "property"
-          in: "path"
-          description: "Dataset property"
-          required: true
-          schema:
-            type: string
-        - name: "uuid"
-          in: "path"
-          description: "Organization uuid"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/property"
+        - $ref: "#/components/parameters/uuid"
       responses:
         200:
           description: Organization has been deleted
@@ -281,12 +243,7 @@ paths:
       tags:
         - SQL Query
       parameters:
-        - name: "query"
-          in: "path"
-          description: "SQL query"
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/query"
       responses:
         200:
           description: Ok
