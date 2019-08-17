@@ -89,10 +89,16 @@ class Api implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   *
+   */
   private function successResponse($message) {
     return new JsonResponse($message, 200, ["Access-Control-Allow-Origin" => "*"]);
   }
 
+  /**
+   *
+   */
   private function exceptionResponse(\Exception $e) {
     return new JsonResponse((object) ['message' => $e->getMessage()], 500);
   }
