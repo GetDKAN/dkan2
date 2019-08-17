@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\dkan_frontend\Controller\Page;
+use Drupal\dkan_frontend\Controller\Page as PageController;
 use Drupal\dkan_frontend\Page;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -52,7 +52,7 @@ class ControllerPageTest extends TestCase {
    *
    */
   public function test() {
-    $controller = Page::create($this->getContainer());
+    $controller = PageController::create($this->getContainer());
     /* @var $response \Symfony\Component\HttpFoundation\Response */
     $response = $controller->page('home');
     $this->assertEquals("<h1>Hello World!!!</h1>\n", $response->getContent());

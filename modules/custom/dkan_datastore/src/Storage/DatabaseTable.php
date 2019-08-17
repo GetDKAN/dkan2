@@ -40,31 +40,6 @@ class DatabaseTable implements StorageInterface {
   }
 
   /**
-   * Set the schema using the existing database table..
-   */
-  private function setSchemaFromTable() {
-    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
-    if (!empty($fields_info)) {
-      $fields = $this->getFieldsFromFieldsInfo($fields_info);
-      $this->setSchema($this->getTableSchema($fields));
-    }
-  }
-
-  /**
-   * Get field names from results of a DESCRIBE query.
-   *
-   * @param array $fields_info
-   *   Array containing thre results of a DESCRIBE query sent to db connection.
-   */
-  private function getFieldsFromFieldsInfo(array $fields_info) {
-    $fields = [];
-    foreach ($fields_info as $info) {
-      $fields[] = $info->Field;
-    }
-    return $fields;
-  }
-
-  /**
    * Method wrapper for retrieveAll..
    *
    * @todo Implement.
@@ -116,7 +91,7 @@ class DatabaseTable implements StorageInterface {
    */
   public function count(): int {
     if ($this->tableExist($this->getTableName())) {
-      $query = db_select($this->getTableName());
+      $query = $this->connection->select($this->getTableName());
       return $query->countQuery()->execute()->fetchField();
     }
     throw new \Exception("Table {$this->getTableName()} does not exist.");
@@ -127,21 +102,6 @@ class DatabaseTable implements StorageInterface {
     $numOfColumns = count($columns);
     $numOfRows = $this->count();
     return new TableSummary($numOfColumns, $columns, $numOfRows);
-  }
-
-  /**
-   * Get the full name of datastore db table.
-   *
-   * @return string
-   *   Table name.
-   */
-  private function getTableName() {
-    if ($this->resource) {
-      return "dkan_datastore_{$this->resource->getId()}";
-    }
-    else {
-      return "";
-    }
   }
 
   /**
@@ -187,6 +147,27 @@ class DatabaseTable implements StorageInterface {
     return $result;
   }
 
+  public function destroy() {
+    if ($this->tableExist($this->getTableName())) {
+      $this->tableDrop($this->getTableName());
+    }
+  }
+
+  /**
+   * Get the full name of datastore db table.
+   *
+   * @return string
+   *   Table name.
+   */
+  private function getTableName() {
+    if ($this->resource) {
+      return "dkan_datastore_{$this->resource->getId()}";
+    }
+    else {
+      return "";
+    }
+  }
+
   /**
    * Get table schema.
    */
@@ -213,7 +194,7 @@ class DatabaseTable implements StorageInterface {
    * Create a table given a name and schema.
    */
   private function tableCreate($table_name, $schema) {
-    db_create_table($table_name, $schema);
+    $this->connection->schema()->createTable($table_name, $schema);
   }
 
   /**
@@ -221,6 +202,31 @@ class DatabaseTable implements StorageInterface {
    */
   private function tableDrop($table_name) {
     $this->connection->schema()->dropTable($table_name);
+  }
+
+  /**
+   * Set the schema using the existing database table..
+   */
+  private function setSchemaFromTable() {
+    $fields_info = $this->connection->query("DESCRIBE `{$this->getTableName()}`")->fetchAll();
+    if (!empty($fields_info)) {
+      $fields = $this->getFieldsFromFieldsInfo($fields_info);
+      $this->setSchema($this->getTableSchema($fields));
+    }
+  }
+
+  /**
+   * Get field names from results of a DESCRIBE query.
+   *
+   * @param array $fields_info
+   *   Array containing thre results of a DESCRIBE query sent to db connection.
+   */
+  private function getFieldsFromFieldsInfo(array $fields_info) {
+    $fields = [];
+    foreach ($fields_info as $info) {
+      $fields[] = $info->Field;
+    }
+    return $fields;
   }
 
 }
