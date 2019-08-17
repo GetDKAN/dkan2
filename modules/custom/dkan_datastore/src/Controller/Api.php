@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class Api.
  *
  * @package Drupal\dkan_datastore\Controller
- * @codeCoverageIgnore
  */
 class Api implements ContainerInjectionInterface {
   /**
@@ -48,19 +47,10 @@ class Api implements ContainerInjectionInterface {
   public function summary($uuid) {
     try {
       $data = $this->datastoreService->getStorage($uuid)->getSummary();
-      return new JsonResponse(
-        $data,
-        200,
-        ["Access-Control-Allow-Origin" => "*"]
-      );  
+      return $this->successResponse($data);
     }
     catch (\Exception $e) {
-      return new JsonResponse(
-        (object) [
-          'message' => $e->getMessage(),
-        ],
-        404
-      );
+      return $this->exceptionResponse($e);
     }
   }
 
@@ -76,23 +66,10 @@ class Api implements ContainerInjectionInterface {
 
     try {
       $this->datastoreService->import($uuid, $deferred);
-
-      return $this->dkanFactory
-        ->newJsonResponse(
-          (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
-      // Assume always new even if this is a PUT?
-          200,
-          ["Access-Control-Allow-Origin" => "*"]
-        );
+      return $this->successResponse((object) ["identifier" => $uuid]);
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          (object) [
-            'message' => $e->getMessage(),
-          ],
-          500
-        );
+      return $this->exceptionResponse($e);
     }
   }
 
@@ -105,22 +82,19 @@ class Api implements ContainerInjectionInterface {
   public function delete($uuid) {
     try {
       $this->datastoreService->drop($uuid);
-      return $this->dkanFactory
-        ->newJsonResponse(
-              (object) ["endpoint" => $this->getCurrentRequestUri(), "identifier" => $uuid],
-              200,
-              ["Access-Control-Allow-Origin" => "*"]
-            );
+      return $this->successResponse((object) ["identifier" => $uuid]);
     }
     catch (\Exception $e) {
-      return $this->dkanFactory
-        ->newJsonResponse(
-          (object) [
-            'message' => $e->getMessage(),
-          ],
-          500
-        );
+      return $this->exceptionResponse($e);
     }
+  }
+
+  private function successResponse($message) {
+    return new JsonResponse($message, 200, ["Access-Control-Allow-Origin" => "*"]);
+  }
+
+  private function exceptionResponse(\Exception $e) {
+    return new JsonResponse((object) ['message' => $e->getMessage()], 500);
   }
 
 }

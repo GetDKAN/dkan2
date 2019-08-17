@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_frontend\Controller;
 
-use Drupal\dkan_frontend\Page;
+use Drupal\dkan_frontend\Page as PageBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -25,7 +25,7 @@ class Page implements ContainerInjectionInterface {
   /**
    *
    */
-  public function __construct(Page $pageBuilder) {
+  public function __construct(PageBuilder $pageBuilder) {
     $this->pageBuilder = $pageBuilder;
   }
 
