@@ -80,8 +80,7 @@ class Datastore {
    * @param object $distribution
    *   Metadata distribution object decoded from JSON. Must have an $identifier.
    */
-  private function processImport(string $uuid)
-  {
+  private function processImport(string $uuid) {
     $importer = $this->getImporter($uuid);
     $importer->runIt();
   }
@@ -95,11 +94,13 @@ class Datastore {
    * @return \Dkan\Datastore\Importer
    *   Importer.
    */
-  private function getImporter(string $uuid): Importer
-  {
+  private function getImporter(string $uuid): Importer {
     return new Importer($this->getResourceFromUuid($uuid), $this->getStorage($uuid), Csv::getParser());
   }
 
+  /**
+   *
+   */
   public function getStorage(string $uuid): DatabaseTable {
     $resource = $this->getResourceFromUuid($uuid);
     return new DatabaseTable($this->connection, $resource);
@@ -111,8 +112,7 @@ class Datastore {
    * @param string $uuid
    *   The UUID for a resource node.
    */
-  public function getResourceFromUuid(string $uuid): Resource
-  {
+  public function getResourceFromUuid(string $uuid): Resource {
     $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
     return new Resource($node->id(), $this->getResourceFilePathFromNode($node));
   }
@@ -153,4 +153,5 @@ class Datastore {
 
     throw new \Exception("Invalid metadata information or missing file information.");
   }
+
 }

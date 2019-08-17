@@ -97,6 +97,9 @@ class DatabaseTable implements StorageInterface {
     throw new \Exception("Table {$this->getTableName()} does not exist.");
   }
 
+  /**
+   *
+   */
   public function getSummary() {
     $columns = array_keys($this->schema['fields']);
     $numOfColumns = count($columns);
@@ -147,6 +150,9 @@ class DatabaseTable implements StorageInterface {
     return $result;
   }
 
+  /**
+   *
+   */
   public function destroy() {
     if ($this->tableExist($this->getTableName())) {
       $this->tableDrop($this->getTableName());
