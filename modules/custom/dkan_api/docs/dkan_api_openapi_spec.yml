@@ -334,3 +334,120 @@ paths:
                 type: array
                 items:
                   type: object
+  /api/v1/harvest:
+    get:
+      summary: Get all harvest identifiers
+      tags:
+        - Harvest
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+    post:
+      summary: Register a new harvest
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
+  /api/v1/harvest/info/{id}:
+    get:
+      summary: List previous runs for a harvest id
+      tags:
+        - Harvest
+      parameters:
+        - name: id
+          in: path
+          description: Harvest identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+  /api/v1/harvest/info/{id}/{run_id}:
+    get:
+      summary: Information about a specific previous harvest run
+      tags:
+        - Harvest
+      parameters:
+        - name: id
+          in: path
+          description: Harvest identifier
+          required: true
+          schema:
+            type: string
+        - name: run_id
+          in: path
+          description: Harvest run identifier
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/harvest/run/{id}:
+    put:
+      summary: Runs a harvest
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      parameters:
+        - name: id
+          in: path
+          description: Harvest identifier
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                  - result
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
+                  result:
+                    type: string
