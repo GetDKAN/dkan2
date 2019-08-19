@@ -134,15 +134,24 @@ class Docs implements ContainerInjectionInterface {
           ]
       );
     // Remove GET dataset collection endpoint as well as property-related ones.
+    // @TODO: consider flipping the logic and switch to a function which would
+    //   keep only specific paths in an array.
     $spec = $this->removeSpecPaths(
           $spec, [
             '/api/v1/dataset',
             '/api/v1/{property}',
             '/api/v1/{property}/{uuid}',
+            '/api/v1/harvest',
+            '/api/v1/harvest/info/{id}',
+            '/api/v1/harvest/info/{id}/{run_id}',
+            '/api/v1/docs',
+            '/api/v1/docs/{uuid}',
+            '/api/v1/datastore',
+            '/api/v1/datastore/{uuid}',
           ]
       );
     // Remove the security schemes.
-    unset($spec['components']);
+    unset($spec['components']['securitySchemes']);
     // Remove required parameters, since now part of path.
     unset($spec['paths']['/api/v1/sql/{query}']['get']['parameters']);
     unset($spec['paths']['/api/v1/dataset/{uuid}']['get']['parameters']);
