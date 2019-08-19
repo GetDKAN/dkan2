@@ -13,10 +13,10 @@ components:
       type: http
       scheme: basic
   parameters:
-    uuid:
+    datasetUuid:
       name: "uuid"
       in: path
-      description: A uuid from a dataset or a property
+      description: A dataset uuid
       required: true
       schema:
         type: string
@@ -28,10 +28,38 @@ components:
       required: true
       schema:
         type: string
+    propertyUuid:
+      name: "uuid"
+      in: path
+      description: A property uuid
+      required: true
+      schema:
+        type: string
     query:
       name: "query"
       in: path
       description: SQL query
+      required: true
+      schema:
+        type: string
+    datastoreUuid:
+      name: "uuid"
+      in: path
+      description: A datastore uuid
+      required: true
+      schema:
+        type: string
+    harvestId:
+      name: "id"
+      in: path
+      description: A harvest identifier
+      required: true
+      schema:
+        type: string
+    harvestRunId:
+      name: "run_id"
+      in: path
+      description: A harvest run identifier
       required: true
       schema:
         type: string
@@ -127,7 +155,7 @@ paths:
       tags:
         - Dataset
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datasetUuid"
       responses:
         200:
           description: Ok
@@ -142,7 +170,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datasetUuid"
       requestBody:
         required: true
         content:
@@ -169,7 +197,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datasetUuid"
       requestBody:
         required: true
         content:
@@ -196,7 +224,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datasetUuid"
       responses:
         200:
           description: Dataset has been deleted
@@ -248,7 +276,7 @@ paths:
         - Properties
       parameters:
         - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/propertyUuid"
       responses:
         200:
           description: Ok
@@ -264,7 +292,7 @@ paths:
         - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/propertyUuid"
       requestBody:
         required: true
         content:
@@ -286,7 +314,7 @@ paths:
         - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/propertyUuid"
       requestBody:
         required: true
         content:
@@ -309,7 +337,7 @@ paths:
         - basicAuth: []
       parameters:
         - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/propertyUuid"
       responses:
         200:
           description: Property has been deleted
@@ -373,12 +401,7 @@ paths:
       tags:
         - Harvest
       parameters:
-        - name: id
-          in: path
-          description: Harvest identifier
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/harvestId"
       responses:
         200:
           description: Ok
@@ -394,18 +417,8 @@ paths:
       tags:
         - Harvest
       parameters:
-        - name: id
-          in: path
-          description: Harvest identifier
-          required: true
-          schema:
-            type: string
-        - name: run_id
-          in: path
-          description: Harvest run identifier
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/harvestId"
+        - $ref: "#/components/parameters/harvestRunId"
       responses:
         200:
           description: Ok
@@ -421,12 +434,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - name: id
-          in: path
-          description: Harvest identifier
-          required: true
-          schema:
-            type: string
+        - $ref: "#/components/parameters/harvestId"
       requestBody:
         required: true
         content:
@@ -457,7 +465,7 @@ paths:
       tags:
         - Datastore
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datastoreUuid"
       responses:
         200:
           description: Ok
@@ -474,7 +482,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datastoreUuid"
       responses:
         200:
           description: Dataset has been deleted
@@ -490,7 +498,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datastoreUuid"
       requestBody:
         required: true
         content:
@@ -512,7 +520,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datastoreUuid"
       requestBody:
         required: true
         content:
@@ -544,7 +552,7 @@ paths:
       tags:
         - Documentation
       parameters:
-        - $ref: "#/components/parameters/uuid"
+        - $ref: "#/components/parameters/datasetUuid"
       responses:
         200:
           description: Ok
