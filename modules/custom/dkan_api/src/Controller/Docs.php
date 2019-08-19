@@ -134,8 +134,7 @@ class Docs implements ContainerInjectionInterface {
           ]
       );
     // Remove GET dataset collection endpoint as well as property-related ones.
-    // @TODO: consider flipping the logic and switch to a function which would
-    //   keep only specific paths in an array.
+    // @TODO: consider flipping the logic, keeping array of paths interested in.
     $spec = $this->removeSpecPaths(
           $spec, [
             '/api/v1/dataset',
