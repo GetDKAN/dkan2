@@ -76,3 +76,7 @@ jobs:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
       - store_test_results:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/videos
+      - run:
+          name: Run dredd tests
+          command: |
+            dktl dkan:test-dredd
