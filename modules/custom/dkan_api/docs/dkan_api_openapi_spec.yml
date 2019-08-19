@@ -23,6 +23,7 @@ components:
       required: true
       schema:
         type: string
+      example: keyword
     propertyUuid:
       name: "uuid"
       in: path
@@ -30,6 +31,7 @@ components:
       required: true
       schema:
         type: string
+      example: "PROPERTY-UUID"
     query:
       name: "query"
       in: path
@@ -37,6 +39,7 @@ components:
       required: true
       schema:
         type: string
+      example: "[SELECT * FROM DATASTORE-UUID];"
     datastoreUuid:
       name: "uuid"
       in: path
@@ -44,6 +47,7 @@ components:
       required: true
       schema:
         type: string
+      example: "DATASTORE-UUID"
     harvestId:
       name: "id"
       in: path
@@ -51,6 +55,7 @@ components:
       required: true
       schema:
         type: string
+      example: "HARVEST-ID"
     harvestRunId:
       name: "run_id"
       in: path
@@ -58,6 +63,7 @@ components:
       required: true
       schema:
         type: string
+      example: "HARVEST-RUN-ID"
   schemas:
     # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
     Dataset:
@@ -135,7 +141,13 @@ paths:
       tags:
         - Dataset
       parameters:
-        - $ref: "#/components/parameters/datasetUuid"
+        - name: "uuid"
+          in: path
+          description: A dataset uuid
+          required: true
+          schema:
+            type: string
+          example: "c9e2d352-e24c-4051-9158-f48127aa5692"
       responses:
         200:
           description: Ok
@@ -633,7 +645,13 @@ paths:
       tags:
         - Documentation
       parameters:
-        - $ref: "#/components/parameters/datasetUuid"
+        - name: "uuid"
+          in: path
+          description: A dataset uuid
+          required: true
+          schema:
+            type: string
+          example: "c9e2d352-e24c-4051-9158-f48127aa5692"
       responses:
         200:
           description: Ok
