@@ -526,3 +526,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/responseEndpointIdentifier"
+  /api/v1/docs:
+    get:
+      summary: Complete json documentation
+      tags:
+        - Documentation
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/v1/docs/{uuid}:
+    get:
+      summary: Dataset-specific json documentation
+      tags:
+        - Documentation
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
