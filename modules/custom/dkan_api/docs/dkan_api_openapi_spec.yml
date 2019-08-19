@@ -9,15 +9,15 @@ components:
       scheme: basic
   parameters:
     datasetUuid:
-      name: "uuid"
+      name: uuid
       in: path
       description: A dataset uuid
       required: true
       schema:
         type: string
-      example: "11111111-1111-4111-1111-111111111111"
+      example: 11111111-1111-4111-1111-111111111111
     property:
-      name: "property"
+      name: property
       in: path
       description: Property of a dataset
       required: true
@@ -25,45 +25,45 @@ components:
         type: string
       example: keyword
     propertyUuid:
-      name: "uuid"
+      name: uuid
       in: path
       description: A property uuid
       required: true
       schema:
         type: string
-      example: "PROPERTY-UUID"
+      example: PROPERTY-UUID
     query:
-      name: "query"
+      name: query
       in: path
       description: SQL query
       required: true
       schema:
         type: string
-      example: "[SELECT * FROM DATASTORE-UUID];"
+      example: '[SELECT * FROM DATASTORE-UUID];'
     datastoreUuid:
-      name: "uuid"
+      name: uuid
       in: path
       description: A datastore uuid
       required: true
       schema:
         type: string
-      example: "DATASTORE-UUID"
+      example: DATASTORE-UUID
     harvestId:
-      name: "id"
+      name: id
       in: path
       description: A harvest identifier
       required: true
       schema:
         type: string
-      example: "HARVEST-ID"
+      example: HARVEST-ID
     harvestRunId:
-      name: "run_id"
+      name: run_id
       in: path
       description: A harvest run identifier
       required: true
       schema:
         type: string
-      example: "HARVEST-RUN-ID"
+      example: HARVEST-RUN-ID
   schemas:
     # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
     Dataset:
@@ -93,7 +93,7 @@ paths:
       tags:
         - Dataset
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -114,14 +114,12 @@ paths:
             schema:
               $ref: '#/components/schemas/Dataset'
             example:
-              {
-                "title": "UPDATED Title for 111111",
-                "description": "UPDATED Description for 111111",
-                "identifier": "11111111-1111-4111-1111-111111111111",
-                "accessLevel": "public"
-              }
+              title: UPDATED Title for 111111
+              description: UPDATED Description for 111111
+              identifier: 11111111-1111-4111-1111-111111111111
+              accessLevel: public
       responses:
-        201:
+        '201':
           description: Created
           content:
             application/json:
@@ -141,15 +139,15 @@ paths:
       tags:
         - Dataset
       parameters:
-        - name: "uuid"
+        - name: uuid
           in: path
           description: A dataset uuid
           required: true
           schema:
             type: string
-          example: "c9e2d352-e24c-4051-9158-f48127aa5692"
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -162,7 +160,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datasetUuid"
+        - $ref: '#/components/parameters/datasetUuid'
       requestBody:
         required: true
         content:
@@ -170,14 +168,12 @@ paths:
             schema:
               $ref: '#/components/schemas/Dataset'
             example:
-              {
-                "title": "UPDATED Title for 111111",
-                "description": "UPDATED Description for 111111",
-                "identifier": "11111111-1111-4111-1111-111111111111",
-                "accessLevel": "public"
-              }
+              title: UPDATED Title for 111111
+              description: UPDATED Description for 111111
+              identifier: 11111111-1111-4111-1111-111111111111
+              accessLevel: public
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -198,7 +194,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datasetUuid"
+        - $ref: '#/components/parameters/datasetUuid'
       requestBody:
         required: true
         content:
@@ -207,13 +203,10 @@ paths:
               # Only a subset of Dataset schema
               type: object
             example:
-              {
-                "theme": [
-                  "Some New Theme"
-                ]
-              }
+              theme:
+                - Some New Theme
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -234,9 +227,9 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datasetUuid"
+        - $ref: '#/components/parameters/datasetUuid'
       responses:
-        200:
+        '200':
           description: Dataset has been deleted
           content:
             application/json:
@@ -253,9 +246,9 @@ paths:
       tags:
         - Properties
       parameters:
-        - $ref: "#/components/parameters/property"
+        - $ref: '#/components/parameters/property'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -275,7 +268,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/property"
+        - $ref: '#/components/parameters/property'
       requestBody:
         required: true
         content:
@@ -288,7 +281,7 @@ paths:
                 identifier:
                   type: string
       responses:
-        201:
+        '201':
           description: Created
           content:
             application/json:
@@ -308,10 +301,10 @@ paths:
       tags:
         - Properties
       parameters:
-        - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/propertyUuid"
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -329,8 +322,8 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/propertyUuid"
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       requestBody:
         required: true
         content:
@@ -343,7 +336,7 @@ paths:
                 identifier:
                   type: string
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -364,8 +357,8 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/propertyUuid"
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       requestBody:
         required: true
         content:
@@ -374,7 +367,7 @@ paths:
               # Only a subset of Property schema
               type: object
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -395,10 +388,10 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/property"
-        - $ref: "#/components/parameters/propertyUuid"
+        - $ref: '#/components/parameters/property'
+        - $ref: '#/components/parameters/propertyUuid'
       responses:
-        200:
+        '200':
           description: Property has been deleted
           content:
             application/json:
@@ -416,9 +409,9 @@ paths:
       tags:
         - SQL Query
       parameters:
-        - $ref: "#/components/parameters/query"
+        - $ref: '#/components/parameters/query'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -432,7 +425,7 @@ paths:
       tags:
         - Harvest
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -453,7 +446,7 @@ paths:
             schema:
               type: object
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -473,9 +466,9 @@ paths:
       tags:
         - Harvest
       parameters:
-        - $ref: "#/components/parameters/harvestId"
+        - $ref: '#/components/parameters/harvestId'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -489,10 +482,10 @@ paths:
       tags:
         - Harvest
       parameters:
-        - $ref: "#/components/parameters/harvestId"
-        - $ref: "#/components/parameters/harvestRunId"
+        - $ref: '#/components/parameters/harvestId'
+        - $ref: '#/components/parameters/harvestRunId'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -506,7 +499,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/harvestId"
+        - $ref: '#/components/parameters/harvestId'
       requestBody:
         required: true
         content:
@@ -514,7 +507,7 @@ paths:
             schema:
               type: object
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -537,9 +530,9 @@ paths:
       tags:
         - Datastore
       parameters:
-        - $ref: "#/components/parameters/datastoreUuid"
+        - $ref: '#/components/parameters/datastoreUuid'
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -554,9 +547,9 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datastoreUuid"
+        - $ref: '#/components/parameters/datastoreUuid'
       responses:
-        200:
+        '200':
           description: Dataset has been deleted
           content:
             application/json:
@@ -575,7 +568,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datastoreUuid"
+        - $ref: '#/components/parameters/datastoreUuid'
       requestBody:
         required: true
         content:
@@ -583,7 +576,7 @@ paths:
             schema:
               type: object
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -605,7 +598,7 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: "#/components/parameters/datastoreUuid"
+        - $ref: '#/components/parameters/datastoreUuid'
       requestBody:
         required: true
         content:
@@ -613,7 +606,7 @@ paths:
             schema:
               type: object
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -633,7 +626,7 @@ paths:
       tags:
         - Documentation
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
@@ -645,15 +638,15 @@ paths:
       tags:
         - Documentation
       parameters:
-        - name: "uuid"
+        - name: uuid
           in: path
           description: A dataset uuid
           required: true
           schema:
             type: string
-          example: "c9e2d352-e24c-4051-9158-f48127aa5692"
+          example: c9e2d352-e24c-4051-9158-f48127aa5692
       responses:
-        200:
+        '200':
           description: Ok
           content:
             application/json:
