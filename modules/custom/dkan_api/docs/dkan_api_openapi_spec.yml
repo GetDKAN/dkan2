@@ -59,23 +59,6 @@ components:
       schema:
         type: string
   schemas:
-    responseMessage:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          type: string
-    responseEndpointIdentifier:
-      type: object
-      required:
-        - endpoint
-        - identifier
-      properties:
-        endpoint:
-          type: string
-        identifier:
-          type: string
     # @TODO: Load directly from dkan2's schema/collections/dataset.json schema
     Dataset:
       type: object
@@ -97,13 +80,6 @@ components:
             - public
             - restricted public
             - non-public
-    Property:
-      type: object
-      required:
-        - identifier
-      properties:
-        identifier:
-          type: string
 paths:
   /api/v1/dataset:
     get:
@@ -144,7 +120,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/dataset/{uuid}:
     get:
       summary: Get this dataset
@@ -186,7 +170,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     patch:
       summary: Update a dataset
       tags:
@@ -214,7 +206,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     delete:
       summary: Delete a dataset
       tags:
@@ -229,7 +229,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseMessage"
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
   /api/v1/{property}:
     get:
       summary: Get properties
@@ -245,7 +250,12 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Property'
+                  type: object
+                  required:
+                    - identifier
+                  properties:
+                    identifier:
+                      type: string
     post:
       summary: Create a property
       tags:
@@ -259,14 +269,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Property'
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
       responses:
         201:
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/{property}/{uuid}:
     get:
       summary: Get a property
@@ -281,7 +304,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Property'
+                type: object
+                required:
+                  - identifier
+                properties:
+                  identifier:
+                    type: string
     put:
       summary: Replace a property
       tags:
@@ -296,14 +324,27 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Property'
+              type: object
+              required:
+                - identifier
+              properties:
+                identifier:
+                  type: string
       responses:
         200:
           description: Ok
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     patch:
       summary: Update a property
       tags:
@@ -326,7 +367,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
     delete:
       summary: Delete a property
       tags:
@@ -342,7 +391,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseMessage"
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
   /api/v1/sql/{query}:
     get:
       summary: Query resources in datastore
@@ -392,7 +446,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/harvest/info/{id}:
     get:
       summary: List previous runs for a harvest id
@@ -487,7 +549,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseMessage"
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
   /api/v1/datastore/import/{uuid}:
     put:
       summary: Datastore import
@@ -509,7 +576,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/datastore/import/{uuid}/deferred:
     put:
       summary: Deferred datastore import
@@ -531,7 +606,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseEndpointIdentifier"
+                type: object
+                required:
+                  - endpoint
+                  - identifier
+                properties:
+                  endpoint:
+                    type: string
+                  identifier:
+                    type: string
   /api/v1/docs:
     get:
       summary: Complete json documentation
