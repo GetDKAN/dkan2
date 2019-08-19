@@ -451,3 +451,78 @@ paths:
                     type: string
                   result:
                     type: string
+  /api/v1/datastore/{uuid}:
+    get:
+      summary: Return a dataset with datastore headers and statistics
+      tags:
+        - Datastore
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+    delete:
+      summary: Drop a datastore
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      responses:
+        200:
+          description: Dataset has been deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseMessage"
+  /api/v1/datastore/import/{uuid}:
+    put:
+      summary: Datastore import
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
+  /api/v1/datastore/import/{uuid}/deferred:
+    put:
+      summary: Deferred datastore import
+      tags:
+        - Datastore
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: "#/components/parameters/uuid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseEndpointIdentifier"
