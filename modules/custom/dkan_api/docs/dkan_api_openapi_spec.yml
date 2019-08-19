@@ -2,11 +2,6 @@ openapi: 3.0.2
 info:
   title: API Documentation
   version: Alpha
-tags:
-  - name: Dataset
-  - name: Properties
-    description: organizations, resources, tags and themes.
-  - name: SQL Query
 components:
   securitySchemes:
     basicAuth:
