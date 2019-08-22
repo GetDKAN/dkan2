@@ -11,6 +11,7 @@ use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
  * Main services for the datastore.
@@ -88,14 +89,33 @@ class Datastore {
   /**
    * Build an Importer.
    *
-   * @param \Dkan\Datastore\Resource $resource
-   *   Resource.
+   * @param string $uuid
+   *   UUID for resrouce node.
    *
    * @return \Dkan\Datastore\Importer
    *   Importer.
+   *
+   * @throws \Exception
+   *   Throws exception if cannot create valid importer object.
    */
   private function getImporter(string $uuid): Importer {
-    return new Importer($this->getResourceFromUuid($uuid), $this->getStorage($uuid), Csv::getParser());
+    if (!$importer = $this->getstoredImporter($uuid)) {
+      $importer = new Importer($this->getResourceFromUuid($uuid), $this->getStorage($uuid), Csv::getParser());
+    }
+    if (!($importer instanceof Importer)) {
+      throw new \Exception("Could not load importer for uuid $uuid");
+    }
+    return $importer;
+  }
+
+  /**
+   * Get a stored importer
+   */
+  private function getStoredImporter(string $uuid) {
+    $jobStore = new JobStore($this->connection);
+    if ($importer = $jobStore->get($uuid, Importer::class)) {
+      return $importer;
+    }
   }
 
   /**
