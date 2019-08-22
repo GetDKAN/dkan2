@@ -78,8 +78,8 @@ class Datastore {
   /**
    * Start a datastore import process for a distribution object.
    *
-   * @param object $distribution
-   *   Metadata distribution object decoded from JSON. Must have an $identifier.
+   * @param string $uuid
+   *   UUID for resource node.
    */
   private function processImport(string $uuid) {
     $importer = $this->getImporter($uuid);
@@ -109,17 +109,30 @@ class Datastore {
   }
 
   /**
-   * Get a stored importer
+   * Get a stored importer.
+   *
+   * @param string $uuid
+   *   Resource node UUID.
+   *
+   * @return Dkan\Datastore\Importer|bool
+   *   Importer object or FALSE if none found.
    */
   private function getStoredImporter(string $uuid) {
     $jobStore = new JobStore($this->connection);
     if ($importer = $jobStore->get($uuid, Importer::class)) {
       return $importer;
     }
+    return FALSE;
   }
 
   /**
+   * Build a database table storage object.
    *
+   * @param string $uuid
+   *   Resource node UUID.
+   *
+   * @return \Drupal\dkan_datastore\Storage\DatabaseTable
+   *   DatabaseTable storage object.
    */
   public function getStorage(string $uuid): DatabaseTable {
     $resource = $this->getResourceFromUuid($uuid);
@@ -131,6 +144,9 @@ class Datastore {
    *
    * @param string $uuid
    *   The UUID for a resource node.
+   *
+   * @return Dkan\Datastore\Resource
+   *   Datastore resource object.
    */
   public function getResourceFromUuid(string $uuid): Resource {
     $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
@@ -140,8 +156,8 @@ class Datastore {
   /**
    * Given a resource node object, return the path to the resource file.
    *
-   * @param \Drupal\node\Entity\Node $node
-   *   A Drupal node entity (should be of resource type).
+   * @param \Drupal\node\NodeInterface $node
+   *   A Drupal node.
    *
    * @return string
    *   File path.
