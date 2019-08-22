@@ -160,18 +160,14 @@ class DatastoreImportQueue extends QueueWorkerBase {
    *   Datastore importer object.
    */
   protected function getImporter($resourceId, string $filePath, array $importConfig) {
-    /** @var \Drupal\dkan_datastore\Importer\Builder $importerBuilder */
-    $importerBuilder = \Drupal::service('dkan_datastore.importer.builder');
+    /** @var \Drupal\dkan_datastore\Service\Datastore $datastore */
+    $datastore = \Drupal::service('dkan_datastore.service');
 
     /** @var \Dkan\Datastore\Importer $importer */
-    $importer = $importerBuilder->setResource(new Resource($resourceId, $filePath))
-      ->build();
-
-    // Forward config if applicable.
-    $importer->setConfigurableProperties($this->sanitizeImportConfig($importConfig));
+    $importer = $datastore->getImporter($resourceId);
 
     // Set a slightly shorter time limit than cron run.
-    $importer->setImportTimelimit(55);
+    $importer->setTimeLimit(55);
 
     return $importer;
   }
