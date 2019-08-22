@@ -79,7 +79,9 @@ class DatastoreApiTest extends DkanTestBase {
       ->setMethods(['countQuery', 'execute'])
       ->getMockForAbstractClass();
 
+    $mock->method('fields')->willReturn($mock);
     $mock->method('countQuery')->willReturn($mock);
+    $mock->method('condition')->willReturn($mock);
     $mock->method('execute')->willReturn($this->getStatementMock());
 
     return $mock;
