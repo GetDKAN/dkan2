@@ -6,9 +6,10 @@ use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Logger\LoggerChannelInterface;
-use Drupal\dkan_datastore\DeferredImportQueuer;
+use Drupal\Core\Queue\QueueFactory;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
+use Procrastinator\Result;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\JobStore;
@@ -18,9 +19,12 @@ use Drupal\dkan_datastore\Storage\JobStore;
  */
 class Datastore {
 
+  const DATASTORE_DEFAULT_TIMELIMIT = 60;
+
   private $entityRepository;
   private $logger;
   private $connection;
+  private $queue;
 
   /**
    * Constructor for datastore service.
@@ -28,11 +32,13 @@ class Datastore {
   public function __construct(
             EntityRepository $entityRepository,
             LoggerChannelInterface $logger,
-            Connection $connection
+            Connection $connection,
+            QueueFactory $queue
   ) {
     $this->entityRepository = $entityRepository;
     $this->logger = $logger;
     $this->connection = $connection;
+    $this->queue = $queue->get('dkan_datastore_import');
   }
 
   /**
@@ -43,13 +49,23 @@ class Datastore {
    * @param bool $deferred
    *   Send to the queue for later? Will import immediately if FALSE.
    */
-  public function import($uuid, $deferred = FALSE) {
+  public function import(string $uuid, bool $deferred = FALSE): Result {
+    $importer = $this->getImporter($uuid);
+
+    // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
       $this->queueImport($uuid);
     }
+    // Otherwise, start the import immidiately.
     else {
-      $this->processImport($uuid);
+      $importer->runIt();
     }
+
+    // No matter what, create a record in the DB for this job.
+    $jobStore = new JobStore($this->connection);
+    $jobStore->store($uuid, $importer);
+
+    return $importer->getResult();
   }
 
   /**
@@ -61,6 +77,8 @@ class Datastore {
    */
   public function drop($uuid) {
     $this->getStorage($uuid)->destroy();
+    $jobStore = new JobStore($this->connection);
+    $jobStore->remove($uuid, Importer::class);
   }
 
   /**
@@ -70,20 +88,14 @@ class Datastore {
    *   Resource node UUID.
    */
   private function queueImport($uuid) {
-    $deferredImporter = new DeferredImportQueuer();
-    $queueId = $deferredImporter->createDeferredResourceImport($uuid, $this->getResourceFromUuid($uuid));
-    $this->logger->notice("New queue (ID:{$queueId}) was created for `{$uuid}`");
-  }
+    // Attempt to fetch the file in a queue so as to not block user.
+    $queueId = $this->queue->createItem(['uuid' => $uuid]);
 
-  /**
-   * Start a datastore import process for a distribution object.
-   *
-   * @param string $uuid
-   *   UUID for resource node.
-   */
-  private function processImport(string $uuid) {
-    $importer = $this->getImporter($uuid);
-    $importer->runIt();
+    if ($queueId === FALSE) {
+      throw new \RuntimeException("Failed to create file fetcher queue for {$uuid}");
+    }
+
+    $this->logger->notice("New queue (ID:{$queueId}) was created for `{$uuid}`");
   }
 
   /**
@@ -99,8 +111,9 @@ class Datastore {
    *   Throws exception if cannot create valid importer object.
    */
   private function getImporter(string $uuid): Importer {
-    if (!$importer = $this->getstoredImporter($uuid)) {
+    if (!$importer = $this->getStoredImporter($uuid)) {
       $importer = new Importer($this->getResourceFromUuid($uuid), $this->getStorage($uuid), Csv::getParser());
+      $importer->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
     }
     if (!($importer instanceof Importer)) {
       throw new \Exception("Could not load importer for uuid $uuid");

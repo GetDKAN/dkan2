@@ -16,6 +16,7 @@ use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\Database\Query\SelectInterface;
+use Drupal\Core\Queue\QueueFactory;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Controller\Datastore
@@ -50,7 +51,14 @@ class DatastoreApiTest extends DkanTestBase {
         $mockEntityRepository = $this->mockEntityRepository(EntityRepository::class);
         $mockLogger = $this->createMock(LoggerChannelInterface::class);
         $mockConnection = $this->getConnectionMock();
-        return new Datastore($mockEntityRepository, $mockLogger, $mockConnection);
+        $mockQueue = $this->createMock(QueueFactory::class);
+
+        return new Datastore(
+          $mockEntityRepository,
+          $mockLogger,
+          $mockConnection,
+          $mockQueue
+        );
     }
   }
 
@@ -60,12 +68,14 @@ class DatastoreApiTest extends DkanTestBase {
   private function getConnectionMock() {
     $mock = $this->getMockBuilder(Connection::class)
       ->disableOriginalConstructor()
-      ->setMethods(['schema', 'query', 'select'])
+      ->setMethods(['schema', 'query', 'select', 'insert', 'delete'])
       ->getMockForAbstractClass();
 
     $mock->method('schema')->willReturn($this->getSchemaMock());
     $mock->method('query')->willReturn($this->getStatementMock());
     $mock->method('select')->willReturn($this->getSelectMock());
+    $mock->method('insert')->willReturn($this->getInsertMock());
+    $mock->method('delete')->willReturn($this->getDeleteMock());
 
     return $mock;
   }
@@ -83,6 +93,37 @@ class DatastoreApiTest extends DkanTestBase {
     $mock->method('countQuery')->willReturn($mock);
     $mock->method('condition')->willReturn($mock);
     $mock->method('execute')->willReturn($this->getStatementMock());
+
+    return $mock;
+  }
+
+  /**
+   *
+   */
+  private function getInsertMock() {
+    $mock = $this->getMockBuilder(SelectInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['fields', 'condition', 'execute', 'values'])
+      ->getMockForAbstractClass();
+
+    $mock->method('fields')->willReturn($mock);
+    $mock->method('condition')->willReturn($mock);
+    $mock->method('values')->willReturn($mock);
+    $mock->method('execute')->willReturn($this->getStatementMock());
+
+    return $mock;
+  }
+
+  /**
+   *
+   */
+  private function getDeleteMock() {
+    $mock = $this->getMockBuilder(SelectInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['condition'])
+      ->getMockForAbstractClass();
+
+    $mock->method('condition')->willReturn($mock);
 
     return $mock;
   }
@@ -226,6 +267,16 @@ class DatastoreApiTest extends DkanTestBase {
   public function testDelete() {
     $controller = Api::create($this->getContainer());
     $response = $controller->delete('asdbv');
+    $this->assertEquals('{"identifier":"asdbv"}', $response->getContent());
+  }
+
+
+  /**
+   *
+   */
+  public function testDeferredImport() {
+    $controller = Api::create($this->getContainer());
+    $response = $controller->import('asdbv', TRUE);
     $this->assertEquals('{"identifier":"asdbv"}', $response->getContent());
   }
 

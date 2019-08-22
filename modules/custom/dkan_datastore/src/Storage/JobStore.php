@@ -41,7 +41,7 @@ class JobStore {
     }
   }
 
-  public function store(Job $job, string $uuid) {
+  public function store(string $uuid, Job $job) {
     $jobClass = get_class($job);
     $tableName = $this->getTableName($jobClass);
 
@@ -52,6 +52,13 @@ class JobStore {
     $q = $this->connection->insert($tableName)
       ->fields(['ref_uuid', 'job_data'])
       ->values([$uuid, $data])
+      ->execute();
+  }
+
+  public function remove($uuid, $jobClass) {
+    $tableName = $this->getTableName($jobClass);
+    $q = $this->connection->delete($tableName)
+      ->condition('ref_uuid', $uuid)
       ->execute();
   }
 
@@ -73,7 +80,7 @@ class JobStore {
       'foriegn_keys' => [
         'ref_uuid' => ['table' => 'node', 'columns' => ['uuid' => 'uuid']],
       ],
-      'primary_key' => ['nid'],
+      'primary_key' => ['jid'],
     ];
     $this->connection->schema()->createTable($tableName, $schema);
   }
