@@ -3,7 +3,6 @@
 namespace Drupal\dkan_datastore\Storage;
 
 use Procrastinator\Job\Job;
-use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Connection;
 
 /**
@@ -18,7 +17,7 @@ class JobStore {
 
   public function __construct(Connection $connection, string $jobClass) {
     $this->connection = $connection;
-    if (!$this->validateJobClass($jobClass)) {
+    if ($this->validateJobClass($jobClass)) {
       $this->jobClass = $jobClass;
     }
     else {
@@ -40,7 +39,7 @@ class JobStore {
     if (!empty($result)) {
       $job = $this->jobClass::hydrate($result->job_data);
     }
-    if (($job instanceof $this->jobClass)) {
+    if (isset($job) && ($job instanceof $this->jobClass)) {
       return $job;
     }
   }
@@ -105,6 +104,6 @@ class JobStore {
       return TRUE;
     }
     return FALSE;
-  }
+ }
 
 }
