@@ -71,9 +71,7 @@ class DatabaseTable implements StorageInterface {
 
     $q = db_insert($this->getTableName());
     $q->fields(array_keys($this->schema['fields']));
-    foreach ($data as $values) {
-      $q->values($values);
-    }
+    $q->values($data);
     $q->execute();
 
     return "SUCCESS";
