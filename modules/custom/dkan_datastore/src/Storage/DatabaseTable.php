@@ -11,7 +11,7 @@ use Dkan\Datastore\Resource;
  *
  * @see Dkan\Datastore\Storage\StorageInterface
  */
-class DatabaseTable implements StorageInterface {
+class DatabaseTable implements StorageInterface, \JsonSerializable {
 
   use \Dkan\Datastore\Storage\Database\SqlStorageTrait;
 
@@ -231,6 +231,17 @@ class DatabaseTable implements StorageInterface {
       $fields[] = $info->Field;
     }
     return $fields;
+  }
+
+  public function jsonSerialize() {
+    return (object) ['resource' => $this->resource];
+  }
+
+  public static function hydrate(string $json) {
+    $data = json_decode($json);
+    $resource = Resource::hydrate(json_encode($data->resource));
+
+    return new DatabaseTable(\Drupal::service('database'), $resource);
   }
 
 }
