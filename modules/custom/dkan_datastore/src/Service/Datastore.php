@@ -62,8 +62,8 @@ class Datastore {
     }
 
     // No matter what, create a record in the DB for this job.
-    $jobStore = new JobStore($this->connection);
-    $jobStore->store($uuid, $importer);
+    $jobStore = new JobStore($this->connection, Importer::class);
+    $jobStore->store($importer, $uuid);
 
     return $importer->getResult();
   }
@@ -77,8 +77,8 @@ class Datastore {
    */
   public function drop($uuid) {
     $this->getStorage($uuid)->destroy();
-    $jobStore = new JobStore($this->connection);
-    $jobStore->remove($uuid, Importer::class);
+    $jobStore = new JobStore($this->connection, Importer::class);
+    $jobStore->remove($uuid);
   }
 
   /**
@@ -131,8 +131,8 @@ class Datastore {
    *   Importer object or FALSE if none found.
    */
   private function getStoredImporter(string $uuid) {
-    $jobStore = new JobStore($this->connection);
-    if ($importer = $jobStore->get($uuid, Importer::class)) {
+    $jobStore = new JobStore($this->connection, Importer::class);
+    if ($importer = $jobStore->retrieve($uuid)) {
       return $importer;
     }
     return FALSE;

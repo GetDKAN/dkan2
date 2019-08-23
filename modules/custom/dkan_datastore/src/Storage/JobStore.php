@@ -3,22 +3,20 @@
 namespace Drupal\dkan_datastore\Storage;
 
 use Procrastinator\Job\Job;
+use Dkan\Datastore\Importer;
 use Drupal\Core\Database\Connection;
-use Contracts\RemoverInterface;
-use Contracts\RetrieverInterface;
-use Contracts\StorerInterface;
 
 /**
  * Retrieve a serialized job (datastore importer or harvest) from the database.
  *
  * @todo should probably be a service in its own module.
  */
-class JobStore implements RemoverInterface, RetrieverInterface, StorerInterface {
+class JobStore {
 
   private $connection;
   private $jobClass;
 
-  public function __construct(Connection $connection, $jobClass) {
+  public function __construct(Connection $connection, string $jobClass) {
     $this->connection = $connection;
     if (!$this->validateJobClass($jobClass)) {
       $this->jobClass = $jobClass;
@@ -29,7 +27,7 @@ class JobStore implements RemoverInterface, RetrieverInterface, StorerInterface 
   }
 
   public function retrieve(string $uuid) {
-    $tableName = $this->getTableName($this->jobClass);
+    $tableName = self::getTableName($this->jobClass);
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
     }
@@ -40,20 +38,19 @@ class JobStore implements RemoverInterface, RetrieverInterface, StorerInterface 
       ->execute()
       ->fetch();
     if (!empty($result)) {
-      $job = $jobClass::hydrate($result->job_data);
+      $job = $this->jobClass::hydrate($result->job_data);
     }
-    if (isset($job) && ($job instanceof $this->jobClass)) {
+    if (($job instanceof $this->jobClass)) {
       return $job;
     }
   }
 
-  public function store(string $jobJson, string $uuid) {
+  public function store(Job $job, string $uuid) {
     // Validate incoming JSON by trying to hydrate it.
-    $job = $this->jobClass::hydrate($jobJson);
     if (!($job instanceof $this->jobClass)) {
-      throw new \Exception("Invalid job data passed to jobStore: $jobJson");
+      throw new \Exception("Invalid object passed to jobStore.");
     }
-    $tableName = $this->getTableName($this->jobClass);
+    $tableName = self::getTableName($this->jobClass);
 
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
@@ -66,13 +63,13 @@ class JobStore implements RemoverInterface, RetrieverInterface, StorerInterface 
   }
 
   public function remove(string $uuid) {
-    $tableName = $this->getTableName($this->jobClass);
+    $tableName = self::getTableName($this->jobClass);
     $this->connection->delete($tableName)
       ->condition('ref_uuid', $uuid)
       ->execute();
   }
 
-  private function getTableName($jobClass) {
+  public static function getTableName($jobClass) {
     $safeClassName = strtolower(preg_replace('/\\\\/', '_', $jobClass));
     return 'jobstore_' . $safeClassName;
   }
