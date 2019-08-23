@@ -4,26 +4,32 @@ namespace Drupal\dkan_datastore\Storage;
 
 use Procrastinator\Job\Job;
 use Drupal\Core\Database\Connection;
+use Contracts\RemoverInterface;
+use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 
 /**
  * Retrieve a serialized job (datastore importer or harvest) from the database.
  *
  * @todo should probably be a service in its own module.
  */
-class JobStore {
+class JobStore implements RemoverInterface, RetrieverInterface, StorerInterface {
 
   private $connection;
+  private $jobClass;
 
-  public function __construct(Connection $connection) {
+  public function __construct(Connection $connection, $jobClass) {
     $this->connection = $connection;
+    if (!$this->validateJobClass($jobClass)) {
+      $this->jobClass = $jobClass;
+    }
+    else {
+      throw new \Exception("Invalid job class provided: $jobClass");
+    }
   }
 
-  public function get(string $uuid, string $jobClass) {
-    if (!$this->validateJobClass($jobClass)) {
-      throw new \Exception("Invalid jobType provided: $jobClass");
-    }
-
-    $tableName = $this->getTableName($jobClass);
+  public function retrieve(string $uuid) {
+    $tableName = $this->getTableName($this->jobClass);
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
     }
@@ -36,14 +42,18 @@ class JobStore {
     if (!empty($result)) {
       $job = $jobClass::hydrate($result->job_data);
     }
-    if (isset($job) && ($job instanceof $jobClass)) {
+    if (isset($job) && ($job instanceof $this->jobClass)) {
       return $job;
     }
   }
 
-  public function store(string $uuid, Job $job) {
-    $jobClass = get_class($job);
-    $tableName = $this->getTableName($jobClass);
+  public function store(string $jobJson, string $uuid) {
+    // Validate incoming JSON by trying to hydrate it.
+    $job = $this->jobClass::hydrate($jobJson);
+    if (!($job instanceof $this->jobClass)) {
+      throw new \Exception("Invalid job data passed to jobStore: $jobJson");
+    }
+    $tableName = $this->getTableName($this->jobClass);
 
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
@@ -55,8 +65,8 @@ class JobStore {
       ->execute();
   }
 
-  public function remove($uuid, $jobClass) {
-    $tableName = $this->getTableName($jobClass);
+  public function remove(string $uuid) {
+    $tableName = $this->getTableName($this->jobClass);
     $this->connection->delete($tableName)
       ->condition('ref_uuid', $uuid)
       ->execute();
