@@ -25,16 +25,16 @@ class JobStore {
 
     $tableName = $this->getTableName($jobClass);
     if (!$this->tableExists($tableName)) {
-      throw new \Exception("Table $tableName does not exist.");
+      $this->createTable($tableName);
     }
 
     $result = $this->connection->select($tableName, 't')
-      ->fields('t', ['data'])
+      ->fields('t', ['job_data'])
       ->condition('ref_uuid', $uuid)
       ->execute()
       ->fetch();
     if (!empty($result)) {
-      $job = $jobClass::hydrate($result);
+      $job = $jobClass::hydrate($result->job_data);
     }
     if (isset($job) && ($job instanceof $jobClass)) {
       return $job;
@@ -48,16 +48,16 @@ class JobStore {
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
     }
-    $data = $job->jsonSerialize();
-    $q = $this->connection->insert($tableName)
-      ->fields(['ref_uuid', 'job_data'])
+    $data = json_encode($job);
+    $q = $this->connection->insert($tableName);
+    $q->fields(['ref_uuid', 'job_data'])
       ->values([$uuid, $data])
       ->execute();
   }
 
   public function remove($uuid, $jobClass) {
     $tableName = $this->getTableName($jobClass);
-    $q = $this->connection->delete($tableName)
+    $this->connection->delete($tableName)
       ->condition('ref_uuid', $uuid)
       ->execute();
   }
@@ -72,7 +72,7 @@ class JobStore {
       'fields' => [
         'jid' => ['type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE],
         'ref_uuid' => ['type' => 'varchar', 'length' => 128],
-        'job_data' => ['type' => 'text'],
+        'job_data' => ['type' => 'text', 'length' => 65535],
       ],
       'indexes' => [
         'jid' => ['jid'],
