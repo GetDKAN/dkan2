@@ -48,11 +48,27 @@ class JobStore {
     if (!$this->tableExists($tableName)) {
       $this->createTable($tableName);
     }
+
+    $existing_id = $result = $this->connection->select($tableName, 't')
+      ->fields('t', ['jid'])
+      ->condition('ref_uuid', $uuid)
+      ->execute()
+      ->fetch();
+
     $data = json_encode($job);
-    $q = $this->connection->insert($tableName);
-    $q->fields(['ref_uuid', 'job_data'])
-      ->values([$uuid, $data])
-      ->execute();
+    $values = ['ref_uuid' => $uuid, 'job_data' => $data];
+    if (!$existing_id) {
+      $q = $this->connection->insert($tableName);
+      $q->fields(array_keys($values))
+        ->values(array_values($values))
+        ->execute();
+    }
+    else {
+      $q = $this->connection->update($tableName);
+      $q->fields($values)
+        ->condition('jid', $existing_id->jid)
+        ->execute();
+    }
   }
 
   public function remove($uuid, $jobClass) {

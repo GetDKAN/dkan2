@@ -1,12 +1,4 @@
 services:
-  dkan_datastore.storage.variable:
-    class: Drupal\dkan_datastore\Storage\Variable
-    arguments: ['@config.factory']
-    # todo: is this supposed to be a single instance or new instance each time?
-    # assuming new instance each time for now.
-    shared: false
-  dkan_datastore.deferred_import_queuer:
-    class: Drupal\dkan_datastore\DeferredImportQueuer
   dkan_datastore.service:
       class: \Drupal\dkan_datastore\Service\Datastore
       arguments:
@@ -14,6 +6,7 @@ services:
           - '@dkan_datastore.logger_channel'
           - '@database'
           - '@queue'
+          - '@file_system'
   dkan_datastore.logger_channel:
     parent: logger.channel_base
     arguments: ['dkan_datastore']

@@ -65,8 +65,8 @@ class Api implements ContainerInjectionInterface {
   public function import($uuid, $deferred = FALSE) {
 
     try {
-      $this->datastoreService->import($uuid, $deferred);
-      return $this->successResponse((object) ["identifier" => $uuid]);
+      $results = $this->datastoreService->import($uuid, $deferred);
+      return $this->successResponse($results);
     }
     catch (\Exception $e) {
       return $this->exceptionResponse($e);

@@ -17,7 +17,7 @@ use Procrastinator\Result;
  *   cron = {"time" = 60}
  * )
  */
-class DatastoreImportQueue extends QueueWorkerBase {
+class Import extends QueueWorkerBase {
 
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
@@ -33,29 +33,31 @@ class DatastoreImportQueue extends QueueWorkerBase {
 
     $datastore = \Drupal::service('dkan_datastore.service');
 
-    $result = $datastore->import($data['uuid']);
+    $results = $datastore->import($data['uuid']);
 
-    switch ($result->getStatus()) {
-      case Result::STOPPED:
+    foreach ($results as $result) {
+      switch ($result->getStatus()) {
+        case Result::STOPPED:
 
-        // Requeue for next iteration.
-        // queue is self calling and should keep going until complete.
-        $newQueueItemId = $this->requeue($data);
+          // Requeue for next iteration.
+          // queue is self calling and should keep going until complete.
+          $newQueueItemId = $this->requeue($data);
 
-        $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
+          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
 
-        break;
+          break;
 
-      case Result::IN_PROGRESS:
-      case Result::ERROR:
+        case Result::IN_PROGRESS:
+        case Result::ERROR:
 
-        // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
-        $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error: {$result->getError()}");
-        break;
+          // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
+          $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error: {$result->getError()}");
+          break;
 
-      case Result::DONE:
-        $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
-        break;
+        case Result::DONE:
+          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
+          break;
+      }
     }
   }
 
@@ -79,9 +81,6 @@ class DatastoreImportQueue extends QueueWorkerBase {
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
-    // $jobStore = new jobStore($connection);
-    // $uuid = $datastore->asdasdasd();
-    // $jobStore->store($uuid, $importer);
     return \Drupal::service('queue')
       ->get($this->getPluginId())
       ->createItem($data);
