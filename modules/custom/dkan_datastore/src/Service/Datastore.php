@@ -5,10 +5,13 @@ namespace Drupal\dkan_datastore\Service;
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\dkan_harvest\Load\FileHelper;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
+use FileFetcher\FileFetcher;
 use Procrastinator\Result;
 use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
@@ -25,6 +28,7 @@ class Datastore {
   private $logger;
   private $connection;
   private $queue;
+  private $fileSystem;
 
   /**
    * Constructor for datastore service.
@@ -33,12 +37,14 @@ class Datastore {
             EntityRepository $entityRepository,
             LoggerChannelInterface $logger,
             Connection $connection,
-            QueueFactory $queue
+            QueueFactory $queue,
+            FileSystemInterface $fileSystem
   ) {
     $this->entityRepository = $entityRepository;
     $this->logger = $logger;
     $this->connection = $connection;
     $this->queue = $queue->get('dkan_datastore_import');
+    $this->fileSystem = $fileSystem;
   }
 
   /**
@@ -49,23 +55,38 @@ class Datastore {
    * @param bool $deferred
    *   Send to the queue for later? Will import immediately if FALSE.
    */
-  public function import(string $uuid, bool $deferred = FALSE): Result {
-    $importer = $this->getImporter($uuid);
-
+  public function import(string $uuid, bool $deferred = FALSE): array {
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
       $this->queueImport($uuid);
+      return [];
     }
+
+    $file_fetcher = $this->getFileFetcher($uuid);
+    $file_fetcher->run();
+
+    // No matter what, create a record in the DB for this job.
+    $jobStore = new JobStore($this->connection);
+    $jobStore->store($uuid, $file_fetcher);
+
+    if ($file_fetcher->getResult()->getStatus() != Result::DONE) {
+      return [get_class($file_fetcher) => $file_fetcher->getResult()];
+    }
+
+    $importer = $this->getImporter($uuid);
+
+
     // Otherwise, start the import immidiately.
-    else {
       $importer->runIt();
-    }
+
 
     // No matter what, create a record in the DB for this job.
     $jobStore = new JobStore($this->connection);
     $jobStore->store($uuid, $importer);
 
-    return $importer->getResult();
+
+
+    return ["FileFetcherResult" => $file_fetcher->getResult(), "ImporterResult" => $importer->getResult()];
   }
 
   /**
@@ -79,6 +100,7 @@ class Datastore {
     $this->getStorage($uuid)->destroy();
     $jobStore = new JobStore($this->connection);
     $jobStore->remove($uuid, Importer::class);
+    $jobStore->remove($uuid, FileFetcher::class);
   }
 
   /**
@@ -112,8 +134,11 @@ class Datastore {
    */
   private function getImporter(string $uuid): Importer {
     if (!$importer = $this->getStoredImporter($uuid)) {
-      $importer = new Importer($this->getResourceFromUuid($uuid), $this->getStorage($uuid), Csv::getParser());
+      $resource = $this->getResourceFromUuid($uuid, TRUE);
+      $importer = new Importer($resource, $this->getStorage($uuid), Csv::getParser());
       $importer->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
+      $jobStore = new JobStore($this->connection);
+      $jobStore->store($uuid, $importer);
     }
     if (!($importer instanceof Importer)) {
       throw new \Exception("Could not load importer for uuid $uuid");
@@ -153,17 +178,61 @@ class Datastore {
   }
 
   /**
-   * Given a Drupal node UUID, will create a resource object.
+   * Create a resource object from a node's UUID.
    *
    * @param string $uuid
    *   The UUID for a resource node.
+   * @param bool $useFileFetcher
+   *   If file fetcher was used, get path from the file fetcher.
    *
-   * @return Dkan\Datastore\Resource
+   * @return \Dkan\Datastore\Resource
    *   Datastore resource object.
+   *
+   * @throws \Exception
+   *   If a file fetcher operation has not been completed.
    */
-  public function getResourceFromUuid(string $uuid): Resource {
+  public function getResourceFromUuid(string $uuid, $useFileFetcher = FALSE): Resource {
     $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
-    return new Resource($node->id(), $this->getResourceFilePathFromNode($node));
+
+    if ($useFileFetcher == TRUE) {
+      $fileFetcher = $this->getFileFetcher($uuid);
+      if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
+        throw new \Exception("The file fetcher has not finished.");
+      }
+      $fileData = json_decode($fileFetcher->getResult()->getData());
+      return new Resource($node->id(), $fileData->destination);
+    }
+    else {
+      return new Resource($node->id(), $this->getResourceFilePathFromNode($node));
+    }
+  }
+
+  private function getFileFetcher(string $uuid): FileFetcher {
+    if (!$filefetcher = $this->getStoredFileFetcher($uuid)) {
+      $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
+      $file_path = $this->getResourceFilePathFromNode($node);
+
+      $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
+      (new FileHelper())->prepareDir($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+
+      $filefetcher = new FileFetcher($file_path, $tmpDirectory);
+
+      $filefetcher->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
+      $jobStore = new JobStore($this->connection);
+      $jobStore->store($uuid, $filefetcher);
+    }
+    if (!($filefetcher instanceof FileFetcher)) {
+      throw new \Exception("Could not load file-fetcher for uuid $uuid");
+    }
+    return $filefetcher;
+  }
+
+  private function getStoredFileFetcher(string $uuid) {
+    $jobStore = new JobStore($this->connection);
+    if ($filefetcher = $jobStore->get($uuid, FileFetcher::class)) {
+      return $filefetcher;
+    }
+    return FALSE;
   }
 
   /**
