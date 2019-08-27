@@ -187,14 +187,19 @@ class Api implements ContainerInjectionInterface {
     }
     catch (\Exception $e) {
       if ($e->getMessage() == "No data with the identifier {$uuid} was found.") {
-        $engine->put($uuid, $data);
-        $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+        try {
+          $engine->put($uuid, $data);
+          $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
-        // If a new resource is created, inform the user agent via 201 Created.
-        return new JsonResponse(
-          (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-          201
-        );
+          // If a new resource is created, inform the user agent via 201 Created.
+          return new JsonResponse(
+            (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
+            201
+          );
+        }
+        catch (\Exception $e) {
+          return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+        }
       }
 
       return new JsonResponse((object) ["message" => $e->getMessage()], 406);
