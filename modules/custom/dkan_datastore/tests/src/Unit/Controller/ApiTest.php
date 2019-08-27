@@ -2,21 +2,21 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
-use Drupal\Core\Entity\EntityStorageException;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Service\Datastore;
-use Drupal\Core\Entity\EntityRepository;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\dkan_datastore\Controller\Api;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\dkan_datastore\Service\Datastore;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\TypedData\TypedDataInterface;
-use Drupal\node\NodeInterface;
-use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\StatementInterface;
-use Drupal\Core\Database\Query\SelectInterface;
+use Drupal\Core\Entity\EntityRepository;
+use Drupal\Core\Entity\EntityStorageException;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\TypedData\TypedDataInterface;
+use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @coversDefaultClass Drupal\dkan_datastore\Controller\Datastore
@@ -52,12 +52,14 @@ class DatastoreApiTest extends DkanTestBase {
         $mockLogger = $this->createMock(LoggerChannelInterface::class);
         $mockConnection = $this->getConnectionMock();
         $mockQueue = $this->createMock(QueueFactory::class);
+        $mockFileSystem = $this->createMock()
 
         return new Datastore(
           $mockEntityRepository,
           $mockLogger,
           $mockConnection,
-          $mockQueue
+          $mockQueue,
+          $moockFileSystem
         );
     }
   }
