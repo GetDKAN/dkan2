@@ -3,10 +3,9 @@
 namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
-use Dkan\Datastore\Importer;
-use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
 use Procrastinator\Result;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Processes resource import.
@@ -16,8 +15,10 @@ use Procrastinator\Result;
  *   title = @Translation("Queue to process datastore import"),
  *   cron = {"time" = 60}
  * )
+ *
+ * @codeCoverageIgnore
  */
-class Import extends QueueWorkerBase {
+class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface {
 
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
@@ -26,12 +27,33 @@ class Import extends QueueWorkerBase {
    */
   const STALL_LIMIT = 5;
 
+  private $container;
+
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new 
+  }
+
+  /**
+   * Constructs a \Drupal\Component\Plugin\PluginBase object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ContainerInterface $container) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->container = $container;
+  }
+
   /**
    * {@inheritdoc}
    */
   public function processItem($data) {
 
-    $datastore = \Drupal::service('dkan_datastore.service');
+    $datastore = $this->container->get('dkan_datastore.service');
 
     $results = $datastore->import($data['uuid']);
 
@@ -81,7 +103,7 @@ class Import extends QueueWorkerBase {
    * @todo: Clarify return value. Documentation suggests it should return ID.
    */
   protected function requeue(array $data) {
-    return \Drupal::service('queue')
+    return $this->container->get('queue')
       ->get($this->getPluginId())
       ->createItem($data);
   }
