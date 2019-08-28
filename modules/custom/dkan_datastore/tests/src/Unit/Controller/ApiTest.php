@@ -270,7 +270,6 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertEquals('{"identifier":"asdbv"}', $response->getContent());
   }
 
-
   /**
    *
    */

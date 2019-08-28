@@ -3,8 +3,6 @@
 namespace Drupal\dkan_datastore\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
-use Dkan\Datastore\Importer;
-use Drupal\Core\Queue\SuspendQueueException;
 use Drupal\Core\Logger\RfcLogLevel;
 use Procrastinator\Result;
 

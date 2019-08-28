@@ -75,16 +75,12 @@ class Datastore {
 
     $importer = $this->getImporter($uuid);
 
-
     // Otherwise, start the import immidiately.
-      $importer->runIt();
-
+    $importer->runIt();
 
     // No matter what, create a record in the DB for this job.
     $jobStore = new JobStore($this->connection);
     $jobStore->store($uuid, $importer);
-
-
 
     return ["FileFetcherResult" => $file_fetcher->getResult(), "ImporterResult" => $importer->getResult()];
   }
@@ -207,6 +203,9 @@ class Datastore {
     }
   }
 
+  /**
+   *
+   */
   private function getFileFetcher(string $uuid): FileFetcher {
     if (!$filefetcher = $this->getStoredFileFetcher($uuid)) {
       $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
@@ -227,6 +226,9 @@ class Datastore {
     return $filefetcher;
   }
 
+  /**
+   *
+   */
   private function getStoredFileFetcher(string $uuid) {
     $jobStore = new JobStore($this->connection);
     if ($filefetcher = $jobStore->get($uuid, FileFetcher::class)) {

@@ -2,10 +2,6 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Dkan\Datastore\Manager;
-use Drupal\dkan_datastore\Manager\Helper;
-use Drupal\dkan_datastore\Service\Datastore;
-use Drupal\dkan_datastore\Storage\Database;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -20,6 +16,9 @@ class Api implements ContainerInjectionInterface {
 
   private $container;
 
+  /**
+   *
+   */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;
   }

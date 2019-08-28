@@ -14,10 +14,16 @@ class JobStore {
 
   private $connection;
 
+  /**
+   *
+   */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
+  /**
+   *
+   */
   public function get(string $uuid, string $jobClass) {
     if (!$this->validateJobClass($jobClass)) {
       throw new \Exception("Invalid jobType provided: $jobClass");
@@ -41,6 +47,9 @@ class JobStore {
     }
   }
 
+  /**
+   *
+   */
   public function store(string $uuid, Job $job) {
     $jobClass = get_class($job);
     $tableName = $this->getTableName($jobClass);
@@ -71,6 +80,9 @@ class JobStore {
     }
   }
 
+  /**
+   *
+   */
   public function remove($uuid, $jobClass) {
     $tableName = $this->getTableName($jobClass);
     $this->connection->delete($tableName)
@@ -78,11 +90,17 @@ class JobStore {
       ->execute();
   }
 
+  /**
+   *
+   */
   private function getTableName($jobClass) {
     $safeClassName = strtolower(preg_replace('/\\\\/', '_', $jobClass));
     return 'jobstore_' . $safeClassName;
   }
 
+  /**
+   *
+   */
   private function createTable(string $tableName) {
     $schema = [
       'fields' => [
@@ -109,6 +127,9 @@ class JobStore {
     return $exists;
   }
 
+  /**
+   *
+   */
   private function validateJobClass(string $jobClass): bool {
     if (is_subclass_of($jobClass, Job::class)) {
       return TRUE;

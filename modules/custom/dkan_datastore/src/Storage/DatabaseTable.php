@@ -233,10 +233,16 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
     return $fields;
   }
 
+  /**
+   *
+   */
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
 
+  /**
+   *
+   */
   public static function hydrate(string $json) {
     $data = json_decode($json);
     $resource = Resource::hydrate(json_encode($data->resource));
