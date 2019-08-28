@@ -157,8 +157,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
         );
       $node->save();
 
-      /*$uuid = $node->uuid();
-      $this->enqueueDeferredImport($uuid);*/
       return $node->uuid();
     }
 
@@ -184,38 +182,6 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
    */
   private function getType() {
     return 'data';
-  }
-
-  /**
-   * Enqueue the dataset for further processing.
-   *
-   * @param string $uuid
-   *   Uuid of node.
-   *
-   * @todo pass import config.
-   *
-   * @return int|bool
-   *   New queue ID or false on failure
-   */
-  private function enqueueDeferredImport(string $uuid) {
-
-    try {
-      /** @var \Drupal\dkan_datastore\Manager\Helper $managerBuilderHelper */
-      $managerBuilderHelper = \Drupal::service('dkan_datastore.manager.datastore_manager_builder_helper');
-
-      $resource = $managerBuilderHelper->newResourceFromEntity($uuid);
-
-      /** @var \Drupal\dkan_datastore\Manager\DeferredImportQueuer $deferredImporter */
-      $deferredImporter = \Drupal::service('dkan_datastore.manager.deferred_import_queuer');
-
-      return $deferredImporter->createDeferredResourceImport($uuid, $resource);
-    }
-    catch (\Exception $e) {
-      $logger = $this->getLogger('dkan_api');
-
-      $logger->log(RfcLogLevel::ERROR, "Failed to enqueue dataset import for {$uuid}. Reason: " . $e->getMessage());
-      $logger->log(RfcLogLevel::DEBUG, $e->getTraceAsString());
-    }
   }
 
   /**
