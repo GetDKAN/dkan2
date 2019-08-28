@@ -179,39 +179,37 @@ class Api implements ContainerInjectionInterface {
 
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $uuid) {
-      return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
+      return $this->getResponse(["message" => "Identifier cannot be modified"], 409);
     }
+
+    $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
     try {
-      $this->storage->retrieve($uuid);
-      $engine->put($uuid, $data);
-      $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+      if ($this->objectExists($uuid)) {
+        $engine->put($uuid, $data);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
+      } else {
+        $engine->post($uuid, $data);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid],201);
+      }
+    }
+    catch(\Exception $e) {
+      return $this->getResponse(["message" => $e->getMessage()], 406);
+    }
+  }
 
-      // If a new resource is created, inform the user agent via 201 Created.
-      return new JsonResponse(
-          (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-          200
-        );
+  private function objectExists($uuid) {
+    try {
+      $this->storage->retrieve($uuid);
+      return TRUE;
     }
     catch (\Exception $e) {
-      if ($e->getMessage() == "No data with the identifier {$uuid} was found.") {
-        try {
-          $engine->put($uuid, $data);
-          $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
-
-          // If a new resource is created, inform the user agent via 201.
-          return new JsonResponse(
-            (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
-            201
-          );
-        }
-        catch (\Exception $e) {
-          return new JsonResponse((object) ["message" => $e->getMessage()], 406);
-        }
-      }
-
-      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
+      return FALSE;
     }
+  }
+
+  private function getResponse(array $message, int $code) {
+    return new JsonResponse((object) $message, $code);
   }
 
   /**
