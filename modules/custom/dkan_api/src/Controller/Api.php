@@ -200,7 +200,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function objectExists($uuid) {
     try {
@@ -213,7 +213,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function getResponse(array $message, int $code) {
     return new JsonResponse((object) $message, $code);
@@ -257,7 +257,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function checkData($uuid, $data) {
     $obj = json_decode($data);
