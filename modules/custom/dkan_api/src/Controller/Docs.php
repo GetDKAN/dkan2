@@ -232,13 +232,15 @@ class Docs implements ContainerInjectionInterface {
    *   Modified spec.
    */
   private function removeSpecPaths(array $spec, array $paths_to_remove) {
-    if (isset($spec['paths'])) {
-      foreach ($spec['paths'] as $path => $ops) {
-        if (in_array($path, $paths_to_remove)) {
-          unset($spec['paths'][$path]);
-        }
+    if (!isset($spec['paths'])) {
+      return $spec;
+    }
+    foreach ($spec['paths'] as $path => $ops) {
+      if (in_array($path, $paths_to_remove)) {
+        unset($spec['paths'][$path]);
       }
     }
+
     return $spec;
   }
 
