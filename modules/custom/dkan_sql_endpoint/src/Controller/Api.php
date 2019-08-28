@@ -17,7 +17,7 @@ class Api implements ContainerInjectionInterface {
   private $container;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(ContainerInterface $container) {
     $this->container = $container;

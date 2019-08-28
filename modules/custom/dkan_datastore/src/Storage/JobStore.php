@@ -15,7 +15,7 @@ class JobStore {
   private $connection;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;

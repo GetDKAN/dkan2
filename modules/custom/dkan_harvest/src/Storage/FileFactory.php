@@ -14,7 +14,7 @@ class FileFactory implements FactoryInterface {
   private $fileSystem;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(FileSystemInterface $fileSystem) {
     $this->fileSystem = $fileSystem;

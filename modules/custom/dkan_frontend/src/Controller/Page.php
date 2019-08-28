@@ -23,7 +23,7 @@ class Page implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(PageBuilder $pageBuilder) {
     $this->pageBuilder = $pageBuilder;

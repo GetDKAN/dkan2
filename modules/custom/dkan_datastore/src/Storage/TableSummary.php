@@ -13,7 +13,7 @@ class TableSummary implements \JsonSerializable {
   private $numOfRows;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(int $numOfColumns, array $columns, int $numOfRows) {
     $this->numOfColumns = $numOfColumns;

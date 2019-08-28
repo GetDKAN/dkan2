@@ -41,7 +41,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(RequestStack $requestStack, SchemaRetriever $schemaRetriever, Data $storage) {
     $this->requestStack = $requestStack;
@@ -191,7 +191,7 @@ class Api implements ContainerInjectionInterface {
           $engine->put($uuid, $data);
           $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
-          // If a new resource is created, inform the user agent via 201 Created.
+          // If a new resource is created, inform the user agent via 201.
           return new JsonResponse(
             (object) ["endpoint" => "{$uri}", "identifier" => $uuid],
             201

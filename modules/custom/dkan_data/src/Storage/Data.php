@@ -7,14 +7,12 @@ use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Logger\RfcLogLevel;
 use HTMLPurifier;
 
 /**
  * Data.
  */
 class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterface, RemoverInterface {
-  use \Drupal\Core\Logger\LoggerChannelTrait;
 
   /**
    * Entity Type Manager.

@@ -13,7 +13,7 @@ class RouteProvider {
   private $appRoot;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(string $appRoot) {
     $this->appRoot = $appRoot;

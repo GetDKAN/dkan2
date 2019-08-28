@@ -17,7 +17,7 @@ class Harvester {
   private $storeFactory;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(FactoryInterface $storeFactory) {
     $this->storeFactory = $storeFactory;
