@@ -62,30 +62,12 @@ context('API', () => {
     })
 
     context('GET requests', () => {
-        it('GET a single dataset', () => {
-            cy.request(endpoint + '/' + json1.identifier).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body.identifier).eql(json1.identifier)
-                expect(response.body.title).eql(json1.title)
-            })
-        })
-
         it('GET a non-existent dataset', () => {
             cy.request({
                 url: endpoint + '/' + jsonShouldNotExist.identifier,
                 failOnStatusCode: false
             }).then((response) => {
                 expect(response.status).eql(404)
-            })
-        })
-
-        it('GET all datasets', () => {
-            cy.request(endpoint).then((response) => {
-                expect(response.status).eql(200)
-                expect(response.body[response.body.length - 1].identifier).eql(json2.identifier)
-                expect(response.body[response.body.length - 1].title).eql(json2.title)
-                expect(response.body[response.body.length - 2].identifier).eql(json1.identifier)
-                expect(response.body[response.body.length - 2].title).eql(json1.title)
             })
         })
     })
