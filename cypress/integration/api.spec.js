@@ -140,17 +140,6 @@ context('API', () => {
    })
 
     context('PUT requests', () => {
-        it('PUT fails without basic auth', () => {
-            cy.request({
-                method: 'PUT',
-                url: endpoint + '/' + jsonShouldNotExist.identifier,
-                body: jsonShouldNotExist,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('PUT fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'PUT',
@@ -230,17 +219,6 @@ context('API', () => {
     })
 
     context('PATCH requests', () => {
-        it('PATCH fails without basic auth', () => {
-            cy.request({
-                method: 'PATCH',
-                url: endpoint + '/' + jsonShouldNotExist.identifier,
-                body: jsonShouldNotExist,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('PATCH fails for non-existent dataset', () => {
             cy.request({
                 method: 'PATCH',
@@ -355,16 +333,6 @@ context('API', () => {
     })
 
     context('DELETE requests', () => {
-        it('DELETE fails without basic authentication', () => {
-            cy.request({
-                method: 'DELETE',
-                url: endpoint + '/' + jsonPost.identifier,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('DELETE existing datasets', () => {
             cy.request({
                 method: 'DELETE',

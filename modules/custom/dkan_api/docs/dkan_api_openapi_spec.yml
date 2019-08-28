@@ -207,6 +207,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     patch:
       operationId: dataset-patch
       summary: Update a dataset
@@ -241,6 +243,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     delete:
       operationId: dataset-delete
       summary: Delete a dataset
@@ -262,6 +266,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/{property}:
     get:
       operationId: property-get-all
