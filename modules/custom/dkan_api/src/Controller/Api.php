@@ -188,16 +188,20 @@ class Api implements ContainerInjectionInterface {
       if ($this->objectExists($uuid)) {
         $engine->put($uuid, $data);
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
-      } else {
+      }
+      else {
         $engine->post($uuid, $data);
-        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid],201);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
       }
     }
-    catch(\Exception $e) {
+    catch (\Exception $e) {
 
     }
   }
 
+  /**
+   *
+   */
   private function objectExists($uuid) {
     try {
       $this->storage->retrieve($uuid);
@@ -208,6 +212,9 @@ class Api implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   *
+   */
   private function getResponse(array $message, int $code) {
     return new JsonResponse((object) $message, $code);
   }
@@ -249,6 +256,9 @@ class Api implements ContainerInjectionInterface {
     }
   }
 
+  /**
+   *
+   */
   private function checkData($uuid, $data) {
     $obj = json_decode($data);
 
