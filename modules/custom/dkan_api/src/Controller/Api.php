@@ -230,17 +230,8 @@ class Api implements ContainerInjectionInterface {
 
     $data = $this->requestStack->getCurrentRequest()->getContent();
 
-    $obj = json_decode($data);
-
-    if (!$obj) {
-      return new JsonResponse((object) ["message" => "Invalid JSON"], 409);
-    }
-
-    if (isset($obj->identifier) && $obj->identifier != $uuid) {
-      return new JsonResponse((object) ["message" => "Identifier cannot be modified"], 409);
-    }
-
     try {
+      $this->checkData($uuid, $data);
       if ($this->objectExists($uuid)) {
         $engine->patch($uuid, $data);
         $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
@@ -250,8 +241,23 @@ class Api implements ContainerInjectionInterface {
         return $this->getResponse(["message" => "No data with the identifier {$uuid} was found."], 404);
       }
     }
+    catch (InvalidPayloadException $e) {
+      return $this->getResponse(["message" => $e->getMessage()], 409);
+    }
     catch (\Exception $e) {
       return $this->getResponse(["message" => $e->getMessage()], 406);
+    }
+  }
+
+  private function checkData($uuid, $data) {
+    $obj = json_decode($data);
+
+    if (!$obj) {
+      throw new InvalidPayloadException("Invalid JSON");
+    }
+
+    if (isset($obj->identifier) && $obj->identifier != $uuid) {
+      throw new InvalidPayloadException("Identifier cannot be modified");
     }
   }
 
