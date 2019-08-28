@@ -6,7 +6,7 @@ use Contracts\FactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 
 /**
- *
+ * FileFactory.
  */
 class FileFactory implements FactoryInterface {
 
@@ -21,7 +21,9 @@ class FileFactory implements FactoryInterface {
   }
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public function getInstance(string $identifier) {
     if (!isset($this->stores[$identifier])) {

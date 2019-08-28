@@ -209,7 +209,7 @@ class Api extends ControllerBase {
   }
 
   /**
-   *
+   * Private.
    */
   private function exceptionJsonResponse(\Exception $e) {
     return new JsonResponse(

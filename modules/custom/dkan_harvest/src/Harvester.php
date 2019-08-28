@@ -138,7 +138,7 @@ class Harvester {
   }
 
   /**
-   *
+   * Private.
    */
   private function getHarvester($id) {
     $plan_store = $this->storeFactory->getInstance("harvest_plans");

@@ -16,22 +16,30 @@ use Drupal\dkan_schema\SchemaRetriever;
 class Api implements ContainerInjectionInterface {
 
   /**
+   * Request stack.
+   *
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   private $requestStack;
 
   /**
+   * Storage.
+   *
    * @var \Drupal\dkan_data\Storage\Data
    */
   private $storage;
 
   /**
+   * Schema retriever.
+   *
    * @var \Drupal\dkan_schema\SchemaRetriever
    */
   private $schemaRetriever;
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new Api($container->get('request_stack'),

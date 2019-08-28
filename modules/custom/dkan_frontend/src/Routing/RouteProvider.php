@@ -20,7 +20,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Routes.
    */
   public function routes() {
     $routes = new RouteCollection();

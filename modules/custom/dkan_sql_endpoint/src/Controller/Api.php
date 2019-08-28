@@ -188,6 +188,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Private.
+   *
    * @codeCoverageIgnore
    */
   private function response($message, $code) {
@@ -199,6 +201,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Private.
+   *
    * @codeCoverageIgnore
    */
   private function getParser() {
@@ -206,6 +210,8 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @{inheritdocs}
    *
    * @codeCoverageIgnore
