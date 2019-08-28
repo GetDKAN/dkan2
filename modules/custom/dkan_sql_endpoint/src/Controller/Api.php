@@ -57,7 +57,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));

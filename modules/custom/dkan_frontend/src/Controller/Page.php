@@ -16,7 +16,9 @@ class Page implements ContainerInjectionInterface {
   private $pageBuilder;
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new Page($container->get('dkan_frontend.page'));
