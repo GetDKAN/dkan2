@@ -194,7 +194,7 @@ class Api implements ContainerInjectionInterface {
       }
     }
     catch(\Exception $e) {
-      return $this->getResponse(["message" => $e->getMessage()], 406);
+
     }
   }
 
@@ -241,19 +241,17 @@ class Api implements ContainerInjectionInterface {
     }
 
     try {
-      $this->storage->retrieve($uuid);
-      $engine->patch($uuid, $data);
-      $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
-      return new JsonResponse(
-          (object) ["endpoint" => "{$uri}", "identifier" => $uuid], 200
-      );
+      if ($this->objectExists($uuid)) {
+        $engine->patch($uuid, $data);
+        $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
+      }
+      else {
+        return $this->getResponse(["message" => "No data with the identifier {$uuid} was found."], 404);
+      }
     }
     catch (\Exception $e) {
-      $status_code = 406;
-      if ($e->getMessage() == "No data with the identifier {$uuid} was found.") {
-        $status_code = 404;
-      }
-      return new JsonResponse((object) ["message" => $e->getMessage()], $status_code);
+      return $this->getResponse(["message" => $e->getMessage()], 406);
     }
   }
 
