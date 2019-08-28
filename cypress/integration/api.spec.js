@@ -116,17 +116,6 @@ context('API', () => {
     })
 
     context('POST requests', () => {
-        it('POST fails without basic auth', () => {
-            cy.request({
-                method: 'POST',
-                url: endpoint,
-                body: jsonPost,
-                failOnStatusCode: false
-            }).then((response) => {
-                expect(response.status).eql(401)
-            })
-        })
-
         it('POST fails with no payload, or empty payload', () => {
             cy.request({
                 method: 'POST',

@@ -138,6 +138,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/dataset/{uuid}:
     get:
       operationId: dataset-get
