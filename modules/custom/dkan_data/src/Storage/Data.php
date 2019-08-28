@@ -123,42 +123,50 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $data = json_decode($data);
     $data = $this->filterHtml($data);
 
-    if (!$id && isset($data->identifier)) {
-      $id = $data->identifier;
-    }
+    $id = (!$id && isset($data->identifier)) ? $data->identifier : $id;
 
     if ($id) {
       $node = $this->getNodeByUuid($id);
     }
 
     /* @var $node \Drupal\node\NodeInterface */
-    // Update existing node.
     if ($node) {
-      $node->field_data_type = $this->schemaId;
-      $new_data = json_encode($data);
-      $node->field_json_metadata = $new_data;
-      $node->save();
-      return $node->uuid();
+      return $this->updateExistingNode($node, $data);
     }
     // Create new node.
     else {
-      $title = isset($data->title) ? $data->title : $data->name;
-      $node = $this->getNodeStorage()
-        ->create(
-          [
-            'title' => $title,
-            'type' => 'data',
-            'uuid' => $id,
-            'field_data_type' => $this->schemaId,
-            'field_json_metadata' => json_encode($data),
-          ]
-        );
-      $node->save();
-
-      return $node->uuid();
+      $this->createNewNode($id, $data);
     }
+  }
 
-    return NULL;
+  /**
+   * Private.
+   */
+  private function updateExistingNode($node, $data) {
+    $node->field_data_type = $this->schemaId;
+    $new_data = json_encode($data);
+    $node->field_json_metadata = $new_data;
+    $node->save();
+    return $node->uuid();
+  }
+
+  /**
+   * Private.
+   */
+  private function createNewNode($id, $data) {
+    $title = isset($data->title) ? $data->title : $data->name;
+    $node = $this->getNodeStorage()
+      ->create(
+        [
+          'title' => $title,
+          'type' => 'data',
+          'uuid' => $id,
+          'field_data_type' => $this->schemaId,
+          'field_json_metadata' => json_encode($data),
+        ]
+      );
+    $node->save();
+    return $node->uuid();
   }
 
   /**
