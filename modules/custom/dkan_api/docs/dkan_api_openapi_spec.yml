@@ -138,6 +138,17 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '409':
+          description: Resource already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - endpoint
+                properties:
+                  endpoint:
+                    type: string
         '401':
           description: Unauthorized
   /api/v1/dataset/{uuid}:
