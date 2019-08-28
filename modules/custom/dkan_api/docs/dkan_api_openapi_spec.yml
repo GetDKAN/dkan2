@@ -325,6 +325,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/{property}/{uuid}:
     get:
       operationId: property-get
@@ -382,6 +384,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     patch:
       operationId: property-patch
       summary: Update a property
@@ -414,6 +418,8 @@ paths:
                     type: string
                   identifier:
                     type: string
+        '401':
+          description: Unauthorized
     delete:
       operationId: property-delete
       summary: Delete a property
@@ -436,6 +442,8 @@ paths:
                 properties:
                   message:
                     type: string
+        '401':
+          description: Unauthorized
   /api/v1/sql/{query}:
     get:
       operationId: datastore-query
