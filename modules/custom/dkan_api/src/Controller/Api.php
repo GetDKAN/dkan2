@@ -187,15 +187,15 @@ class Api implements ContainerInjectionInterface {
     try {
       if ($this->objectExists($uuid)) {
         $engine->put($uuid, $data);
-        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
+        return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
       }
       else {
-        $engine->post($uuid, $data);
+        $engine->post($data);
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 201);
       }
     }
     catch (\Exception $e) {
-
+      return new JsonResponse((object) ["message" => $e->getMessage()], 406);
     }
   }
 

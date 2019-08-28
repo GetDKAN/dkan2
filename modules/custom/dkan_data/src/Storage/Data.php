@@ -135,7 +135,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     }
     // Create new node.
     else {
-      $this->createNewNode($id, $data);
+      return $this->createNewNode($id, $data);
     }
   }
 
