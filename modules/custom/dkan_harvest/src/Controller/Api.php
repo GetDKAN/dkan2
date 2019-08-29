@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @package Drupal\dkan_harvest\Controller
  */
-class Api implements ContainerInjectionInterface  {
+class Api implements ContainerInjectionInterface {
 
   /**
    * Request stack.
@@ -27,6 +27,11 @@ class Api implements ContainerInjectionInterface  {
    */
   private $harvester;
 
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}
+   */
   public static function create(ContainerInterface $container) {
     return new Api($container);
   }

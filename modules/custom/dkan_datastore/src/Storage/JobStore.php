@@ -58,7 +58,7 @@ class JobStore {
       $this->createTable($tableName);
     }
 
-    $existing_id = $result = $this->connection->select($tableName, 't')
+    $existing_id = $this->connection->select($tableName, 't')
       ->fields('t', ['jid'])
       ->condition('ref_uuid', $uuid)
       ->execute()

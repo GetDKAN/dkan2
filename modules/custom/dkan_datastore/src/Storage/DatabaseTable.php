@@ -149,7 +149,9 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
   }
 
   /**
+   * Destroy.
    *
+   * Drop the database table.
    */
   public function destroy() {
     if ($this->tableExist($this->getTableName())) {
@@ -234,14 +236,16 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
   }
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public function jsonSerialize() {
     return (object) ['resource' => $this->resource];
   }
 
   /**
-   *
+   * Hydrate.
    */
   public static function hydrate(string $json) {
     $data = json_decode($json);
