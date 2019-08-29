@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_datastore\Unit\Controller;
 
+use Drupal\Core\File\FileSystem;
 use Drupal\dkan_common\Tests\DkanTestBase;
 use Drupal\dkan_datastore\Controller\Api;
 use Drupal\dkan_datastore\Service\Datastore;
@@ -12,7 +13,6 @@ use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\TypedData\TypedDataInterface;
@@ -105,7 +105,7 @@ class DatastoreApiTest extends DkanTestBase {
   }
 
   private function getFileSystemMock() {
-    $mock = $this->getMockBuilder(FileSystemInterface::class)
+    $mock = $this->getMockBuilder(FileSystem::class)
       ->disableOriginalConstructor()
       ->setMethods(['prepareDir'])
       ->getMockForAbstractClass();
