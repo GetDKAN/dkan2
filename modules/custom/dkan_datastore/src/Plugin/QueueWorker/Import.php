@@ -6,6 +6,7 @@ use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Core\Logger\RfcLogLevel;
 use Procrastinator\Result;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Processes resource import.
@@ -22,15 +23,11 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
   use \Drupal\Core\Logger\LoggerChannelTrait;
 
-  /**
-   * Limit to how many stalled imports can occur before queue is stopped.
-   */
-  const STALL_LIMIT = 5;
 
   private $container;
 
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new 
+    return new Import($configuration, $plugin_id, $plugin_definition, $container);
   }
 
   /**

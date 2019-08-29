@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_harvest\Controller;
 
-use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @package Drupal\dkan_harvest\Controller
  */
-class Api extends ControllerBase {
+class Api implements ContainerInjectionInterface  {
 
   /**
    * Request stack.
@@ -26,6 +26,10 @@ class Api extends ControllerBase {
    * @var \Drupal\dkan_harvest\Harvester
    */
   private $harvester;
+
+  public static function create(ContainerInterface $container) {
+    return new Api($container);
+  }
 
   /**
    * Api constructor.

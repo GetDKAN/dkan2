@@ -4,8 +4,8 @@ namespace Drupal\dkan_datastore\Service;
 
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
+use Drupal\Core\File\FileSystem;
 use Drupal\Core\Entity\EntityRepository;
-use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\node\NodeInterface;
@@ -27,6 +27,12 @@ class Datastore {
   private $logger;
   private $connection;
   private $queue;
+
+  /**
+   * File System.
+   *
+   * @var \Drupal\Core\File\FileSystem
+   */
   private $fileSystem;
 
   /**
@@ -37,7 +43,7 @@ class Datastore {
             LoggerChannelInterface $logger,
             Connection $connection,
             QueueFactory $queue,
-            FileSystemInterface $fileSystem
+            FileSystem $fileSystem
   ) {
     $this->entityRepository = $entityRepository;
     $this->logger = $logger;
@@ -215,7 +221,7 @@ class Datastore {
       $file_path = $this->getResourceFilePathFromNode($node);
 
       $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
-      $this->fileSystem->prepareDir($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      $this->fileSystem->prepareDirectory($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
       $fileFetcher = new FileFetcher($file_path, $tmpDirectory);
 
