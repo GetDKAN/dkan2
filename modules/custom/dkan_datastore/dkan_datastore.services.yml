@@ -3,7 +3,6 @@ services:
       class: \Drupal\dkan_datastore\Service\Datastore
       arguments:
           - '@entity.repository'
-          - '@dkan_datastore.logger_channel'
           - '@database'
           - '@queue'
           - '@file_system'

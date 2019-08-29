@@ -24,7 +24,6 @@ class Datastore {
   const DATASTORE_DEFAULT_TIMELIMIT = 60;
 
   private $entityRepository;
-  private $logger;
   private $connection;
   private $queue;
 
@@ -40,13 +39,11 @@ class Datastore {
    */
   public function __construct(
             EntityRepository $entityRepository,
-            LoggerChannelInterface $logger,
             Connection $connection,
             QueueFactory $queue,
             FileSystem $fileSystem
   ) {
     $this->entityRepository = $entityRepository;
-    $this->logger = $logger;
     $this->connection = $connection;
     $this->queue = $queue->get('dkan_datastore_import');
     $this->fileSystem = $fileSystem;
@@ -121,7 +118,6 @@ class Datastore {
       throw new \RuntimeException("Failed to create file fetcher queue for {$uuid}");
     }
 
-    $this->logger->notice("New queue (ID:{$queueId}) was created for `{$uuid}`");
     return $queueId;
   }
 
