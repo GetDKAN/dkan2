@@ -177,7 +177,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    */
   public function destroy() {
     if ($this->tableExist($this->getTableName())) {
-      $this->tableDrop($this->getTableName());
+      $this->connection->schema()->dropTable($this->getTableName());
     }
   }
 
@@ -223,13 +223,6 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    */
   private function tableCreate($table_name, $schema) {
     $this->connection->schema()->createTable($table_name, $schema);
-  }
-
-  /**
-   * Drop a table from the db.
-   */
-  private function tableDrop($table_name) {
-    $this->connection->schema()->dropTable($table_name);
   }
 
   /**
