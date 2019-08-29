@@ -26,6 +26,11 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
 
   private $container;
 
+  /**
+   * Inherited.
+   *
+   * {@inheritDoc}
+   */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new Import($configuration, $plugin_id, $plugin_definition, $container);
   }
@@ -39,6 +44,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    *   The plugin_id for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   A dependency injection container.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ContainerInterface $container) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

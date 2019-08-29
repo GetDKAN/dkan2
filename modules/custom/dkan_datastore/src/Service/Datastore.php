@@ -213,7 +213,7 @@ class Datastore {
   }
 
   /**
-   *
+   * Private.
    */
   private function getFileFetcher(string $uuid): FileFetcher {
     if (!$fileFetcher = $this->getStoredFileFetcher($uuid)) {
@@ -236,7 +236,7 @@ class Datastore {
   }
 
   /**
-   *
+   * Private.
    */
   private function getStoredFileFetcher(string $uuid) {
     $jobStore = new JobStore($this->connection);
