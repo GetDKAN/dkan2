@@ -30,6 +30,8 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    *
    * @param \Drupal\Core\Database\Connection $connection
    *   Drupal database connection object.
+   * @param \Dkan\Datastore\Resource $resource
+   *   A resource.
    */
   public function __construct(Connection $connection, Resource $resource) {
     $this->connection = $connection;
@@ -96,7 +98,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
   }
 
   /**
-   *
+   * Get summary.
    */
   public function getSummary() {
     $columns = array_keys($this->schema['fields']);
