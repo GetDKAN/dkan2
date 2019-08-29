@@ -22,7 +22,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Get.
    */
   public function get(string $uuid, string $jobClass) {
     if (!$this->validateJobClass($jobClass)) {
@@ -48,7 +48,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Store.
    */
   public function store(string $uuid, Job $job) {
     $jobClass = get_class($job);
@@ -81,7 +81,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Remove.
    */
   public function remove($uuid, $jobClass) {
     $tableName = $this->getTableName($jobClass);
@@ -91,7 +91,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Private.
    */
   private function getTableName($jobClass) {
     $safeClassName = strtolower(preg_replace('/\\\\/', '_', $jobClass));
@@ -99,7 +99,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Private.
    */
   private function createTable(string $tableName) {
     $schema = [
@@ -128,7 +128,7 @@ class JobStore {
   }
 
   /**
-   *
+   * Private.
    */
   private function validateJobClass(string $jobClass): bool {
     if (is_subclass_of($jobClass, Job::class)) {

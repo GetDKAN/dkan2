@@ -22,7 +22,9 @@ class TableSummary implements \JsonSerializable {
   }
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public function jsonSerialize() {
     return [
