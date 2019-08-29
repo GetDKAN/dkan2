@@ -13,7 +13,6 @@ use Drupal\Core\Database\StatementInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\TypedData\TypedDataInterface;
 use Drupal\node\NodeInterface;
@@ -66,14 +65,12 @@ class DatastoreApiTest extends DkanTestBase {
     switch ($serviceName) {
       case 'dkan_datastore.service':
         $mockEntityRepository = $this->mockEntityRepository(EntityRepository::class);
-        $mockLogger = $this->createMock(LoggerChannelInterface::class);
         $mockConnection = $this->getConnectionMock();
         $mockQueueFactory = $this->getQueueFactoryMock();
         $mockFileSystem = $this->getFileSystemMock();
 
         return new Datastore(
           $mockEntityRepository,
-          $mockLogger,
           $mockConnection,
           $mockQueueFactory,
           $mockFileSystem
