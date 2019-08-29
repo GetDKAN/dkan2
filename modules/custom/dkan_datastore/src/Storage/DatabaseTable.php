@@ -5,6 +5,7 @@ namespace Drupal\dkan_datastore\Storage;
 use Dkan\Datastore\Storage\StorageInterface;
 use Drupal\Core\Database\Connection;
 use Dkan\Datastore\Resource;
+use Drupal\Core\Database\Query\Select;
 
 /**
  * Database storage object.
@@ -114,13 +115,35 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
    *   Query obejct.
    */
   public function query(Query $query): array {
-    $db_query = $this->connection->select($this->getTableName(), 't');
-    $db_query->fields('t', $query->properties);
+    $db_query = $this->connection->select($this->getTableName(), 't')
+      ->fields('t', $query->properties);
 
+    $this->setQueryConditions($db_query, $query);
+    $this->setQueryOrderBy($db_query, $query);
+    $this->setQueryLimitAndOffset($db_query, $query);
+
+    if ($query->count) {
+      $db_query = $db_query->countQuery();
+    }
+
+    $result = $db_query->execute()->fetchAll();
+
+    return $result;
+  }
+
+  /**
+   * Private.
+   */
+  private function setQueryConditions(Select $db_query, Query $query) {
     foreach ($query->conditions as $property => $value) {
       $db_query->condition($property, $value, "LIKE");
     }
+  }
 
+  /**
+   * Private.
+   */
+  private function setQueryOrderBy(Select $db_query, Query $query) {
     foreach ($query->sort['ASC'] as $property) {
       $db_query->orderBy($property);
     }
@@ -128,7 +151,12 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
     foreach ($query->sort['DESC'] as $property) {
       $db_query->orderBy($property, 'DESC');
     }
+  }
 
+  /**
+   * Private.
+   */
+  private function setQueryLimitAndOffset(Select $db_query, Query $query) {
     if ($query->limit) {
       if ($query->offset) {
         $db_query->range($query->offset, $query->limit);
@@ -140,14 +168,6 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
     elseif ($query->offset) {
       $db_query->range($query->limit);
     }
-
-    if ($query->count) {
-      $db_query = $db_query->countQuery();
-    }
-
-    $result = $db_query->execute()->fetchAll();
-
-    return $result;
   }
 
   /**

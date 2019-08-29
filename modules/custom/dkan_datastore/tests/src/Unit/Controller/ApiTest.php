@@ -33,6 +33,9 @@ class DatastoreApiTest extends DkanTestBase {
   private $tableName;
   private $noNode = FALSE;
 
+  /**
+   *
+   */
   public function setUp() {
     parent::setUp();
     $this->jobStoreData = (object) [
@@ -87,12 +90,15 @@ class DatastoreApiTest extends DkanTestBase {
       ->setMethods(['get'])
       ->getMockForAbstractClass();
 
-      $mock->method('get')->willReturn($this->getQueueMock());
+    $mock->method('get')->willReturn($this->getQueueMock());
 
     return $mock;
 
   }
 
+  /**
+   *
+   */
   private function getQueueMock() {
     $mock = $this->getMockBuilder("\Drupal\Core\Queue\QueueInterface")
       ->disableOriginalConstructor()
@@ -104,13 +110,16 @@ class DatastoreApiTest extends DkanTestBase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getFileSystemMock() {
     $mock = $this->getMockBuilder(FileSystem::class)
       ->disableOriginalConstructor()
       ->setMethods(['prepareDir'])
       ->getMockForAbstractClass();
 
-      $mock->method('prepareDir')->willReturn(TRUE);
+    $mock->method('prepareDir')->willReturn(TRUE);
 
     return $mock;
   }
