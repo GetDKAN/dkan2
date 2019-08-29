@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\dkan_harvest\Load\FileHelper;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
 use FileFetcher\FileFetcher;
@@ -58,8 +57,8 @@ class Datastore {
   public function import(string $uuid, bool $deferred = FALSE): array {
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
-      $this->queueImport($uuid);
-      return [];
+      $queueId = $this->queueImport($uuid);
+      return ['queueID' => $queueId];
     }
 
     $file_fetcher = $this->getFileFetcher($uuid);
@@ -104,6 +103,9 @@ class Datastore {
    *
    * @param string $uuid
    *   Resource node UUID.
+   *
+   * @return int
+   *   Queue ID for new queued item.
    */
   private function queueImport($uuid) {
     // Attempt to fetch the file in a queue so as to not block user.
@@ -114,6 +116,7 @@ class Datastore {
     }
 
     $this->logger->notice("New queue (ID:{$queueId}) was created for `{$uuid}`");
+    return $queueId;
   }
 
   /**
@@ -207,23 +210,23 @@ class Datastore {
    *
    */
   private function getFileFetcher(string $uuid): FileFetcher {
-    if (!$filefetcher = $this->getStoredFileFetcher($uuid)) {
+    if (!$fileFetcher = $this->getStoredFileFetcher($uuid)) {
       $node = $this->entityRepository->loadEntityByUuid('node', $uuid);
       $file_path = $this->getResourceFilePathFromNode($node);
 
       $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
-      (new FileHelper())->prepareDir($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      $this->fileSystem->prepareDir($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
 
-      $filefetcher = new FileFetcher($file_path, $tmpDirectory);
+      $fileFetcher = new FileFetcher($file_path, $tmpDirectory);
 
-      $filefetcher->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
+      $fileFetcher->setTimeLimit(self::DATASTORE_DEFAULT_TIMELIMIT);
       $jobStore = new JobStore($this->connection);
-      $jobStore->store($uuid, $filefetcher);
+      $jobStore->store($uuid, $fileFetcher);
     }
-    if (!($filefetcher instanceof FileFetcher)) {
+    if (!($fileFetcher instanceof FileFetcher)) {
       throw new \Exception("Could not load file-fetcher for uuid $uuid");
     }
-    return $filefetcher;
+    return $fileFetcher;
   }
 
   /**

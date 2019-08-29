@@ -69,7 +69,7 @@ class DatabaseTable implements StorageInterface, \JsonSerializable {
 
     $data = json_decode($data);
 
-    $q = db_insert($this->getTableName());
+    $q = $this->connection->insert($this->getTableName());
     $q->fields(array_keys($this->schema['fields']));
     $q->values($data);
     $q->execute();
