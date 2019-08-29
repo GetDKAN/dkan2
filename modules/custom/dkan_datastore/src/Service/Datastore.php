@@ -6,7 +6,6 @@ use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Entity\EntityRepository;
-use Drupal\Core\Logger\LoggerChannelInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\node\NodeInterface;
 use Dkan\Datastore\Resource;
