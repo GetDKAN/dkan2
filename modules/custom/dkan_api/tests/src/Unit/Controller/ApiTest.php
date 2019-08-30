@@ -85,21 +85,6 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function testPostRetrieveException() {
-    $mockChain = $this->getCommonMockChain();
-    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
-    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
-    $mockChain->add(Request::class, 'getContent', json_encode('{"identifier": "1"}'));
-    $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
-
-    $controller = Api::create($mockChain->getMock());
-    $response = $controller->post('dataset');
-    $this->assertEquals('{"message":"bad"}', $response->getContent());
-  }
-
-  /**
-   *
-   */
   public function testPostNoIdentifier() {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
