@@ -144,7 +144,7 @@ class Api implements ContainerInjectionInterface {
         );
       }
       catch (\Exception $e) {
-
+        return new JsonResponse((object) ["message" => $e->getMessage()], 406);
       }
     }
 

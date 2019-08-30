@@ -29,9 +29,16 @@ class FileFactory implements FactoryInterface {
     if (!isset($this->stores[$identifier])) {
       $public_directory = $this->fileSystem->realpath("public://");
       $harvest_config_directory = $public_directory . "/dkan_harvest";
-      $this->stores[$identifier] = new File($harvest_config_directory);
+      $this->stores[$identifier] = $this->getFileStorage($harvest_config_directory);
     }
     return $this->stores[$identifier];
+  }
+
+  /**
+   *
+   */
+  protected function getFileStorage($directory) {
+    return new File($directory);
   }
 
 }
