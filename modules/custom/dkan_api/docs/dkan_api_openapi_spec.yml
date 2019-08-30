@@ -448,7 +448,8 @@ paths:
     get:
       operationId: datastore-query
       summary: Query resources in datastore
-      description: Interact with resources in the datastore using an SQL-like syntax.
+      description: >
+        Interact with resources in the datastore using an SQL-like syntax.
       tags:
         - SQL Query
       parameters:
@@ -575,7 +576,10 @@ paths:
   /api/v1/datastore/{uuid}:
     get:
       operationId: datastore-get
-      summary: Return a dataset with datastore headers and statistics
+      summary: Datastore statistics
+      description: >
+        Returns the numbers of rows and columns, and a list of columns headers
+        from the dataset.
       tags:
         - Datastore
       parameters:
@@ -591,7 +595,11 @@ paths:
                   $ref: '#/components/schemas/Dataset'
     delete:
       operationId: datastore-delete
-      summary: Drop a datastore
+      summary: Delete a datastore
+      description: >
+        Delete one or more datastore. If the uuid parameter is that of
+        a resource, delete that resource. If the uuid parameter is that of
+        a dataset, delete all resources of that dataset.
       tags:
         - Datastore
       security:
@@ -614,6 +622,8 @@ paths:
     put:
       operationId: datastore-import
       summary: Datastore import
+      description: >
+        Immediately starts the import process for a datastore.
       tags:
         - Datastore
       security:
@@ -645,6 +655,9 @@ paths:
     put:
       operationId: datastore-deferred-import
       summary: Deferred datastore import
+      description: >
+        Starts the import process for a datastore in a deferred manner, placing
+        it in a queue to be processed later.
       tags:
         - Datastore
       security:
