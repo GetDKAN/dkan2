@@ -20,8 +20,8 @@ endpointsToSkip = [
   '/api/v1/harvest/info/{id}/{run_id} > Information about a specific previous harvest run > 200 > application/json',
   '/api/v1/harvest/info/{id}/{run_id} > Information about a specific previous harvest run > 200 > application/json',
   '/api/v1/harvest/run/{id} > Runs a harvest > 200 > application/json',
-  '/api/v1/datastore/{uuid} > Return a dataset with datastore headers and statistics > 200 > application/json',
-  '/api/v1/datastore/{uuid} > Drop a datastore > 200 > application/json',
+  '/api/v1/datastore/{uuid} > Datastore statistics > 200 > application/json',
+  '/api/v1/datastore/{uuid} > Delete a datastore > 200 > application/json',
   '/api/v1/datastore/import/{uuid} > Datastore import > 200 > application/json',
   '/api/v1/datastore/import/{uuid}/deferred > Deferred datastore import > 200 > application/json',
 ];
