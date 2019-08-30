@@ -66,18 +66,25 @@ class MockChain {
       $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
     }
     elseif (is_object($return)) {
-      if ($return instanceof \Exception) {
-        $mock->method($method)->willThrowException($return);
-      }
-      else {
-        $mock->method($method)->willReturn($return);
-      }
+      $this->setObjectReturnOrException($mock, $method, $return);
     }
     elseif (is_string($return)) {
       $this->setReturnsBasedOnStringType($mock, $method, $return);
     }
     else {
       throw new \Exception("Bad definition");
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function setObjectReturnOrException($mock, $method, $return) {
+    if ($return instanceof \Exception) {
+      $mock->method($method)->willThrowException($return);
+    }
+    else {
+      $mock->method($method)->willReturn($return);
     }
   }
 
