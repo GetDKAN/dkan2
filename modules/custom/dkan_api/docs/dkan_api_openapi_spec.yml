@@ -678,8 +678,7 @@ paths:
       operationId: datastore-deferred-import
       summary: Deferred datastore import
       description: >
-        Starts the import process for a datastore in a deferred manner, placing
-        it in a queue to be processed later.
+        Queues the import process for a datastore.
       tags:
         - Datastore
       security:
