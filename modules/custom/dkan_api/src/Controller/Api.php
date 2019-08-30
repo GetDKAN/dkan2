@@ -131,12 +131,8 @@ class Api implements ContainerInjectionInterface {
     $params = json_decode($data, TRUE);
     if (isset($params['identifier'])) {
       $uuid = $params['identifier'];
-      try {
-        $this->storage->retrieve($uuid);
+      if ($this->objectExists($schema_id, $uuid)) {
         return $this->getResponse(["endpoint" => "{$uri}/{$uuid}"], 409);
-      }
-      catch (\Exception $e) {
-        return $this->getResponseFromException($e, 406);
       }
     }
 
@@ -174,7 +170,7 @@ class Api implements ContainerInjectionInterface {
     $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
 
     try {
-      if ($this->objectExists($uuid)) {
+      if ($this->objectExists($schema_id, $uuid)) {
         $engine->put($uuid, $data);
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
       }
@@ -191,9 +187,9 @@ class Api implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function objectExists($uuid) {
+  private function objectExists($schemaId, $uuid) {
     try {
-      $this->storage->retrieve($uuid);
+      $this->getStorage($schemaId)->retrieve($uuid);
       return TRUE;
     }
     catch (\Exception $e) {
@@ -221,7 +217,7 @@ class Api implements ContainerInjectionInterface {
 
     try {
       $this->checkData($uuid, $data);
-      if ($this->objectExists($uuid)) {
+      if ($this->objectExists($schema_id, $uuid)) {
         $engine->patch($uuid, $data);
         $uri = $this->requestStack->getCurrentRequest()->getRequestUri();
         return $this->getResponse(["endpoint" => "{$uri}", "identifier" => $uuid], 200);
