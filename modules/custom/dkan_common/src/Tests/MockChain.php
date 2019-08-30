@@ -16,14 +16,14 @@ class MockChain {
   private $root = NULL;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(TestCase $case) {
     $this->testCase = $case;
   }
 
   /**
-   *
+   * Add.
    */
   public function add($objectClass, $method, $return) {
     if (!$this->root) {
@@ -33,14 +33,14 @@ class MockChain {
   }
 
   /**
-   *
+   * Get Mock.
    */
   public function getMock() {
     return $this->build($this->root);
   }
 
   /**
-   *
+   * Private.
    */
   private function build($objectClass) {
     $methods = $this->getMethods($objectClass);
@@ -92,7 +92,7 @@ class MockChain {
   }
 
   /**
-   *
+   * Private.
    */
   private function getMethods($objectClass) {
     $methods = [];
@@ -107,7 +107,7 @@ class MockChain {
   }
 
   /**
-   *
+   * Private.
    */
   private function getReturn($objectClass, $method) {
     if (isset($this->definitons[$objectClass][$method])) {
