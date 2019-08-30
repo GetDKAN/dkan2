@@ -44,51 +44,71 @@ class MockChain {
    */
   private function build($objectClass) {
     $methods = $this->getMethods($objectClass);
-    $builder = $this->testCase->getMockBuilder($objectClass)
+
+    $mock = $this->testCase->getMockBuilder($objectClass)
       ->disableOriginalConstructor()
-      ->setMethods($methods);
+      ->setMethods($methods)
+      ->getMockForAbstractClass();
 
-    $mock = $builder->getMockForAbstractClass();
     foreach ($methods as $method) {
-      $return = $this->getReturn($objectClass, $method);
-
-      if (is_object($return)) {
-        if ($return instanceof \Exception) {
-          $mock->method($method)->willThrowException($return);
-        }
-        else {
-          $mock->method($method)->willReturn($return);
-        }
-      }
-      elseif (is_string($return)) {
-        if (class_exists($return)) {
-          $mock->method($method)->willReturn($this->build($return));
-        }
-        else {
-          $json = json_decode($return);
-
-          if ($json) {
-            $mock->method($method)->willReturn($json);
-          }
-          else {
-            $mock->method($method)->willReturn($return);
-          }
-        }
-      }
-      elseif (is_array($return)) {
-        $mock->method($method)->willReturnCallback(function ($input) use ($return) {
-          foreach ($return as $possible_input => $returnObjectClass) {
-            if ($input == $possible_input) {
-              return $this->build($returnObjectClass);
-            }
-          }
-        });
-      }
-      else {
-        throw new \Exception("Bad definition");
-      }
+      $this->setupMethodReturns($objectClass, $mock, $method);
     }
     return $mock;
+  }
+
+  /**
+   * Private.
+   */
+  private function setupMethodReturns($objectClass, $mock, $method) {
+    $return = $this->getReturn($objectClass, $method);
+
+    if (is_array($return)) {
+      $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
+    }
+    elseif (is_object($return)) {
+      if ($return instanceof \Exception) {
+        $mock->method($method)->willThrowException($return);
+      }
+      else {
+        $mock->method($method)->willReturn($return);
+      }
+    }
+    elseif (is_string($return)) {
+      $this->setReturnsBasedOnStringType($mock, $method, $return);
+    }
+    else {
+      throw new \Exception("Bad definition");
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function setMultipleReturnsBasedOnInput($mock, $method, array $return) {
+    $mock->method($method)->willReturnCallback(function ($input) use ($return) {
+      foreach ($return as $possible_input => $returnObjectClass) {
+        if ($input == $possible_input) {
+          return $this->build($returnObjectClass);
+        }
+      }
+    });
+  }
+
+  /**
+   * Private.
+   */
+  private function setReturnsBasedOnStringType($mock, $method, string $return) {
+    // We accept complex returns as json strings.
+    $json = json_decode($return);
+    if (class_exists($return)) {
+      $mock->method($method)->willReturn($this->build($return));
+    }
+    elseif ($json != FALSE) {
+      $mock->method($method)->willReturn($json);
+    }
+    else {
+      $mock->method($method)->willReturn($return);
+    }
   }
 
   /**
