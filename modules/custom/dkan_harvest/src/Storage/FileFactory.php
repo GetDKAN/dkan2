@@ -35,7 +35,11 @@ class FileFactory implements FactoryInterface {
   }
 
   /**
+   * Private.
    *
+   * Set to protected for testing and mocking.
+   *
+   * @todo make private again.
    */
   protected function getFileStorage($directory) {
     return new File($directory);
