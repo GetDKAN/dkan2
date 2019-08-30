@@ -466,7 +466,9 @@ paths:
   /api/v1/harvest:
     get:
       operationId: harvest-get-all
-      summary: Get all harvest identifiers
+      summary: Lists harvest identifiers
+      description: >
+        Lists the identifiers of all registered harvests.
       tags:
         - Harvest
       responses:
@@ -476,11 +478,11 @@ paths:
             application/json:
               schema:
                 type: array
-                items:
-                  type: object
     post:
       operationId: harvest-register
       summary: Register a new harvest
+      description: >
+        Registers a new harvest, after validating against our schema.
       tags:
         - Harvest
       security:
@@ -510,6 +512,9 @@ paths:
     get:
       operationId: harvest-info
       summary: List previous runs for a harvest id
+      description: >
+        Lists the identifiers (timestamps) of previous runs for a particular
+        harvest id.
       tags:
         - Harvest
       parameters:
@@ -527,6 +532,8 @@ paths:
     get:
       operationId: harvest-run-info
       summary: Information about a specific previous harvest run
+      description: >
+        Gives information about a previous run for a specific harvest run.
       tags:
         - Harvest
       parameters:
@@ -543,6 +550,8 @@ paths:
     put:
       operationId: harvest-run
       summary: Runs a harvest
+      description: >
+        Runs a harvest for a specific identifier.
       tags:
         - Harvest
       security:
