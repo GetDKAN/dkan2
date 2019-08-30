@@ -478,6 +478,8 @@ paths:
             application/json:
               schema:
                 type: array
+                items:
+                  type: integer
     post:
       operationId: harvest-register
       summary: Register a new harvest
