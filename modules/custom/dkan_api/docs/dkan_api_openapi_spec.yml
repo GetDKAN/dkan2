@@ -479,7 +479,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: integer
+                  type: string
     post:
       operationId: harvest-register
       summary: Register a new harvest
