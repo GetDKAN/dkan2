@@ -52,18 +52,21 @@ class RouteProvider {
       // GET individual.
       $get = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'GET', 'get');
       $public_routes->add("dkan_api.{$schema}.get", $get);
-      // POST.
-      $post = $this->routeHelper($schema, "/api/v1/$schema", 'POST', 'post');
-      $authenticated_routes->add("dkan_api.{$schema}.post", $post);
       // PUT.
       $put = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'PUT', 'put');
       $authenticated_routes->add("dkan_api.{$schema}.put", $put);
       // PATCH.
       $patch = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'PATCH', 'patch');
       $authenticated_routes->add("dkan_api.{$schema}.patch", $patch);
-      // DELETE.
-      $delete = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'DELETE', 'delete');
-      $authenticated_routes->add("dkan_api.{$schema}.delete", $delete);
+      // Only applicable to datasets.
+      if ($schema === 'dataset') {
+        // POST.
+        $post = $this->routeHelper($schema, "/api/v1/$schema", 'POST', 'post');
+        $authenticated_routes->add("dkan_api.{$schema}.post", $post);
+        // DELETE.
+        $delete = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'DELETE', 'delete');
+        $authenticated_routes->add("dkan_api.{$schema}.delete", $delete);
+      }
     }
 
     $public_routes->addRequirements(['_access' => 'TRUE']);
