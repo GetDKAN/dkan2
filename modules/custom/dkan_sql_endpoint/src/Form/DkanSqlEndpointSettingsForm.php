@@ -5,6 +5,12 @@ namespace Drupal\dkan_sql_endpoint\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Class DkanSqlEndpointSettingsForm.
+ *
+ * @package Drupal\dkan_sql_endpoint\Form
+ * @codeCoverageIgnore
+ */
 class DkanSqlEndpointSettingsForm extends ConfigFormBase {
 
   /**
