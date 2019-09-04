@@ -69,13 +69,28 @@ class RouteProvider {
       }
     }
 
-    $public_routes->addRequirements(['_access' => 'TRUE']);
-    $authenticated_routes->addRequirements(['_permission' => 'post put delete datasets through the api']);
-    $authenticated_routes->addOptions(['_auth' => ['basic_auth']]);
+    $this->setPublicRoutesAccess($public_routes);
+    $this->setPrivateRoutesAccess($authenticated_routes);
+
     $routes->addCollection($public_routes);
     $routes->addCollection($authenticated_routes);
 
     return $routes;
+  }
+
+  /**
+   * Private.
+   */
+  private function setPublicRoutesAccess($routes) {
+    $routes->addRequirements(['_access' => 'TRUE']);
+  }
+
+  /**
+   * Private.
+   */
+  private function setPrivateRoutesAccess($routes) {
+    $routes->addRequirements(['_permission' => 'post put delete datasets through the api']);
+    $routes->addOptions(['_auth' => ['basic_auth']]);
   }
 
   /**
