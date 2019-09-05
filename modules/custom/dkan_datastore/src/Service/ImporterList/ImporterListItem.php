@@ -3,6 +3,7 @@
 namespace Drupal\dkan_datastore\Service\ImporterList;
 
 use FileFetcher\FileFetcher;
+use Procrastinator\Job\Job;
 
 /**
  * Defines and provide a single item for an ImporterList.
@@ -107,16 +108,18 @@ class ImporterListItem {
    * Build out the full "item" object and set public propertries.
    */
   private function buildItem() {
-    $this->fileFetcherStatus = $this->fileFetcher->getResult()->getStatus();
-    $this->importerStatus = 'waiting';
-    $this->bytesProcessed = 0;
-    $this->percentDone = 0;
     $this->fileName = $this->getFileName();
+    $this->fileFetcherStatus = $this->fileFetcher->getResult()->getStatus();
+    $this->fileFetcherBytes = $this->getBytesProcessed($this->fileFetcher);
+    $this->fileFetcherPercentDone = $this->getPercentDone($this->fileFetcher);
+    $this->importerStatus = 'waiting';
+    $this->importerBytes = 0;
+    $this->importerPercentDone = 0;
 
-    if (isset($importer)) {
+    if (isset($this->importer)) {
       $this->importerStatus = $this->importer->getResult()->getStatus();
-      $this->bytesProcessed = $this->getBytesProcessed();
-      $this->percentDone = $this->getPercentDone();
+      $this->importerBytes = $this->getBytesProcessed($this->importer);
+      $this->importerPercentDone = $this->getPercentDone($this->importer);
     }
   }
 
@@ -124,34 +127,56 @@ class ImporterListItem {
    * Using the fileFetcher object, find the file path and extract the name.
    */
   private function getFileName(): string {
-    $data = json_decode($this->fileFetcher->getResult()->getData());
-    $fileLocation = $data->source;
+    $fileLocation = $this->fileFetcher->getStateProperty('source');
     $locationParts = explode('/', $fileLocation);
     return end($locationParts);
   }
 
   /**
-   * Using the importer job object, get a percentage of the total file imported.
+   * Get a percentage of the total file procesed for either job type.
+   *
+   * @param \Procrastinator\Job\Job $job
+   *   Either a FileFetcher or Importer object.
    *
    * @return float
    *   Percentage.
    */
-  private function getPercentDone(): float {
-    $bytes = $this->getBytesProcessed($this->importer);
-    return round($bytes / filesize($this->importer->getResource()->getFilePath()) * 100);
+  private function getPercentDone(Job $job): float {
+    $bytes = $this->getBytesProcessed($job);
+    return round($bytes / $this->getFileSize() * 100);
+  }
+
+  /**
+   * Get the filesize for the resource file.
+   *
+   * @return int
+   *   File size in bytes.
+   */
+  private function getFileSize(): int {
+    return $this->fileFetcher->getStateProperty('total_bytes');
   }
 
   /**
    * Calculate bytes processed based on chunks processed in the importer data.
    *
+   * @param \Procrastinator\Job\Job $job
+   *   Either a FileFetcher or Importer object.
+   *
    * @return int
    *   Total bytes processed.
-   *
-   * @todo Prevent this from going above the total number of bytes in file.
    */
-  private function getBytesProcessed(): int {
-    $data = json_decode($this->importer->getResult()->getData());
-    return $data->chunksProcessed * 32;
+  private function getBytesProcessed(Job $job): int {
+    $jobShortClass = (new \ReflectionClass($job))->getShortName();
+    switch ($jobShortClass) {
+      // For Importer, avoid going above total size due to chunk multiplication.
+      case 'Importer':
+        $chunksSize = $job->getStateProperty('chunksProcessed') * 32;
+        $fileSize = $this->getFileSize();
+        return ($chunksSize > $fileSize) ? $fileSize : $chunksSize;
+
+      case 'FileFetcher':
+        return $job->getStateProperty('total_bytes_copied');
+    }
   }
 
 }
