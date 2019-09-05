@@ -15,21 +15,14 @@ class ImporterListItem {
    *
    * @var \FileFetcher\FileFetcher
    */
-  private $fileFetcher;
+  public $fileFetcher;
 
   /**
    * Datastore importer object.
    *
    * @var \Dkan\Datastore\Importer
    */
-  private $importer;
-
-  /**
-   * File fetcher job result object.
-   *
-   * @var \Procrastinator\Result
-   */
-  public $fileFetcherResult;
+  public $importer;
 
   /**
    * File fetcher job result status code. See result class for code definitions.
@@ -41,6 +34,20 @@ class ImporterListItem {
    * @see \Procrastinator\Result::DONE
    */
   public $fileFetcherStatus;
+
+  /**
+   * The percentage of the file that has been downloaded for import.
+   *
+   * @var float
+   */
+  public $fileFetcherPercentDone;
+
+  /**
+   * The number of bytes that have been downloaded for import.
+   *
+   * @var float
+   */
+  public $fileFetcherBytes;
 
   /**
    * File name (without path) for the resource.
@@ -68,14 +75,15 @@ class ImporterListItem {
    *
    * @var int
    */
-  public $bytesProcessed;
+  public $importerBytes;
+
 
   /**
-   * The percentage of the file that has been imported into the datastore.
+   * The percentage of the file that has been parsed and imported.
    *
    * @var float
    */
-  public $percentDone;
+  public $importerPercentDone;
 
   /**
    * Constructor method.
