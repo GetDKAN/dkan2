@@ -83,5 +83,18 @@ context('Datastore API', () => {
     }
   )
 
-
+  it('PUT - Deferred Import', () => {
+      cy.request(
+        {
+            method: 'PUT',
+            url: datastore_endpoint +'/import/' + resource_identifier + '/deferred',
+            auth: user_credentials
+        }
+      ).then((response) => {
+          expect(response.status).eql(200);
+        }
+      )
+    }
+  )
+    
 });
