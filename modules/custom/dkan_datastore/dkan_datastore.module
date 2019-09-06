@@ -14,7 +14,7 @@ function dkan_datastore_node_insert(EntityInterface $entity) {
       $json = $array['value'];
       $object = json_decode($json);
       $data = $object->data;
-      if (isset($data->downloadURL) or isset($data->accessURL)) {
+      if (isset($data->downloadURL) || isset($data->accessURL)) {
         /* @var $datastore_service \Drupal\dkan_datastore\Service\Datastore */
         $datastore_service = \Drupal::service("dkan_datastore.service");
         $datastore_service->import($entity->uuid(), TRUE);
