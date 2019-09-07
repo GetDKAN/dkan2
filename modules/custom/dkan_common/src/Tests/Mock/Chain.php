@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_common\Tests;
+namespace Drupal\dkan_common\Tests\Mock;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @codeCoverageIgnore
  */
-class MockChain {
+class Chain {
 
   private $testCase;
   private $definitons = [];
@@ -93,7 +93,7 @@ class MockChain {
         }
       });
     }
-    elseif ($return instanceof MockChainInputOutput) {
+    elseif ($return instanceof Options) {
       $this->setMultipleReturnsBasedOnInput($objectClass, $mock, $method, $return);
     }
     elseif (is_object($return)) {
@@ -113,7 +113,7 @@ class MockChain {
   /**
    * Private.
    */
-  private function setObjectReturnOrException($mock, $method, $return) {
+  private function setObjectReturnOrException(MockObject $mock, $method, $return) {
     if ($return instanceof \Exception) {
       $mock->method($method)->willThrowException($return);
     }
@@ -125,14 +125,14 @@ class MockChain {
   /**
    * Private.
    */
-  private function setMultipleReturnsBasedOnInput($objectClass, $mock, $method, MockChainInputOutput $return) {
+  private function setMultipleReturnsBasedOnInput($objectClass, MockObject $mock, $method, Options $return) {
 
     $storeId = $return->getUse();
     $mock->method($method)->willReturnCallback(function ($input) use ($return, $storeId) {
-      foreach ($return->getInputs() as $possible_input) {
+      foreach ($return->options() as $possible_input) {
         $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
         if ($actual_input == $possible_input) {
-          $output = $return->getOutput($actual_input);
+          $output = $return->return($actual_input);
           if (is_string($output)) {
             return $this->build($output);
           }
@@ -145,7 +145,7 @@ class MockChain {
   /**
    * Private.
    */
-  private function setReturnsBasedOnStringType($mock, $method, string $return, $objectClass) {
+  private function setReturnsBasedOnStringType(MockObject $mock, $method, string $return, $objectClass) {
     // We accept complex returns as json strings.
     if (class_exists($return)) {
       if ($return == $objectClass) {
