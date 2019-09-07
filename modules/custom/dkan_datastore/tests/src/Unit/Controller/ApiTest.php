@@ -321,6 +321,63 @@ class DatastoreApiTest extends DkanTestBase {
     $controller = Api::create($this->getContainer());
     $response = $controller->import('asdbv', TRUE);
     $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
+  private function getMockChain() {
+
+    $resourceFile = [
+      'value' => json_encode(['data' => ['downloadURL' => __DIR__ . '/../../../data/countries.csv']]),
+    ];
+
+    $containerOptions = (new MockChainInputOutput())
+      ->addInputOutput('entity.repository', EntityRepository::class)
+      ->addInputOutput('database', Connection::class)
+      ->addInputOutput('queue', QueueFactory::class)
+      ->addInputOutput('file_system', FileSystem::class);
+
+    $selectOptions = (new MockChainInputOutput())
+      ->addInputOutput('jobstore_filefetcher_filefetcher', (object) ['jid' => 1, 'job_data' => file_get_contents(__DIR__ . '/../../../data/filefetcher.json')])
+      ->addInputOutput('jobstore_dkan_datastore_importer', (object) ['jid' => 1, 'job_data' => file_get_contents(__DIR__ . '/../../../data/importer.json')])
+      ->use('select_1');
+
+    $mockChain2 = (new MockChain($this))
+      ->add(ContainerInterface::class, 'get', $containerOptions)
+
+      ->add(QueueFactory::class, 'get', QueueInterface::class)
+
+      ->add(Connection::class, 'schema', Schema::class)
+      ->add(Connection::class, 'select', Select::class, 'select_1')
+      ->add(Select::class, 'fields', Select::class)
+      ->add(Select::class, 'condition', Select::class)
+      ->add(Select::class, 'execute', Statement::class)
+      ->add(Statement::class, 'fetch', $selectOptions)
+
+      ->add(Connection::class, 'insert', Insert::class)
+      ->add(Insert::class, 'fields', Insert::class)
+      ->add(Insert::class, 'values', Insert::class)
+      ->add(Insert::class, 'execute', null)
+
+      ->add(Connection::class, 'update', Update::class)
+      ->add(Update::class, 'fields', Update::class)
+      ->add(Update::class, 'condition', Update::class)
+      ->add(Update::class, 'execute', null)
+
+      ->add(Connection::class, 'query', [])
+
+      ->add(Schema::class, 'createTable', NULL)
+      ->add(Schema::class, 'tableExists', TRUE)
+
+      ->add(EntityRepository::class, 'loadEntityByUuid', Node::class)
+      ->add(Node::class, 'get', FieldItemList::class)
+      ->add(Node::class, 'id', "1")
+      ->add(FieldItemList::class, 'get', FieldItem::class)
+      ->add(FieldItem::class, 'getValue', $resourceFile)
+      ->add(FileSystem::class, 'realpath', '/tmp')
+      ->add(FileSystem::class, 'prepareDirectory', null);
+
+
+    $mockChain = (new MockChain($this))
+      ->add(ContainerInterface::class, 'get', Datastore::create($mockChain2->getMock()));
+
+    return $mockChain;
   }
 
 }
