@@ -93,7 +93,7 @@ class Chain {
         }
       });
     }
-    elseif ($return instanceof Options) {
+    elseif ($return instanceof Options || $return instanceof Sequence) {
       $this->setMultipleReturnsBasedOnInput($objectClass, $mock, $method, $return);
     }
     elseif (is_object($return)) {
@@ -125,21 +125,34 @@ class Chain {
   /**
    * Private.
    */
-  private function setMultipleReturnsBasedOnInput($objectClass, MockObject $mock, $method, Options $return) {
+  private function setMultipleReturnsBasedOnInput($objectClass, MockObject $mock, $method, $return) {
 
-    $storeId = $return->getUse();
-    $mock->method($method)->willReturnCallback(function ($input) use ($return, $storeId) {
-      foreach ($return->options() as $possible_input) {
-        $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
-        if ($actual_input == $possible_input) {
-          $output = $return->return($actual_input);
+    if ($return instanceof Options) {
+      $storeId = $return->getUse();
+      $mock->method($method)
+        ->willReturnCallback(function ($input) use ($return, $storeId) {
+          foreach ($return->options() as $possible_input) {
+            $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
+            if ($actual_input == $possible_input) {
+              $output = $return->return($actual_input);
+              if (is_string($output)) {
+                return $this->build($output);
+              }
+              return $output;
+            }
+          }
+        });
+    }
+    elseif ($return instanceof Sequence) {
+      $mock->method($method)
+        ->willReturnCallback(function () use ($return) {
+          $output = $return->return();
           if (is_string($output)) {
             return $this->build($output);
           }
           return $output;
-        }
-      }
-    });
+        });
+    }
   }
 
   /**
