@@ -17,6 +17,9 @@ use Drupal\node\NodeInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class Container {
 
   private $testCase;
@@ -25,6 +28,9 @@ class Container {
   private $tableName;
   private $noNode = FALSE;
 
+  /**
+   *
+   */
   public function __construct(TestCase $testCase) {
     $this->testCase = $testCase;
     $this->jobStoreData = (object) [
@@ -33,10 +39,16 @@ class Container {
     ];
   }
 
+  /**
+   *
+   */
   public function setNoNode() {
     $this->noNode = TRUE;
   }
 
+  /**
+   *
+   */
   public function get() {
     $container = $this->testCase->getMockBuilder(ContainerInterface::class)
       ->setMethods(['get'])
@@ -45,7 +57,7 @@ class Container {
     $container->method('get')
       ->with($this->testCase->logicalOr($this->testCase->equalTo('dkan_datastore.service')))
       ->will($this->testCase->returnCallback(
-        function($serviceName) {
+        function ($serviceName) {
           switch ($serviceName) {
             case 'dkan_datastore.service':
               $mockEntityRepository = $this->getEntityRepositoryMock();
@@ -65,6 +77,9 @@ class Container {
     return $container;
   }
 
+  /**
+   *
+   */
   private function getQueueFactoryMock() {
     $mock = $this->testCase->getMockBuilder(QueueFactory::class)
       ->disableOriginalConstructor()
@@ -161,9 +176,9 @@ class Container {
     });
     $mock->method('fetchAll')
       ->willReturn([
-          (object) ['Field' => 'field_1'],
-          (object) ['Field' => 'field_2'],
-        ]
+        (object) ['Field' => 'field_1'],
+        (object) ['Field' => 'field_2'],
+      ]
       );
     $mock->method('fetchField')->willReturn(2);
 

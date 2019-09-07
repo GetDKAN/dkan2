@@ -290,9 +290,9 @@ class ApiTest extends TestCase {
   private function getCommonMockChain() {
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
-      (new Options)->add('request_stack',RequestStack::class)
-      ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('dkan_data.storage', Data::class)
+      (new Options)->add('request_stack', RequestStack::class)
+        ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
+        ->add('dkan_data.storage', Data::class)
     );
     $mockChain->add(SchemaRetriever::class, 'retrieve', "{}");
     return $mockChain;

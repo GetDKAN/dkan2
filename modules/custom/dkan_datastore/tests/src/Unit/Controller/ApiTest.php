@@ -34,16 +34,25 @@ define('FILE_MODIFY_PERMISSIONS', 2);
  */
 class DatastoreApiTest extends DkanTestBase {
 
+  /**
+   *
+   */
   public function setUp() {
     parent::setUp();
   }
 
+  /**
+   *
+   */
   public function testSummary() {
     $controller = Api::create($this->getContainer()->get());
     $response = $controller->summary('asdbv');
     $this->assertEquals('{"numOfColumns":2,"columns":["field_1","field_2"],"numOfRows":2}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testImport() {
     $controller = Api::create($this->getMockChain()->getMock());
     $response = $controller->import('1');
@@ -52,6 +61,9 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertEquals($body->ImporterResult->status, Result::DONE);
   }
 
+  /**
+   *
+   */
   public function testImportFailure() {
     $container = $this->getContainer();
     $container->setNoNode();
@@ -62,18 +74,27 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertEquals('{"message":"You Failed"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testDelete() {
     $controller = Api::create($this->getContainer()->get());
     $response = $controller->delete('asdbv');
     $this->assertEquals('{"identifier":"asdbv","message":"The datastore for resource asdbv was succesfully dropped."}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testDeferredImport() {
     $controller = Api::create($this->getContainer()->get());
     $response = $controller->import('asdbv', TRUE);
     $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   private function getMockChain() {
 
     $resourceFile = [
@@ -82,7 +103,7 @@ class DatastoreApiTest extends DkanTestBase {
 
     $fileFetcherJob = (object) [
       'jid' => 1,
-      'job_data' => file_get_contents(__DIR__ . '/../../../data/filefetcher.json')
+      'job_data' => file_get_contents(__DIR__ . '/../../../data/filefetcher.json'),
     ];
 
     $containerOptions = (new Options())
@@ -119,12 +140,12 @@ class DatastoreApiTest extends DkanTestBase {
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
-      ->add(Insert::class, 'execute', null)
+      ->add(Insert::class, 'execute', NULL)
 
       ->add(Connection::class, 'update', Update::class)
       ->add(Update::class, 'fields', Update::class)
       ->add(Update::class, 'condition', Update::class)
-      ->add(Update::class, 'execute', null)
+      ->add(Update::class, 'execute', NULL)
 
       ->add(Connection::class, 'query', Statement::class)
 
@@ -137,8 +158,7 @@ class DatastoreApiTest extends DkanTestBase {
       ->add(FieldItemList::class, 'get', FieldItem::class)
       ->add(FieldItem::class, 'getValue', $resourceFile)
       ->add(FileSystem::class, 'realpath', '/tmp')
-      ->add(FileSystem::class, 'prepareDirectory', null);
-
+      ->add(FileSystem::class, 'prepareDirectory', NULL);
 
     $mockChain = (new Chain($this))
       ->add(ContainerInterface::class, 'get', Datastore::create($mockChain2->getMock()));
@@ -146,6 +166,9 @@ class DatastoreApiTest extends DkanTestBase {
     return $mockChain;
   }
 
+  /**
+   *
+   */
   private function getContainer() {
     return new Container($this);
   }

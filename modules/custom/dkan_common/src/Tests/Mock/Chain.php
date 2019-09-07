@@ -28,7 +28,7 @@ class Chain {
   /**
    * Add.
    */
-  public function add($objectClass, $method, $return, $storeId = null) {
+  public function add($objectClass, $method, $return, $storeId = NULL) {
     if (!$this->root) {
       $this->root = $objectClass;
     }
@@ -74,7 +74,7 @@ class Chain {
     $storeId = $this->getStoreId($objectClass, $method);
 
     if ($storeId) {
-      $mock->method($method)->willReturnCallback(function($input) use ($storeId, $return) {
+      $mock->method($method)->willReturnCallback(function ($input) use ($storeId, $return) {
         $this->store[$storeId] = $input;
         if (is_object($return)) {
           if ($return instanceof \Exception) {
@@ -185,6 +185,9 @@ class Chain {
     return NULL;
   }
 
+  /**
+   *
+   */
   private function getStoreId($objectClass, $method) {
     if (isset($this->storeIds[$objectClass][$method])) {
       return $this->storeIds[$objectClass][$method];

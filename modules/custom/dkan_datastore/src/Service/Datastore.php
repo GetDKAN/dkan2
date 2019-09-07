@@ -38,6 +38,9 @@ class Datastore implements ContainerInjectionInterface {
 
   private $jobStore;
 
+  /**
+   *
+   */
   public static function create(ContainerInterface $container) {
     return new Datastore(
       $container->get('entity.repository'),
