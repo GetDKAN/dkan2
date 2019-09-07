@@ -321,6 +321,8 @@ class DatastoreApiTest extends DkanTestBase {
     $controller = Api::create($this->getContainer());
     $response = $controller->import('asdbv', TRUE);
     $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
+  }
+
   private function getMockChain() {
 
     $resourceFile = [
