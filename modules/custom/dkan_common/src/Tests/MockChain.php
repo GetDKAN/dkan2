@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_common\Tests;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -14,6 +15,8 @@ class MockChain {
   private $testCase;
   private $definitons = [];
   private $root = NULL;
+  private $storeIds = [];
+  private $store = [];
 
   /**
    * Constructor.
@@ -25,11 +28,18 @@ class MockChain {
   /**
    * Add.
    */
-  public function add($objectClass, $method, $return) {
+  public function add($objectClass, $method, $return, $storeId = null) {
     if (!$this->root) {
       $this->root = $objectClass;
     }
+
     $this->definitons[$objectClass][$method] = $return;
+
+    if ($storeId) {
+      $this->storeIds[$objectClass][$method] = $storeId;
+    }
+
+    return $this;
   }
 
   /**
@@ -59,17 +69,41 @@ class MockChain {
   /**
    * Private.
    */
-  private function setupMethodReturns($objectClass, $mock, $method) {
+  private function setupMethodReturns($objectClass, MockObject $mock, $method) {
     $return = $this->getReturn($objectClass, $method);
+    $storeId = $this->getStoreId($objectClass, $method);
 
-    if (is_array($return)) {
-      $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
+    if ($storeId) {
+      $mock->method($method)->willReturnCallback(function($input) use ($storeId, $return) {
+        $this->store[$storeId] = $input;
+        if (is_object($return)) {
+          if ($return instanceof \Exception) {
+            throw $return;
+          }
+          return $return;
+        }
+        if (is_string($return)) {
+          if (class_exists($return)) {
+            return $this->build($return);
+          }
+          return $return;
+        }
+        elseif (is_bool($return) || is_array($return) || is_null($return)) {
+          return $return;
+        }
+      });
+    }
+    elseif ($return instanceof MockChainInputOutput) {
+      $this->setMultipleReturnsBasedOnInput($objectClass, $mock, $method, $return);
     }
     elseif (is_object($return)) {
       $this->setObjectReturnOrException($mock, $method, $return);
     }
     elseif (is_string($return)) {
-      $this->setReturnsBasedOnStringType($mock, $method, $return);
+      $this->setReturnsBasedOnStringType($mock, $method, $return, $objectClass);
+    }
+    elseif (is_bool($return) || is_array($return) || is_null($return)) {
+      $mock->method($method)->willReturn($return);
     }
     else {
       throw new \Exception("Bad definition");
@@ -91,11 +125,18 @@ class MockChain {
   /**
    * Private.
    */
-  private function setMultipleReturnsBasedOnInput($mock, $method, array $return) {
-    $mock->method($method)->willReturnCallback(function ($input) use ($return) {
-      foreach ($return as $possible_input => $returnObjectClass) {
-        if ($input == $possible_input) {
-          return $this->build($returnObjectClass);
+  private function setMultipleReturnsBasedOnInput($objectClass, $mock, $method, MockChainInputOutput $return) {
+
+    $storeId = $return->getUse();
+    $mock->method($method)->willReturnCallback(function ($input) use ($return, $storeId) {
+      foreach ($return->getInputs() as $possible_input) {
+        $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
+        if ($actual_input == $possible_input) {
+          $output = $return->getOutput($actual_input);
+          if (is_string($output)) {
+            return $this->build($output);
+          }
+          return $output;
         }
       }
     });
@@ -104,14 +145,15 @@ class MockChain {
   /**
    * Private.
    */
-  private function setReturnsBasedOnStringType($mock, $method, string $return) {
+  private function setReturnsBasedOnStringType($mock, $method, string $return, $objectClass) {
     // We accept complex returns as json strings.
-    $json = json_decode($return);
     if (class_exists($return)) {
-      $mock->method($method)->willReturn($this->build($return));
-    }
-    elseif ($json != FALSE) {
-      $mock->method($method)->willReturn($json);
+      if ($return == $objectClass) {
+        $mock->method($method)->willReturn($mock);
+      }
+      else {
+        $mock->method($method)->willReturn($this->build($return));
+      }
     }
     else {
       $mock->method($method)->willReturn($return);
@@ -139,6 +181,13 @@ class MockChain {
   private function getReturn($objectClass, $method) {
     if (isset($this->definitons[$objectClass][$method])) {
       return $this->definitons[$objectClass][$method];
+    }
+    return NULL;
+  }
+
+  private function getStoreId($objectClass, $method) {
+    if (isset($this->storeIds[$objectClass][$method])) {
+      return $this->storeIds[$objectClass][$method];
     }
     return NULL;
   }
