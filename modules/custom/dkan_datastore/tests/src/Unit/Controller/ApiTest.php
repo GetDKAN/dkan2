@@ -54,7 +54,15 @@ class DatastoreApiTest extends DkanTestBase {
    *
    */
   public function testImport() {
-    $controller = Api::create($this->getMockChain()->getMock());
+    $chain = $this->getDatastoreServiceChain()
+      ->add(Statement::class, 'fetchAll', [
+        (object) ['Field' => "country"],
+        (object) ['Field' => "population"],
+        (object) ['Field' => "id"],
+        (object) ['Field' => "timestamp"],
+      ]);
+
+    $controller = Api::create($this->getDatastoreApiChain(Datastore::create($chain->getMock()))->getMock());
     $response = $controller->import('1');
     $body = json_decode($response->getContent());
     $this->assertEquals($body->FileFetcherResult->status, Result::DONE);
@@ -92,11 +100,59 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
   }
 
+  public function testList() {
+
+    $fileFetcherJob = (object) [
+      'ref_uuid' => 1,
+      'job_data' => file_get_contents(__DIR__ . '/../../../data/filefetcher.json'),
+    ];
+
+    $importerJob = (object) [
+      'ref_uuid' => 1,
+      'job_data' => file_get_contents(__DIR__ . '/../../../data/importer.json'),
+    ];
+
+    $chain = $this->getDatastoreServiceChain()
+      ->add(Statement::class, 'fetchAll', (new Sequence())->add([
+        $fileFetcherJob
+      ])
+      ->add([
+        $importerJob
+      ])
+      ->add(
+        [
+          (object) ['Field' => "country"],
+          (object) ['Field' => "population"],
+          (object) ['Field' => "id"],
+          (object) ['Field' => "timestamp"],
+        ]
+      ));
+
+    \Drupal::setContainer($chain->getMock());
+
+    $controller = Api::create($this->getDatastoreApiChain(Datastore::create($chain->getMock()))->getMock());
+    $response = $controller->list();
+    $json = $response->getContent();
+    $body = json_decode($json);
+    $this->assertTrue(is_object($body->{"1"}->fileFetcher));
+  }
+
+  public function testListError() {
+
+    $chain = $this->getDatastoreServiceChain()
+      ->add(Statement::class, 'fetchAll', FALSE);
+
+    $controller = Api::create($this->getDatastoreApiChain(Datastore::create($chain->getMock()))->getMock());
+    $response = $controller->list();
+    $json = $response->getContent();
+    $body = json_decode($json);
+    $this->assertEquals("No importer data was returned. No data in table: jobstore_filefetcher_filefetcher", $body->message);
+  }
+
   /**
    *
    */
-  private function getMockChain() {
-
+  private function getDatastoreServiceChain(): Chain {
     $resourceFile = [
       'value' => json_encode(['data' => ['downloadURL' => __DIR__ . '/../../../data/countries.csv']]),
     ];
@@ -117,19 +173,12 @@ class DatastoreApiTest extends DkanTestBase {
       ->add('jobstore_dkan_datastore_importer', FALSE)
       ->use('select_1');
 
-    /* @var $mockChain2 \Drupal\dkan_common\Tests\Mock\Chain */
-    $mockChain2 = (new Chain($this))
+    return (new Chain($this))
       ->add(ContainerInterface::class, 'get', $containerOptions)
 
       ->add(QueueFactory::class, 'get', QueueInterface::class)
 
       ->add(Statement::class, 'fetch', $selectOptions)
-      ->add(Statement::class, 'fetchAll', [
-        (object) ['Field' => "country"],
-        (object) ['Field' => "population"],
-        (object) ['Field' => "id"],
-        (object) ['Field' => "timestamp"],
-      ])
 
       ->add(Connection::class, 'schema', Schema::class)
       ->add(Connection::class, 'select', Select::class, 'select_1')
@@ -159,11 +208,11 @@ class DatastoreApiTest extends DkanTestBase {
       ->add(FieldItem::class, 'getValue', $resourceFile)
       ->add(FileSystem::class, 'realpath', '/tmp')
       ->add(FileSystem::class, 'prepareDirectory', NULL);
+  }
 
-    $mockChain = (new Chain($this))
-      ->add(ContainerInterface::class, 'get', Datastore::create($mockChain2->getMock()));
-
-    return $mockChain;
+  private function getDatastoreApiChain(Datastore $datastore): Chain {
+    return (new Chain($this))
+      ->add(ContainerInterface::class, 'get', $datastore);
   }
 
   /**
