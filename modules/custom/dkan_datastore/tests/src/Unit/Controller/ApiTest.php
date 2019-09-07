@@ -100,6 +100,9 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertEquals('{"message":"Resource asdbv has been queued to be imported.","queue_id":"1"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testList() {
 
     $fileFetcherJob = (object) [
@@ -114,12 +117,12 @@ class DatastoreApiTest extends DkanTestBase {
 
     $chain = $this->getDatastoreServiceChain()
       ->add(Statement::class, 'fetchAll', (new Sequence())->add([
-        $fileFetcherJob
+        $fileFetcherJob,
       ])
-      ->add([
-        $importerJob
-      ])
-      ->add(
+        ->add([
+          $importerJob,
+        ])
+        ->add(
         [
           (object) ['Field' => "country"],
           (object) ['Field' => "population"],
@@ -137,6 +140,9 @@ class DatastoreApiTest extends DkanTestBase {
     $this->assertTrue(is_object($body->{"1"}->fileFetcher));
   }
 
+  /**
+   *
+   */
   public function testListError() {
 
     $chain = $this->getDatastoreServiceChain()
@@ -210,6 +216,9 @@ class DatastoreApiTest extends DkanTestBase {
       ->add(FileSystem::class, 'prepareDirectory', NULL);
   }
 
+  /**
+   *
+   */
   private function getDatastoreApiChain(Datastore $datastore): Chain {
     return (new Chain($this))
       ->add(ContainerInterface::class, 'get', $datastore);
