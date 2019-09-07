@@ -28,6 +28,12 @@ class Options {
   }
 
   public function return($option) {
-    return $this->options[$option];
+    $return = $this->options[$option];
+
+    if ($return instanceof Sequence) {
+      $return = $return->return();
+    }
+
+    return $return;
   }
 }
