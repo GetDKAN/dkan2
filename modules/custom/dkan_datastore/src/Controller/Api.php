@@ -110,7 +110,7 @@ class Api implements ContainerInjectionInterface {
     }
     catch (\Exception $e) {
       return $this->exceptionResponse(
-        new \Exception("No importer data was returned. {$e->getMesage}"),
+        new \Exception("No importer data was returned. {$e->getMessage()}"),
         404
       );
     }

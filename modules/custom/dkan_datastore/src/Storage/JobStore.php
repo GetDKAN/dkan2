@@ -69,7 +69,7 @@ class JobStore {
       ->fields('t', ['ref_uuid', 'job_data'])
       ->execute()
       ->fetchAll();
-    if (empty($result)) {
+    if ($result === FALSE) {
       throw new \Exception("No data in table: $tableName");
     }
     $jobs = [];
