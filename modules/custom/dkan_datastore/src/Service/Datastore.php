@@ -5,6 +5,7 @@ namespace Drupal\dkan_datastore\Service;
 use CsvParser\Parser\Csv;
 use Dkan\Datastore\Importer;
 use Dkan\Datastore\Resource;
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Queue\QueueFactory;
@@ -15,11 +16,12 @@ use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
 use Drupal\node\NodeInterface;
 use FileFetcher\FileFetcher;
 use Procrastinator\Result;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Main services for the datastore.
  */
-class Datastore {
+class Datastore implements ContainerInjectionInterface {
 
   const DATASTORE_DEFAULT_TIMELIMIT = 60;
 
@@ -35,6 +37,15 @@ class Datastore {
   private $fileSystem;
 
   private $jobStore;
+
+  public static function create(ContainerInterface $container) {
+    return new Datastore(
+      $container->get('entity.repository'),
+      $container->get('database'),
+      $container->get('queue'),
+      $container->get('file_system')
+    );
+  }
 
   /**
    * Constructor for datastore service.
