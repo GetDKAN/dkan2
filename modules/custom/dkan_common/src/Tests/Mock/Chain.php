@@ -74,7 +74,7 @@ class Chain {
     $storeId = $this->getStoreId($objectClass, $method);
 
     if ($storeId) {
-     $this->setStorageWithReturn($mock, $method, $storeId, $return);
+      $this->setStorageWithReturn($mock, $method, $storeId, $return);
     }
     elseif ($return instanceof Options || $return instanceof Sequence) {
       $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
