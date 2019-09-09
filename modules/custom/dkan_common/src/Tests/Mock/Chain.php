@@ -85,12 +85,7 @@ class Chain {
     elseif (is_string($return)) {
       $this->setReturnsBasedOnStringType($mock, $method, $return, $objectClass);
     }
-    elseif (is_bool($return) || is_array($return) || is_null($return)) {
-      $mock->method($method)->willReturn($return);
-    }
-    else {
-      throw new \Exception("Bad definition");
-    }
+    $mock->method($method)->willReturn($return);
   }
 
   /**
