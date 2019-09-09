@@ -7,8 +7,13 @@ namespace Drupal\dkan_common\Tests\Mock;
  */
 class Options {
 
-  private $options = [];
-  private $storeId = NULL;
+  private $options;
+  private $storeId;
+
+  public function __construct() {
+    $this->options = [];
+    $this->storeId = NULL;
+  }
 
   /**
    * Set use.
