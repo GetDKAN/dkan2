@@ -82,7 +82,6 @@ class JobStore {
    * Private.
    */
   private function validateJobClassAndTableExistence($jobClass, $tableName) {
-    $this->validateJobClassAndTableExistence($jobClass);
     if (!$this->validateJobClass($jobClass)) {
       throw new \Exception("Invalid jobType provided: $jobClass");
     }
