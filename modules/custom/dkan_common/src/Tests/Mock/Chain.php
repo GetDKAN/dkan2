@@ -74,24 +74,7 @@ class Chain {
     $storeId = $this->getStoreId($objectClass, $method);
 
     if ($storeId) {
-      $mock->method($method)->willReturnCallback(function ($input) use ($storeId, $return) {
-        $this->store[$storeId] = $input;
-        if (is_object($return)) {
-          if ($return instanceof \Exception) {
-            throw $return;
-          }
-          return $return;
-        }
-        if (is_string($return)) {
-          if (class_exists($return)) {
-            return $this->build($return);
-          }
-          return $return;
-        }
-        elseif (is_bool($return) || is_array($return) || is_null($return)) {
-          return $return;
-        }
-      });
+     $this->setStorageWithReturn($mock, $method, $storeId, $return);
     }
     elseif ($return instanceof Options || $return instanceof Sequence) {
       $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
@@ -108,6 +91,30 @@ class Chain {
     else {
       throw new \Exception("Bad definition");
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function setStorageWithReturn(MockObject $mock, $method, $storeId, $return) {
+    $mock->method($method)->willReturnCallback(function ($input) use ($storeId, $return) {
+      $this->store[$storeId] = $input;
+      if (is_object($return)) {
+        if ($return instanceof \Exception) {
+          throw $return;
+        }
+        return $return;
+      }
+      if (is_string($return)) {
+        if (class_exists($return)) {
+          return $this->build($return);
+        }
+        return $return;
+      }
+      elseif (is_bool($return) || is_array($return) || is_null($return)) {
+        return $return;
+      }
+    });
   }
 
   /**
