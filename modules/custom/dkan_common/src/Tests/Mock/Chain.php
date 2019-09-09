@@ -94,7 +94,7 @@ class Chain {
       });
     }
     elseif ($return instanceof Options || $return instanceof Sequence) {
-      $this->setMultipleReturnsBasedOnInput($objectClass, $mock, $method, $return);
+      $this->setMultipleReturnsBasedOnInput($mock, $method, $return);
     }
     elseif (is_object($return)) {
       $this->setObjectReturnOrException($mock, $method, $return);
@@ -125,34 +125,48 @@ class Chain {
   /**
    * Private.
    */
-  private function setMultipleReturnsBasedOnInput($objectClass, MockObject $mock, $method, $return) {
+  private function setMultipleReturnsBasedOnInput(MockObject $mock, $method, $return) {
 
     if ($return instanceof Options) {
-      $storeId = $return->getUse();
-      $mock->method($method)
-        ->willReturnCallback(function ($input) use ($return, $storeId) {
-          foreach ($return->options() as $possible_input) {
-            $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
-            if ($actual_input == $possible_input) {
-              $output = $return->return($actual_input);
-              if (is_string($output)) {
-                return $this->build($output);
-              }
-              return $output;
-            }
-          }
-        });
+      $this->setMultipleReturnsBasedOnInputOptions($mock, $method, $return);
     }
     elseif ($return instanceof Sequence) {
-      $mock->method($method)
-        ->willReturnCallback(function () use ($return) {
-          $output = $return->return();
-          if (is_string($output)) {
-            return $this->build($output);
-          }
-          return $output;
-        });
+      $this->setMultipleReturnsBasedOnInputSequence($mock, $method, $return);
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function setMultipleReturnsBasedOnInputOptions(MockObject $mock, $method, Options $return) {
+    $storeId = $return->getUse();
+    $mock->method($method)
+      ->willReturnCallback(function ($input) use ($return, $storeId) {
+        foreach ($return->options() as $possible_input) {
+          $actual_input = isset($storeId) ? $this->store[$storeId] : $input;
+          if ($actual_input == $possible_input) {
+            $output = $return->return($actual_input);
+            if (is_string($output)) {
+              return $this->build($output);
+            }
+            return $output;
+          }
+        }
+      });
+  }
+
+  /**
+   * Private.
+   */
+  private function setMultipleReturnsBasedOnInputSequence(MockObject $mock, $method, Sequence $return) {
+    $mock->method($method)
+      ->willReturnCallback(function () use ($return) {
+        $output = $return->return();
+        if (is_string($output)) {
+          return $this->build($output);
+        }
+        return $output;
+      });
   }
 
   /**
