@@ -10,6 +10,9 @@ class Options {
   private $options;
   private $storeId;
 
+  /**
+   * Options constructor.
+   */
   public function __construct() {
     $this->options = [];
     $this->storeId = NULL;
