@@ -69,7 +69,7 @@ class JobStore {
       throw new \Exception("No data in table: $tableName");
     }
 
-    return array_reduce($result, function($carry, $item) use ($jobClass) {
+    return array_reduce($result, function ($carry, $item) use ($jobClass) {
       $job = $jobClass::hydrate($item->job_data);
       if (isset($job) && ($job instanceof $jobClass)) {
         $carry[$item->ref_uuid] = $job;
@@ -78,6 +78,9 @@ class JobStore {
     }, []);
   }
 
+  /**
+   * Private.
+   */
   private function validateJobClassAndTableExistence($jobClass, $tableName) {
     $this->validateJobClassAndTableExistence($jobClass);
     if (!$this->validateJobClass($jobClass)) {
