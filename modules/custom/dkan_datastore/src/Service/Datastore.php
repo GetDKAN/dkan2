@@ -39,7 +39,9 @@ class Datastore implements ContainerInjectionInterface {
   private $jobStore;
 
   /**
+   * Inherited.
    *
+   * {@inheritDoc}
    */
   public static function create(ContainerInterface $container) {
     return new Datastore(

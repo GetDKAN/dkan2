@@ -3,7 +3,7 @@
 namespace Drupal\dkan_common\Tests\Mock;
 
 /**
- *
+ * Sequence class.
  */
 class Sequence {
 
@@ -11,7 +11,7 @@ class Sequence {
   private $counter = 0;
 
   /**
-   *
+   * Add possible return.
    */
   public function add($return) {
     $this->sequence[] = $return;
@@ -20,7 +20,7 @@ class Sequence {
   }
 
   /**
-   *
+   * Get the next return.
    */
   public function return() {
     $index = $this->counter;

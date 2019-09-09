@@ -199,7 +199,7 @@ class Chain {
   }
 
   /**
-   *
+   * Private.
    */
   private function getStoreId($objectClass, $method) {
     if (isset($this->storeIds[$objectClass][$method])) {

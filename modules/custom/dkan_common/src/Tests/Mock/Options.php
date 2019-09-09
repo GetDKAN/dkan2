@@ -3,7 +3,7 @@
 namespace Drupal\dkan_common\Tests\Mock;
 
 /**
- *
+ * Options class.
  */
 class Options {
 
@@ -11,7 +11,7 @@ class Options {
   private $storeId = NULL;
 
   /**
-   *
+   * Set use.
    */
   public function use($storeId) {
     $this->storeId = $storeId;
@@ -19,14 +19,14 @@ class Options {
   }
 
   /**
-   *
+   * Get use.
    */
   public function getUse() {
     return $this->storeId;
   }
 
   /**
-   *
+   * Add a new option and its return.
    */
   public function add($option, $return) {
     $this->options[$option] = $return;
@@ -34,14 +34,14 @@ class Options {
   }
 
   /**
-   *
+   * Options.
    */
   public function options() {
     return array_keys($this->options);
   }
 
   /**
-   *
+   * Return.
    */
   public function return($option) {
     $return = $this->options[$option];

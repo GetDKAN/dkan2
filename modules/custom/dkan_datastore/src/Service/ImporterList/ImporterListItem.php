@@ -113,7 +113,7 @@ class ImporterListItem {
   }
 
   /**
-   * Build out the full "item" object and set public propertries.
+   * Build out the full "item" object and set public properties.
    */
   private function buildItem() {
     $this->fileName = $this->getFileName();
