@@ -30,14 +30,9 @@ class JobStore {
    * Get.
    */
   public function retrieve(string $uuid, string $jobClass) {
-    if (!$this->validateJobClass($jobClass)) {
-      throw new \Exception("Invalid jobType provided: $jobClass");
-    }
-
     $tableName = $this->getTableName($jobClass);
-    if (!$this->tableExists($tableName)) {
-      throw new \Exception("Table not found: $tableName");
-    }
+
+    $this->validateJobClassAndTableExistence($jobClass, $tableName);
 
     $result = $this->connection->select($tableName, 't')
       ->fields('t', ['job_data'])
@@ -87,7 +82,7 @@ class JobStore {
     }
 
     if (!$this->tableExists($tableName)) {
-      throw new \Exception("Table not found: $tableName");
+      $this->createTable($tableName);
     }
   }
 
