@@ -291,6 +291,14 @@ paths:
                 type: array
                 items:
                   type: object
+                  required:
+                    - identifier
+                    - data
+                  properties:
+                    identifier:
+                      type: string
+                    data:
+                      type: object
   /api/v1/{property}:
     get:
       operationId: property-get-all
