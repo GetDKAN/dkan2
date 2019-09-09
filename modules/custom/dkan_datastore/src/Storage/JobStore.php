@@ -56,30 +56,37 @@ class JobStore {
    * Retrieve all.
    */
   public function retrieveAll(string $jobClass): array {
-    if (!$this->validateJobClass($jobClass)) {
-      throw new \Exception("Invalid jobType provided: $jobClass");
-    }
-
     $tableName = $this->getTableName($jobClass);
-    if (!$this->tableExists($tableName)) {
-      throw new \Exception("Table not found: $tableName");
-    }
+
+    $this->validateJobClassAndTableExistence($jobClass, $tableName);
 
     $result = $this->connection->select($tableName, 't')
       ->fields('t', ['ref_uuid', 'job_data'])
       ->execute()
       ->fetchAll();
+
     if ($result === FALSE) {
       throw new \Exception("No data in table: $tableName");
     }
-    $jobs = [];
-    foreach ($result as $row) {
-      $job = $jobClass::hydrate($row->job_data);
+
+    return array_reduce($result, function($carry, $item) use ($jobClass) {
+      $job = $jobClass::hydrate($item->job_data);
       if (isset($job) && ($job instanceof $jobClass)) {
-        $jobs[$row->ref_uuid] = $job;
+        $carry[$item->ref_uuid] = $job;
       }
+      return $carry;
+    }, []);
+  }
+
+  private function validateJobClassAndTableExistence($jobClass, $tableName) {
+    $this->validateJobClassAndTableExistence($jobClass);
+    if (!$this->validateJobClass($jobClass)) {
+      throw new \Exception("Invalid jobType provided: $jobClass");
     }
-    return $jobs;
+
+    if (!$this->tableExists($tableName)) {
+      throw new \Exception("Table not found: $tableName");
+    }
   }
 
   /**
