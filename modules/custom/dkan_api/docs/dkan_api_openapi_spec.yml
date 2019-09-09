@@ -271,7 +271,7 @@ paths:
   /api/v1/dataset/{uuid}/resources:
     get:
       operationId: dataset-get-resources
-      summary: Get resources for a particular dataset
+      summary: Get a dataset's resources
       tags:
         - Dataset
       parameters:
