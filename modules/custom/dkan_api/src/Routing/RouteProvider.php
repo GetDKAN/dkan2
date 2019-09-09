@@ -66,6 +66,9 @@ class RouteProvider {
         // DELETE.
         $delete = $this->routeHelper($schema, "/api/v1/$schema/{uuid}", 'DELETE', 'delete');
         $authenticated_routes->add("dkan_api.{$schema}.delete", $delete);
+        // GET resources.
+        $get_resources = $this->routeHelper($schema, "/api/v1/$schema/{uuid}/resources", 'GET', 'getResources');
+        $public_routes->add("dkan_api.{$schema}.get_resources", $get_resources);
       }
     }
 
