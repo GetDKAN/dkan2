@@ -66,7 +66,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files  
+            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp  
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush dkan-dummy-content:create
