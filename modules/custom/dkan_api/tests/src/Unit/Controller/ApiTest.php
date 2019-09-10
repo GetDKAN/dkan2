@@ -49,7 +49,7 @@ class ApiTest extends TestCase {
   public function testGetResources() {
     $mockChain = $this->getCommonMockChain();
     $json = '{"name": "hello", "distribution": [{"title": "Foo"}, {"title": "Bar"}]}';
-    $mockChain->add(Data::class, 'retrieve', json_encode($json));
+    $mockChain->add(Data::class, 'retrieve', $json);
 
     $controller = Api::create($mockChain->getMock());
     $response = $controller->getResources(1, 'dataset');
