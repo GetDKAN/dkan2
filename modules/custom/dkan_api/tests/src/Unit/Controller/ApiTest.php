@@ -58,12 +58,24 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function testGetException() {
+  public function testGetResourcesException() {
     $mockChain = $this->getCommonMockChain();;
     $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
 
     $controller = Api::create($mockChain->getMock());
     $response = $controller->get(1, 'dataset');
+    $this->assertEquals('{"message":"bad"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testGetException() {
+    $mockChain = $this->getCommonMockChain();;
+    $mockChain->add(Data::class, 'retrieve', new \Exception("bad"));
+
+    $controller = Api::create($mockChain->getMock());
+    $response = $controller->getResources(1, 'dataset');
     $this->assertEquals('{"message":"bad"}', $response->getContent());
   }
 
