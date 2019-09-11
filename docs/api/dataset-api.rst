@@ -14,8 +14,8 @@ GET is used to request data from the data catalog. No authentication is needed.
     # Get a specific dataset by adding the dataset identifier to the end
     http://dkan/api/v1/dataset/{identifier of your dataset}
 
-    # Test drive the api of a specific dataset
-    http://dkan/api/v1/dataset/{identifier of your dataset}/api
+    # Try out the api of a specific dataset
+    http://dkan/dataset/{identifier of your dataset}/api
 
 
 
