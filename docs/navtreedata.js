@@ -62,7 +62,7 @@ var NAVTREEINDEX =
 "ApiController_8php.html",
 "classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Sequence.html#a84293eba3afaeec76ff2ee11507038bf",
 "classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#a38bd8ff830c14a2c72cceea2345ee112",
-"namespaceDrupal_1_1Tests_1_1dkan__api_1_1Unit.html"
+"namespaceDrupal_1_1Tests.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

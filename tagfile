@@ -96,11 +96,6 @@
     <filename>license_8md</filename>
   </compound>
   <compound kind="file">
-    <name>welcome.md</name>
-    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
-    <filename>welcome_8md</filename>
-  </compound>
-  <compound kind="file">
     <name>Api.php</name>
     <path>/Users/janette/workspace/dkan2-git/modules/custom/dkan_api/src/Controller/</path>
     <filename>dkan__api_2src_2Controller_2Api_8php</filename>
@@ -4269,20 +4264,15 @@
     <title>Introduction</title>
     <filename>intro</filename>
     <docanchor file="intro" title="DKAN2: Open Source Data Catalog">autotoc_md22</docanchor>
+    <docanchor file="intro" title="Slack">autotoc_md23</docanchor>
+    <docanchor file="intro" title="Connect">autotoc_md24</docanchor>
+    <docanchor file="intro" title="Github">autotoc_md25</docanchor>
+    <docanchor file="intro" title="Additional resources">autotoc_md26</docanchor>
   </compound>
   <compound kind="page">
     <name>license</name>
     <title>License</title>
     <filename>license</filename>
-  </compound>
-  <compound kind="page">
-    <name>welcome</name>
-    <title>Welcome!</title>
-    <filename>welcome</filename>
-    <docanchor file="welcome" title="Slack">autotoc_md23</docanchor>
-    <docanchor file="welcome" title="Connect">autotoc_md24</docanchor>
-    <docanchor file="welcome" title="Github">autotoc_md25</docanchor>
-    <docanchor file="welcome" title="Additional resources">autotoc_md26</docanchor>
   </compound>
   <compound kind="page">
     <name>index</name>

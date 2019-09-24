@@ -7,22 +7,32 @@ body {
 }
 #titlearea {
   padding: 15px;
+  display: flex;
+  position:relative;
+}
+#projectlogo {
+  padding: 0 20px 6px 0;
+}
+#projectdetails {
+  position: absolute;
+  bottom: 15px;
+  left: 180px;
 }
 #projectname,
 #projectnumber {
   font-family: 'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif;
   font-size: 24px;
 }
+#search {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+}
 h1,h2,h3,h4 {
   font-family: 'Varela Round', 'Lato', Roboto, Droid Sans, Helvetica Neue, sans-serif;
   color: #0071bc;
 }
-#projectalign {
-  vertical-align: bottom;
-}
-#projectlogo {
-  padding: 0 20px 6px 0;
-}
+
 .sm-dox {
   background-image: none;
   background-color: #0071bc;
