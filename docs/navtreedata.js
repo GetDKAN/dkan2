@@ -22,8 +22,8 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "DKAN2", "index.html", [
-    [ "README", "index.html", [
+  [ "Open Data Catalog", "index.html", [
+    [ "DKAN", "index.html", [
       [ "Features", "index.html#autotoc_md28", null ],
       [ "Requirements", "index.html#autotoc_md29", null ],
       [ "Installation", "index.html#autotoc_md30", null ],

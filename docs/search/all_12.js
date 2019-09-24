@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['readme_315',['README',['../index.html',1,'']]],
   ['readme_2emd_316',['README.md',['../README_8md.html',1,'(Global Namespace)'],['../schema_2README_8md.html',1,'(Global Namespace)']]],
   ['reference_317',['reference',['../classDrupal_1_1dkan__data_1_1ValueReferencer.html#a9ad088469f03827f37b267546113512a',1,'Drupal::dkan_data::ValueReferencer']]],
   ['referencemultiple_318',['referenceMultiple',['../classDrupal_1_1dkan__data_1_1ValueReferencer.html#ad770e98cb1e163019e84f88d3f89a3e9',1,'Drupal::dkan_data::ValueReferencer']]],
