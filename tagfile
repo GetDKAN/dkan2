@@ -2,102 +2,102 @@
 <tagfile>
   <compound kind="file">
     <name>dataset-api.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/api/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/api/</path>
     <filename>dataset-api_8rst</filename>
   </compound>
   <compound kind="file">
     <name>datastore-api.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/api/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/api/</path>
     <filename>datastore-api_8rst</filename>
   </compound>
   <compound kind="file">
     <name>index.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/api/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/api/</path>
     <filename>api_2index_8rst</filename>
   </compound>
   <compound kind="file">
     <name>index.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>components_2index_8rst</filename>
   </compound>
   <compound kind="file">
     <name>open-data.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/api/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/api/</path>
     <filename>open-data_8rst</filename>
   </compound>
   <compound kind="file">
     <name>code-of-conduct.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>code-of-conduct_8md</filename>
   </compound>
   <compound kind="file">
     <name>dataset.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>dataset_8rst</filename>
   </compound>
   <compound kind="file">
     <name>datastore.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>datastore_8rst</filename>
   </compound>
   <compound kind="file">
     <name>decoupled.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>decoupled_8rst</filename>
   </compound>
   <compound kind="file">
     <name>harvest.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>harvest_8rst</filename>
   </compound>
   <compound kind="file">
     <name>topics.rst</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/components/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/components/</path>
     <filename>topics_8rst</filename>
   </compound>
   <compound kind="file">
     <name>development-custom.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>development-custom_8md</filename>
   </compound>
   <compound kind="file">
     <name>development-maintain.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>development-maintain_8md</filename>
   </compound>
   <compound kind="file">
     <name>development.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>development_8md</filename>
   </compound>
   <compound kind="file">
     <name>installation-local-dev.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>installation-local-dev_8md</filename>
   </compound>
   <compound kind="file">
     <name>installation-prod.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>installation-prod_8md</filename>
   </compound>
   <compound kind="file">
     <name>installation.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>installation_8md</filename>
   </compound>
   <compound kind="file">
     <name>introduction.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>introduction_8md</filename>
   </compound>
   <compound kind="file">
     <name>license.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>license_8md</filename>
   </compound>
   <compound kind="file">
     <name>welcome.md</name>
-    <path>/Users/janette/workspace/dkan2-git/documentation/pages/</path>
+    <path>/Users/janette/workspace/dkan2-git/docs_assets/pages/</path>
     <filename>welcome_8md</filename>
   </compound>
   <compound kind="file">
