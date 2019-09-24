@@ -4286,7 +4286,7 @@
   </compound>
   <compound kind="page">
     <name>index</name>
-    <title>DKAN for Drupal 8 - &lt;a href=&quot;https://en.wikipedia.org/wiki/Software_release_life_cycle&quot;&gt;Alpha&lt;/a&gt;</title>
+    <title>README</title>
     <filename>index</filename>
     <docanchor file="index" title="Features">autotoc_md28</docanchor>
     <docanchor file="index" title="Requirements">autotoc_md29</docanchor>

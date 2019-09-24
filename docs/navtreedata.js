@@ -22,8 +22,8 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "Open source data catalog for Drupal 8 - Alpha", "index.html", [
-    [ "DKAN for Drupal 8 - <a href=\"https://en.wikipedia.org/wiki/Software_release_life_cycle\">Alpha</a>", "index.html", [
+  [ "DKAN2", "index.html", [
+    [ "README", "index.html", [
       [ "Features", "index.html#autotoc_md28", null ],
       [ "Requirements", "index.html#autotoc_md29", null ],
       [ "Installation", "index.html#autotoc_md30", null ],

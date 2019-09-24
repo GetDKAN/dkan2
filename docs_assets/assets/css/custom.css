@@ -116,10 +116,13 @@ a {
 a:hover {
   color: #205493;
 }
-.contents a:visited { {
+.contents a:visited {
   color: #205493;
 }
-
+#nav-tree .selected {
+  background-image: none;
+  background-color: #002245;
+}
 @media screen and (min-width: 876px) {
  
 }
