@@ -22,17 +22,14 @@ for the JavaScript code in this file
 */
 var NAVTREE =
 [
-  [ "Open Data Catalog", "index.html", [
-    [ "DKAN", "index.html", [
-      [ "Features", "index.html#autotoc_md28", null ],
-      [ "Requirements", "index.html#autotoc_md29", null ],
-      [ "Installation", "index.html#autotoc_md30", null ],
-      [ "Dummy Content", "index.html#autotoc_md31", null ],
-      [ "Graphical User Interface (GUI)", "index.html#autotoc_md32", [
-        [ "React App Embedded in Drupal", "index.html#autotoc_md33", null ]
-      ] ]
-    ] ],
-    [ "Introduction", "intro.html", "intro" ],
+  [ "DKAN", "index.html", [
+    [ "Features", "index.html#autotoc_md28", null ],
+    [ "Installation", "installation.html", "installation" ],
+    [ "Development", "development.html", "development" ],
+    [ "Components", "components.html", "components" ],
+    [ "Links", "links.html", null ],
+    [ "Code of conduct", "apage02.html", null ],
+    [ "License", "license.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
@@ -60,9 +57,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "ApiController_8php.html",
-"classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Sequence.html#a84293eba3afaeec76ff2ee11507038bf",
-"classDrupal_1_1dkan__sql__endpoint_1_1Form_1_1DkanSqlEndpointSettingsForm.html#a38bd8ff830c14a2c72cceea2345ee112",
-"namespaceDrupal_1_1Tests.html"
+"classDrupal_1_1dkan__common_1_1Tests_1_1Mock_1_1Chain.html#a9f68bba56e8a2cf08be83aced3baa75a",
+"classDrupal_1_1dkan__schema_1_1SchemaRetriever.html",
+"namespaceDrupal_1_1Tests_1_1dkan__api_1_1Unit.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
