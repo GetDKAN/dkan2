@@ -1,5 +1,5 @@
 dkan_harvest.plans.collection:
-  path: '/api/v1/harvest/plans'
+  path: '/api/1/harvest/plans'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::index'}
@@ -8,7 +8,7 @@ dkan_harvest.plans.collection:
   options:
     _auth: ['basic_auth']
 dkan_harvest.plans.register:
-  path: '/api/v1/harvest/plans'
+  path: '/api/1/harvest/plans'
   methods: [POST]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::register'}
@@ -17,7 +17,7 @@ dkan_harvest.plans.register:
   options:
     _auth: ['basic_auth']
 dkan_harvest.plans.single:
-  path: '/api/v1/harvest/plans/{plan_id}'
+  path: '/api/1/harvest/plans/{plan_id}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::getPlan'}
@@ -26,7 +26,7 @@ dkan_harvest.plans.single:
   options:
     _auth: ['basic_auth']
 dkan_harvest.run:
-  path: '/api/v1/harvest/runs'
+  path: '/api/1/harvest/runs'
   methods: [POST]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::run'}
@@ -35,7 +35,7 @@ dkan_harvest.run:
   options:
     _auth: ['basic_auth']
 dkan_harvest.info:
-  path: '/api/v1/harvest/info/{id}/{run_id}'
+  path: '/api/1/harvest/info/{id}/{run_id}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::infoRun'}
@@ -44,7 +44,7 @@ dkan_harvest.info:
   options:
     _auth: ['basic_auth']
 dkan_harvest.info_index:
-  path: '/api/v1/harvest/runs'
+  path: '/api/1/harvest/runs'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::info'}

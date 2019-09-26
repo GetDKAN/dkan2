@@ -441,7 +441,7 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest/plans:
+  /api/1/harvest/plans:
     get:
       operationId: harvest-get-all
       summary: Lists harvest identifiers
@@ -490,7 +490,7 @@ paths:
                     type: string
                   identifier:
                     type: string
-  /api/v1/harvest/plans/{plan_id}:
+  /api/1/harvest/plans/{plan_id}:
     get:
       operationId: harvest-get-single
       summary: Get single harvest plan
@@ -533,7 +533,7 @@ paths:
                     properties:
                       type:
                         type: string
-  /api/v1/harvest/info/{id}/{run_id}:
+  /api/1/harvest/info/{id}/{run_id}:
     get:
       operationId: harvest-run-info
       summary: Information about a specific previous harvest run
@@ -553,7 +553,7 @@ paths:
             application/json:
               schema:
                 type: object
-  /api/v1/harvest/runs:
+  /api/1/harvest/runs:
     get:
       operationId: harvest-info
       summary: List previous runs for a harvest id
