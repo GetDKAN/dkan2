@@ -163,13 +163,18 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Gives list of previous runs for a harvest id.
-   *
-   * @param string $id
-   *   The harvest id.
    */
-  public function info($id) {
+  public function info() {
 
     try {
+      $id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($id)) {
+        return new JsonResponse(
+          ["message" => "Missing 'plan' query parameter value"],
+          400,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+      }
 
       $response = array_keys($this->harvester
         ->getAllHarvestRunInfo($id));
