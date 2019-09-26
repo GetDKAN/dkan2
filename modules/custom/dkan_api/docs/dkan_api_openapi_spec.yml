@@ -565,7 +565,13 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: '#/components/parameters/harvestId'
+        - in: query
+          name: plan
+          description: A plan identifier
+          required: true
+          schema:
+            type: string
+          example: PLAN-ID
       responses:
         '200':
           description: Ok
