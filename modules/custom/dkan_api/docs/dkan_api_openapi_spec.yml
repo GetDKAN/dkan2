@@ -533,10 +533,10 @@ paths:
                     properties:
                       type:
                         type: string
-  /api/1/harvest/info/{id}/{run_id}:
+  /api/1/harvest/runs/{run_id}:
     get:
       operationId: harvest-run-info
-      summary: Information about a specific previous harvest run
+      summary: Information about a previous run
       description: >
         Gives information about a previous run for a specific harvest run.
       tags:
@@ -544,7 +544,6 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: '#/components/parameters/harvestId'
         - $ref: '#/components/parameters/harvestRunId'
       responses:
         '200':

@@ -35,7 +35,7 @@ dkan_harvest.run:
   options:
     _auth: ['basic_auth']
 dkan_harvest.info:
-  path: '/api/1/harvest/info/{id}/{run_id}'
+  path: '/api/1/harvest/runs/{run_id}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::infoRun'}
