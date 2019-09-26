@@ -575,24 +575,27 @@ paths:
             application/json:
               schema:
                 type: object
-  /api/v1/harvest/run/{id}:
-    put:
+  /api/v1/harvest/runs:
+    post:
       operationId: harvest-run
       summary: Runs a harvest
       description: >
-        Runs a harvest for a specific identifier.
+        Runs a harvest for a specific plan identifier inside json object payload.
       tags:
         - Harvest
       security:
         - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/harvestId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: string
       responses:
         '200':
           description: Ok
@@ -601,12 +604,9 @@ paths:
               schema:
                 type: object
                 required:
-                  - endpoint
                   - identifier
                   - result
                 properties:
-                  endpoint:
-                    type: string
                   identifier:
                     type: string
                   result:
