@@ -433,7 +433,7 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest:
+  /api/v1/harvest/plans:
     get:
       operationId: harvest-get-all
       summary: Lists harvest identifiers

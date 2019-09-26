@@ -1,5 +1,5 @@
-dkan_harvest.index:
-  path: '/api/v1/harvest'
+dkan_harvest.plans.collection:
+  path: '/api/v1/harvest/plans'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::index'}
@@ -7,8 +7,8 @@ dkan_harvest.index:
     _permission: 'dkan_harvest_api_index'
   options:
     _auth: ['basic_auth']
-dkan_harvest.register:
-  path: '/api/v1/harvest'
+dkan_harvest.plans.register:
+  path: '/api/v1/harvest/plans'
   methods: [POST]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::register'}
