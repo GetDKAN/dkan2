@@ -554,6 +554,27 @@ paths:
               schema:
                 type: object
   /api/v1/harvest/runs:
+    get:
+      operationId: harvest-info
+      summary: List previous runs for a harvest id
+      description: >
+        Lists the identifiers (timestamps) of previous runs for a particular
+        harvest id.
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/harvestId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
     post:
       operationId: harvest-run
       summary: Runs a harvest
