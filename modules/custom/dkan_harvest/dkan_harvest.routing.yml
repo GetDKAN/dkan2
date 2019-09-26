@@ -26,8 +26,8 @@ dkan_harvest.plans.single:
   options:
     _auth: ['basic_auth']
 dkan_harvest.run:
-  path: '/api/v1/harvest/run/{id}'
-  methods: [PUT]
+  path: '/api/v1/harvest/runs'
+  methods: [POST]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::run'}
   requirements:

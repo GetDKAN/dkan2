@@ -139,13 +139,11 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Runs harvest.
-   *
-   * @param string $id
-   *   The harvest id.
    */
-  public function run($id) {
+  public function run() {
     try {
-
+      $payload = $this->requestStack->getCurrentRequest()->getContent();
+      $id = json_decode($payload)->plan_id;
       $result = $this->harvester
         ->runHarvest($id);
 
