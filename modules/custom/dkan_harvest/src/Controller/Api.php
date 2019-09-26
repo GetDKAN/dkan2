@@ -66,6 +66,30 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
+   * Get a single harvest plan.
+   *
+   * @param $plan_id
+   *   A harvest plan id.
+   *
+   * @return \Symfony\Component\HttpFoundation\JsonResponse
+   */
+  public function getPlan($plan_id) {
+    try {
+      $plan = $this->harvester
+        ->getHarvestPlan($plan_id);
+
+      return new JsonResponse(
+        json_decode($plan),
+        200,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
+    catch (\Exception $e) {
+      return $this->exceptionJsonResponse($e);
+    }
+  }
+
+  /**
    * Register a new harvest.
    */
   public function register() {

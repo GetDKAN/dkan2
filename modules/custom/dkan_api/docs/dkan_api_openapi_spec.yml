@@ -59,6 +59,14 @@ components:
       schema:
         type: string
       example: HARVEST-ID
+    harvestPlanId:
+      name: plan_id
+      in: path
+      description: A harvest plan identifier
+      required: true
+      schema:
+        type: string
+      example: HARVEST-PLAN-ID
     harvestRunId:
       name: run_id
       in: path
@@ -482,6 +490,49 @@ paths:
                     type: string
                   identifier:
                     type: string
+  /api/v1/harvest/plans/{plan_id}:
+    get:
+      operationId: harvest-get-single
+      summary: Get single harvest plan
+      description: >
+        Get the json plan of a registered harvest, based on the its harvest id.
+      tags:
+        - Harvest
+      parameters:
+        - $ref: '#/components/parameters/harvestPlanId'
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - identifier
+                  - extract
+                  - load
+                properties:
+                  identifier:
+                    type: string
+                  extract:
+                    type: object
+                    required:
+                      - type
+                      - uri
+                    properties:
+                      type:
+                        type: string
+                      uri:
+                        type: string
+                  load:
+                    type: object
+                    required:
+                      - type
+                    properties:
+                      type:
+                        type: string
   /api/v1/harvest/info/{id}:
     get:
       operationId: harvest-info
