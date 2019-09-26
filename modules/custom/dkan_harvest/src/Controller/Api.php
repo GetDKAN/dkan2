@@ -193,17 +193,15 @@ class Api implements ContainerInjectionInterface {
   /**
    * Gives information about a single previous harvest run.
    *
-   * @param string $id
-   *   The harvest id.
    * @param string $run_id
    *   The run's id.
    */
-  public function infoRun($id, $run_id) {
+  public function infoRun($run_id) {
 
     try {
 
       $response = $this->harvester
-        ->getHarvestRunInfo($id, $run_id);
+        ->getHarvestRunInfoTwo($run_id);
 
       return new JsonResponse(
             $response,

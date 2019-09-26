@@ -133,6 +133,24 @@ class Harvester {
   }
 
   /**
+   * Get harvest run info solely from the run's identifier.
+   *
+   * @param $runId
+   *
+   * @return array
+   * @throws \Exception
+   */
+  public function getHarvestRunInfoTwo($runId) {
+    // @TODO: retrieve a run solely from its id, returning all plans for now.
+    $store = $this->storeFactory->getInstance("harvest_plans");
+
+    if ($store instanceof BulkRetrieverInterface) {
+      return $store->retrieveAll();
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
+  }
+
+  /**
    * Public.
    */
   public function getAllHarvestRunInfo($id) {
