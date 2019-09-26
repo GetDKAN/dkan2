@@ -44,7 +44,7 @@ dkan_harvest.info:
   options:
     _auth: ['basic_auth']
 dkan_harvest.info_index:
-  path: '/api/v1/harvest/info/{id}'
+  path: '/api/v1/harvest/runs'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::info'}
