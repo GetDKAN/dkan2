@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_datastore\Service\Datastore;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class Api.
@@ -21,10 +22,18 @@ class Api implements ContainerInjectionInterface {
   protected $datastoreService;
 
   /**
+   * Request stack.
+   *
+   * @var \Symfony\Component\HttpFoundation\RequestStack
+   */
+  private $requestStack;
+
+  /**
    * Api constructor.
    */
-  public function __construct(Datastore $datastoreService) {
+  public function __construct(Datastore $datastoreService, RequestStack $requestStack) {
     $this->datastoreService = $datastoreService;
+    $this->requestStack = $requestStack;
   }
 
   /**
@@ -32,7 +41,8 @@ class Api implements ContainerInjectionInterface {
    */
   public static function create(ContainerInterface $container) {
     $datastoreService = $container->get('dkan_datastore.service');
-    return new Api($datastoreService);
+    $requestStack = $container->get('request_stack');
+    return new Api($datastoreService, $requestStack);
   }
 
   /**
@@ -44,14 +54,14 @@ class Api implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
    */
-  public function summary($uuid) {
+  public function summary($identifier) {
     try {
-      $data = $this->datastoreService->getStorage($uuid)->getSummary();
+      $data = $this->datastoreService->getStorage($identifier)->getSummary();
       return $this->successResponse($data);
     }
     catch (\Exception $e) {
       return $this->exceptionResponse(
-        new \Exception("A datastore for resource {$uuid} does not exist."),
+        new \Exception("A datastore for resource {$identifier} does not exist."),
         404
       );
     }
@@ -59,16 +69,17 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Import.
-   *
-   * @param string $uuid
-   *   The uuid of a dataset.
-   * @param bool $deferred
-   *   Whether or not the process should be deferred to a queue.
    */
-  public function import($uuid, $deferred = FALSE) {
+  public function import() {
+
+    $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+    $payload = json_decode($payloadJson);
+    if (!isset($payload->resource_id)) {
+      return $this->exceptionResponse(new \Exception("Invalid payload."));
+    }
 
     try {
-      $results = $this->datastoreService->import($uuid, $deferred);
+      $results = $this->datastoreService->import($payload->resource_id, FALSE);
       return $this->successResponse($results);
     }
     catch (\Exception $e) {
@@ -82,13 +93,13 @@ class Api implements ContainerInjectionInterface {
    * @param string $uuid
    *   The uuid of a dataset.
    */
-  public function delete($uuid) {
+  public function delete($identifier) {
     try {
-      $this->datastoreService->drop($uuid);
+      $this->datastoreService->drop($identifier);
       return $this->successResponse(
         [
-          "identifier" => $uuid,
-          "message" => "The datastore for resource {$uuid} was succesfully dropped.",
+          "identifier" => $identifier,
+          "message" => "The datastore for resource {$identifier} was succesfully dropped.",
         ]
       );
     }
