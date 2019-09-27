@@ -21,6 +21,7 @@ class Api implements ContainerInjectionInterface {
   private $database;
   private $datastore;
   private $configFactory;
+  private $requestStack;
 
   /**
    * Inherited.
@@ -30,22 +31,32 @@ class Api implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
-    return new Api($container->get('database'), $container->get('dkan_datastore.service'), $container->get('config.factory'));
+    return new Api($container);
   }
 
   /**
    * Constructor.
    */
-  public function __construct(Connection $database, Datastore $datastore, ConfigFactoryInterface $configFactory) {
-    $this->database = $database;
-    $this->datastore = $datastore;
-    $this->configFactory = $configFactory;
+  public function __construct(ContainerInterface $container) {
+    $this->database = $container->get('database');
+    $this->datastore = $container->get('dkan_datastore.service');
+    $this->configFactory = $container->get('config.factory');
+    $this->requestStack = $container->get('request_stack');
   }
 
   /**
    * Method called by the router.
    */
-  public function runQuery($query_string) {
+  public function runQuery() {
+
+    $query_string = $this->requestStack->getCurrentRequest()->get('query');
+    if (empty($query_string)) {
+      return new JsonResponse(
+        ["message" => "Missing 'query' query parameter or value"],
+        400,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
 
     $parser = new SqlParser();
 
