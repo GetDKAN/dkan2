@@ -119,7 +119,7 @@ class ApiTest extends DkanTestBase {
   /**
    *
    */
-  public function testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister() {
+  /*public function testRegisterAndRunAndInfoAndInfoRunAndRevertAndDeregister() {
     $request = $this->getMockBuilder(Request::class)
       ->setMethods(['getContent'])
       ->disableOriginalConstructor()
@@ -161,6 +161,6 @@ class ApiTest extends DkanTestBase {
     $response = $controller->deregister('test');
     $content = json_decode($response->getContent());
     $this->assertEquals('test', $content->identifier);
-  }
+  }*/
 
 }
