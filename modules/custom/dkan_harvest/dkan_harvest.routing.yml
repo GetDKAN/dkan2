@@ -1,4 +1,4 @@
-dkan_harvest.version.1.harvest:
+dkan_harvest.1.harvest:
   path: '/api/1/harvest'
   methods: [GET]
   defaults:
@@ -6,9 +6,7 @@ dkan_harvest.version.1.harvest:
   requirements:
     _permission: 'access content'
 
-dkan_harvest.index:
-  path: '/api/v1/harvest'
-dkan_harvest.plans.collection:
+dkan_harvest.1.harvest.plans:
   path: '/api/1/harvest/plans'
   methods: [GET]
   defaults:
@@ -17,7 +15,8 @@ dkan_harvest.plans.collection:
     _permission: 'dkan_harvest_api_index'
   options:
     _auth: ['basic_auth']
-dkan_harvest.plans.register:
+
+dkan_harvest.1.harvest.plans.post:
   path: '/api/1/harvest/plans'
   methods: [POST]
   defaults:
@@ -26,8 +25,9 @@ dkan_harvest.plans.register:
     _permission: 'dkan_harvest_api_register'
   options:
     _auth: ['basic_auth']
-dkan_harvest.plans.single:
-  path: '/api/1/harvest/plans/{plan_id}'
+
+dkan_harvest.1.harvest.plans.id:
+  path: '/api/1/harvest/plans/{identifier}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::getPlan'}
@@ -35,7 +35,28 @@ dkan_harvest.plans.single:
     _permission: 'dkan_harvest_api_index'
   options:
     _auth: ['basic_auth']
-dkan_harvest.run:
+
+dkan_harvest.1.harvest.plans.id.delete:
+  path: '/api/1/harvest/plans/{identifier}'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::deregister'}
+  requirements:
+    _permission: 'dkan_harvest_api_run'
+  options:
+    _auth: ['basic_auth']
+
+dkan_harvest.1.harvest.runs:
+  path: '/api/1/harvest/runs'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::info'}
+  requirements:
+    _permission: 'dkan_harvest_api_info'
+  options:
+    _auth: ['basic_auth']
+
+dkan_harvest.1.harvest.runs.post:
   path: '/api/1/harvest/runs'
   methods: [POST]
   defaults:
@@ -44,20 +65,12 @@ dkan_harvest.run:
     _permission: 'dkan_harvest_api_run'
   options:
     _auth: ['basic_auth']
-dkan_harvest.info:
-  path: '/api/1/harvest/runs/{run_id}'
+
+dkan_harvest.1.harvest.runs.id:
+  path: '/api/1/harvest/runs/{identifier}'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_harvest\Controller\Api::infoRun'}
-  requirements:
-    _permission: 'dkan_harvest_api_info'
-  options:
-    _auth: ['basic_auth']
-dkan_harvest.info_index:
-  path: '/api/1/harvest/runs'
-  methods: [GET]
-  defaults:
-    { _controller: '\Drupal\dkan_harvest\Controller\Api::info'}
   requirements:
     _permission: 'dkan_harvest_api_info'
   options:
