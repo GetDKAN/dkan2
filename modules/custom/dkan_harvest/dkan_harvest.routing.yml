@@ -1,3 +1,13 @@
+dkan_harvest.version.1.harvest:
+  path: '/api/1/harvest'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_api\Controller\Docs::getComplete'}
+  requirements:
+    _permission: 'access content'
+
+dkan_harvest.index:
+  path: '/api/v1/harvest'
 dkan_harvest.plans.collection:
   path: '/api/1/harvest/plans'
   methods: [GET]
