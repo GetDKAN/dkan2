@@ -39,6 +39,25 @@ class Harvester {
   }
 
   /**
+   * Return a harvest plan.
+   *
+   * @param $plan_id
+   *   The harvest plan id.
+   *
+   * @return mixed
+   *   The harvest plan, if any, or null.
+   * @throws \Exception
+   */
+  public function getHarvestPlan($plan_id) {
+    $store = $this->storeFactory->getInstance("harvest_plans");
+
+    if ($store instanceof BulkRetrieverInterface) {
+      return $store->retrieve($plan_id);
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {RetrieverInterface::class}");
+  }
+
+  /**
    * Register a new harvest plan.
    *
    * @param object $plan
@@ -111,6 +130,24 @@ class Harvester {
   public function getHarvestRunInfo($id, $runId) {
     $allRuns = $this->getAllHarvestRunInfo($id);
     return isset($allRuns[$runId]) ? $allRuns[$runId] : FALSE;
+  }
+
+  /**
+   * Get harvest run info solely from the run's identifier.
+   *
+   * @param $runId
+   *
+   * @return array
+   * @throws \Exception
+   */
+  public function getHarvestRunInfoTwo($runId) {
+    // @TODO: retrieve a run solely from its id, returning all plans for now.
+    $store = $this->storeFactory->getInstance("harvest_plans");
+
+    if ($store instanceof BulkRetrieverInterface) {
+      return $store->retrieveAll();
+    }
+    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
   }
 
   /**

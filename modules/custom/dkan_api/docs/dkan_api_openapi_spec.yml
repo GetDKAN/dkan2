@@ -59,6 +59,14 @@ components:
       schema:
         type: string
       example: HARVEST-ID
+    harvestPlanId:
+      name: plan_id
+      in: path
+      description: A harvest plan identifier
+      required: true
+      schema:
+        type: string
+      example: HARVEST-PLAN-ID
     harvestRunId:
       name: run_id
       in: path
@@ -433,7 +441,7 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest:
+  /api/1/harvest/plans:
     get:
       operationId: harvest-get-all
       summary: Lists harvest identifiers
@@ -482,7 +490,69 @@ paths:
                     type: string
                   identifier:
                     type: string
-  /api/v1/harvest/info/{id}:
+  /api/1/harvest/plans/{plan_id}:
+    get:
+      operationId: harvest-get-single
+      summary: Get single harvest plan
+      description: >
+        Get the json plan of a registered harvest, based on the its harvest id.
+      tags:
+        - Harvest
+      parameters:
+        - $ref: '#/components/parameters/harvestPlanId'
+      security:
+        - basicAuth: []
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - identifier
+                  - extract
+                  - load
+                properties:
+                  identifier:
+                    type: string
+                  extract:
+                    type: object
+                    required:
+                      - type
+                      - uri
+                    properties:
+                      type:
+                        type: string
+                      uri:
+                        type: string
+                  load:
+                    type: object
+                    required:
+                      - type
+                    properties:
+                      type:
+                        type: string
+  /api/1/harvest/runs/{run_id}:
+    get:
+      operationId: harvest-run-info
+      summary: Information about a previous run
+      description: >
+        Gives information about a previous run for a specific harvest run.
+      tags:
+        - Harvest
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/harvestRunId'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+  /api/1/harvest/runs:
     get:
       operationId: harvest-info
       summary: List previous runs for a harvest id
@@ -494,7 +564,13 @@ paths:
       security:
         - basicAuth: []
       parameters:
-        - $ref: '#/components/parameters/harvestId'
+        - in: query
+          name: plan
+          description: A plan identifier
+          required: true
+          schema:
+            type: string
+          example: PLAN-ID
       responses:
         '200':
           description: Ok
@@ -504,44 +580,26 @@ paths:
                 type: array
                 items:
                   type: object
-  /api/v1/harvest/info/{id}/{run_id}:
-    get:
-      operationId: harvest-run-info
-      summary: Information about a specific previous harvest run
-      description: >
-        Gives information about a previous run for a specific harvest run.
-      tags:
-        - Harvest
-      security:
-        - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/harvestId'
-        - $ref: '#/components/parameters/harvestRunId'
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: object
-  /api/v1/harvest/run/{id}:
-    put:
+    post:
       operationId: harvest-run
       summary: Runs a harvest
       description: >
-        Runs a harvest for a specific identifier.
+        Runs a harvest for a specific plan identifier inside json object payload.
       tags:
         - Harvest
       security:
         - basicAuth: []
-      parameters:
-        - $ref: '#/components/parameters/harvestId'
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - plan_id
+              properties:
+                plan_id:
+                  type: string
       responses:
         '200':
           description: Ok
@@ -550,12 +608,9 @@ paths:
               schema:
                 type: object
                 required:
-                  - endpoint
                   - identifier
                   - result
                 properties:
-                  endpoint:
-                    type: string
                   identifier:
                     type: string
                   result:
