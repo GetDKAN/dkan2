@@ -8,6 +8,7 @@ use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\dkan_common\Service\JsonUtil;
 use Harvest\ETL\Factory;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Harvester.
@@ -133,32 +134,14 @@ class Harvester {
   }
 
   /**
-   * Get harvest run info solely from the run's identifier.
-   *
-   * @param $runId
-   *
-   * @return array
-   * @throws \Exception
-   */
-  public function getHarvestRunInfoTwo($runId) {
-    // @TODO: retrieve a run solely from its id, returning all plans for now.
-    $store = $this->storeFactory->getInstance("harvest_plans");
-
-    if ($store instanceof BulkRetrieverInterface) {
-      return $store->retrieveAll();
-    }
-    throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
-  }
-
-  /**
    * Public.
    */
   public function getAllHarvestRunInfo($id) {
     $util = new JsonUtil();
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
-    return $util->decodeArrayOfJson(
-          $run_store->retrieveAll()
-    );
+    $runs = $run_store->retrieveAll();
+    $runs = $util->decodeArrayOfJson($runs);
+    return $runs;
   }
 
   /**

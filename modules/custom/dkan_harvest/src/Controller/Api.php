@@ -68,15 +68,15 @@ class Api implements ContainerInjectionInterface {
   /**
    * Get a single harvest plan.
    *
-   * @param $plan_id
+   * @param $identifier
    *   A harvest plan id.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
-  public function getPlan($plan_id) {
+  public function getPlan($identifier) {
     try {
       $plan = $this->harvester
-        ->getHarvestPlan($plan_id);
+        ->getHarvestPlan($identifier);
 
       return new JsonResponse(
         json_decode($plan),
@@ -117,16 +117,16 @@ class Api implements ContainerInjectionInterface {
   /**
    * Deregister a harvest.
    */
-  public function deregister($id) {
+  public function deregister($identifier) {
 
     try {
 
       $this->harvester
-        ->deregisterHarvest($id);
+        ->deregisterHarvest($identifier);
 
       return new JsonResponse(
             (object) [
-              "identifier" => $id,
+              "identifier" => $identifier,
             ],
             200,
             ["Access-Control-Allow-Origin" => "*"]
@@ -142,8 +142,13 @@ class Api implements ContainerInjectionInterface {
    */
   public function run() {
     try {
-      $payload = $this->requestStack->getCurrentRequest()->getContent();
-      $id = json_decode($payload)->plan_id;
+      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payload = json_decode($payloadJson);
+      if (!isset($payload->plan_id)) {
+        return $this->exceptionJsonResponse(new \Exception("Invalid payload."));
+      }
+
+      $id = $payload->plan_id;
       $result = $this->harvester
         ->runHarvest($id);
 
@@ -193,15 +198,23 @@ class Api implements ContainerInjectionInterface {
   /**
    * Gives information about a single previous harvest run.
    *
-   * @param string $run_id
+   * @param string $identifier
    *   The run's id.
    */
-  public function infoRun($run_id) {
+  public function infoRun($identifier) {
+
+    $id = $this->requestStack->getCurrentRequest()->get('plan');
+    if (empty($id)) {
+      return new JsonResponse(
+        ["message" => "Missing 'plan' query parameter value"],
+        400,
+        ["Access-Control-Allow-Origin" => "*"]
+      );
+    }
 
     try {
-
       $response = $this->harvester
-        ->getHarvestRunInfoTwo($run_id);
+        ->getHarvestRunInfo($id, $identifier);
 
       return new JsonResponse(
             $response,
