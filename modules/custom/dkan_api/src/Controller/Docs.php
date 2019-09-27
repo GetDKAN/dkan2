@@ -39,13 +39,6 @@ class Docs implements ContainerInjectionInterface {
   private $serializer;
 
   /**
-   * Drupal node dataset storage.
-   *
-   * @var \Drupal\dkan_api\Storage\Data
-   */
-  private $storage;
-
-  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -76,7 +69,7 @@ class Docs implements ContainerInjectionInterface {
    * @return array
    *   The openapi spec.
    */
-  private function getJsonFromYmlFile() {
+  public function getJsonFromYmlFile() {
     $modulePath = $this->moduleHandler->getModule('dkan_api')->getPath();
     $ymlSpecPath = $modulePath . '/docs/dkan_api_openapi_spec.yml';
     $ymlSpec = $this->fileGetContents($ymlSpecPath);

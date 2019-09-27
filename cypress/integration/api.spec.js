@@ -31,7 +31,9 @@ context('API', () => {
         }
     }
 
-    let endpoint = 'http://dkan/api/v1/dataset';
+    let host = 'http://dkan';
+    let endpoint_no_host = '/api/1/metastore/schemas/dataset/items';
+    let endpoint = host + endpoint_no_host;
     let user_credentials = {
         user: 'testuser',
         pass: '2jqzOAnXS9mmcLasy'
@@ -85,24 +87,8 @@ context('API', () => {
             })
         })
 
-        it('data (explicit)', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?view=default').then((response) => {
-                expect(response.body.keyword).eql(json1.keyword)
-            })
-        })
-
-        it('identifier', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?view=minimal').then((response) => {
-                expect(response.body.keyword).not.eql(json1.keyword)
-                expect(response.body.keyword.length).eql(json1.keyword.length)
-                expect(response.body.keyword[0]).to.match(uuidRegex)
-                expect(response.body.keyword[1]).to.match(uuidRegex)
-                expect(response.body.keyword[2]).to.match(uuidRegex)
-            })
-        })
-
         it('data+identifier', () => {
-            cy.request(endpoint + '/' + json1.identifier + '?view=verbose').then((response) => {
+            cy.request(endpoint + '/' + json1.identifier + '?show-reference-ids').then((response) => {
                 expect(response.body.keyword).not.eql(json1.keyword)
                 expect(response.body.keyword.length).eql(json1.keyword.length)
                 expect(response.body.keyword[0].identifier).to.match(uuidRegex)
@@ -187,7 +173,7 @@ context('API', () => {
                 }
             }).then((response) => {
                 expect(response.status).eql(200)
-                expect(response.body.endpoint).eql("/api/v1/dataset/" + json1.identifier)
+                expect(response.body.endpoint).eql(endpoint_no_host + '/' + json1.identifier)
                 expect(response.body.identifier).eql(json1.identifier)
             })
             // Verify expected title.
@@ -206,7 +192,7 @@ context('API', () => {
                 body: jsonPut
             }).then((response) => {
                 expect(response.status).eql(201)
-                expect(response.body.endpoint).eql("/api/v1/dataset/" + jsonPut.identifier)
+                expect(response.body.endpoint).eql(endpoint_no_host + '/' + jsonPut.identifier)
             })
             // Verify data is as expected.
             cy.request(endpoint + '/' + jsonPut.identifier).then((response) => {
@@ -318,7 +304,7 @@ context('API', () => {
                 }
             }).then((response) => {
                 expect(response.status).eql(200)
-                expect(response.body.endpoint).eql("/api/v1/dataset/" + json2.identifier)
+                expect(response.body.endpoint).eql(endpoint_no_host + '/' + json2.identifier)
                 expect(response.body.identifier).eql(json2.identifier)
             })
             // Verify expected data: added, removed, edited and left unchanged.

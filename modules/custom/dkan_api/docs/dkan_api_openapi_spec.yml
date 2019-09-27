@@ -98,7 +98,7 @@ components:
             - restricted public
             - non-public
 paths:
-  /api/v1/dataset:
+  /api/1/metastore/schemas/dataset/items:
     get:
       operationId: dataset-get-all
       summary: Get all datasets
@@ -159,7 +159,7 @@ paths:
                     type: string
         '401':
           description: Unauthorized
-  /api/v1/dataset/{uuid}:
+  /api/1/metastore/schemas/dataset/items/{identifier}:
     get:
       operationId: dataset-get
       summary: Get this dataset
@@ -276,38 +276,7 @@ paths:
                     type: string
         '401':
           description: Unauthorized
-  /api/v1/dataset/{uuid}/resources:
-    get:
-      operationId: dataset-get-resources
-      summary: Get a dataset's resources
-      tags:
-        - Dataset
-      parameters:
-        - name: uuid
-          in: path
-          description: A dataset uuid
-          required: true
-          schema:
-            type: string
-          example: c9e2d352-e24c-4051-9158-f48127aa5692
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  required:
-                    - identifier
-                    - data
-                  properties:
-                    identifier:
-                      type: string
-                    data:
-                      type: object
-  /api/v1/{property}:
+  /api/v1/metastore/schemas/{schema_id}/items:
     get:
       operationId: property-get-all
       summary: Get properties
@@ -329,7 +298,7 @@ paths:
                   properties:
                     identifier:
                       type: string
-  /api/v1/{property}/{uuid}:
+  /api/v1/metastore/schemas/{schema_id}/items/{identifier}:
     get:
       operationId: property-get
       summary: Get a property
@@ -737,7 +706,7 @@ paths:
                     type: string
                   identifier:
                     type: string
-  /api/v1/docs:
+  /api/1:
     get:
       operationId: docs-get
       summary: Complete json documentation
@@ -750,7 +719,7 @@ paths:
             application/json:
               schema:
                 type: object
-  /api/v1/docs/{uuid}:
+  /api/1/metastore/schemas/dataset/items/{identifier}/docs:
     get:
       operationId: docs-get-dataset-specific
       summary: Dataset-specific json documentation
