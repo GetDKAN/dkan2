@@ -9,8 +9,8 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\File\FileSystem;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Database\Connection;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
 use Drupal\node\NodeInterface;
@@ -26,8 +26,10 @@ class Datastore implements ContainerInjectionInterface {
   const DATASTORE_DEFAULT_TIMELIMIT = 60;
 
   private $entityRepository;
-  private $connection;
+
   private $queue;
+
+  private $databaseTableFactory;
 
   /**
    * File System.
@@ -46,9 +48,10 @@ class Datastore implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Datastore(
       $container->get('entity.repository'),
-      $container->get('database'),
       $container->get('queue'),
-      $container->get('file_system')
+      $container->get('file_system'),
+      $container->get('dkan_datastore.database_table_factory'),
+      $container->get('dkan_datastore.job_store')
     );
   }
 
@@ -57,15 +60,16 @@ class Datastore implements ContainerInjectionInterface {
    */
   public function __construct(
             EntityRepository $entityRepository,
-            Connection $connection,
             QueueFactory $queue,
-            FileSystem $fileSystem
+            FileSystem $fileSystem,
+            DatabaseTableFactory $databaseTableFactory,
+            JobStore $jobStore
   ) {
     $this->entityRepository = $entityRepository;
-    $this->connection = $connection;
     $this->queue = $queue->get('dkan_datastore_import');
     $this->fileSystem = $fileSystem;
-    $this->jobStore = new JobStore($this->connection);
+    $this->jobStore = $jobStore;
+    $this->databaseTableFactory = $databaseTableFactory;
   }
 
   /**
@@ -206,7 +210,7 @@ class Datastore implements ContainerInjectionInterface {
    */
   public function getStorage(string $uuid): DatabaseTable {
     $resource = $this->getResourceFromUuid($uuid);
-    return new DatabaseTable($this->connection, $resource);
+    return $this->databaseTableFactory->getInstance(json_encode($resource));
   }
 
   /**

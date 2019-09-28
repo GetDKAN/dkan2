@@ -3,9 +3,20 @@ services:
       class: \Drupal\dkan_datastore\Service\Datastore
       arguments:
           - '@entity.repository'
-          - '@database'
           - '@queue'
           - '@file_system'
+          - 'dkan_datastore.database_table_factory'
+
   dkan_datastore.logger_channel:
     parent: logger.channel_base
     arguments: ['dkan_datastore']
+
+  dkan_datastore.database_table_factory:
+    class: \Drupal\dkan_datastore\Storage\DatabaseTableFactory
+    arguments:
+      - '@database'
+
+  dkan_datastore.job_store:
+    class: \Drupal\dkan_datastore\Storage\JobStore
+    arguments:
+      - '@database'
