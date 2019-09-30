@@ -1,4 +1,4 @@
-context('API', () => {
+context('Metastore', () => {
 
     // Generate a random uuid
     // Credit: https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -31,13 +31,11 @@ context('API', () => {
         }
     }
 
-    let host = 'http://dkan';
-    let endpoint_no_host = '/api/1/metastore/schemas/dataset/items';
-    let endpoint = host + endpoint_no_host;
-    let user_credentials = {
-        user: 'testuser',
-        pass: '2jqzOAnXS9mmcLasy'
-    };
+    let baseUrl = Cypress.config().baseUrl;
+    let endpoint = 'metastore/schemas/dataset/items';
+    let apiVersion = baseUrl.substring(baseUrl.lastIndexOf("/")+1);
+    let responseUrlPrefix = `/api/${apiVersion}/${endpoint}/`;
+    let user_credentials = Cypress.env("TEST_USER_CREDENTIALS");
     let json1              = json();
     let json2              = json();
     let jsonShouldNotExist = json();
@@ -173,7 +171,7 @@ context('API', () => {
                 }
             }).then((response) => {
                 expect(response.status).eql(200)
-                expect(response.body.endpoint).eql(endpoint_no_host + '/' + json1.identifier)
+                expect(response.body.endpoint).eql(responseUrlPrefix + json1.identifier)
                 expect(response.body.identifier).eql(json1.identifier)
             })
             // Verify expected title.
@@ -192,7 +190,7 @@ context('API', () => {
                 body: jsonPut
             }).then((response) => {
                 expect(response.status).eql(201)
-                expect(response.body.endpoint).eql(endpoint_no_host + '/' + jsonPut.identifier)
+                expect(response.body.endpoint).eql(responseUrlPrefix + jsonPut.identifier)
             })
             // Verify data is as expected.
             cy.request(endpoint + '/' + jsonPut.identifier).then((response) => {
@@ -304,7 +302,7 @@ context('API', () => {
                 }
             }).then((response) => {
                 expect(response.status).eql(200)
-                expect(response.body.endpoint).eql(endpoint_no_host + '/' + json2.identifier)
+                expect(response.body.endpoint).eql(responseUrlPrefix + json2.identifier)
                 expect(response.body.identifier).eql(json2.identifier)
             })
             // Verify expected data: added, removed, edited and left unchanged.

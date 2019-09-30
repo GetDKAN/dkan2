@@ -1,29 +1,26 @@
 context('SQL Endpoint', () => {
 
-    let endpoint = "http://dkan/api/v1/sql/"
-    let dataset_identifier = "c9e2d352-e24c-4051-9158-f48127aa5692"
-    let datastore_endpoint = "http://dkan/api/v1/datastore"
-    let user_credentials = {
-      user: 'testuser',
-      pass: '2jqzOAnXS9mmcLasy'
-    };
+    let user_credentials = Cypress.env("TEST_USER_CREDENTIALS");
     let resource_identifier
 
-    // Obtain the resource identifier from the above dataset before proceeding.
+    // Obtain the resource identifier then import its data.
     before(function() {
-        let uuidRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
-        cy.request("http://dkan/api/v1/dataset/" + dataset_identifier + "?view=minimal").then((response) => {
-            expect(response.body.distribution[0]).not.eql(dataset_identifier)
-            expect(response.body.distribution[0]).to.match(uuidRegex);
-            resource_identifier = response.body.distribution[0];
-            cy.request(
-              {
-                method: 'PUT',
-                url: datastore_endpoint +'/import/' + resource_identifier,
-                auth: user_credentials
-              }
-            ).then((response) => {
-              expect(response.status).eql(200);
+        cy.fixture('electionDistricts').then((json) => {
+            cy.request('metastore/schemas/dataset/items/' + json.uuid + '?show-reference-ids').then((response) => {
+                expect(response.status).eql(200);
+                resource_identifier = response.body.distribution[0].identifier;
+                expect(resource_identifier).not.eql(json.uuid)
+                expect(resource_identifier).to.match(new RegExp(Cypress.env('UUID_REGEX')));
+                cy.request({
+                    method: 'POST',
+                    url: 'datastore/imports/',
+                    body: {
+                        "resource_id": resource_identifier
+                    },
+                    auth: user_credentials
+                }).then((response) => {
+                    expect(response.status).eql(200);
+                })
             })
         })
     })
@@ -32,7 +29,7 @@ context('SQL Endpoint', () => {
       cy.request(
         {
           method: 'DELETE',
-          url: datastore_endpoint +'/' + resource_identifier,
+          url: 'datastore/imports/' + resource_identifier,
           auth: user_credentials
         }
       ).then((response) => {
@@ -42,31 +39,21 @@ context('SQL Endpoint', () => {
 
     context('SELECT', () => {
         it('All', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
-                let properties = [
-                    "dari_dist",
-                    "dari_prov",
-                    "dist_id",
-                    "dist_name",
-                    "lat",
-                    "lon",
-                    "prov_id",
-                    "prov_name",
-                    "unit_type"
-                ]
-
-                properties.forEach((x) => {
-                    expect(response.body[0].hasOwnProperty(x)).equal(true)
+                cy.fixture('electionDistricts').then((json) => {
+                    json.properties.forEach((x) => {
+                        expect(response.body[0].hasOwnProperty(x)).equal(true)
+                    })
                 })
             })
         })
 
         it('Specific fields', () => {
-            let query = endpoint + `[SELECT lon,lat FROM ${resource_identifier}];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT lon,lat FROM ${resource_identifier}];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
                 let properties = [
@@ -84,16 +71,16 @@ context('SQL Endpoint', () => {
 
     context('WHERE', () => {
         it('Single condition', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah'];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah'];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(11)
             })
         })
 
         it('Multiple conditions', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Farah'];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][WHERE prov_name = 'Farah' AND dist_name = 'Farah'];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(1)
             })
@@ -104,8 +91,8 @@ context('SQL Endpoint', () => {
     context('ORDER BY', () => {
 
         it('Ascending explicit', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
                 expect(response.body[0].prov_name).eql("Badakhshan")
@@ -113,8 +100,8 @@ context('SQL Endpoint', () => {
         })
 
         it('Descending explicit', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name DESC];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name DESC];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(399)
                 expect(response.body[0].prov_name).eql("Zabul")
@@ -125,8 +112,8 @@ context('SQL Endpoint', () => {
 
     context('LIMIT and OFFSET', () => {
         it('Limit only', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(5)
                 expect(response.body[0].prov_name).eql("Badakhshan")
@@ -134,8 +121,8 @@ context('SQL Endpoint', () => {
         })
 
         it('Limit and offset', () => {
-            let query = endpoint + `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5 OFFSET 100];`
-            cy.request(query).then((response) => {
+            let query = `[SELECT * FROM ${resource_identifier}][ORDER BY prov_name ASC][LIMIT 5 OFFSET 100];`
+            cy.request('datastore/sql?query=' + query).then((response) => {
                 expect(response.status).eql(200)
                 expect(response.body.length).eql(5)
                 expect(response.body[0].prov_name).eql("Faryab")
