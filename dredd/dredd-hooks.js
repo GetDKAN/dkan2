@@ -19,8 +19,8 @@ endpointsToSkip = [
   '/api/1/harvest/runs > Run a harvest > 200 > application/json',
   '/api/1/harvest/runs/{run_id} > Information about a previous run > 200 > application/json',
   '/api/1/datastore/imports > Datastore import > 200 > application/json',
-  '/api/1/datastore/imports/{uuid} > Datastore statistics > 200 > application/json',
-  '/api/1/datastore/imports/{uuid} > Delete a datastore > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Datastore statistics > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
 ];
 endpointsToSkip.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.skip = true;
@@ -51,7 +51,7 @@ endpointsRequiringAuth = [
   '/api/1/harvest/runs/{run_id} > Information about a previous run > 200 > application/json',
   '/api/1/datastore/imports > List datastores > 200 > application/json',
   '/api/1/datastore/imports > Datastore import > 200 > application/json',
-  '/api/1/datastore/imports/{uuid} > Delete a datastore > 200 > application/json',
+  '/api/1/datastore/imports/{identifier} > Delete a datastore > 200 > application/json',
 ];
 endpointsRequiringAuth.forEach(endpoint => hooks.before(endpoint, (transaction) => {
   transaction.request.headers.Authorization = 'Basic dGVzdHVzZXI6Mmpxek9BblhTOW1tY0xhc3k=';
