@@ -43,7 +43,7 @@ context('Metastore', () => {
     let jsonPut            = json();
     let jsonPatch          = json();
 
-    let uuidRegex = /^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$/;
+    let uuidRegex = new RegExp(Cypress.env('UUID_REGEX'));
 
     // Create two datasets with random uuid.
     before(function() {
