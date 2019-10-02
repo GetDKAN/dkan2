@@ -1,7 +1,7 @@
 context('Dataset', () => {
 
     /*beforeEach(() => {
-      cy.visit("http://dkan/dataset/5dc1cfcf-8028-476c-a020-f58ec6dd621c")
+      cy.visit("dataset/5dc1cfcf-8028-476c-a020-f58ec6dd621c")
     })
   
     it('I see the title and description', () => {

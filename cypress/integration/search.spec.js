@@ -1,7 +1,7 @@
 context('Search', () => {
 
   /*beforeEach(() => {
-    cy.visit("http://dkan/search")
+    cy.visit("search")
   })
 
 

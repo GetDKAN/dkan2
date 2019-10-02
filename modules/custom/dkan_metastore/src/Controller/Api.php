@@ -400,16 +400,18 @@ class Api implements ContainerInjectionInterface {
     // @TODO: consider flipping the logic, keeping array of paths interested in.
     $spec = $this->removeSpecPaths(
       $spec, [
-        '/api/v1/dataset',
-        '/api/v1/{property}',
-        '/api/v1/{property}/{uuid}',
-        '/api/v1/harvest',
-        '/api/v1/harvest/info/{id}',
-        '/api/v1/harvest/info/{id}/{run_id}',
-        '/api/v1/docs',
-        '/api/v1/docs/{uuid}',
-        '/api/v1/datastore',
-        '/api/v1/datastore/{uuid}',
+        '/api/1/metastore/schemas/dataset',
+        '/api/1/metastore/schemas/dataset/items',
+        '/api/1/metastore/schemas/{schema_id}/items',
+        '/api/1/metastore/schemas/{schema_id}/items/{identifier}',
+        '/api/1/harvest/plans',
+        '/api/1/harvest/plans/{plan_id}',
+        '/api/1/harvest/runs',
+        '/api/1/harvest/runs/{run_id}',
+        '/api/1/datastore/imports',
+        '/api/1/datastore/imports/{identifier}',
+        '/api/1',
+        '/api/1/metastore/schemas/dataset/items/{identifier}/docs',
       ]
     );
     // Remove the security schemes.

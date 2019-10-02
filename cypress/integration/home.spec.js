@@ -1,7 +1,7 @@
 context('Home', () => {
 
   /*beforeEach(() => {
-    cy.visit("http://dkan/home")
+    cy.visit("home")
   })
 
   it('When on the home page I should see 4 topics in the Dataset Topics region', () => {

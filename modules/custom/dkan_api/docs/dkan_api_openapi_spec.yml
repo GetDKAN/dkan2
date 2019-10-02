@@ -649,7 +649,7 @@ paths:
                 type: object
         '401':
           description: Unauthorized
-  /api/1/datastore/imports/{uuid}:
+  /api/1/datastore/imports/{identifier}:
     get:
       operationId: datastore-get
       summary: Datastore statistics
