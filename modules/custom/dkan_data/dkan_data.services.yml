@@ -7,7 +7,7 @@ services:
     class: \Drupal\dkan_data\ValueReferencer
     arguments:
       - '@entity_type.manager'
-      - '@uuid'
+      - '@dkan_data.uuid5'
       - '@config.factory'
       - '@queue'
   dkan_data.config_overrider:
