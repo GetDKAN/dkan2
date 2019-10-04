@@ -78,7 +78,7 @@ class ValueReferencer {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param \Drupal\Component\Uuid\UuidInterface $uuidService
+   * @param Drupal\dkan_data\Service\Uuid5 $uuidService
    *   Injected uuid service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
    *   Injected config service.

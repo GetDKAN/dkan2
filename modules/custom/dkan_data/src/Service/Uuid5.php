@@ -19,7 +19,7 @@ class Uuid5 {
   /**
    * Generate a uuid version 5.
    *
-   * @param $schema_id
+   * @param string $schema_id
    *   The schema id of this value.
    * @param mixed $value
    *   The value for which we generate a uuid for.
