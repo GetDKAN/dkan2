@@ -1,5 +1,7 @@
 # [DKAN](https://getdkan.github.io/dkan2/)
 
+This is the first try on getting jx into DKAN2
+
 DKAN Open Data Portal/Catalog built on Drupal 8 - Alpha
 
 [![CircleCI](https://circleci.com/gh/GetDKAN/dkan2.svg?style=svg)](https://circleci.com/gh/GetDKAN/dkan2)
