@@ -1,23 +1,24 @@
 <?php
 
-namespace Drupal\dkan_datastore\Controller;
+namespace Drupal\dkan_datastore;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_datastore\Service\Datastore;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class Api.
  *
- * @package Drupal\dkan_datastore\Controller
+ * @package Drupal\dkan_datastore
+ *
+ * @codeCoverageIgnore
  */
-class Api implements ContainerInjectionInterface {
+class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Datastore Service.
    *
-   * @var \Drupa\dkan_datastore\Service\Datastore
+   * @var \Drupa\dkan_datastore\Service
    */
   protected $datastoreService;
 
@@ -31,7 +32,7 @@ class Api implements ContainerInjectionInterface {
   /**
    * Api constructor.
    */
-  public function __construct(Datastore $datastoreService, RequestStack $requestStack) {
+  public function __construct(Service $datastoreService, RequestStack $requestStack) {
     $this->datastoreService = $datastoreService;
     $this->requestStack = $requestStack;
   }
@@ -116,7 +117,7 @@ class Api implements ContainerInjectionInterface {
    */
   public function list() {
     try {
-      $data = $this->datastoreService->listStoredImporters();
+      $data = $this->datastoreService->list();
       return $this->successResponse($data);
     }
     catch (\Exception $e) {

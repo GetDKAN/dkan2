@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Drupal\dkan_datastore\Storage;
-
 
 use Contracts\FactoryInterface;
 use Dkan\Datastore\Resource;
@@ -26,10 +24,17 @@ class DatabaseTableFactory implements FactoryInterface
     $id = $resource->getId();
 
     if (!isset($this->databaseTables[$id])) {
-      $this->databaseTables[$id] = new DatabaseTable($this->connection, $resource);
+      $this->databaseTables[$id] = $this->getDatabaseTable($resource);
     }
 
     return $this->databaseTables[$id];
+  }
+
+  /**
+   * @codeCoverageIgnore
+   */
+  protected function getDatabaseTable($resource) {
+    return new DatabaseTable($this->connection, $resource);
   }
 
 }

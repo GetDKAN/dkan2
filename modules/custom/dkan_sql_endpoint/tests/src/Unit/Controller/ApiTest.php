@@ -5,21 +5,21 @@ namespace Drupal\Tests\dkan_sql_endpoint\Unit\Controller;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\StorableConfigBase;
 use Drupal\Core\Database\Connection;
-use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\dkan_datastore\Service\Datastore;
+use Drupal\dkan_datastore\Service as DatastoreService;
 use Drupal\dkan_sql_endpoint\Controller\Api;
 use Drupal\Core\Database\Schema;
 use Drupal\Core\Database\Query\Select;
 use Drupal\Core\Database\StatementInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
  * @group dkan
  */
-class ApiTest extends DkanTestBase {
+class ApiTest extends TestCase {
 
-  /*
+
   private function getContainer() {
 
     $container = $this->getMockBuilder(ContainerInterface::class)
@@ -110,7 +110,7 @@ class ApiTest extends DkanTestBase {
   }
 
   private function getDatastoreMock() {
-    return $this->createMock(Datastore::class);
+    return $this->createMock(DatastoreService::class);
   }
 
   private function getConfigMock() {
@@ -133,10 +133,6 @@ class ApiTest extends DkanTestBase {
     $mock->method('get')->willReturn(10);
 
     return $mock;
-  }*/
-
-  public function test() {
-    $this->assertTrue(TRUE);
   }
 
 }
