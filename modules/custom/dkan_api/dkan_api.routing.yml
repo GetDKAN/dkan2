@@ -13,4 +13,3 @@ dkan_api.1:
     { _controller: '\Drupal\dkan_api\Controller\Docs::getComplete'}
   requirements:
     _permission: 'access content'
-

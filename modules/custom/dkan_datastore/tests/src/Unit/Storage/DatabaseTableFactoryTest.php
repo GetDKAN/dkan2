@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
-
 
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
@@ -11,11 +9,17 @@ use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use PHPUnit\Framework\TestCase;
 
-class DatabaseTableFactoryTest extends  TestCase
-{
+/**
+ *
+ */
+class DatabaseTableFactoryTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $connection = (new Chain($this))
-      ->add(Connection::class, "destroy", null)
+      ->add(Connection::class, "destroy", NULL)
       ->getMock();
 
     $databaseTable = (new Chain($this))
@@ -32,4 +36,5 @@ class DatabaseTableFactoryTest extends  TestCase
     $object = $factory->getInstance(json_encode(new Resource("blah", "")));
     $this->assertTrue($object instanceof DatabaseTable);
   }
+
 }

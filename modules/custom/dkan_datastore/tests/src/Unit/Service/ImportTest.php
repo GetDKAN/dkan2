@@ -10,8 +10,14 @@ use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Procrastinator\Result;
 use Dkan\Datastore\Importer;
 
-class ImportTest extends TestCase
-{
+/**
+ *
+ */
+class ImportTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $resource = new Resource("blah", "/");
 
@@ -19,7 +25,7 @@ class ImportTest extends TestCase
       ->add(JobStore::class, "retrieve", Importer::class)
       ->add(Importer::class, "run", Result::class)
       ->add(Importer::class, "getResult", Result::class)
-      ->add(JobStore::class, "store", null)
+      ->add(JobStore::class, "store", NULL)
       ->getMock();
 
     $databaseTableFactory = (new Chain($this))
@@ -31,4 +37,5 @@ class ImportTest extends TestCase
 
     $this->assertTrue($service->getResult() instanceof Result);
   }
+
 }

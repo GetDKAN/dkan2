@@ -14,8 +14,14 @@ use Dkan\Datastore\Resource;
 use Procrastinator\Result;
 use Drupal\Core\Queue\Memory;
 
-class ServiceTest extends TestCase
-{
+/**
+ *
+ */
+class ServiceTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $options = (new Options())
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
@@ -28,9 +34,9 @@ class ServiceTest extends TestCase
       ->add(ResourceService::class, "get", new Resource("1", "file:///hello.txt"))
       ->add(ResourceService::class, "getResult", new Result())
       ->add(ImportServiceFactory::class, "getInstance", ImportService::class)
-      ->add(ImportService::class, "import", null)
+      ->add(ImportService::class, "import", NULL)
       ->add(ImportService::class, "getResult", new Result())
-      ->add(QueueFactory::class, "get", null);
+      ->add(QueueFactory::class, "get", NULL);
 
     $service = Service::create($chain->getMock());
     $result = $service->import("1");
@@ -38,6 +44,9 @@ class ServiceTest extends TestCase
     $this->assertTrue(is_array($result));
   }
 
+  /**
+   *
+   */
   public function testDeferred() {
     $options = (new Options())
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
@@ -53,7 +62,7 @@ class ServiceTest extends TestCase
       ->add(Memory::class, "createItem", "123");
 
     $service = Service::create($chain->getMock());
-    $result = $service->import("1", true);
+    $result = $service->import("1", TRUE);
 
     $this->assertTrue(is_array($result));
   }

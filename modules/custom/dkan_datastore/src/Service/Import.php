@@ -10,29 +10,37 @@ use Procrastinator\Result;
 use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 
-class Import
-{
+/**
+ *
+ */
+class Import {
   const DEFAULT_TIMELIMIT = 50;
 
   private $resource;
   private $jobStore;
   private $databaseTableFactory;
 
-  public function __construct(Resource $resource, JobStore $jobStore, DatabaseTableFactory $databaseTableFactory)
-  {
+  /**
+   *
+   */
+  public function __construct(Resource $resource, JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
     $this->resource = $resource;
     $this->jobStore = $jobStore;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
-  public function import()
-  {
+  /**
+   *
+   */
+  public function import() {
     $importer = $this->getImporter();
     $importer->run();
   }
 
-  public function getResult(): Result
-  {
+  /**
+   *
+   */
+  public function getResult(): Result {
     $importer = $this->getImporter();
     return $importer->getResult();
   }
@@ -70,12 +78,11 @@ class Import
    * @return Dkan\Datastore\Importer|bool
    *   Importer object or FALSE if none found.
    */
-  private function getStoredImporter(): ?Importer
-  {
+  private function getStoredImporter(): ?Importer {
     if ($importer = $this->jobStore->retrieve($this->resource->getId(), Importer::class)) {
       return $importer;
     }
-    return null;
+    return NULL;
   }
 
   /**
@@ -87,8 +94,8 @@ class Import
    * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   DatabaseTable storage object.
    */
-  public function getStorage(): DatabaseTable
-  {
+  public function getStorage(): DatabaseTable {
     return $this->databaseTableFactory->getInstance(json_encode($this->resource));
   }
+
 }

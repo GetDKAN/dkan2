@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Drupal\dkan_datastore\Service\Factory;
-
 
 use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
@@ -13,31 +11,33 @@ use Drupal\dkan_datastore\Storage\JobStore;
 /**
  * @codeCoverageIgnore
  */
-class Resource implements FactoryInterface
-{
+class Resource implements FactoryInterface {
   private $entityRepository;
   private $fileSystem;
   private $jobStore;
 
+  /**
+   *
+   */
   public function __construct(
     EntityRepository $entityRepository,
     FileSystem $fileSystem,
     JobStore $jobStore
-  )
-  {
+  ) {
     $this->entityRepository = $entityRepository;
     $this->fileSystem = $fileSystem;
     $this->jobStore = $jobStore;
   }
 
-  public function getInstance(string $identifier)
-  {
+  /**
+   *
+   */
+  public function getInstance(string $identifier) {
     if (!isset($this->services[$identifier])) {
       $this->services[$identifier] = new Instance($identifier, $this->entityRepository, $this->fileSystem, $this->jobStore);
     }
 
     return $this->services[$identifier];
   }
-
 
 }

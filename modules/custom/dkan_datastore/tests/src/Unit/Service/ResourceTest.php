@@ -13,8 +13,14 @@ use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_datastore\Service\Resource as Service;
 use Drupal\dkan_datastore\Storage\JobStore;
 
-class ResourceTest extends TestCase
-{
+/**
+ *
+ */
+class ResourceTest extends TestCase {
+
+  /**
+   *
+   */
   public function testNoFileFetcher() {
 
     $object = (object) [];
@@ -22,7 +28,7 @@ class ResourceTest extends TestCase
     $object->data->downloadURL = "http://google.com";
 
     $meta = [
-      "value" => json_encode($object)
+      "value" => json_encode($object),
     ];
 
     $entityRepository = (new Chain($this))
@@ -34,11 +40,11 @@ class ResourceTest extends TestCase
       ->getMock();
 
     $fileSystem = (new Chain($this))
-      ->add(FileSystem::class, "chmod", null)
+      ->add(FileSystem::class, "chmod", NULL)
       ->getMock();
 
     $jobStore = (new Chain($this))
-      ->add(JobStore::class, "store", null)
+      ->add(JobStore::class, "store", NULL)
       ->getMock();
 
     $service = new Service("123", $entityRepository, $fileSystem, $jobStore);
@@ -47,6 +53,9 @@ class ResourceTest extends TestCase
     $this->assertTrue($resource instanceof Resource);
   }
 
+  /**
+   *
+   */
   public function testFileFetcherNotDone() {
 
     $object = (object) [];
@@ -54,7 +63,7 @@ class ResourceTest extends TestCase
     $object->data->downloadURL = "http://google.com";
 
     $meta = [
-      "value" => json_encode($object)
+      "value" => json_encode($object),
     ];
 
     $entityRepository = (new Chain($this))
@@ -66,11 +75,11 @@ class ResourceTest extends TestCase
       ->getMock();
 
     $fileSystem = (new Chain($this))
-      ->add(FileSystem::class, "chmod", null)
+      ->add(FileSystem::class, "chmod", NULL)
       ->getMock();
 
     $data = json_encode((object) [
-      "destination" => "hello"
+      "destination" => "hello",
     ]);
 
     $jobStore = (new Chain($this))
@@ -80,11 +89,14 @@ class ResourceTest extends TestCase
       ->getMock();
 
     $service = new Service("123", $entityRepository, $fileSystem, $jobStore);
-    $resource = $service->get(true);
+    $resource = $service->get(TRUE);
 
     $this->assertTrue(!isset($resource));
   }
 
+  /**
+   *
+   */
   public function testFileFetcherDone() {
 
     $object = (object) [];
@@ -92,7 +104,7 @@ class ResourceTest extends TestCase
     $object->data->downloadURL = "http://google.com";
 
     $meta = [
-      "value" => json_encode($object)
+      "value" => json_encode($object),
     ];
 
     $entityRepository = (new Chain($this))
@@ -104,11 +116,11 @@ class ResourceTest extends TestCase
       ->getMock();
 
     $fileSystem = (new Chain($this))
-      ->add(FileSystem::class, "chmod", null)
+      ->add(FileSystem::class, "chmod", NULL)
       ->getMock();
 
     $data = json_encode((object) [
-      "destination" => "hello"
+      "destination" => "hello",
     ]);
 
     $jobStore = (new Chain($this))
@@ -119,12 +131,15 @@ class ResourceTest extends TestCase
       ->getMock();
 
     $service = new Service("123", $entityRepository, $fileSystem, $jobStore);
-    $resource = $service->get(true);
+    $resource = $service->get(TRUE);
 
     $this->assertTrue($resource instanceof Resource);
     $this->assertTrue($service->getResult() instanceof Result);
   }
 
+  /**
+   *
+   */
   public function testNoStoredFileFetcher() {
 
     $object = (object) [];
@@ -132,7 +147,7 @@ class ResourceTest extends TestCase
     $object->data->downloadURL = "http://google.com";
 
     $meta = [
-      "value" => json_encode($object)
+      "value" => json_encode($object),
     ];
 
     $entityRepository = (new Chain($this))
@@ -145,16 +160,16 @@ class ResourceTest extends TestCase
 
     $fileSystem = (new Chain($this))
       ->add(FileSystem::class, "realpath", "/")
-      ->add(FileSystem::class, "prepareDirectory", null)
+      ->add(FileSystem::class, "prepareDirectory", NULL)
       ->getMock();
 
     $jobStore = (new Chain($this))
-      ->add(JobStore::class, "retrieve", null)
-      ->add(JobStore::class, "store", null)
+      ->add(JobStore::class, "retrieve", NULL)
+      ->add(JobStore::class, "store", NULL)
       ->getMock();
 
     $data = json_encode((object) [
-      "destination" => "hello"
+      "destination" => "hello",
     ]);
     $fileFetcher = (new Chain($this))
       ->add(FileFetcher::class, "getResult", Result::class)
@@ -169,7 +184,7 @@ class ResourceTest extends TestCase
     $service = $builder->getMock();
     $service->method("getFileFetcherInstance")->willReturn($fileFetcher);
 
-    $resource = $service->get(true);
+    $resource = $service->get(TRUE);
 
     $this->assertTrue($resource instanceof Resource);
   }

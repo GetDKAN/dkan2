@@ -8,7 +8,6 @@ use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
 use Drupal\dkan_common\Service\JsonUtil;
 use Harvest\ETL\Factory;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Harvester.
@@ -47,6 +46,7 @@ class Harvester {
    *
    * @return mixed
    *   The harvest plan, if any, or null.
+   *
    * @throws \Exception
    */
   public function getHarvestPlan($plan_id) {

@@ -2,8 +2,6 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\dkan_datastore\Service\Service;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -11,7 +9,6 @@ use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Drupal\Core\Database\Connection;
 
 /**
  * Api class.

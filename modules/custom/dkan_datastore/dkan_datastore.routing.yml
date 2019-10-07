@@ -44,5 +44,3 @@ dkan_datastore.1.imports.id.delete:
     _permission: 'dkan_datastore_api_drop'
   options:
     _auth: ['basic_auth']
-
-

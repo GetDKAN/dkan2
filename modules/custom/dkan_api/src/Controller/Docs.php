@@ -7,8 +7,6 @@ namespace Drupal\dkan_api\Controller;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\dkan_data\Storage\Data;
-use Drupal\dkan_data\ValueReferencer;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -59,6 +57,9 @@ class Docs implements ContainerInjectionInterface {
     $this->spec = $this->getJsonFromYmlFile();
   }
 
+  /**
+   *
+   */
   public function getVersions() {
     return new JsonResponse(["version" => 1, "url" => "/api/1"]);
   }
@@ -103,8 +104,6 @@ class Docs implements ContainerInjectionInterface {
 
     return $this->sendResponse($jsonSpec);
   }
-
-
 
   /**
    * Helper function to set headers and send response.

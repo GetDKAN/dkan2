@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Drupal\Tests\dkan_datastore\Unit\Storage;
-
 
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Delete;
@@ -15,8 +13,14 @@ use Drupal\dkan_datastore\Storage\JobStore;
 use FileFetcher\FileFetcher;
 use PHPUnit\Framework\TestCase;
 
-class JobStoreTest extends TestCase
-{
+/**
+ *
+ */
+class JobStoreTest extends TestCase {
+
+  /**
+   *
+   */
   public function testConstruction() {
     $chain = (new Chain($this))
       ->add(Connection::class, "blah", "blah");
@@ -25,16 +29,18 @@ class JobStoreTest extends TestCase
     $this->assertTrue(is_object($jobStore));
   }
 
+  /**
+   *
+   */
   public function testRetrieve() {
     $job_data = json_encode(new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv"));
     $job = (object) [];
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
-
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Schema::class, "tableExists", true)
+      ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -45,16 +51,18 @@ class JobStoreTest extends TestCase
     $this->assertTrue(is_object($jobStore->retrieve("1", FileFetcher::class)));
   }
 
+  /**
+   *
+   */
   public function testRetrieveAll() {
     $job_data = json_encode(new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv"));
     $job = (object) [];
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
-
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Schema::class, "tableExists", true)
+      ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'execute', Statement::class)
@@ -64,6 +72,9 @@ class JobStoreTest extends TestCase
     $this->assertTrue(is_array($jobStore->retrieveAll(FileFetcher::class)));
   }
 
+  /**
+   *
+   */
   public function testStore() {
     $jobObject = new FileFetcher("file://" . __DIR__ . "/../../../data/countries.csv");
 
@@ -73,10 +84,9 @@ class JobStoreTest extends TestCase
     $job->ref_uuid = "1";
     $job->job_data = $job_data;
 
-
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Schema::class, "tableExists", true)
+      ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'condition', Select::class)
@@ -85,20 +95,23 @@ class JobStoreTest extends TestCase
       ->add(Connection::class, 'update', Update::class)
       ->add(Update::class, "fields", Update::class)
       ->add(Update::class, "condition", Update::class)
-      ->add(Update::class, "execute", null);
+      ->add(Update::class, "execute", NULL);
 
     $jobStore = new JobStore($chain->getMock());
 
     $this->assertEquals("", $jobStore->store("1", $jobObject));
   }
 
+  /**
+   *
+   */
   public function testRemove() {
     $chain = (new Chain($this))
       ->add(Connection::class, "schema", Schema::class)
-      ->add(Schema::class, "tableExists", true)
+      ->add(Schema::class, "tableExists", TRUE)
       ->add(Connection::class, "delete", Delete::class)
       ->add(Delete::class, "condition", Delete::class)
-      ->add(Delete::class, "execute", null);
+      ->add(Delete::class, "execute", NULL);
 
     $jobStore = new JobStore($chain->getMock());
 

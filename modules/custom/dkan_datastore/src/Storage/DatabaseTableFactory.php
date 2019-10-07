@@ -6,19 +6,25 @@ use Contracts\FactoryInterface;
 use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
 
-class DatabaseTableFactory implements FactoryInterface
-{
+/**
+ *
+ */
+class DatabaseTableFactory implements FactoryInterface {
   private $connection;
   private $databaseTables;
 
-  public function __construct(Connection $connection)
-  {
+  /**
+   *
+   */
+  public function __construct(Connection $connection) {
     $this->connection = $connection;
     $this->databaseTables = [];
   }
 
-  public function getInstance(string $identifier)
-  {
+  /**
+   *
+   */
+  public function getInstance(string $identifier) {
     /* @var $resource \Dkan\Datastore\Resource */
     $resource = Resource::hydrate($identifier);
     $id = $resource->getId();

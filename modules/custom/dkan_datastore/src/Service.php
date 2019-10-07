@@ -71,7 +71,7 @@ class Service implements ContainerInjectionInterface {
 
     return [
       get_class($resourceService) => $resourceService->getResult(),
-      get_class($importService) => $importService->getResult()
+      get_class($importService) => $importService->getResult(),
     ];
   }
 
@@ -117,4 +117,5 @@ class Service implements ContainerInjectionInterface {
   public function list() {
     return ImporterList::getList($this->jobStore);
   }
+
 }

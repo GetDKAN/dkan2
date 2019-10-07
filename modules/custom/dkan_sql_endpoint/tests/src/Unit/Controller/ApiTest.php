@@ -19,7 +19,9 @@ use PHPUnit\Framework\TestCase;
  */
 class ApiTest extends TestCase {
 
-
+  /**
+   *
+   */
   private function getContainer() {
 
     $container = $this->getMockBuilder(ContainerInterface::class)
@@ -51,24 +53,36 @@ class ApiTest extends TestCase {
     return $container;
   }
 
+  /**
+   *
+   */
   public function test() {
     $controller = Api::create($this->getContainer());
     $response = $controller->runQuery('[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];');
     $this->assertEquals("[]", $response->getContent());
   }
 
+  /**
+   *
+   */
   public function test2() {
     $controller = Api::create($this->getContainer());
     $response = $controller->runQuery('[SELECT abc FROM abc][WHERE abc = \'blah\'][ORDER BY abc ASC][LIMIT 1 OFFSET 3];');
     $this->assertEquals("[]", $response->getContent());
   }
 
+  /**
+   *
+   */
   public function test3() {
     $controller = Api::create($this->getContainer());
     $response = $controller->runQuery('[ELECT abc FROM]');
     $this->assertEquals('"Invalid query string."', $response->getContent());
   }
 
+  /**
+   *
+   */
   private function getDatabaseMock() {
     $mock = $this->getMockBuilder(Connection::class)
       ->disableOriginalConstructor()
@@ -81,6 +95,9 @@ class ApiTest extends TestCase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getSelectMock() {
     $mock = $this->getMockBuilder(Select::class)
       ->disableOriginalConstructor()
@@ -94,6 +111,9 @@ class ApiTest extends TestCase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getResultMock() {
     $mock = $this->getMockBuilder(StatementInterface::class)
       ->disableOriginalConstructor()
@@ -105,14 +125,23 @@ class ApiTest extends TestCase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getSchemaMock() {
     return $this->createMock(Schema::class);
   }
 
+  /**
+   *
+   */
   private function getDatastoreMock() {
     return $this->createMock(DatastoreService::class);
   }
 
+  /**
+   *
+   */
   private function getConfigMock() {
     $mock = $this->getMockBuilder(ConfigFactoryInterface::class)
       ->disableOriginalConstructor()
@@ -124,6 +153,9 @@ class ApiTest extends TestCase {
     return $mock;
   }
 
+  /**
+   *
+   */
   private function getConfigResultMock() {
     $mock = $this->getMockBuilder(StorableConfigBase::class)
       ->disableOriginalConstructor()

@@ -11,21 +11,24 @@ use Drupal\dkan_datastore\Service\Import as Instance;
 /**
  * @codeCoverageIgnore
  */
-class Import implements FactoryInterface
-{
+class Import implements FactoryInterface {
   private $jobStore;
   private $databaseTableFactory;
 
   private $services = [];
 
-  public function __construct(JobStore $jobStore, DatabaseTableFactory $databaseTableFactory)
-  {
+  /**
+   *
+   */
+  public function __construct(JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
     $this->jobStore = $jobStore;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
-  public function getInstance(string $identifier)
-  {
+  /**
+   *
+   */
+  public function getInstance(string $identifier) {
     if (!isset($this->services[$identifier])) {
       $resource = Resource::hydrate($identifier);
       $this->services[$identifier] = new Instance($resource, $this->jobStore, $this->databaseTableFactory);

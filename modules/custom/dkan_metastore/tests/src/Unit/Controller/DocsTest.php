@@ -2,12 +2,10 @@
 
 namespace Drupal\Tests\dkan_api\Unit\Controller;
 
-use Drupal\Core\Extension\Extension;
 use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_common\Tests\Mock\Options;
 use Drupal\dkan_metastore\Controller\Api;
 use Drupal\dkan_common\Tests\DkanTestBase;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\dkan_schema\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_data\Storage\Data;

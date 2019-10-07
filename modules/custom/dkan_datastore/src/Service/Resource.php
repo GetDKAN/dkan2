@@ -10,8 +10,10 @@ use Drupal\Core\File\FileSystem;
 use Drupal\node\NodeInterface;
 use Drupal\dkan_datastore\Storage\JobStore;
 
-class Resource
-{
+/**
+ *
+ */
+class Resource {
   const DEFAULT_TIMELIMIT = 50;
 
   private $uuid;
@@ -19,13 +21,15 @@ class Resource
   private $fileSystem;
   private $jobStore;
 
+  /**
+   *
+   */
   public function __construct(
     string $uuid,
     EntityRepository $entityRepository,
     FileSystem $fileSystem,
     JobStore $jobStore
-  )
-  {
+  ) {
     $this->uuid = $uuid;
     $this->entityRepository = $entityRepository;
     $this->fileSystem = $fileSystem;
@@ -49,7 +53,7 @@ class Resource
     if ($useFileFetcher == TRUE) {
       $fileFetcher = $this->getFileFetcher($this->uuid);
       if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
-        return null;
+        return NULL;
       }
 
       $json = $fileFetcher->getResult()->getData();
@@ -61,8 +65,10 @@ class Resource
     }
   }
 
-  public function getResult(): Result
-  {
+  /**
+   *
+   */
+  public function getResult(): Result {
     $fileFetcher = $this->getFileFetcher();
     return isset($fileFetcher) ? $fileFetcher->getResult() : new Result();
   }
@@ -132,12 +138,11 @@ class Resource
   /**
    * Private.
    */
-  private function getStoredFileFetcher(): ?FileFetcher
-  {
+  private function getStoredFileFetcher(): ?FileFetcher {
     if ($fileFetcher = $this->jobStore->retrieve($this->uuid, FileFetcher::class)) {
       return $fileFetcher;
     }
-    return null;
+    return NULL;
   }
 
 }

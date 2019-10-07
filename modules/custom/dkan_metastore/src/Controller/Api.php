@@ -59,15 +59,21 @@ class Api implements ContainerInjectionInterface {
     $this->storage = $storage;
   }
 
+  /**
+   *
+   */
   public function getSchemas() {
     $schemas = [];
-    foreach($this->schemaRetriever->getAllIds() as $id) {
+    foreach ($this->schemaRetriever->getAllIds() as $id) {
       $schema = $this->schemaRetriever->retrieve($id);
       $schemas[$id] = json_decode($schema);
     }
     return new JsonResponse($schemas);
   }
 
+  /**
+   *
+   */
   public function getSchema($identifier) {
 
     $schema = $this->schemaRetriever->retrieve($identifier);

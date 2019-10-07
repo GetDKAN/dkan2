@@ -13,8 +13,14 @@ use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\TableSummary;
 use PHPUnit\Framework\TestCase;
 
-class DatabaseTableTest extends TestCase
-{
+/**
+ *
+ */
+class DatabaseTableTest extends TestCase {
+
+  /**
+   *
+   */
   public function testConstruction() {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
@@ -23,6 +29,9 @@ class DatabaseTableTest extends TestCase
     $this->assertTrue(is_object($databaseTable));
   }
 
+  /**
+   *
+   */
   public function testRetrieve() {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
@@ -31,6 +40,9 @@ class DatabaseTableTest extends TestCase
     $this->assertEquals("1", $databaseTable->retrieve("1"));
   }
 
+  /**
+   *
+   */
   public function testRetrieveAll() {
     $databaseTable = new DatabaseTable(
       $this->getConnectionChain()->getMock(),
@@ -39,8 +51,11 @@ class DatabaseTableTest extends TestCase
     $this->assertEquals([], $databaseTable->retrieveAll());
   }
 
+  /**
+   *
+   */
   public function testStore() {
-    $connectionChain =  $this->getConnectionChain()
+    $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'insert', Insert::class)
       ->add(Insert::class, 'fields', Insert::class)
       ->add(Insert::class, 'values', Insert::class)
@@ -53,8 +68,11 @@ class DatabaseTableTest extends TestCase
     $this->assertEquals("SUCCESS", $databaseTable->store('["Gerardo", "Gonzalez"]'));
   }
 
+  /**
+   *
+   */
   public function testCount() {
-    $connectionChain =  $this->getConnectionChain()
+    $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
@@ -68,8 +86,11 @@ class DatabaseTableTest extends TestCase
     $this->assertEquals(1, $databaseTable->count());
   }
 
+  /**
+   *
+   */
   public function testGetSummary() {
-    $connectionChain =  $this->getConnectionChain()
+    $connectionChain = $this->getConnectionChain()
       ->add(Connection::class, 'select', Select::class, 'select_1')
       ->add(Select::class, 'fields', Select::class)
       ->add(Select::class, 'countQuery', Select::class)
@@ -88,18 +109,24 @@ class DatabaseTableTest extends TestCase
       ), $databaseTable->getSummary());
   }
 
+  /**
+   *
+   */
   public function testDestroy() {
-    $connectionChain =  $this->getConnectionChain();
+    $connectionChain = $this->getConnectionChain();
 
     $databaseTable = new DatabaseTable(
       $connectionChain->getMock(),
       $this->getResource()
     );
     $databaseTable->destroy();
-    $this->assertTrue(true);
+    $this->assertTrue(TRUE);
 
   }
 
+  /**
+   *
+   */
   private function getConnectionChain() {
     $fieldInfo = [
       (object) ['Field' => "first_name"],
@@ -108,14 +135,17 @@ class DatabaseTableTest extends TestCase
 
     $chain = (new Chain($this))
       // Construction.
-      ->add(Connection::class , "schema", Schema::class)
+      ->add(Connection::class, "schema", Schema::class)
       ->add(Connection::class, 'query', Statement::class)
       ->add(Statement::class, 'fetchAll', $fieldInfo)
-      ->add(Schema::class, "tableExists", true);
+      ->add(Schema::class, "tableExists", TRUE);
 
     return $chain;
   }
 
+  /**
+   *
+   */
   private function getResource() {
     return new Resource("people", "");
   }
