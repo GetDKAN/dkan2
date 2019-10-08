@@ -49,7 +49,7 @@ class Uuid5Test extends DkanTestBase {
       ],
       'non-string' => [
         'foo',
-        '{"bar":"baz"}',
+        (object) ['bar' => 'baz'],
         'e9de513e-b4d7-5b05-902b-f90ee7a5db52',
       ],
     ];
