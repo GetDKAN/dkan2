@@ -91,7 +91,7 @@ class Resource {
       $filePath = $this->getResourceFilePathFromNode($node);
 
       $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
-      $this->fileSystem->prepareDirectory($tmpDirectory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      $this->fileSystem->prepareDirectory($tmpDirectory, FileSystem::CREATE_DIRECTORY | FileSystem::MODIFY_PERMISSIONS);
 
       $fileFetcher = $this->getFileFetcherInstance($filePath, $tmpDirectory);
       $this->jobStore->store($this->uuid, $fileFetcher);

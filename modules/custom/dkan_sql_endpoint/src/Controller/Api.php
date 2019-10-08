@@ -2,13 +2,17 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Drupal\dkan_datastore\Storage\DatabaseTable;
+use Drupal\Core\Config\ConfigFactory;
+use Drupal\Core\Database\Connection;
+use Drupal\dkan_datastore\Service\Factory\Resource;
+use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Storage\Query;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Maquina\StateMachine\MachineOfMachines;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Api class.
@@ -16,9 +20,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class Api implements ContainerInjectionInterface {
 
   private $database;
-  private $datastore;
   private $configFactory;
   private $requestStack;
+  private $resourceServiceFactory;
+  private $databaseTableFactory;
 
   /**
    * Inherited.
@@ -28,17 +33,31 @@ class Api implements ContainerInjectionInterface {
    * @codeCoverageIgnore
    */
   public static function create(ContainerInterface $container) {
-    return new Api($container);
+
+    return new Api(
+      $container->get('database'),
+      $container->get('dkan_datastore.service.factory.resource'),
+      $container->get('config.factory'),
+      $container->get('request_stack'),
+      $container->get('dkan_datastore.database_table_factory')
+    );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(ContainerInterface $container) {
-    $this->database = $container->get('database');
-    $this->datastore = $container->get('dkan_datastore.service');
-    $this->configFactory = $container->get('config.factory');
-    $this->requestStack = $container->get('request_stack');
+  public function __construct(
+    Connection $database,
+    Resource $resourceServiceFactory,
+    ConfigFactory $configFactory,
+    RequestStack $requestStack,
+    DatabaseTableFactory $databaseTableFactory
+  ) {
+    $this->database = $database;
+    $this->resourceServiceFactory = $resourceServiceFactory;
+    $this->configFactory = $configFactory;
+    $this->requestStack = $requestStack;
+    $this->databaseTableFactory = $databaseTableFactory;
   }
 
   /**
@@ -70,7 +89,9 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    $databaseTable = new DatabaseTable($this->database, $this->getResource($state_machine));
+    $resource = $this->getResource($state_machine);
+    $resourceId = json_encode($resource);
+    $databaseTable = $this->databaseTableFactory->getInstance($resourceId);
 
     try {
       $result = $databaseTable->query($query_object);
@@ -88,7 +109,10 @@ class Api implements ContainerInjectionInterface {
    */
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
-    return $this->datastore->getResourceFromUuid($uuid);
+
+    /** @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    return $resourceService->get();
   }
 
   /**

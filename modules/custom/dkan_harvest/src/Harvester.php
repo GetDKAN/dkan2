@@ -165,6 +165,13 @@ class Harvester {
     $harvestPlan = json_decode($plan_store->retrieve($id));
     $item_store = $this->storeFactory->getInstance("harvest_{$id}_items");
     $hash_store = $this->storeFactory->getInstance("harvest_{$id}_hashes");
+    return $this->getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store);
+  }
+
+  /**
+   * @codeCoverageIgnore
+   */
+  protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {
     return new DkanHarvester(new Factory($harvestPlan, $item_store, $hash_store));
   }
 

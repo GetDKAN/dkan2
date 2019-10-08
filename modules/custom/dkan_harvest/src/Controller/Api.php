@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * Class Api.
  *
  * @package Drupal\dkan_harvest\Controller
+ *
+ * @codeCoverageIgnore
  */
 class Api implements ContainerInjectionInterface {
 
