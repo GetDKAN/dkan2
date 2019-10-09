@@ -84,7 +84,9 @@ class ResourceTest extends TestCase {
 
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", FileFetcher::class)
+      ->add(JobStore::class, "store", null)
       ->add(FileFetcher::class, "getResult", Result::class)
+      ->add(FileFetcher::class, "run", Result::class)
       ->add(Result::class, "getData", $data)
       ->getMock();
 
@@ -125,6 +127,7 @@ class ResourceTest extends TestCase {
 
     $jobStore = (new Chain($this))
       ->add(JobStore::class, "retrieve", FileFetcher::class)
+      ->add(JobStore::class, "store", null)
       ->add(FileFetcher::class, "getResult", Result::class)
       ->add(Result::class, "getData", $data)
       ->add(Result::class, "getStatus", Result::DONE)

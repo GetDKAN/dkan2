@@ -5,6 +5,7 @@ use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_harvest\Storage\FileFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_harvest\Storage\File;
+use Drupal\dkan_harvest\Harvester as HarvestService;
 
 /**
  *
@@ -20,7 +21,7 @@ class HarvesterTest extends TestCase {
       ->add(File::class, "retrieve", "Hello")
       ->getMock();
 
-    $service = new Harvester($storeFactory);
+    $service = new HarvestService($storeFactory);
     $plan = $service->getHarvestPlan("test");
     $this->assertEquals("Hello", $plan);
   }
@@ -39,7 +40,7 @@ class HarvesterTest extends TestCase {
       ->add(Harvester::class, "revert", NULL)
       ->getMock();
 
-    $service = $this->getMockBuilder(Harvester::class)
+    $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([$storeFactory])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
@@ -63,7 +64,7 @@ class HarvesterTest extends TestCase {
       ->add(Harvester::class, "harvest", "Hello")
       ->getMock();
 
-    $service = $this->getMockBuilder(Harvester::class)
+    $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([$storeFactory])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
@@ -87,7 +88,7 @@ class HarvesterTest extends TestCase {
       ->add(Harvester::class, "harvest", "Hello")
       ->getMock();
 
-    $service = $this->getMockBuilder(Harvester::class)
+    $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([$storeFactory])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
@@ -108,10 +109,10 @@ class HarvesterTest extends TestCase {
       ->getMock();
 
     $dkanHarvester = (new Chain($this))
-      ->add(Harvester::class, "harvest", "Hello")
+      ->add(HarvestService::class, "harvest", "Hello")
       ->getMock();
 
-    $service = $this->getMockBuilder(Harvester::class)
+    $service = $this->getMockBuilder(HarvestService::class)
       ->setConstructorArgs([$storeFactory])
       ->setMethods(['getDkanHarvesterInstance'])
       ->getMock();
