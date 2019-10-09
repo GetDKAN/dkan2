@@ -35,6 +35,7 @@ class Import {
   public function import() {
     $importer = $this->getImporter();
     $importer->run();
+    $this->jobStore->store($this->resource->getId(), $importer);
   }
 
   /**

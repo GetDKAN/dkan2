@@ -49,9 +49,15 @@ class Resource {
    */
   public function get($useFileFetcher = FALSE): ?R {
     $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
+    if (!$node) {
+      return NULL;
+    }
 
     if ($useFileFetcher == TRUE) {
       $fileFetcher = $this->getFileFetcher($this->uuid);
+      $fileFetcher->run();
+      $this->jobStore->store($this->uuid, $fileFetcher);
+
       if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
         return NULL;
       }

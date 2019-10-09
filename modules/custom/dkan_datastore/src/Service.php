@@ -2,12 +2,15 @@
 
 namespace Drupal\dkan_datastore;
 
+use Drupal\dkan_datastore\Storage\JobStore;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\dkan_datastore\Service\Factory\Resource;
 use Drupal\dkan_datastore\Service\Factory\Import;
 use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
+use Dkan\Datastore\Importer;
+use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
@@ -17,6 +20,7 @@ class Service implements ContainerInjectionInterface {
   private $resourceServiceFactory;
   private $importServiceFactory;
   private $queue;
+  private $jobStore;
 
   /**
    * Inherited.
@@ -27,17 +31,19 @@ class Service implements ContainerInjectionInterface {
     return new Service(
       $container->get('dkan_datastore.service.factory.resource'),
       $container->get('dkan_datastore.service.factory.import'),
-      $container->get('queue')
+      $container->get('queue'),
+      $container->get('dkan_datastore.job_store')
     );
   }
 
   /**
    * Constructor for datastore service.
    */
-  public function __construct(Resource $resourceServiceFactory, Import $importServiceFactory, QueueFactory $queue) {
+  public function __construct(Resource $resourceServiceFactory, Import $importServiceFactory, QueueFactory $queue, JobStore $jobStore) {
     $this->queue = $queue->get('dkan_datastore_import');
     $this->resourceServiceFactory = $resourceServiceFactory;
     $this->importServiceFactory = $importServiceFactory;
+    $this->jobStore = $jobStore;
   }
 
   /**
@@ -51,7 +57,7 @@ class Service implements ContainerInjectionInterface {
   public function import(string $uuid, bool $deferred = FALSE): array {
 
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
-    $resource = $resourceService->get();
+    $resource = $resourceService->get(true);
 
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
@@ -63,15 +69,19 @@ class Service implements ContainerInjectionInterface {
     }
 
     if (!$resource) {
-      return [get_class($resourceService) => $resourceService->getResult()];
+      $name = substr(strrchr(get_class($resourceService), "\\"), 1);
+      return [$name => $resourceService->getResult()];
     }
 
     $importService = $this->importServiceFactory->getInstance(json_encode($resource));
     $importService->import();
 
+    $rname = substr(strrchr(get_class($resourceService), "\\"), 1);
+    $iname = substr(strrchr(get_class($importService), "\\"), 1);
+
     return [
-      get_class($resourceService) => $resourceService->getResult(),
-      get_class($importService) => $importService->getResult(),
+      $rname => $resourceService->getResult(),
+      $iname => $importService->getResult(),
     ];
   }
 
@@ -83,9 +93,9 @@ class Service implements ContainerInjectionInterface {
    *   all connected resources.
    */
   public function drop($uuid) {
-    /*$this->getStorage($uuid)->destroy();
+    $this->getStorage($uuid)->destroy();
     $this->jobStore->remove($uuid, Importer::class);
-    $this->jobStore->remove($uuid, FileFetcher::class);*/
+    $this->jobStore->remove($uuid, FileFetcher::class);
   }
 
   /**
@@ -116,6 +126,13 @@ class Service implements ContainerInjectionInterface {
    */
   public function list() {
     return ImporterList::getList($this->jobStore);
+  }
+
+  public function getStorage($uuid) {
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    $resource = $resourceService->get();
+    $importService = $this->importServiceFactory->getInstance(json_encode($resource));
+    return $importService->getStorage();
   }
 
 }

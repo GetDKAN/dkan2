@@ -66,6 +66,16 @@ dkan_harvest.1.harvest.runs.post:
   options:
     _auth: ['basic_auth']
 
+dkan_harvest.1.harvest.runs.delete:
+  path: '/api/1/harvest/runs'
+  methods: [DELETE]
+  defaults:
+    { _controller: '\Drupal\dkan_harvest\Controller\Api::revert'}
+  requirements:
+    _permission: 'dkan_harvest_api_run'
+  options:
+    _auth: ['basic_auth']
+
 dkan_harvest.1.harvest.runs.id:
   path: '/api/1/harvest/runs/{identifier}'
   methods: [GET]

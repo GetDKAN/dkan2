@@ -19,7 +19,7 @@ use Drupal\dkan_datastore\Service\Factory\Resource as ResourceServiceFactory;
 use Drupal\dkan_datastore\Service\Resource as ResourceService;
 
 /**
- * @coversDefaultClass \Drupal\dkan_datastore\Controller\Api
+ * @coversDefaultClass \Drupal\dkan_datastore\WebServiceApi
  * @group dkan
  */
 class ApiTest extends TestCase {

@@ -231,12 +231,18 @@ class Api implements ContainerInjectionInterface {
 
   /**
    * Reverts harvest.
-   *
-   * @param string $id
-   *   The source to revert.
    */
-  public function revert($id) {
+  public function revert() {
     try {
+
+      $id = $this->requestStack->getCurrentRequest()->get('plan');
+      if (empty($id)) {
+        return new JsonResponse(
+          ["message" => "Missing 'plan' query parameter value"],
+          400,
+          ["Access-Control-Allow-Origin" => "*"]
+        );
+      }
 
       $result = $this->harvester
         ->revertHarvest($id);

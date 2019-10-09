@@ -43,7 +43,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     $datastoreService = $container->get('dkan_datastore.service');
     $requestStack = $container->get('request_stack');
-    return new Api($datastoreService, $requestStack);
+    return new WebServiceApi($datastoreService, $requestStack);
   }
 
   /**
