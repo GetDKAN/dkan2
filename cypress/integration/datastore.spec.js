@@ -37,8 +37,8 @@ context('Datastore API', () => {
       }
     }).then((response) => {
       expect(response.status).eql(200);
-      expect(response.body.FileFetcherResult.status).eql("done");
-      expect(response.body.ImporterResult.status).eql("done");
+      expect(response.body.Resource.status).eql("done");
+      expect(response.body.Import.status).eql("done");
     });
 
     cy.request('datastore/imports/' + resource_identifier).then((response) => {
