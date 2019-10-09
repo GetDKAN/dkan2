@@ -1,7 +1,6 @@
 <?php
 
 use Harvest\Harvester;
-use Drupal\dkan_harvest\Harvester;
 use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_harvest\Storage\FileFactory;
 use PHPUnit\Framework\TestCase;
