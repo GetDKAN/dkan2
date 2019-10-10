@@ -314,7 +314,6 @@ class Api implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   *
    * @param string $identifier
    *   Identifier.
    *
