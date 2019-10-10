@@ -49,7 +49,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Returns the dataset along with datastore headers and statistics.
    *
-   * @param string $uuid
+   * @param string $identifier
    *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
@@ -91,7 +91,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Drop.
    *
-   * @param string $uuid
+   * @param string $identifier
    *   The uuid of a dataset.
    */
   public function delete($identifier) {

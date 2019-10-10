@@ -7,14 +7,14 @@ use Dkan\Datastore\Resource;
 use Drupal\Core\Database\Connection;
 
 /**
- *
+ * Class DatabaseTableFactory.
  */
 class DatabaseTableFactory implements FactoryInterface {
   private $connection;
   private $databaseTables;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
@@ -22,7 +22,9 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function getInstance(string $identifier) {
     /* @var $resource \Dkan\Datastore\Resource */

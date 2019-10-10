@@ -118,7 +118,7 @@ class Api implements ContainerInjectionInterface {
   private function getResource(MachineOfMachines $state_machine) {
     $uuid = $this->getUuidFromSelect($state_machine->gsm('select')->gsm('table_var'));
 
-    /** @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    /* @var $resourceService \Drupal\dkan_datastore\Service\Resource */
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
     return $resourceService->get();
   }
