@@ -17,7 +17,7 @@ class Resource implements FactoryInterface {
   private $jobStore;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(
     EntityRepository $entityRepository,
@@ -30,7 +30,9 @@ class Resource implements FactoryInterface {
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function getInstance(string $identifier) {
     if (!isset($this->services[$identifier])) {

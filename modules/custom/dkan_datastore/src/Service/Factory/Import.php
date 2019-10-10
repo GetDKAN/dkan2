@@ -18,7 +18,7 @@ class Import implements FactoryInterface {
   private $services = [];
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
     $this->jobStore = $jobStore;
@@ -26,7 +26,9 @@ class Import implements FactoryInterface {
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function getInstance(string $identifier) {
     if (!isset($this->services[$identifier])) {

@@ -70,10 +70,11 @@ class Api implements ContainerInjectionInterface {
   /**
    * Get a single harvest plan.
    *
-   * @param $identifier
+   * @param string $identifier
    *   A harvest plan id.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
+   *   Json response.
    */
   public function getPlan($identifier) {
     try {

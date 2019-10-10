@@ -208,10 +208,11 @@ class Api implements ContainerInjectionInterface {
   /**
    * Implements PUT method.
    *
-   * @param string $identifier
-   *   Identifier.
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   *
+   * @param string $identifier
+   *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -260,10 +261,11 @@ class Api implements ContainerInjectionInterface {
   /**
    * Implements PATCH method.
    *
-   * @param string $identifier
-   *   Identifier.
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   *
+   * @param string $identifier
+   *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.

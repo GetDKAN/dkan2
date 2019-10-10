@@ -58,7 +58,7 @@ class Docs implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Ger version.
    */
   public function getVersions() {
     return new JsonResponse(["version" => 1, "url" => "/api/1"]);
