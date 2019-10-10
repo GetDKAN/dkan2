@@ -67,6 +67,14 @@ class Api implements ContainerInjectionInterface {
 
     $query_string = $this->requestStack->getCurrentRequest()->get('query');
     if (empty($query_string)) {
+      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payload = json_decode($payloadJson);
+      if (isset($payload->query)) {
+        $query_string = $payload->query;
+      }
+    }
+
+    if (empty($query_string)) {
       return new JsonResponse(
         ["message" => "Missing 'query' query parameter or value"],
         400,
