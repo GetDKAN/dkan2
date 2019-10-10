@@ -99,7 +99,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function getDatabaseTable($stateMachine) {
     $resource = $this->getResource($stateMachine);
