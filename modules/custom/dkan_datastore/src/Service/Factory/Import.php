@@ -9,6 +9,8 @@ use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Service\Import as Instance;
 
 /**
+ * Class Import.
+ *
  * @codeCoverageIgnore
  */
 class Import implements FactoryInterface {

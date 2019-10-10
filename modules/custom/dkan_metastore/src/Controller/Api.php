@@ -60,7 +60,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Get schemas.
    */
   public function getSchemas() {
     $schemas = [];
@@ -72,7 +72,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Get schema.
    */
   public function getSchema($identifier) {
 
@@ -113,10 +113,10 @@ class Api implements ContainerInjectionInterface {
   /**
    * Implements GET method.
    *
-   * @param string $identifier
-   *   Identifier.
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -142,10 +142,10 @@ class Api implements ContainerInjectionInterface {
   /**
    * GET all resources associated with a dataset.
    *
-   * @param string $identifier
-   *   Identifier.
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -210,7 +210,6 @@ class Api implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   *
    * @param string $identifier
    *   Identifier.
    *
@@ -263,7 +262,6 @@ class Api implements ContainerInjectionInterface {
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
-   *
    * @param string $identifier
    *   Identifier.
    *
@@ -314,10 +312,11 @@ class Api implements ContainerInjectionInterface {
   /**
    * Implements DELETE method.
    *
-   * @param string $identifier
-   *   Identifier.
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   *
+   * @param string $identifier
+   *   Identifier.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.

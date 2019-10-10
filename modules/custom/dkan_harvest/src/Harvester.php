@@ -41,7 +41,7 @@ class Harvester {
   /**
    * Return a harvest plan.
    *
-   * @param $plan_id
+   * @param string $plan_id
    *   The harvest plan id.
    *
    * @return mixed
@@ -169,6 +169,8 @@ class Harvester {
   }
 
   /**
+   * Protected.
+   *
    * @codeCoverageIgnore
    */
   protected function getDkanHarvesterInstance($harvestPlan, $item_store, $hash_store) {

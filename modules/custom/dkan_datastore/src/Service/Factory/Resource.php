@@ -9,6 +9,8 @@ use Drupal\dkan_datastore\Service\Resource as Instance;
 use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
+ * Class Resource.
+ *
  * @codeCoverageIgnore
  */
 class Resource implements FactoryInterface {
