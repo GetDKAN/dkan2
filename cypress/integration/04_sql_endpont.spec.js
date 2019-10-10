@@ -79,19 +79,9 @@ context('SQL Endpoint', () => {
           mediaType: "text/csv",
           format: "csv",
           description: "<p>You can see this data plotted on a map, by clicking on 'Map' below. Individual data records can be seen by clicking on each point.</p>",
-          title: "District Names"
+          title: "District Names SQL"
         }
-      ],
-      keyword: [
-        "firsttag",
-        "secondtag",
-        "thirdtag"
-      ],
-      contactPoint: {
-        "@type": "vcard:Contact",
-        fn: "Firstname Lastname",
-        hasEmail: "mailto:first.last@example.com"
-      }
+      ]
     }
   }
 
