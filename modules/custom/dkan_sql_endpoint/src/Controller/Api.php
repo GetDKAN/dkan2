@@ -68,11 +68,7 @@ class Api implements ContainerInjectionInterface {
     $query_string = $this->getQueryString();
 
     if (empty($query_string)) {
-      return new JsonResponse(
-        ["message" => "Missing 'query' query parameter or value"],
-        400,
-        ["Access-Control-Allow-Origin" => "*"]
-      );
+      return $this->response("Missing 'query' query parameter or value",400);
     }
 
     $parser = new SqlParser();
@@ -90,9 +86,7 @@ class Api implements ContainerInjectionInterface {
       return $this->response("No datastore.", 500);
     }
 
-    $resource = $this->getResource($state_machine);
-    $resourceId = json_encode($resource);
-    $databaseTable = $this->databaseTableFactory->getInstance($resourceId);
+    $databaseTable = $this->getDatabaseTable($state_machine);
 
     try {
       $result = $databaseTable->query($query_object);
@@ -102,6 +96,12 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->response($result, 200);
+  }
+
+  private function getDatabaseTable($stateMachine) {
+    $resource = $this->getResource($stateMachine);
+    $resourceId = json_encode($resource);
+    return $this->databaseTableFactory->getInstance($resourceId);
   }
 
   /**
