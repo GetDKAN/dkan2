@@ -11,7 +11,7 @@ use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 
 /**
- *
+ * Class Import.
  */
 class Import {
   const DEFAULT_TIMELIMIT = 50;
@@ -21,7 +21,7 @@ class Import {
   private $databaseTableFactory;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(Resource $resource, JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
     $this->resource = $resource;
@@ -30,7 +30,7 @@ class Import {
   }
 
   /**
-   *
+   * Import.
    */
   public function import() {
     $importer = $this->getImporter();
@@ -39,7 +39,7 @@ class Import {
   }
 
   /**
-   *
+   * Get result.
    */
   public function getResult(): Result {
     $importer = $this->getImporter();
@@ -48,9 +48,6 @@ class Import {
 
   /**
    * Build an Importer.
-   *
-   * @param string $uuid
-   *   UUID for resrouce node.
    *
    * @return \Dkan\Datastore\Importer
    *   Importer.
@@ -73,14 +70,14 @@ class Import {
   /**
    * Get a stored importer.
    *
-   * @return \Dkan\Datastore\Importer|null
+   * @return \Dkan\Datastore\Importer|Null
    *   Importer object.
    */
   private function getStoredImporter(): ?Importer {
     if ($importer = $this->jobStore->retrieve($this->resource->getId(), Importer::class)) {
       return $importer;
     }
-    return null;
+    return NULL;
   }
 
   /**

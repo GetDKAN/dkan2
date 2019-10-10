@@ -70,7 +70,7 @@ class Resource {
   }
 
   /**
-   *
+   * Get result.
    */
   public function getResult(): Result {
     $fileFetcher = $this->getFileFetcher();
