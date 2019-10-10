@@ -22,7 +22,7 @@ function dkan_datastore_node_insert(EntityInterface $entity) {
         if ((isset($data->mediaType) && $data->mediaType == "text/csv") || (isset($data->format) && $data->format == "csv")) {
           /* @var $datastore_service \Drupal\dkan_datastore\Service */
           $datastore_service = \Drupal::service("dkan_datastore.service");
-          $datastore_service->import($entity->uuid(), true);
+          $datastore_service->import($entity->uuid(), TRUE);
         }
       }
     }

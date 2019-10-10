@@ -57,7 +57,7 @@ class Service implements ContainerInjectionInterface {
   public function import(string $uuid, bool $deferred = FALSE): array {
 
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
-    $resource = $resourceService->get(true);
+    $resource = $resourceService->get(TRUE);
 
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
@@ -128,6 +128,9 @@ class Service implements ContainerInjectionInterface {
     return ImporterList::getList($this->jobStore);
   }
 
+  /**
+   *
+   */
   public function getStorage($uuid) {
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
     $resource = $resourceService->get();
