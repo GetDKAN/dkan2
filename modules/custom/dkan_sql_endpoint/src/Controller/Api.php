@@ -65,14 +65,7 @@ class Api implements ContainerInjectionInterface {
    */
   public function runQuery() {
 
-    $query_string = $this->requestStack->getCurrentRequest()->get('query');
-    if (empty($query_string)) {
-      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
-      $payload = json_decode($payloadJson);
-      if (isset($payload->query)) {
-        $query_string = $payload->query;
-      }
-    }
+    $query_string = $this->getQueryString();
 
     if (empty($query_string)) {
       return new JsonResponse(
@@ -109,7 +102,22 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->response($result, 200);
+  }
 
+  /**
+   * Private.
+   */
+  private function getQueryString() {
+    $queryString = Null;
+    $queryString = $this->requestStack->getCurrentRequest()->get('query');
+    if (empty($queryString)) {
+      $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
+      $payload = json_decode($payloadJson);
+      if (isset($payload->query)) {
+        $queryString = $payload->query;
+      }
+    }
+    return $queryString;
   }
 
   /**
