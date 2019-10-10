@@ -68,7 +68,7 @@ class Api implements ContainerInjectionInterface {
     $query_string = $this->getQueryString();
 
     if (empty($query_string)) {
-      return $this->response("Missing 'query' query parameter or value",400);
+      return $this->response("Missing 'query' query parameter or value", 400);
     }
 
     $parser = new SqlParser();
@@ -98,6 +98,9 @@ class Api implements ContainerInjectionInterface {
     return $this->response($result, 200);
   }
 
+  /**
+   *
+   */
   private function getDatabaseTable($stateMachine) {
     $resource = $this->getResource($stateMachine);
     $resourceId = json_encode($resource);
@@ -108,7 +111,7 @@ class Api implements ContainerInjectionInterface {
    * Private.
    */
   private function getQueryString() {
-    $queryString = Null;
+    $queryString = NULL;
     $queryString = $this->requestStack->getCurrentRequest()->get('query');
     if (empty($queryString)) {
       $payloadJson = $this->requestStack->getCurrentRequest()->getContent();
