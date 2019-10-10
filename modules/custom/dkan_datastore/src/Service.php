@@ -129,7 +129,10 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Get Storage.
    *
+   * @param $uuid
+   *   The unique identifier of a resource.
    */
   public function getStorage($uuid) {
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);

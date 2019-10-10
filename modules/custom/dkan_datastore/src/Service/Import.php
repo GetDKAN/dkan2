@@ -73,24 +73,18 @@ class Import {
   /**
    * Get a stored importer.
    *
-   * @param string $uuid
-   *   Resource node UUID.
-   *
-   * @return Dkan\Datastore\Importer|bool
-   *   Importer object or FALSE if none found.
+   * @return \Dkan\Datastore\Importer|null
+   *   Importer object.
    */
   private function getStoredImporter(): ?Importer {
     if ($importer = $this->jobStore->retrieve($this->resource->getId(), Importer::class)) {
       return $importer;
     }
-    return NULL;
+    return null;
   }
 
   /**
    * Build a database table storage object.
-   *
-   * @param string $uuid
-   *   Resource node UUID.
    *
    * @return \Drupal\dkan_datastore\Storage\DatabaseTable
    *   DatabaseTable storage object.

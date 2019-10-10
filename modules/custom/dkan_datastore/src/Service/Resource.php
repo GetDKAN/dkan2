@@ -11,7 +11,7 @@ use Drupal\node\NodeInterface;
 use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
- *
+ * Class Resource.
  */
 class Resource {
   const DEFAULT_TIMELIMIT = 50;
@@ -22,7 +22,7 @@ class Resource {
   private $jobStore;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(
     string $uuid,
@@ -37,10 +37,8 @@ class Resource {
   }
 
   /**
-   * Create a resource object from a node's UUID.
+   * Create a resource object.
    *
-   * @param string $uuid
-   *   The UUID for a resource node.
    * @param bool $useFileFetcher
    *   If file fetcher was used, get path from the file fetcher.
    *
@@ -80,6 +78,8 @@ class Resource {
   }
 
   /**
+   * Protected.
+   *
    * @codeCoverageIgnore
    */
   protected function getFileFetcherInstance($filePath, $tmpDirectory) {

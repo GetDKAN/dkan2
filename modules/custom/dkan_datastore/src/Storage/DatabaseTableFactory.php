@@ -39,6 +39,8 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
+   * Protected.
+   *
    * @codeCoverageIgnore
    */
   protected function getDatabaseTable($resource) {
