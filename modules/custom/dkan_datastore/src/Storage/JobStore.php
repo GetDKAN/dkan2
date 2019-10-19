@@ -51,8 +51,7 @@ class JobStore implements StorerInterface, RetrieverInterface {
   /**
    * Store.
    */
-  public function store($data, string $id = null): string
-  {
+  public function store($data, string $id = NULL): string {
     $tableName = $this->getTableName($this->jobClass);
 
     if (!$this->tableExists($tableName)) {

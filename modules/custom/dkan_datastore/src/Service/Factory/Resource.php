@@ -6,7 +6,6 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\File\FileSystem;
 use Drupal\dkan_datastore\Service\Resource as Instance;
-use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;
 
 /**

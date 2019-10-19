@@ -82,7 +82,7 @@ class ResourceTest extends TestCase {
     $fileSystem = (new Chain($this))
       ->add(FileSystem::class, "chmod", NULL)
       ->add(FileSystem::class, "realpath", "/tmp")
-      ->add(FileSystem::class, "prepareDirectory", null)
+      ->add(FileSystem::class, "prepareDirectory", NULL)
       ->getMock();
 
     $data = json_encode((object) [
@@ -226,6 +226,9 @@ class ResourceTest extends TestCase {
     $this->assertTrue($resource instanceof Resource);
   }
 
+  /**
+   *
+   */
   private function getFileSystemMock() {
     return (new Chain($this))
       ->add(FileSystem::class, "realpath", "/")

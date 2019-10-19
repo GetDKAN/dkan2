@@ -121,8 +121,11 @@ class JobStoreTest extends TestCase {
     $this->assertEquals("", $jobStore->remove("1", FileFetcher::class));
   }
 
+  /**
+   *
+   */
   private function getFileFetcher() {
-    return FileFetcher::get("1",new Memory(),["filePath" => "file://" . __DIR__ . "/../../../data/countries.csv"]);
+    return FileFetcher::get("1", new Memory(), ["filePath" => "file://" . __DIR__ . "/../../../data/countries.csv"]);
   }
 
 }

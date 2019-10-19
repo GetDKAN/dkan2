@@ -1,6 +1,5 @@
 <?php
 
-use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use PHPUnit\Framework\TestCase;
 use Drupal\dkan_datastore\Service;

@@ -84,12 +84,15 @@ class Resource {
   protected function getFileFetcherInstance($filePath, $tmpDirectory) {
     $fileFetcher = FileFetcher::get($this->uuid, $this->jobStoreFactory->getInstance(FileFetcher::class), [
       'filePath' => $filePath,
-      'temporaryDirectory' => $tmpDirectory
+      'temporaryDirectory' => $tmpDirectory,
     ]);
     $fileFetcher->setTimeLimit(self::DEFAULT_TIMELIMIT);
     return $fileFetcher;
   }
 
+  /**
+   *
+   */
   public function getFileFetcher(): FileFetcher {
 
     $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);

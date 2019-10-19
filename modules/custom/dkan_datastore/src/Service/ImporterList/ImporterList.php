@@ -2,12 +2,10 @@
 
 namespace Drupal\dkan_datastore\Service\ImporterList;
 
-use Dkan\Datastore\Importer;
 use Drupal\dkan_datastore\Service\Factory\Import;
 use Drupal\dkan_datastore\Service\Factory\Resource;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use FileFetcher\FileFetcher;
-use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
  * Definition of an "importer list" that allows for reporting.
