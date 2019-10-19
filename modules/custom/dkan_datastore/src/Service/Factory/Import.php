@@ -7,6 +7,7 @@ use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Storage\JobStore;
 use Drupal\dkan_datastore\Service\Import as Instance;
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 
 /**
  * Class Import.
@@ -14,7 +15,7 @@ use Drupal\dkan_datastore\Service\Import as Instance;
  * @codeCoverageIgnore
  */
 class Import implements FactoryInterface {
-  private $jobStore;
+  private $jobStoreFactory;
   private $databaseTableFactory;
 
   private $services = [];
@@ -22,8 +23,8 @@ class Import implements FactoryInterface {
   /**
    * Constructor.
    */
-  public function __construct(JobStore $jobStore, DatabaseTableFactory $databaseTableFactory) {
-    $this->jobStore = $jobStore;
+  public function __construct(JobStoreFactory $jobStoreFactory, DatabaseTableFactory $databaseTableFactory) {
+    $this->jobStoreFactory = $jobStoreFactory;
     $this->databaseTableFactory = $databaseTableFactory;
   }
 
@@ -35,7 +36,7 @@ class Import implements FactoryInterface {
   public function getInstance(string $identifier) {
     if (!isset($this->services[$identifier])) {
       $resource = Resource::hydrate($identifier);
-      $this->services[$identifier] = new Instance($resource, $this->jobStore, $this->databaseTableFactory);
+      $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
 
     return $this->services[$identifier];

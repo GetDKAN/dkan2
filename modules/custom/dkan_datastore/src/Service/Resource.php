@@ -2,13 +2,13 @@
 
 namespace Drupal\dkan_datastore\Service;
 
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use Procrastinator\Result;
 use FileFetcher\FileFetcher;
 use Dkan\Datastore\Resource as R;
 use Drupal\Core\Entity\EntityRepository;
 use Drupal\Core\File\FileSystem;
 use Drupal\node\NodeInterface;
-use Drupal\dkan_datastore\Storage\JobStore;
 
 /**
  * Class Resource.
@@ -19,7 +19,7 @@ class Resource {
   private $uuid;
   private $entityRepository;
   private $fileSystem;
-  private $jobStore;
+  private $jobStoreFactory;
 
   /**
    * Constructor.
@@ -28,12 +28,12 @@ class Resource {
     string $uuid,
     EntityRepository $entityRepository,
     FileSystem $fileSystem,
-    JobStore $jobStore
+    JobStoreFactory $jobStoreFactory
   ) {
     $this->uuid = $uuid;
     $this->entityRepository = $entityRepository;
     $this->fileSystem = $fileSystem;
-    $this->jobStore = $jobStore;
+    $this->jobStoreFactory = $jobStoreFactory;
   }
 
   /**
@@ -54,7 +54,6 @@ class Resource {
     if ($useFileFetcher == TRUE) {
       $fileFetcher = $this->getFileFetcher($this->uuid);
       $fileFetcher->run();
-      $this->jobStore->store($this->uuid, $fileFetcher);
 
       if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
         return NULL;
@@ -83,29 +82,23 @@ class Resource {
    * @codeCoverageIgnore
    */
   protected function getFileFetcherInstance($filePath, $tmpDirectory) {
-    $fileFetcher = new FileFetcher($filePath, $tmpDirectory);
+    $fileFetcher = FileFetcher::get($this->uuid, $this->jobStoreFactory->getInstance(FileFetcher::class), [
+      'filePath' => $filePath,
+      'temporaryDirectory' => $tmpDirectory
+    ]);
     $fileFetcher->setTimeLimit(self::DEFAULT_TIMELIMIT);
     return $fileFetcher;
   }
 
-  /**
-   * Private.
-   */
-  private function getFileFetcher(): FileFetcher {
-    if (!$fileFetcher = $this->getStoredFileFetcher($this->uuid)) {
-      $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
-      $filePath = $this->getResourceFilePathFromNode($node);
+  public function getFileFetcher(): FileFetcher {
 
-      $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
-      $this->fileSystem->prepareDirectory($tmpDirectory, FileSystem::CREATE_DIRECTORY | FileSystem::MODIFY_PERMISSIONS);
+    $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
+    $filePath = $this->getResourceFilePathFromNode($node);
 
-      $fileFetcher = $this->getFileFetcherInstance($filePath, $tmpDirectory);
-      $this->jobStore->store($this->uuid, $fileFetcher);
-    }
-    if (!($fileFetcher instanceof FileFetcher)) {
-      throw new \Exception("Could not load file-fetcher for uuid $this->uuid");
-    }
-    return $fileFetcher;
+    $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
+    $this->fileSystem->prepareDirectory($tmpDirectory, FileSystem::CREATE_DIRECTORY | FileSystem::MODIFY_PERMISSIONS);
+
+    return $this->getFileFetcherInstance($filePath, $tmpDirectory);
   }
 
   /**
@@ -139,16 +132,6 @@ class Resource {
     }
 
     throw new \Exception("Invalid metadata information or missing file information.");
-  }
-
-  /**
-   * Private.
-   */
-  private function getStoredFileFetcher(): ?FileFetcher {
-    if ($fileFetcher = $this->jobStore->retrieve($this->uuid, FileFetcher::class)) {
-      return $fileFetcher;
-    }
-    return NULL;
   }
 
 }

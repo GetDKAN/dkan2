@@ -3,6 +3,9 @@
 namespace Drupal\dkan_datastore\Service\ImporterList;
 
 use Dkan\Datastore\Importer;
+use Drupal\dkan_datastore\Service\Factory\Import;
+use Drupal\dkan_datastore\Service\Factory\Resource;
+use Drupal\dkan_datastore\Storage\JobStoreFactory;
 use FileFetcher\FileFetcher;
 use Drupal\dkan_datastore\Storage\JobStore;
 
@@ -16,7 +19,10 @@ class ImporterList {
    *
    * @var \Drupal\dkan_datastore\Storage\JobStore
    */
-  private $jobStore;
+  private $jobStoreFactory;
+
+  private $resourceServiceFactory;
+  private $importServiceFactory;
 
   /**
    * Constructor function.
@@ -24,8 +30,10 @@ class ImporterList {
    * @param \Drupal\dkan_datastore\Storage\JobStore $jobStore
    *   A JobStore object.
    */
-  public function __construct(JobStore $jobStore) {
-    $this->jobStore = $jobStore;
+  public function __construct(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory) {
+    $this->jobStoreFactory = $jobStoreFactory;
+    $this->resourceServiceFactory = $resrouceServiceFactory;
+    $this->importServiceFactory = $importServiceFactory;
   }
 
   /**
@@ -35,13 +43,23 @@ class ImporterList {
    *   An array of ImporterListItem objects, keyed by UUID.
    */
   private function buildList() {
-    $fileFetchers = $this->jobStore->retrieveAll(FileFetcher::class);
-    $importers = $this->jobStore->retrieveAll(Importer::class);
     $list = [];
+
+    $fileFetchers = [];
+    $importers = [];
+
+    $store = $this->jobStoreFactory->getInstance(FileFetcher::class);
+    foreach ($store->retrieveAll() as $id) {
+      $fileFetchers[$id] = $this->resourceServiceFactory->getInstance($id)->getFileFetcher();
+      $resource = $this->resourceServiceFactory->getInstance($id)->get();
+      $importers[$id] = $this->importServiceFactory->getInstance(json_encode($resource))->getImporter();
+    }
+
     foreach ($fileFetchers as $uuid => $fileFetcher) {
       $importer = isset($importers[$uuid]) ? $importers[$uuid] : NULL;
       $list[$uuid] = ImporterListItem::getItem($fileFetcher, $importer);
     }
+
     return $list;
   }
 
@@ -51,8 +69,8 @@ class ImporterList {
    * @param \Drupal\dkan_datastore\Storage\JobStore $jobStore
    *   A jobstore object.
    */
-  public static function getList(JobStore $jobStore): array {
-    $importerLister = new ImporterList($jobStore);
+  public static function getList(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory): array {
+    $importerLister = new ImporterList($jobStoreFactory, $resrouceServiceFactory, $importServiceFactory);
     return $importerLister->buildList();
   }
 
