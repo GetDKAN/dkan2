@@ -23,10 +23,7 @@ class ImporterList {
   private $importServiceFactory;
 
   /**
-   * Constructor function.
-   *
-   * @param \Drupal\dkan_datastore\Storage\JobStore $jobStore
-   *   A JobStore object.
+   * Constructor.
    */
   public function __construct(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory) {
     $this->jobStoreFactory = $jobStoreFactory;
