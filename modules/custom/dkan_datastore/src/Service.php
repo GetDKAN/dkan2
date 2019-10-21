@@ -57,10 +57,11 @@ class Service implements ContainerInjectionInterface {
   public function import(string $uuid, bool $deferred = FALSE): array {
 
     $resourceService = $this->resourceServiceFactory->getInstance($uuid);
-    $resource = $resourceService->get(TRUE);
 
     // If we passed $deferred, immediately add to the queue for later.
     if (!empty($deferred)) {
+      // This creates a filefetcher job.
+      $resourceService->get(TRUE, FALSE);
       $queueId = $this->queueImport($uuid);
       return [
         'message' => "Resource {$uuid} has been queued to be imported.",
@@ -68,6 +69,7 @@ class Service implements ContainerInjectionInterface {
       ];
     }
 
+    $resource = $resourceService->get(TRUE);
     if (!$resource) {
       $name = substr(strrchr(get_class($resourceService), "\\"), 1);
       return [$name => $resourceService->getResult()];

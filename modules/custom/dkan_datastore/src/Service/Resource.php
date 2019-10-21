@@ -45,7 +45,7 @@ class Resource {
    * @return \Dkan\Datastore\Resource
    *   Datastore resource object.
    */
-  public function get($useFileFetcher = FALSE): ?R {
+  public function get($useFileFetcher = FALSE, $runFileFetcher = TRUE): ?R {
     $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
     if (!$node) {
       return NULL;
@@ -53,7 +53,10 @@ class Resource {
 
     if ($useFileFetcher == TRUE) {
       $fileFetcher = $this->getFileFetcher($this->uuid);
-      $fileFetcher->run();
+
+      if ($runFileFetcher) {
+        $fileFetcher->run();
+      }
 
       if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
         return NULL;
@@ -96,6 +99,11 @@ class Resource {
   public function getFileFetcher(): FileFetcher {
 
     $node = $this->entityRepository->loadEntityByUuid('node', $this->uuid);
+
+    if (!$node) {
+      throw new \Exception("No node found for uuid {$this->uuid}");
+    }
+
     $filePath = $this->getResourceFilePathFromNode($node);
 
     $tmpDirectory = $this->fileSystem->realpath("public://") . "/dkan-tmp";
