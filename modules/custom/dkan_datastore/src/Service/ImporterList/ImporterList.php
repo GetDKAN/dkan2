@@ -63,9 +63,6 @@ class ImporterList {
 
   /**
    * Static function to allow easy creation of lists.
-   *
-   * @param \Drupal\dkan_datastore\Storage\JobStore $jobStore
-   *   A jobstore object.
    */
   public static function getList(JobStoreFactory $jobStoreFactory, Resource $resrouceServiceFactory, Import $importServiceFactory): array {
     $importerLister = new ImporterList($jobStoreFactory, $resrouceServiceFactory, $importServiceFactory);

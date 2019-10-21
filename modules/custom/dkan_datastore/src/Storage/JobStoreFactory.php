@@ -6,7 +6,7 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 
 /**
- * class JobStoreFactory.
+ * Class JobStoreFactory.
  */
 class JobStoreFactory implements FactoryInterface {
   private $instances = [];

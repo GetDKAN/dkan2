@@ -41,6 +41,8 @@ class Resource {
    *
    * @param bool $useFileFetcher
    *   If file fetcher was used, get path from the file fetcher.
+   * @param bool $runFileFetcher
+   *   If file fetcher was used, run it.
    *
    * @return \Dkan\Datastore\Resource
    *   Datastore resource object.
@@ -94,7 +96,7 @@ class Resource {
   }
 
   /**
-   *
+   * Get FileFetcher.
    */
   public function getFileFetcher(): FileFetcher {
 
