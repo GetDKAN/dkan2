@@ -6,21 +6,23 @@ use Contracts\FactoryInterface;
 use Drupal\Core\Database\Connection;
 
 /**
- *
+ * class JobStoreFactory.
  */
 class JobStoreFactory implements FactoryInterface {
   private $instances = [];
   private $connection;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(Connection $connection) {
     $this->connection = $connection;
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function getInstance(string $identifier) {
     if (!isset($this->instances[$identifier])) {
