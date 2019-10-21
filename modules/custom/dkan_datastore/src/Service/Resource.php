@@ -54,19 +54,7 @@ class Resource {
     }
 
     if ($useFileFetcher == TRUE) {
-      $fileFetcher = $this->getFileFetcher($this->uuid);
-
-      if ($runFileFetcher) {
-        $fileFetcher->run();
-      }
-
-      if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
-        return NULL;
-      }
-
-      $json = $fileFetcher->getResult()->getData();
-      $fileData = json_decode($json);
-      return new R($node->id(), $fileData->destination);
+      return $this->getResourceFromFileFetcher($node, $runFileFetcher);
     }
     else {
       return new R($node->id(), $this->getResourceFilePathFromNode($node));
@@ -145,6 +133,25 @@ class Resource {
     }
 
     throw new \Exception("Invalid metadata information or missing file information.");
+  }
+
+  /**
+   * Private.
+   */
+  private function getResourceFromFileFetcher($node, $runFileFetcher) {
+    $fileFetcher = $this->getFileFetcher($this->uuid);
+
+    if ($runFileFetcher) {
+      $fileFetcher->run();
+    }
+
+    if ($fileFetcher->getResult()->getStatus() != Result::DONE) {
+      return NULL;
+    }
+
+    $json = $fileFetcher->getResult()->getData();
+    $fileData = json_decode($json);
+    return new R($node->id(), $fileData->destination);
   }
 
 }
