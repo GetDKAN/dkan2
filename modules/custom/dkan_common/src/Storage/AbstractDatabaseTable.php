@@ -9,7 +9,7 @@ use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_datastore\Storage\Query;
 
 /**
- *
+ * AbstractDatabaseTable class.
  */
 abstract class AbstractDatabaseTable implements StorageInterface {
   use SqlStorageTrait;
@@ -33,7 +33,7 @@ abstract class AbstractDatabaseTable implements StorageInterface {
   abstract protected function prepareData(string $data): array;
 
   /**
-   *
+   * Get the primary key used in the table.
    */
   abstract protected function primaryKey();
 
@@ -52,7 +52,9 @@ abstract class AbstractDatabaseTable implements StorageInterface {
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function retrieveAll(): array {
     $this->setTable();
@@ -213,7 +215,7 @@ abstract class AbstractDatabaseTable implements StorageInterface {
   /**
    * Get field names from results of a DESCRIBE query.
    *
-   * @param array $fields_info
+   * @param array $fieldsInfo
    *   Array containing thre results of a DESCRIBE query sent to db connection.
    */
   private function getFieldsFromFieldsInfo(array $fieldsInfo) {

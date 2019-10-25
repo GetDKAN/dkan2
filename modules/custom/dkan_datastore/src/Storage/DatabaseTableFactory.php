@@ -40,7 +40,7 @@ class DatabaseTableFactory implements FactoryInterface {
   }
 
   /**
-   *
+   * Protected.
    */
   protected function getDatabaseTable($resource) {
     return new DatabaseTable($this->connection, $resource);

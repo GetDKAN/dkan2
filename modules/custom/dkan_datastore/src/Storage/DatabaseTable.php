@@ -78,14 +78,14 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
   }
 
   /**
-   *
+   * Protected.
    */
   protected function prepareData(string $data): array {
     return json_decode($data);
   }
 
   /**
-   *
+   * Protected.
    */
   protected function primaryKey() {
     return "record_number";
