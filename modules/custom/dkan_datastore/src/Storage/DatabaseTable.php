@@ -77,13 +77,17 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return "dkan_datastore_does_not_exist";
   }
 
-  protected function prepareData(string $data): array
-  {
+  /**
+   *
+   */
+  protected function prepareData(string $data): array {
     return json_decode($data);
   }
 
-  protected function primaryKey()
-  {
+  /**
+   *
+   */
+  protected function primaryKey() {
     return "record_number";
   }
 

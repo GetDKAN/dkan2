@@ -39,6 +39,9 @@ class DatabaseTableFactory implements FactoryInterface {
     return $this->databaseTables[$identifier];
   }
 
+  /**
+   *
+   */
   protected function getDatabaseTable($resource) {
     return new DatabaseTable($this->connection, $resource);
   }

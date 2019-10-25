@@ -8,8 +8,10 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_datastore\Storage\Query;
 
-abstract class AbstractDatabaseTable implements StorageInterface
-{
+/**
+ *
+ */
+abstract class AbstractDatabaseTable implements StorageInterface {
   use SqlStorageTrait;
 
   protected $connection;
@@ -28,8 +30,11 @@ abstract class AbstractDatabaseTable implements StorageInterface
    * Transform the string data given into what should be use by the insert
    * query.
    */
-  abstract protected function prepareData(string $data): array ;
+  abstract protected function prepareData(string $data): array;
 
+  /**
+   *
+   */
   abstract protected function primaryKey();
 
   /**
@@ -46,8 +51,10 @@ abstract class AbstractDatabaseTable implements StorageInterface
     }
   }
 
-  public function retrieveAll(): array
-  {
+  /**
+   *
+   */
+  public function retrieveAll(): array {
     $this->setTable();
     $tableName = $this->getTableName();
 

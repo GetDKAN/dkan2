@@ -3,7 +3,6 @@
 namespace Drupal\dkan_datastore\Service\Factory;
 
 use Contracts\FactoryInterface;
-use Dkan\Datastore\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
 use Drupal\dkan_datastore\Service\Import as Instance;
 use Drupal\dkan_datastore\Storage\JobStoreFactory;

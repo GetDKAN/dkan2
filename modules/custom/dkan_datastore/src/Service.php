@@ -152,7 +152,7 @@ class Service implements ContainerInjectionInterface {
         ['resource' => $resource]);
       return $importService->getStorage();
     }
-    return null;
+    return NULL;
   }
 
 }
