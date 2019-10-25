@@ -32,9 +32,15 @@ class Import implements FactoryInterface {
    *
    * @inheritDoc
    */
-  public function getInstance(string $identifier) {
+  public function getInstance(string $identifier, array $config = []) {
+
+    if (!isset($config['resource'])) {
+      throw new \Exception("config['resource'] is required");
+    }
+
+    $resource = $config['resource'];
+
     if (!isset($this->services[$identifier])) {
-      $resource = Resource::hydrate($identifier);
       $this->services[$identifier] = new Instance($resource, $this->jobStoreFactory, $this->databaseTableFactory);
     }
 
