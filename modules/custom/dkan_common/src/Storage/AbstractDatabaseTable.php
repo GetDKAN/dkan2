@@ -54,7 +54,9 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function retrieve(string $id) {
     $this->setTable();
@@ -118,7 +120,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   }
 
   /**
-   *
+   * Private.
    */
   private function getNonSerialFields() {
     $fields = [];
@@ -131,7 +133,9 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public function remove(string $id) {
     $tableName = $this->getTableName();

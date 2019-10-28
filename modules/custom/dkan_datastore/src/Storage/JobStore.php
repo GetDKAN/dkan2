@@ -74,14 +74,18 @@ class JobStore extends AbstractDatabaseTable implements RetrieverInterface {
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   protected function prepareData(string $data, string $id = NULL): array {
     return ['ref_uuid' => $id, 'job_data' => $data];
   }
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   protected function primaryKey() {
     return 'ref_uuid';
