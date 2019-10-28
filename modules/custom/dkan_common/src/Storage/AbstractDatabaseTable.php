@@ -7,7 +7,6 @@ use Contracts\RetrieverInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_datastore\Storage\Query;
 
 /**
@@ -15,6 +14,7 @@ use Drupal\dkan_datastore\Storage\Query;
  */
 abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInterface, RemoverInterface {
   use SqlStorageTrait;
+  use QueryToQueryHelperTrait;
 
   protected $connection;
 
@@ -188,45 +188,6 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
       else {
         throw new \Exception("Could not instantiate the table due to a lack of schema.");
       }
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryConditions(Select $db_query, Query $query) {
-    foreach ($query->conditions as $property => $value) {
-      $db_query->condition($property, $value, "LIKE");
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryOrderBy(Select $db_query, Query $query) {
-    foreach ($query->sort['ASC'] as $property) {
-      $db_query->orderBy($property);
-    }
-
-    foreach ($query->sort['DESC'] as $property) {
-      $db_query->orderBy($property, 'DESC');
-    }
-  }
-
-  /**
-   * Private.
-   */
-  private function setQueryLimitAndOffset(Select $db_query, Query $query) {
-    if ($query->limit) {
-      if ($query->offset) {
-        $db_query->range($query->offset, $query->limit);
-      }
-      else {
-        $db_query->range(0, $query->limit);
-      }
-    }
-    elseif ($query->offset) {
-      $db_query->range($query->limit);
     }
   }
 
