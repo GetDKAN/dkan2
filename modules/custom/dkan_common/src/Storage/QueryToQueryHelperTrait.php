@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_common\Storage;
 
+use Drupal\Core\Database\Query\Select;
 use Drupal\dkan_datastore\Storage\Query;
 
 /**
