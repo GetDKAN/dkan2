@@ -6,7 +6,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\dkan_common\Storage\AbstractDatabaseTable;
 
 /**
- *
+ * DatabaseTable.
  */
 class DatabaseTable extends AbstractDatabaseTable {
   private $identifier;
