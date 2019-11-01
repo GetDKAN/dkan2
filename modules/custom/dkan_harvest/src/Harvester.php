@@ -33,7 +33,7 @@ class Harvester {
     $store = $this->storeFactory->getInstance("harvest_plans");
 
     if ($store instanceof BulkRetrieverInterface) {
-      return array_keys($store->retrieveAll());
+      return $store->retrieveAll();
     }
     throw new \Exception("The store created by {get_class($this->storeFactory)} does not implement {BulkRetrieverInterface::class}");
   }
@@ -103,6 +103,8 @@ class Harvester {
    * Public.
    */
   public function revertHarvest($id) {
+    $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
+    $run_store->destroy();
     $harvester = $this->getHarvester($id);
     return $harvester->revert();
   }
@@ -130,17 +132,22 @@ class Harvester {
    */
   public function getHarvestRunInfo($id, $runId) {
     $allRuns = $this->getAllHarvestRunInfo($id);
-    return isset($allRuns[$runId]) ? $allRuns[$runId] : FALSE;
+    $found = array_search($runId, $allRuns);
+
+    if ($found !== FALSE) {
+      $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
+      return $run_store->retrieve($runId);
+    }
+
+    return FALSE;
   }
 
   /**
    * Public.
    */
   public function getAllHarvestRunInfo($id) {
-    $util = new JsonUtil();
     $run_store = $this->storeFactory->getInstance("harvest_{$id}_runs");
     $runs = $run_store->retrieveAll();
-    $runs = $util->decodeArrayOfJson($runs);
     return $runs;
   }
 
