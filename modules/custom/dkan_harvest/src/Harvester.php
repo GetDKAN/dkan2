@@ -6,7 +6,6 @@ use Harvest\Harvester as DkanHarvester;
 use Contracts\BulkRetrieverInterface;
 use Contracts\FactoryInterface;
 use Contracts\StorerInterface;
-use Drupal\dkan_common\Service\JsonUtil;
 use Harvest\ETL\Factory;
 
 /**

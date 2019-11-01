@@ -150,7 +150,7 @@ class Api implements ContainerInjectionInterface {
       if (!isset($payload->plan_id)) {
         $return = [
           "message" => "Invalid payload.",
-          "documentation" => "/api/1/harvest"
+          "documentation" => "/api/1/harvest",
         ];
         return $this->jsonResponse($return, 422);
       }
