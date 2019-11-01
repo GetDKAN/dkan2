@@ -53,7 +53,7 @@ class JobStore extends AbstractDatabaseTable {
       'indexes' => [
         'ref_uuid' => ['ref_uuid'],
       ],
-      'foriegn keys' => [
+      'foreign keys' => [
         'ref_uuid' => ['table' => 'node', 'columns' => ['uuid' => 'uuid']],
       ],
       'primary key' => ['ref_uuid'],
