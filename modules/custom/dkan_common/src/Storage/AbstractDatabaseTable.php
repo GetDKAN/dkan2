@@ -105,6 +105,8 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
 
     $data = $this->prepareData($data, $id);
 
+    $returned_id = null;
+
     if (!$existing) {
       $q = $this->connection->insert($this->getTableName());
       $q->fields($this->getNonSerialFields());

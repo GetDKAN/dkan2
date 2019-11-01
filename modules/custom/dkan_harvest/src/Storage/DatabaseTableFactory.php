@@ -24,9 +24,13 @@ class DatabaseTableFactory implements FactoryInterface {
    */
   public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->storage[$identifier])) {
-      $this->storage[$identifier] = new DatabaseTable($this->connection, $identifier);
+      $this->storage[$identifier] = $this->getDatabaseTable($identifier);
     }
     return $this->storage[$identifier];
+  }
+
+  protected function getDatabaseTable($identifier) {
+    return new DatabaseTable($this->connection, $identifier);
   }
 
 }
