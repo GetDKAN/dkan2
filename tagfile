@@ -4807,57 +4807,61 @@
     <docanchor file="general" title="What is a Dataset">autotoc_md13</docanchor>
     <docanchor file="general" title="Sample Data Files">autotoc_md14</docanchor>
     <docanchor file="general" title="Properties">autotoc_md15</docanchor>
-    <docanchor file="general" title="API">autotoc_md16</docanchor>
   </compound>
   <compound kind="page">
     <name>guide-dataset-api</name>
     <title>Dataset API</title>
     <filename>guide-dataset-api</filename>
-    <docanchor file="guide-dataset-api" title="GET">autotoc_md17</docanchor>
-    <docanchor file="guide-dataset-api" title="Identifiers">autotoc_md18</docanchor>
-    <docanchor file="guide-dataset-api" title="Log In">autotoc_md19</docanchor>
-    <docanchor file="guide-dataset-api" title="POST">autotoc_md20</docanchor>
-    <docanchor file="guide-dataset-api" title="PUT">autotoc_md21</docanchor>
-    <docanchor file="guide-dataset-api" title="PATCH">autotoc_md22</docanchor>
-    <docanchor file="guide-dataset-api" title="DELETE">autotoc_md23</docanchor>
+    <docanchor file="guide-dataset-api" title="GET">autotoc_md16</docanchor>
+    <docanchor file="guide-dataset-api" title="Identifiers">autotoc_md17</docanchor>
+    <docanchor file="guide-dataset-api" title="Log In">autotoc_md18</docanchor>
+    <docanchor file="guide-dataset-api" title="POST">autotoc_md19</docanchor>
+    <docanchor file="guide-dataset-api" title="PUT">autotoc_md20</docanchor>
+    <docanchor file="guide-dataset-api" title="PATCH">autotoc_md21</docanchor>
+    <docanchor file="guide-dataset-api" title="DELETE">autotoc_md22</docanchor>
   </compound>
   <compound kind="page">
     <name>guide-datastore-api</name>
     <title>Datastore API</title>
     <filename>guide-datastore-api</filename>
-    <docanchor file="guide-datastore-api" title="Drush Commands">autotoc_md24</docanchor>
-    <docanchor file="guide-datastore-api" title="API">autotoc_md25</docanchor>
+    <docanchor file="guide-datastore-api" title="Drush Commands">autotoc_md23</docanchor>
+    <docanchor file="guide-datastore-api" title="API">autotoc_md24</docanchor>
+    <docanchor file="guide-datastore-api" title="Example">autotoc_md25</docanchor>
   </compound>
   <compound kind="page">
     <name>guide-harvest</name>
     <title>Harvest</title>
     <filename>guide-harvest</filename>
     <docanchor file="guide-harvest" title="Drush Commands">autotoc_md26</docanchor>
-    <docanchor file="guide-harvest" title="Setup">autotoc_md27</docanchor>
+    <docanchor file="guide-harvest" title="Harvest Plan schema">autotoc_md27</docanchor>
+    <docanchor file="guide-harvest" title="Setup">autotoc_md28</docanchor>
+    <docanchor file="guide-harvest" title="Example">autotoc_md29</docanchor>
+    <docanchor file="guide-harvest" title="How to create transforms">autotoc_md30</docanchor>
+    <docanchor file="guide-harvest" title="Example with new transform">autotoc_md31</docanchor>
   </compound>
   <compound kind="page">
     <name>community</name>
     <title>Community</title>
     <filename>community</filename>
-    <docanchor file="community" title="Slack">autotoc_md28</docanchor>
-    <docanchor file="community" title="Connect">autotoc_md29</docanchor>
-    <docanchor file="community" title="Github">autotoc_md30</docanchor>
-    <docanchor file="community" title="Additional resources">autotoc_md31</docanchor>
+    <docanchor file="community" title="Slack">autotoc_md32</docanchor>
+    <docanchor file="community" title="Connect">autotoc_md33</docanchor>
+    <docanchor file="community" title="Github">autotoc_md34</docanchor>
+    <docanchor file="community" title="Additional resources">autotoc_md35</docanchor>
   </compound>
   <compound kind="page">
     <name>conduct</name>
     <title>Code of conduct</title>
     <filename>conduct</filename>
-    <docanchor file="conduct" title="Purpose">autotoc_md32</docanchor>
-    <docanchor file="conduct" title="Open source &amp; culture citizenship">autotoc_md33</docanchor>
-    <docanchor file="conduct" title="Expected Behavior">autotoc_md34</docanchor>
-    <docanchor file="conduct" title="Unacceptable behavior">autotoc_md35</docanchor>
-    <docanchor file="conduct" title="Consequences of unacceptable behavior">autotoc_md36</docanchor>
-    <docanchor file="conduct" title="Reporting guidelines">autotoc_md37</docanchor>
-    <docanchor file="conduct" title="Addressing grievances">autotoc_md38</docanchor>
-    <docanchor file="conduct" title="Scope">autotoc_md39</docanchor>
-    <docanchor file="conduct" title="Contact info">autotoc_md40</docanchor>
-    <docanchor file="conduct" title="License and attribution">autotoc_md41</docanchor>
+    <docanchor file="conduct" title="Purpose">autotoc_md36</docanchor>
+    <docanchor file="conduct" title="Open source &amp; culture citizenship">autotoc_md37</docanchor>
+    <docanchor file="conduct" title="Expected Behavior">autotoc_md38</docanchor>
+    <docanchor file="conduct" title="Unacceptable behavior">autotoc_md39</docanchor>
+    <docanchor file="conduct" title="Consequences of unacceptable behavior">autotoc_md40</docanchor>
+    <docanchor file="conduct" title="Reporting guidelines">autotoc_md41</docanchor>
+    <docanchor file="conduct" title="Addressing grievances">autotoc_md42</docanchor>
+    <docanchor file="conduct" title="Scope">autotoc_md43</docanchor>
+    <docanchor file="conduct" title="Contact info">autotoc_md44</docanchor>
+    <docanchor file="conduct" title="License and attribution">autotoc_md45</docanchor>
   </compound>
   <compound kind="page">
     <name>license</name>
@@ -4873,6 +4877,6 @@
     <name>index</name>
     <title>DKAN</title>
     <filename>index</filename>
-    <docanchor file="index" title="Features">autotoc_md43</docanchor>
+    <docanchor file="index" title="Features">autotoc_md47</docanchor>
   </compound>
 </tagfile>

@@ -102,7 +102,7 @@ $(document).ready(function(){initNavTree('guide-dataset-api.html','');});
 <div class="title">Dataset API </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h2><a class="anchor" id="autotoc_md17"></a>
+<div class="textblock"><h2><a class="anchor" id="autotoc_md16"></a>
 GET</h2>
 <p>GET is used to request data from the data catalog. No authentication is needed. $id = identifier of the dataset.</p>
 <p>Get all of the datasets in the catalog:</p>
@@ -111,7 +111,7 @@ GET</h2>
 <div class="fragment"><div class="line">/api​/1​/metastore​/schemas​/dataset​/items​/$id</div>
 </div><!-- fragment --><p>View the API of a specific dataset:</p>
 <div class="fragment"><div class="line">​/api​/1​/metastore​/schemas​/dataset​/items​/$id​/docs</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md18"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md17"></a>
 Identifiers</h3>
 <p>The dataset API has an additional endpoint that breaks out specific sub-elements of the dataset schema (distribution, publisher, theme, and keyword) so that these elements can be worked with as individual objects. Each element is assigned a unique identifier in addition to it's original schema values, this endpoint can be viewed at:</p>
 <div class="fragment"><div class="line">/api/1/metastore/schemas/dataset/$id?show-reference-ids</div>
@@ -121,7 +121,7 @@ Identifiers</h3>
 <li>Headers need a <b>Content-Type</b> with <b>application/json</b></li>
 </ul>
 </dd></dl>
-<h2><a class="anchor" id="autotoc_md19"></a>
+<h2><a class="anchor" id="autotoc_md18"></a>
 Log In</h2>
 <p>For actions that require authentication, the user must also have the <b>API User</b> role. This gives the user permission to post, put, and delete datasets through the api.</p>
 <div class="fragment"><div class="line">POST http://domain.com/api/dataset/user/login</div>
@@ -132,7 +132,7 @@ Log In</h2>
 <div class="line">    &quot;username&quot;: &quot;{username}&quot;,</div>
 <div class="line">    &quot;password&quot;: &quot;{password}&quot;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md20"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md19"></a>
 POST</h2>
 <p>POST is used to send data to a server to create a dataset.</p>
 <p>The data sent to the server with POST is stored in the request body of the HTTP request</p>
@@ -177,7 +177,7 @@ POST</h2>
 <div class="line">        }</div>
 <div class="line">    ],</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md20"></a>
 PUT</h2>
 <p>PUT is used to replace content. PUT requests are idempotent, so calling the same PUT request multiple times will always produce the same result. In contrast, calling a POST request repeatedly has the side effect of creating the same content multiple times.</p>
 <p>Replace a dataset:</p>
@@ -215,7 +215,7 @@ PUT</h2>
 <div class="line">        &quot;Financing&quot;</div>
 <div class="line">    ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md22"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md21"></a>
 PATCH</h2>
 <p>PATCH is used to make changes to part of the content in your catalog, so you only send the parameters which you want to update.</p>
 <p>Update a dataset:</p>
@@ -240,7 +240,7 @@ PATCH</h2>
 <div class="line">        &quot;Example&quot;</div>
 <div class="line">    ]</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md23"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md22"></a>
 DELETE</h2>
 <p>Delete a dataset</p>
 <div class="fragment"><div class="line">DELETE http://domain.com/api​/1​/metastore​/schemas​/dataset​/items/$id</div>
