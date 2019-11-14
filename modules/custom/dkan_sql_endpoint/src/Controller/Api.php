@@ -95,7 +95,7 @@ class Api implements ContainerInjectionInterface {
   }
 
   /**
-   *
+   * Private.
    */
   private function runQuery($query) {
     $parser = new SqlParser();
