@@ -29,7 +29,7 @@ class ApiTest extends TestCase {
    */
   public function test() {
     $controller = Api::create($this->getContainer());
-    $response = $controller->runQuery();
+    $response = $controller->runQueryGet();
     $this->assertEquals("[]", $response->getContent());
   }
 
