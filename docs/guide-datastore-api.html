@@ -103,8 +103,8 @@ $(document).ready(function(){initNavTree('guide-datastore-api.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>The Datastore component will parse CSV files and save the data in database tables. This allows users to query the data through a public API. Note that the CSV must be in UTF-8 format to parse correctly.</p>
-<p>You can import file data into the datastore via drush with the identifier of the distribution. Use the <a href="guide-dataset-api.html#autotoc_md17">API</a> to get the identifier of the file you want to import.</p>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<p>You can import file data into the datastore via drush with the identifier of the distribution. Use the <a href="guide-dataset-api.html#identifiers">API</a> to get the identifier of the file you want to import.</p>
+<h2><a class="anchor" id="autotoc_md22"></a>
 Drush Commands</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -114,9 +114,9 @@ Drush Commands</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">dkan-datastore:drop  </td><td class="markdownTableBodyNone">$uuid  </td><td class="markdownTableBodyNone">drop the datastore table   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 API</h2>
-<h3><a class="anchor" id="autotoc_md25"></a>
+<h3><a class="anchor" id="autotoc_md24"></a>
 Example</h3>
 <div class="fragment"><div class="line">http://domain.com/api/v1/sql/[SELECT * FROM ${dataset_identifier}][WHERE state = &#39;OK&#39;][ORDER BY county ASC][LIMIT 5 OFFSET 100]</div>
 </div><!-- fragment --> </div></div><!-- contents -->

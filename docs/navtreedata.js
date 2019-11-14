@@ -23,7 +23,7 @@ for the JavaScript code in this file
 var NAVTREE =
 [
   [ "DKAN", "index.html", [
-    [ "Features", "index.html#autotoc_md47", null ],
+    [ "Features", "index.html#autotoc_md45", null ],
     [ "Installation", "installation.html", "installation" ],
     [ "Development", "development.html", "development" ],
     [ "Components", "components.html", "components" ],
@@ -57,7 +57,7 @@ var NAVTREEINDEX =
 "classDrupal_1_1Tests_1_1dkan__datastore_1_1Unit_1_1Storage_1_1VariableTest.html",
 "classDrupal_1_1dkan__datastore_1_1Storage_1_1Query.html#a48458fdd65b99c45f07b1c68a3c935e7",
 "dir_5144fd931302470e6c578204e1ad7c1d.html",
-"namespaceDrupal_1_1dkan__api.html"
+"namespaceDrupal_1_1dkan__api_1_1Controller.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
