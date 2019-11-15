@@ -36,6 +36,15 @@ class ApiTest extends TestCase {
   /**
    *
    */
+  public function test2() {
+    $controller = Api::create($this->getContainer());
+    $response = $controller->runQueryPost();
+    $this->assertEquals("[]", $response->getContent());
+  }
+
+  /**
+   *
+   */
   private function getContainer() {
     $options = (new Options())
       ->add("database", Connection::class)
@@ -44,10 +53,14 @@ class ApiTest extends TestCase {
       ->add('request_stack', RequestStack::class)
       ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class);
 
+    $query = '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
+    $body = json_encode(["query" => $query]);
+
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
-      ->add(Request::class, 'get', '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];')
+      ->add(Request::class, 'get', $query)
+      ->add(Request::class, 'getContent', $body)
       ->add(ConfigFactory::class, 'get', Config::class)
       ->add(Config::class, 'get', 1000)
       ->add(ResourceServiceFactory::class, 'getInstance', ResourceService::class)
