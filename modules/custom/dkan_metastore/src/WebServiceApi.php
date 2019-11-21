@@ -207,6 +207,8 @@ class WebServiceApi implements ContainerInjectionInterface {
   }
 
   /**
+   * Get http code from invalid payload exception.
+   *
    * 400 Bad Request
    * 409 Conflict
    * 415 Unsupported Media Type.
