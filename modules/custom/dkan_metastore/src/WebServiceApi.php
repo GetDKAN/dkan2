@@ -131,11 +131,12 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function post(string $schema_id) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData(null, $data);
+      $this->checkData(NULL, $data);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
-        "identifier" => $identifier], 201);
+        "identifier" => $identifier,
+      ], 201);
     }
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
@@ -208,16 +209,17 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * 400 Bad Request
    * 409 Conflict
-   * 415 Unsupported Media Type
+   * 415 Unsupported Media Type.
    */
-  private function getCodeFromInvalidPayloadException(InvalidPayload $e): int
-  {
+  private function getCodeFromInvalidPayloadException(InvalidPayload $e): int {
     $message = $e->getMessage();
     switch ($message) {
       case "Empty body":
         return 400;
+
       case "Invalid JSON":
         return 415;
+
       case "Identifier cannot be modified":
         return 409;
     }
@@ -247,7 +249,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function checkData($identifier = null, $data) {
+  private function checkData($identifier = NULL, $data) {
 
     if (empty($data)) {
       throw new InvalidPayload("Empty body");
@@ -283,4 +285,5 @@ class WebServiceApi implements ContainerInjectionInterface {
   private function getRequestContent(): string {
     return $this->requestStack->getCurrentRequest()->getContent();
   }
+
 }

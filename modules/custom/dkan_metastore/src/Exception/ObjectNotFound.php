@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_metastore\Exception;
 
-class ObjectNotFound extends  \Exception
-{
+/**
+ * Class ObjectNotFound.
+ */
+class ObjectNotFound extends \Exception {
 }

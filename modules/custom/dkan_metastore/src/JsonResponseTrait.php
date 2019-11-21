@@ -1,12 +1,14 @@
 <?php
 
-
 namespace Drupal\dkan_metastore;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-trait JsonResponseTrait
-{
+/**
+ * Json Response Trait.
+ */
+trait JsonResponseTrait {
+
   /**
    * Private.
    */
@@ -20,4 +22,5 @@ trait JsonResponseTrait
   private function getResponseFromException(\Exception $e, int $code = 400):JsonResponse {
     return $this->getResponse((object) ['message' => $e->getMessage()], $code);
   }
+
 }

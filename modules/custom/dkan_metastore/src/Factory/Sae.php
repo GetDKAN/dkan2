@@ -7,9 +7,16 @@ use Drupal\dkan_data\Storage\Data;
 use Drupal\dkan_schema\SchemaRetriever;
 use Sae\Sae as Engine;
 
-class Sae implements FactoryInterface
-{
+/**
+ * Class Sae.
+ */
+class Sae implements FactoryInterface {
 
+  /**
+   * Engines.
+   *
+   * @var array
+   */
   private $engines = [];
 
   /**
@@ -26,15 +33,23 @@ class Sae implements FactoryInterface
    */
   private $schemaRetriever;
 
-
-  public function __construct(SchemaRetriever $schemaRetriever, Data $storage)
-  {
+  /**
+   * Constructs a new Sae.
+   *
+   * @param \Drupal\dkan_schema\SchemaRetriever $schemaRetriever
+   *   Schema retriever.
+   * @param \Drupal\dkan_data\Storage\Data $storage
+   *   Data.
+   */
+  public function __construct(SchemaRetriever $schemaRetriever, Data $storage) {
     $this->schemaRetriever = $schemaRetriever;
     $this->storage = $storage;
   }
 
-  public function getInstance(string $identifier, array $config = [])
-  {
+  /**
+   * Get instance.
+   */
+  public function getInstance(string $identifier, array $config = []) {
     if (!isset($this->engines[$identifier])) {
       $this->engines[$identifier] = new Engine($this->getStorage($identifier), $this->getJsonSchema($identifier));
     }

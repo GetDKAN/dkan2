@@ -10,10 +10,23 @@ use Drupal\dkan_metastore\Exception\ObjectNotFound;
 use Drupal\dkan_data\ValueReferencer;
 use Drupal\dkan_schema\SchemaRetriever;
 
-class Service implements ContainerInjectionInterface
-{
+/**
+ * Service.
+ */
+class Service implements ContainerInjectionInterface {
 
+  /**
+   * SAE Factory.
+   *
+   * @var \Drupal\dkan_metastore\Factory\Sae
+   */
   private $saeFactory;
+
+  /**
+   * Schema retriever.
+   *
+   * @var \Drupal\dkan_schema\SchemaRetriever
+   */
   private $schemaRetriever;
 
   /**
@@ -130,6 +143,8 @@ class Service implements ContainerInjectionInterface
    *
    * @param string $schema_id
    *   The {schema_id} slug from the HTTP request.
+   * @param string $data
+   *   Json payload.
    *
    * @return string
    *   The identifier.
@@ -154,6 +169,8 @@ class Service implements ContainerInjectionInterface
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param string $data
+   *   Json payload.
    *
    * @return array
    *   ["identifier" => string, "new" => boolean].
@@ -185,6 +202,8 @@ class Service implements ContainerInjectionInterface
    *   The {schema_id} slug from the HTTP request.
    * @param string $identifier
    *   Identifier.
+   * @param mixed $data
+   *   Json payload.
    *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   The json response.
@@ -231,7 +250,11 @@ class Service implements ContainerInjectionInterface
     }
   }
 
+  /**
+   * Get engine.
+   */
   private function getEngine($schemaId) {
     return $this->saeFactory->getInstance($schemaId);
   }
+
 }
