@@ -13,6 +13,28 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class WebServiceApiDocs implements ContainerInjectionInterface {
   use JsonResponseTrait;
 
+  private $specOperationsToRemove = [
+    'post',
+    'put',
+    'patch',
+    'delete',
+  ];
+
+  private $specPathsToRemove = [
+    '/api/1/metastore/schemas/dataset',
+    '/api/1/metastore/schemas/dataset/items',
+    '/api/1/metastore/schemas/{schema_id}/items',
+    '/api/1/metastore/schemas/{schema_id}/items/{identifier}',
+    '/api/1/harvest/plans',
+    '/api/1/harvest/plans/{plan_id}',
+    '/api/1/harvest/runs',
+    '/api/1/harvest/runs/{run_id}',
+    '/api/1/datastore/imports',
+    '/api/1/datastore/imports/{identifier}',
+    '/api/1',
+    '/api/1/metastore/schemas/dataset/items/{identifier}/docs',
+  ];
+
   /**
    * OpenAPI spec for dataset-related endpoints.
    *
@@ -63,32 +85,12 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     $spec = $this->docsController->getJsonFromYmlFile();
 
     // Keep only the GET requests.
-    $spec = $this->removeSpecOperations(
-      $spec, [
-        'post',
-        'put',
-        'patch',
-        'delete',
-      ]
-    );
+    $spec = $this->removeSpecOperations($spec);
+
     // Remove GET dataset collection endpoint as well as property-related ones.
     // @TODO: consider flipping the logic, keeping array of paths interested in.
-    $spec = $this->removeSpecPaths(
-      $spec, [
-        '/api/1/metastore/schemas/dataset',
-        '/api/1/metastore/schemas/dataset/items',
-        '/api/1/metastore/schemas/{schema_id}/items',
-        '/api/1/metastore/schemas/{schema_id}/items/{identifier}',
-        '/api/1/harvest/plans',
-        '/api/1/harvest/plans/{plan_id}',
-        '/api/1/harvest/runs',
-        '/api/1/harvest/runs/{run_id}',
-        '/api/1/datastore/imports',
-        '/api/1/datastore/imports/{identifier}',
-        '/api/1',
-        '/api/1/metastore/schemas/dataset/items/{identifier}/docs',
-      ]
-    );
+    $spec = $this->removeSpecPaths($spec);
+
     // Remove the security schemes.
     unset($spec['components']['securitySchemes']);
     // Remove required parameters, since now part of path.
@@ -122,11 +124,11 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  private function removeSpecOperations(array $spec, array $ops_to_remove) {
+  private function removeSpecOperations(array $spec) {
     if (isset($spec['paths'])) {
       foreach ($spec['paths'] as $path => $operations) {
         foreach ($operations as $op => $details) {
-          if (in_array($op, $ops_to_remove)) {
+          if (in_array($op, $this->specOperationsToRemove)) {
             unset($spec['paths'][$path][$op]);
           }
         }
@@ -150,12 +152,12 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @return array
    *   Modified spec.
    */
-  private function removeSpecPaths(array $spec, array $paths_to_remove) {
+  private function removeSpecPaths(array $spec) {
     if (!isset($spec['paths'])) {
       return $spec;
     }
     foreach ($spec['paths'] as $path => $ops) {
-      if (in_array($path, $paths_to_remove)) {
+      if (in_array($path, $this->specPathsToRemove)) {
         unset($spec['paths'][$path]);
       }
     }
