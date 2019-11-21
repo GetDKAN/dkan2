@@ -118,8 +118,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param array $spec
    *   The original spec array.
-   * @param array $ops_to_remove
-   *   Array of operations to be removed.
    *
    * @return array
    *   Modified spec.
@@ -146,8 +144,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param array $spec
    *   The original spec array.
-   * @param array $paths_to_remove
-   *   Array of paths to be removed.
    *
    * @return array
    *   Modified spec.
