@@ -9,7 +9,6 @@ use Drupal\dkan_common\Tests\Mock\Chain;
 use Drupal\dkan_common\Tests\Mock\Options;
 use Drupal\dkan_harvest\Load\Dataset;
 use Drupal\dkan_metastore\Service;
-use Sae\Sae;
 
 /**
  * Tests Drupal\dkan_harvest\Load\Dataset.
@@ -27,7 +26,7 @@ class DatasetTest extends DkanTestBase {
       ->add(Container::class, "get", (new Options())
         ->add('dkan_metastore.service', Service::class)
     )
-    ->add(Service::class, "post", "1");
+      ->add(Service::class, "post", "1");
 
     \Drupal::setContainer($container->getMock());
 
@@ -37,7 +36,7 @@ class DatasetTest extends DkanTestBase {
     $load->run((object) ["identifier" => "1"]);
 
     // We just want to run the code.
-    $this->assertTrue(true);
+    $this->assertTrue(TRUE);
   }
 
 }

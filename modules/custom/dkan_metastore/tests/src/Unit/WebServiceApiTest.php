@@ -186,7 +186,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
     $mockChain->add(Request::class, 'getContent', "{ }");
     $mockChain->add(Request::class, 'getRequestUri', "http://blah");
-    $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => false]);
+    $mockChain->add(Service::class, "put", ["identifier" => "1", "new" => FALSE]);
 
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->put(1, 'dataset');
@@ -212,7 +212,7 @@ class WebServiceApiTest extends TestCase {
     $mockChain = new Chain($this);
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('request_stack', RequestStack::class)
-      ->add("dkan_metastore.service", Service::class)
+        ->add("dkan_metastore.service", Service::class)
     );
     $mockChain->add(SchemaRetriever::class, 'retrieve', "{}");
     return $mockChain;

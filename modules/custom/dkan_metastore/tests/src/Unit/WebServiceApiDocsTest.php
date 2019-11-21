@@ -42,8 +42,8 @@ class WebServiceApiDocsTest extends TestCase {
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
     )
-    ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec))
-    ->add(Service::class, "get", "{}");
+      ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec))
+      ->add(Service::class, "get", "{}");
     return $mockChain;
   }
 
