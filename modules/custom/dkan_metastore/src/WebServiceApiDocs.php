@@ -123,18 +123,43 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Modified spec.
    */
   private function removeSpecOperations(array $spec) {
+    return $this->removePathsWithoutOperations($this->removeUnnecessaryOperations($spec));
+  }
+
+  /**
+   * Private.
+   */
+  private function removeUnnecessaryOperations($spec) {
     if (isset($spec['paths'])) {
-      foreach ($spec['paths'] as $path => $operations) {
-        foreach ($operations as $op => $details) {
-          if (in_array($op, $this->specOperationsToRemove)) {
-            unset($spec['paths'][$path][$op]);
-          }
-        }
-        if (empty($spec['paths'][$path])) {
-          unset($spec['paths'][$path]);
-        }
-      }
+      return $spec;
     }
+
+    foreach ($spec['paths'] as $path => $operations) {
+      $spec['paths'][$path] = array_filter($operations, function ($operation) {
+        if (in_array($operation, $this->specOperationsToRemove)) {
+                return FALSE;
+        }
+          return TRUE;
+      });
+
+      return $spec;
+    }
+  }
+
+  /**
+   * Private.
+   */
+  private function removePathsWithoutOperations($spec) {
+    if (isset($spec['paths'])) {
+      return $spec;
+    }
+
+    $spec['paths'] = array_filter($spec['paths'], function ($item) {
+      if ($item) {
+            return FALSE;
+      }
+        return TRUE;
+    });
 
     return $spec;
   }
