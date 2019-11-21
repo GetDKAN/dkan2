@@ -131,7 +131,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function post(string $schema_id) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData(NULL, $data);
+      $this->checkData($data);
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -163,7 +163,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   public function put($schema_id, string $identifier) {
     try {
       $data = $this->getRequestContent();
-      $this->checkData($identifier, $data);
+      $this->checkData($data, $identifier);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
@@ -191,7 +191,7 @@ class WebServiceApi implements ContainerInjectionInterface {
 
     try {
       $data = $this->getRequestContent();
-      $this->checkData($identifier, $data);
+      $this->checkData($data, $identifier);
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
@@ -249,7 +249,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function checkData($identifier = NULL, $data) {
+  private function checkData($data, $identifier = NULL) {
 
     if (empty($data)) {
       throw new InvalidPayload("Empty body");
