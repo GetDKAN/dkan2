@@ -25,6 +25,8 @@ dependencies:
   - toolbar
   - user
   - views
+  - views_bulk_operations
+  - views_ui
 themes:
   - bartik
   - seven
