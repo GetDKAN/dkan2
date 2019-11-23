@@ -140,9 +140,6 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Drop multiples.
    *
-   * @param array $identifiers
-   *   The identifiers.
-   *
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   Json response.
    */
