@@ -78,7 +78,11 @@ class Drush extends DrushCommands {
    *
    * @command dkan-datastore:list
    */
-  public function list($options = ['format' => 'table', 'status' => NULL, 'uuid-only' => FALSE]) {
+  public function list($options = [
+    'format' => 'table',
+    'status' => NULL,
+    'uuid-only' => FALSE,
+  ]) {
     $status = $options['status'];
     $uuid_only = $options['uuid-only'];
 
