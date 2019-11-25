@@ -89,15 +89,7 @@ class Drush extends DrushCommands {
     $list = $this->datastoreService->list();
     $rows = [];
     foreach ($list as $uuid => $item) {
-      $row = [
-        'uuid' => $uuid,
-        'fileName' => $item->fileName,
-        'fileFetcherStatus' => $item->fileFetcherStatus,
-        'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
-        'importerStatus' => $item->importerStatus,
-        'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
-      ];
-      $rows[] = $row;
+      $rows[] = $this->createRow($uuid, $item);
     }
 
     if (!empty($status)) {
@@ -117,6 +109,20 @@ class Drush extends DrushCommands {
     }
 
     return new RowsOfFields($rows);
+  }
+
+  /**
+   * Private.
+   */
+  private function createRow($uuid, $item) {
+    return [
+      'uuid' => $uuid,
+      'fileName' => $item->fileName,
+      'fileFetcherStatus' => $item->fileFetcherStatus,
+      'fileFetcherBytes' => \format_size($item->fileFetcherBytes) . " ($item->fileFetcherPercentDone%)",
+      'importerStatus' => $item->importerStatus,
+      'importerBytes' => \format_size($item->importerBytes) . " ($item->importerPercentDone%)",
+    ];
   }
 
   /**
