@@ -117,7 +117,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
       }
       else {
         // Otherwise, discard unnecessary verbs.
-        foreach($operations as $operation => $details) {
+        foreach ($operations as $operation => $details) {
           if (!in_array($operation, $this->endpointsToKeep[$path])) {
             unset($spec['paths'][$path][$operation]);
           }
