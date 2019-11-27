@@ -116,20 +116,39 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
         unset($spec['paths'][$path]);
       }
       else {
-        // Otherwise, discard unnecessary verbs.
-        foreach ($operations as $operation => $details) {
-          if (!in_array($operation, $this->endpointsToKeep[$path])) {
-            unset($spec['paths'][$path][$operation]);
-          }
-        }
-        // Discard any newly-empty paths.
-        if (empty($spec['paths'][$path])) {
-          unset($spec['paths'][$path]);
-        }
+        $this->filterOperationsInCurrentPath($operations, $path,$spec);
+//        // Otherwise, discard unnecessary verbs.
+//        foreach ($operations as $operation => $details) {
+//          if (!in_array($operation, $this->endpointsToKeep[$path])) {
+//            unset($spec['paths'][$path][$operation]);
+//          }
+//        }
+//        // Discard any newly-empty paths.
+//        if (empty($spec['paths'][$path])) {
+//          unset($spec['paths'][$path]);
+//        }
       }
     }
 
     return $spec;
+  }
+
+  /**
+   * @param array $operations
+   * @param string $path
+   * @param array $spec
+   */
+  private function filterOperationsInCurrentPath(array $operations, string $path, array &$spec) {
+    // Otherwise, discard unnecessary verbs.
+    foreach ($operations as $operation => $details) {
+      if (!in_array($operation, $this->endpointsToKeep[$path])) {
+        unset($spec['paths'][$path][$operation]);
+      }
+    }
+    // Discard any newly-empty paths.
+    if (empty($spec['paths'][$path])) {
+      unset($spec['paths'][$path]);
+    }
   }
 
   /**
