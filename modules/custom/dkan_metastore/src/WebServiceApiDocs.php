@@ -124,9 +124,16 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   }
 
   /**
+   * Filter the verbs on the current path.
+   *
    * @param array $operations
+   *   Operations (verbs) for the current path.
+   *
    * @param string $path
+   *   The path being processed.
+   *
    * @param array $spec
+   *   Our modified dataset-specific openapi spec.
    */
   private function filterOperationsInCurrentPath(array $operations, string $path, array &$spec) {
     // Otherwise, discard unnecessary verbs.
