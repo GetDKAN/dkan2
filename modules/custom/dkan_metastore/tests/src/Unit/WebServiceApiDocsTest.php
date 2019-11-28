@@ -34,7 +34,7 @@ class WebServiceApiDocsTest extends TestCase {
     ];
 
     $controller = WebServiceApiDocs::create($mockChain->getMock());
-    $response = $controller->getDatasetSpecific(1);
+    $response = $controller->getDatasetSpecific(1, $endpointsToKeep);
 
     $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"responses":{"200":{"description":"Ok"}}}}},"tags":[{"name":"Dataset"},{"name":"SQL Query"}]}';
 
