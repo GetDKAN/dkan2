@@ -167,7 +167,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     // Create and customize a path for each dataset distribution/resource.
     if (isset($data->distribution)) {
       foreach ($data->distribution as $dist) {
-        $path = "/api/1/datastore/sql/[SELECT * FROM {$dist->identifier}];";
+        $path = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
 
         $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
         $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
