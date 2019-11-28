@@ -81,7 +81,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     // Remove the security schemes.
     unset($spec['components']['securitySchemes']);
     // Remove required parameters, since now part of path.
-    unset($spec['paths']['/api/v1/sql/{query}']['get']['parameters']);
+    unset($spec['paths']['/api/1/datastore/sql']['get']['parameters']);
     unset($spec['paths']['/api/1/metastore/schemas/dataset/items/{identifier}']['get']['parameters']);
     // Keep only the tags needed, so remove the properties tag.
     $spec['tags'] = [
@@ -167,13 +167,13 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     // Create and customize a path for each dataset distribution/resource.
     if (isset($data->distribution)) {
       foreach ($data->distribution as $dist) {
-        $path = "/api/v1/sql/[SELECT * FROM {$dist->identifier}];";
+        $path = "/api/1/datastore/sql/[SELECT * FROM {$dist->identifier}];";
 
-        $spec['paths'][$path] = $spec['paths']['/api/v1/sql/{query}'];
+        $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
         $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
         $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
       }
-      unset($spec['paths']['/api/v1/sql/{query}']);
+      unset($spec['paths']['/api/1/datastore/sql']);
     }
     return $spec;
   }
