@@ -22,6 +22,17 @@ class WebServiceApiDocsTest extends TestCase {
   public function testGetDatasetSpecific() {
     $mockChain = $this->getCommonMockChain();
 
+    // Test against ./docs/dkan_api_openapi_spec.yml
+    $endpointsToKeep = [
+      // Target paths.
+      '/api/1/metastore/schemas/dataset/items/{identifier}' => ['get'],
+      '/api/1/datastore/sql' => ['get'],
+      // Non-existent operation.
+      '/api/1/some/other/path' => ['get'],
+      // Non-existent path.
+      'api/1/non/existent/path' => ['put'],
+    ];
+
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
 
