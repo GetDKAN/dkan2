@@ -7,13 +7,13 @@ use Drupal\dkan_common\UrlHostTokenResolver;
 use Drupal\node\Entity\Node;
 
 /**
- *
+ * DataNodeLifeCycle.
  */
 class DataNodeLifeCycle {
   private $node;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(EntityInterface $entity) {
     $this->validate($entity);
@@ -21,7 +21,9 @@ class DataNodeLifeCycle {
   }
 
   /**
+   * Presave.
    *
+   * Activities to move a data node through during presave.
    */
   public function presave() {
     /* @var $entity \Drupal\node\Entity\Node */
@@ -45,7 +47,7 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function datasetPresave() {
     /* @var $entity \Drupal\node\Entity\Node */
@@ -84,7 +86,7 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function distributionPresave() {
     $metadata = $this->getMetaData();
@@ -102,7 +104,7 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function getMetaData() {
     /* @var $entity \Drupal\node\Entity\Node */
@@ -111,7 +113,7 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function setMetadata($metadata) {
     /* @var $entity \Drupal\node\Entity\Node */
@@ -120,7 +122,7 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function validate(EntityInterface $entity) {
     if (!($entity instanceof Node)) {
@@ -133,11 +135,20 @@ class DataNodeLifeCycle {
   }
 
   /**
-   *
+   * Private.
    */
   private function unparseUrl($parsedUrl) {
     $url = '';
-    $urlParts = ['scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment'];
+    $urlParts = [
+      'scheme',
+      'host',
+      'port',
+      'user',
+      'pass',
+      'path',
+      'query',
+      'fragment',
+    ];
 
     foreach ($urlParts as $part) {
       if (!isset($parsedUrl[$part])) {
