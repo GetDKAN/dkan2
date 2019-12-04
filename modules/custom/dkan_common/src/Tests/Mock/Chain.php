@@ -46,7 +46,7 @@ class Chain {
    * Get stored input.
    */
   public function getStoredInput($id) {
-    return (isset($this->store[$id])) ? $this->store[$id] : null;
+    return (isset($this->store[$id])) ? $this->store[$id] : NULL;
   }
 
   /**

@@ -13,18 +13,27 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class DataNodeLifeCycleTest extends TestCase
-{
+/**
+ *
+ */
+class DataNodeLifeCycleTest extends TestCase {
+
+  /**
+   *
+   */
   public function testNotNode() {
     $this->expectExceptionMessage("We only work with nodes.");
 
     $entity = (new Chain($this))
-      ->add(EntityInterface::class, "blah", null)
+      ->add(EntityInterface::class, "blah", NULL)
       ->getMock();
 
     new DataNodeLifeCycle($entity);
   }
 
+  /**
+   *
+   */
   public function testNonDataNode() {
     $this->expectExceptionMessage("We only work with data nodes.");
 
@@ -35,6 +44,9 @@ class DataNodeLifeCycleTest extends TestCase
     new DataNodeLifeCycle($node);
   }
 
+  /**
+   *
+   */
   public function testPresaveDistribution() {
     $container = (new Chain($this))
       ->add(Container::class, "get", RequestStack::class)
@@ -46,9 +58,9 @@ class DataNodeLifeCycleTest extends TestCase
     \Drupal::setContainer($container);
 
     $metadata = (object) [
-      "data" => (object)[
-        "downloadURL" => "http://dkan/some/path/blah"
-      ]
+      "data" => (object) [
+        "downloadURL" => "http://dkan/some/path/blah",
+      ],
     ];
 
     $options = (new Options())
@@ -59,7 +71,7 @@ class DataNodeLifeCycleTest extends TestCase
     $node = $nodeChain
       ->add(Node::class, "bundle", "data")
       ->add(Node::class, "get", $options)
-      ->add(Node::class, "set", null, "metadata")
+      ->add(Node::class, "set", NULL, "metadata")
       ->getMock();
 
     $lifeCycle = new DataNodeLifeCycle($node);
@@ -69,4 +81,5 @@ class DataNodeLifeCycleTest extends TestCase
 
     $this->assertTrue((substr_count($metadata[1], UrlHostTokenResolver::TOKEN) > 0));
   }
+
 }

@@ -7,8 +7,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class UrlHostTokenResolverTest extends TestCase
-{
+/**
+ *
+ */
+class UrlHostTokenResolverTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $container = (new Chain($this))
       ->add(Container::class, "get", RequestStack::class)
@@ -22,4 +28,5 @@ class UrlHostTokenResolverTest extends TestCase
     $newString = UrlHostTokenResolver::resolve($string);
     $this->assertEquals("blahj do bla da bla replacement after token.", $newString);
   }
+
 }
