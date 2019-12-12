@@ -181,32 +181,53 @@ class Service implements ContainerInjectionInterface {
     $array = $machine->execution;
 
     foreach ($array as $states_or_input) {
-      if ($this->isFirstState($states_or_input) && !empty($current_string)) {
-        $strings[] = $current_string;
-        $current_string = "";
+      if ($this->isStates($states_or_input)) {
+
+        $states = $states_or_input;
+
+        if ($this->containsFirstState($states)) {
+          $this->pushStringInArray($strings, $current_string);
+          $current_string = "";
+        }
+
+        continue;
       }
-      else {
-        $input = $states_or_input;
-        $current_string .= $input;
-      }
+
+      $input = $states_or_input;
+      $current_string .= $input;
     }
 
-    if (!empty($current_string)) {
-      $strings[] = $current_string;
-    }
+    $this->pushStringInArray($strings, $current_string);
 
     return $strings;
   }
 
   /**
+   *
+   */
+  private function pushStringInArray(array &$array, string $string) {
+    if (!empty($string)) {
+      $array[] = $string;
+    }
+  }
+
+  /**
    * Private.
    */
-  private function isFirstState($input): bool {
+  private function isStates($input): bool {
     if (!is_array($input)) {
       return FALSE;
     }
 
-    if (in_array(0, $input)) {
+    return TRUE;
+  }
+
+  /**
+   * Private.
+   */
+  private function containsFirstState(array $states): bool {
+
+    if (in_array(0, $states)) {
       return TRUE;
     }
 
