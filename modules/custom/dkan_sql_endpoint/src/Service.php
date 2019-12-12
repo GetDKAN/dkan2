@@ -10,28 +10,38 @@ use Drupal\dkan_datastore\Storage\Query;
 use Maquina\StateMachine\Machine;
 
 /**
- *
+ * Class Service.
  */
 class Service implements ContainerInjectionInterface {
   private $configFactory;
 
   /**
+   * Inherited.
    *
+   * @inheritDoc
    */
   public static function create(ContainerInterface $container) {
     return new static($container->get('config.factory'));
   }
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(ConfigFactory $configFactory) {
     $this->configFactory = $configFactory;
   }
 
-  /**
-   *
-   */
+    /**
+     * Get table name.
+     *
+     * @param string $sqlString
+     *   A string with an sql statement.
+     *
+     * @return string
+     *   The table name from the sql statement.
+     *
+     * @throws \Exception
+     */
   public function getTableName(string $sqlString): string {
     $stateMachine = $this->validate($sqlString);
     return $this->getTableNameFromSelect($stateMachine->gsm('select'));
