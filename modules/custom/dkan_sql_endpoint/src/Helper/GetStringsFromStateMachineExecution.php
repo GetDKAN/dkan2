@@ -59,23 +59,14 @@ class GetStringsFromStateMachineExecution {
    * Private.
    */
   private function isStates($input): bool {
-    if (!is_array($input)) {
-      return FALSE;
-    }
-
-    return TRUE;
+    return is_array($input);
   }
 
   /**
    * Private.
    */
   private function containsFirstState(array $states): bool {
-
-    if (in_array(0, $states)) {
-      return TRUE;
-    }
-
-    return FALSE;
+    return in_array(0, $states);
   }
 
 }
