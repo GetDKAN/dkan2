@@ -175,18 +175,15 @@ class Service implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getStringsFromStringMachine(Machine $machine) {
+  private function getStringsFromStringMachine(Machine $machine): array {
     $strings = [];
     $current_string = "";
     $array = $machine->execution;
 
     foreach ($array as $states_or_input) {
-      if (is_array($states_or_input)) {
-        $states = $states_or_input;
-        if (in_array(0, $states) && !empty($current_string)) {
-          $strings[] = $current_string;
-          $current_string = "";
-        }
+      if ($this->isFirstState($states_or_input) && !empty($current_string)) {
+        $strings[] = $current_string;
+        $current_string = "";
       }
       else {
         $input = $states_or_input;
@@ -199,6 +196,21 @@ class Service implements ContainerInjectionInterface {
     }
 
     return $strings;
+  }
+
+  /**
+   * Private.
+   */
+  private function isFirstState($input): bool {
+    if (!is_array($input)) {
+      return FALSE;
+    }
+
+    if (in_array(0, $input)) {
+      return TRUE;
+    }
+
+    return FALSE;
   }
 
 }
