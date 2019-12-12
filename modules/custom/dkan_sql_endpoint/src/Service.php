@@ -141,15 +141,10 @@ class Service implements ContainerInjectionInterface {
     $properties = $this->getStringsFromStringMachine($state_machine->gsm('order_var'));
 
     $direction = $this->getStringsFromStringMachine($state_machine->gsm('order_asc'));
-    if (!empty($direction)) {
-      foreach ($properties as $property) {
-        $object->sortByAscending($property);
-      }
-    }
-    else {
-      foreach ($properties as $property) {
-        $object->sortByDescending($property);
-      }
+    $sortMethod = (!empty($direction)) ? "sortByAscending" : "sortByDescending";
+
+    foreach ($properties as $property) {
+      $object->$sortMethod($property);
     }
   }
 
