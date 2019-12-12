@@ -176,62 +176,83 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   private function getStringsFromStringMachine(Machine $machine): array {
-    $strings = [];
-    $current_string = "";
-    $array = $machine->execution;
 
-    foreach ($array as $states_or_input) {
-      if ($this->isStates($states_or_input)) {
+    $stringGetter = new class {
+      private $execution;
+      private $strings = [];
+      private $currentString = "";
 
-        $states = $states_or_input;
-
-        if ($this->containsFirstState($states)) {
-          $this->pushStringInArray($strings, $current_string);
-          $current_string = "";
-        }
-
-        continue;
+      /**
+       * Constructor.
+       */
+      public function __construct(array $stateMachineExecution) {
+        $this->execution = $stateMachineExecution;
       }
 
-      $input = $states_or_input;
-      $current_string .= $input;
-    }
+      /**
+       * Get.
+       */
+      public function get() {
+        foreach ($this->execution as $states_or_input) {
+          if ($this->isStates($states_or_input)) {
+            $this->processStates($states_or_input);
+            continue;
+          }
 
-    $this->pushStringInArray($strings, $current_string);
+          $input = $states_or_input;
+          $this->currentString .= $input;
+        }
 
-    return $strings;
-  }
+        $this->saveAndResetCurrentString();
 
-  /**
-   *
-   */
-  private function pushStringInArray(array &$array, string $string) {
-    if (!empty($string)) {
-      $array[] = $string;
-    }
-  }
+        return $this->strings;
+      }
 
-  /**
-   * Private.
-   */
-  private function isStates($input): bool {
-    if (!is_array($input)) {
-      return FALSE;
-    }
+      /**
+       * Private.
+       */
+      private function processStates(array $states) {
+        if ($this->containsFirstState($states)) {
+          $this->saveAndResetCurrentString();
+        }
+      }
 
-    return TRUE;
-  }
+      /**
+       * Private.
+       */
+      private function saveAndResetCurrentString() {
+        if (!empty($this->currentString)) {
+          $this->strings[] = $this->currentString;
+          $this->currentString = "";
+        }
+      }
 
-  /**
-   * Private.
-   */
-  private function containsFirstState(array $states): bool {
+      /**
+       * Private.
+       */
+      private function isStates($input): bool {
+        if (!is_array($input)) {
+          return FALSE;
+        }
 
-    if (in_array(0, $states)) {
-      return TRUE;
-    }
+        return TRUE;
+      }
 
-    return FALSE;
+      /**
+       * Private.
+       */
+      private function containsFirstState(array $states): bool {
+
+        if (in_array(0, $states)) {
+          return TRUE;
+        }
+
+        return FALSE;
+      }
+
+    };
+
+    return (new $stringGetter($machine->execution))->get();
   }
 
 }
