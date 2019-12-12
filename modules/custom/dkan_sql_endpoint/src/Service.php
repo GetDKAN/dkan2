@@ -31,17 +31,17 @@ class Service implements ContainerInjectionInterface {
     $this->configFactory = $configFactory;
   }
 
-    /**
-     * Get table name.
-     *
-     * @param string $sqlString
-     *   A string with an sql statement.
-     *
-     * @return string
-     *   The table name from the sql statement.
-     *
-     * @throws \Exception
-     */
+  /**
+   * Get table name.
+   *
+   * @param string $sqlString
+   *   A string with an sql statement.
+   *
+   * @return string
+   *   The table name from the sql statement.
+   *
+   * @throws \Exception
+   */
   public function getTableName(string $sqlString): string {
     $stateMachine = $this->validate($sqlString);
     return $this->getTableNameFromSelect($stateMachine->gsm('select'));
