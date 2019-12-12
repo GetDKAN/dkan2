@@ -4,6 +4,7 @@ namespace Drupal\dkan_sql_endpoint;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
+use Drupal\dkan_sql_endpoint\Helper\GetStringsFromStateMachineExecution;
 use SqlParser\SqlParser;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\dkan_datastore\Storage\Query;
@@ -176,83 +177,7 @@ class Service implements ContainerInjectionInterface {
    * Private.
    */
   private function getStringsFromStringMachine(Machine $machine): array {
-
-    $stringGetter = new class {
-      private $execution;
-      private $strings = [];
-      private $currentString = "";
-
-      /**
-       * Constructor.
-       */
-      public function __construct(array $stateMachineExecution) {
-        $this->execution = $stateMachineExecution;
-      }
-
-      /**
-       * Get.
-       */
-      public function get() {
-        foreach ($this->execution as $states_or_input) {
-          if ($this->isStates($states_or_input)) {
-            $this->processStates($states_or_input);
-            continue;
-          }
-
-          $input = $states_or_input;
-          $this->currentString .= $input;
-        }
-
-        $this->saveAndResetCurrentString();
-
-        return $this->strings;
-      }
-
-      /**
-       * Private.
-       */
-      private function processStates(array $states) {
-        if ($this->containsFirstState($states)) {
-          $this->saveAndResetCurrentString();
-        }
-      }
-
-      /**
-       * Private.
-       */
-      private function saveAndResetCurrentString() {
-        if (!empty($this->currentString)) {
-          $this->strings[] = $this->currentString;
-          $this->currentString = "";
-        }
-      }
-
-      /**
-       * Private.
-       */
-      private function isStates($input): bool {
-        if (!is_array($input)) {
-          return FALSE;
-        }
-
-        return TRUE;
-      }
-
-      /**
-       * Private.
-       */
-      private function containsFirstState(array $states): bool {
-
-        if (in_array(0, $states)) {
-          return TRUE;
-        }
-
-        return FALSE;
-      }
-
-    };
-
-    return (new $stringGetter($machine->execution))->get();
+    return (new GetStringsFromStateMachineExecution($machine->execution))->get();
   }
 
 }
