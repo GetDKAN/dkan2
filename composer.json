@@ -27,9 +27,8 @@
         "oomphinc/composer-installers-extender": "~1.1"
     },
     "require-dev": {
-      "burdamagazinorg/thunder-dev-tools": "dev-master",
-      "drupal/coder": "8.2",
-      "drupal/devel": "1.x-dev"
+	"phpunit/phpunit": "^7.5",
+	"getdkan/mock-chain": "dev-master"
     },
     "repositories": [
         {
