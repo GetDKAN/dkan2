@@ -71,7 +71,7 @@ class ValueReferencer {
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   Injected entity type manager.
-   * @param Drupal\dkan_data\Service\Uuid5 $uuidService
+   * @param \Drupal\dkan_data\Service\Uuid5 $uuidService
    *   Injected uuid service.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configService
    *   Injected config service.
@@ -180,6 +180,9 @@ class ValueReferencer {
    *
    * @return string|null
    *   The existing reference's uuid, or null if not found.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
@@ -205,6 +208,10 @@ class ValueReferencer {
    *
    * @return string|null
    *   The new reference's uuid, or null.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * @throws \Drupal\Core\Entity\EntityStorageException
    */
   protected function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
@@ -321,6 +328,9 @@ class ValueReferencer {
    *
    * @return object|string
    *   The data from this reference.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   protected function dereferenceSingle(string $property_id, string $uuid) {
     $nodes = $this->entityTypeManager
@@ -362,6 +372,11 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param string $property_id
+   *   The dataset property.
+   * @param array|string $uuids
+   *   The uuids to process.
    */
   protected function processReferencesInDeletedProperty($property_id, $uuids) {
     // Treat single uuid as an array of one uuid.
@@ -376,6 +391,11 @@ class ValueReferencer {
   /**
    * Private.
    *
+   * @param string $property_id
+   *   The dataset property.
+   * @param string $uuid
+   *   The uuid to queue for removal.
+   *
    * @codeCoverageIgnore
    */
   protected function queueReferenceForRemoval($property_id, $uuid) {
@@ -388,6 +408,11 @@ class ValueReferencer {
 
   /**
    * Public.
+   *
+   * @param object $old_dataset
+   *   Old dataset.
+   * @param object $new_dataset
+   *   Updated dataset.
    */
   public function processReferencesInUpdatedDataset(stdClass $old_dataset, stdClass $new_dataset) {
     // Cycle through the dataset properties being referenced, check for orphans.
@@ -406,6 +431,13 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param string $property_id
+   *   The dataset property.
+   * @param mixed $old_value
+   *   The old value to be replaced.
+   * @param mixed $new_value
+   *   The new value to replaced it with.
    */
   protected function processReferencesInUpdatedProperty($property_id, $old_value, $new_value) {
     if (!is_array($old_value)) {
@@ -419,6 +451,12 @@ class ValueReferencer {
 
   /**
    * Private.
+   *
+   * @param mixed $data
+   *   Data whose type we want to match.
+   *
+   * @return array|string
+   *   Either the empty string or an empty array.
    */
   protected function emptyPropertyOfSameType($data) {
     if (is_array($data)) {
