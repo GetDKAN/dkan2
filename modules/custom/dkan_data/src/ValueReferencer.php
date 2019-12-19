@@ -275,25 +275,25 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string|array $data
-   *   A single reference uuid string, or an array reference uuids.
+   * @param string|array $uuid
+   *   A single reference uuid string, or an array of reference uuids.
    *
    * @return string|array
    *   An array of dereferenced values, or a single one.
    */
-  protected function dereferenceProperty(string $property_id, $data) {
-    if (is_array($data)) {
-      return $this->dereferenceMultiple($property_id, $data);
+  protected function dereferenceProperty(string $property_id, $uuid) {
+    if (is_array($uuid)) {
+      return $this->dereferenceMultiple($property_id, $uuid);
     }
-    elseif (is_string($data)) {
-      return $this->dereferenceSingle($property_id, $data);
+    elseif (is_string($uuid)) {
+      return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
       \Drupal::logger('value_referencer')->error(
-        'Unexpected data type when dereferencing property_id @property_id with data "@data"',
+        'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
         [
-          '@property_id' => property_id,
-          '@$data' => var_export($data, TRUE),
+          '@property_id' => $property_id,
+          '@uuid' => var_export($uuid, TRUE),
         ]
       );
     }
