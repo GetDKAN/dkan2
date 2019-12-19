@@ -289,7 +289,7 @@ class ValueReferencer {
       return $this->dereferenceSingle($property_id, $data);
     }
     else {
-      Drupal::logger('value_referencer')->error(
+      \Drupal::logger('value_referencer')->error(
         'Unexpected data type when dereferencing property_id @property_id with data "@data"',
         [
           '@property_id' => property_id,
