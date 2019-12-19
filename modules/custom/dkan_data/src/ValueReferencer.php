@@ -184,12 +184,10 @@ class ValueReferencer {
   protected function checkExistingReference(string $property_id, $data) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'title' => md5(json_encode($data)),
-              ]
-          );
+      ->loadByProperties([
+        'field_data_type' => $property_id,
+        'title' => md5(json_encode($data)),
+      ]);
 
     if ($node = reset($nodes)) {
       return $node->uuid();
@@ -217,15 +215,13 @@ class ValueReferencer {
     // Create node to store this reference.
     $node = $this->entityTypeManager
       ->getStorage('node')
-      ->create(
-              [
-                'title' => md5(json_encode($value)),
-                'type' => 'data',
-                'uuid' => $data->identifier,
-                'field_data_type' => $property_id,
-                'field_json_metadata' => json_encode($data),
-              ]
-          );
+      ->create([
+        'title' => md5(json_encode($value)),
+        'type' => 'data',
+        'uuid' => $data->identifier,
+        'field_data_type' => $property_id,
+        'field_json_metadata' => json_encode($data),
+      ]);
     $node->save();
 
     return $node->uuid();
@@ -329,12 +325,10 @@ class ValueReferencer {
   protected function dereferenceSingle(string $property_id, string $uuid) {
     $nodes = $this->entityTypeManager
       ->getStorage('node')
-      ->loadByProperties(
-              [
-                'field_data_type' => $property_id,
-                'uuid' => $uuid,
-              ]
-          );
+      ->loadByProperties([
+        'field_data_type' => $property_id,
+        'uuid' => $uuid,
+      ]);
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
@@ -386,12 +380,10 @@ class ValueReferencer {
    */
   protected function queueReferenceForRemoval($property_id, $uuid) {
     $this->queueService->get('orphan_reference_processor')
-      ->createItem(
-              [
-                $property_id,
-                $uuid,
-              ]
-          );
+      ->createItem([
+        $property_id,
+        $uuid,
+      ]);
   }
 
   /**
