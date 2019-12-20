@@ -578,7 +578,7 @@ class ValueReferencerTest extends DkanTestBase {
   }
 
   /**
-   * Provides data for testing checkExistingReference function.
+   * Provides data for testing testDereferenceSingle function.
    */
   public function dataTestDereferenceSingle() {
     $mockNode = $this->createMock(NodeInterface::class);
