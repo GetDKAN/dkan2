@@ -87,7 +87,7 @@ class ValueReferencerTest extends DkanTestBase {
    *
    * @dataProvider dataTestCheckExistingReference
    */
-  public function testCheckExistingReference($property_id, $data, $nodes, $expected) {
+  public function testCheckExistingReference(string $property_id, string $data, array $nodes, $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
@@ -109,9 +109,9 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNodeStorage->expects($this->any())
       ->method('loadByProperties')
       ->with([
-          'field_data_type' => $property_id,
-          'title' => md5(json_encode($data)),
-        ])
+        'field_data_type' => $property_id,
+        'title' => md5(json_encode($data)),
+      ])
       ->willReturn($nodes);
 
     // Assert.
@@ -145,7 +145,7 @@ class ValueReferencerTest extends DkanTestBase {
       ->getMockForAbstractClass();
 
     $mockEntityInterface = $this->getMockBuilder(EntityInterface::class)
-      ->setMethods(['save','uuid'])
+      ->setMethods(['save', 'uuid'])
       ->getMockForAbstractClass();
 
     $property_id = uniqid('some-property-');
@@ -166,12 +166,12 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNodeStorage->expects($this->once())
       ->method('create')
       ->with([
-          'title' => md5(json_encode($value)),
-          'type' => 'data',
-          'uuid' => $uuid,
-          'field_data_type' => $property_id,
-          'field_json_metadata' => json_encode($data),
-        ])
+        'title' => md5(json_encode($value)),
+        'type' => 'data',
+        'uuid' => $uuid,
+        'field_data_type' => $property_id,
+        'field_json_metadata' => json_encode($data),
+      ])
       ->willReturn($mockEntityInterface);
     $mockEntityInterface->expects($this->once())
       ->method('save')
@@ -519,6 +519,8 @@ class ValueReferencerTest extends DkanTestBase {
    *   The expected value of dereferenceMultiple.
    * @param string $deRefSingle
    *   The expected value of dereferenceSingle.
+   * @param bool $uuidIsValid
+   *   Whether a uuid string is valid or not.
    * @param string|array $expected
    *   The expected return value of dereferenceProperty.
    *
