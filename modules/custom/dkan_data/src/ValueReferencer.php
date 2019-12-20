@@ -350,9 +350,16 @@ class ValueReferencer {
         }
       }
     }
-    // If str was not found, it's unlikely it was a uuid to begin with. It was
-    // most likely never referenced to begin with, so return unchanged.
-    return $uuid;
+    // If a property node was not found, it most likely means it was deleted
+    // while still being referenced.
+    \Drupal::logger('value_referencer')->error(
+      'Property @property_id reference @uuid not found',
+      [
+        '@property_id' => $property_id,
+        '@uuid' => var_export($uuid, TRUE),
+      ]
+    );
+    return NULL;
   }
 
   /**
