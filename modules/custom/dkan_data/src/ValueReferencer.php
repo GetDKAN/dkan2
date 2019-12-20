@@ -120,7 +120,7 @@ class ValueReferencer {
       return $this->referenceMultiple($property_id, $data);
     }
     else {
-      // Object or string.
+      // Case for $data being an object or a string.
       return $this->referenceSingle($property_id, $data);
     }
   }
@@ -175,7 +175,7 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param string $data
+   * @param string|object $data
    *   The property's value used to find an existing reference.
    *
    * @return string|null
@@ -203,7 +203,7 @@ class ValueReferencer {
    *
    * @param string $property_id
    *   The dataset property id.
-   * @param mixed $value
+   * @param string|object $value
    *   The property's value.
    *
    * @return string|null
