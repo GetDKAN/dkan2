@@ -1,3 +1,6 @@
 'post put delete datasets through the api':
   title: 'post, put, and delete datasets through the api'
   description: 'post, put, and delete datasets through the api'
+'metastore increased visibility':
+  title: 'Metastore: increased visibility'
+  description: 'View datasets or properties hidden from the public.'

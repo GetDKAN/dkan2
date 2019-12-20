@@ -85,3 +85,23 @@ dkan_metastore.1.metastore.schemas.dataset.items.id.docs:
     { _controller: '\Drupal\dkan_metastore\WebServiceApiDocs::getDatasetSpecific'}
   requirements:
     _permission: 'access content'
+
+dkan_metastore.alt.1.metastore.schemas.id.items:
+  path: '/alt/api/1/metastore/schemas/{schema_id}/items'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\WebServiceApi::getAll'}
+  requirements:
+    _permission: 'metastore increased visibility'
+  options:
+    _auth: ['basic_auth']
+
+dkan_metastore.alt.1.metastore.schemas.id.items.id:
+  path: '/alt/api/1/metastore/schemas/{schema_id}/items/{identifier}'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_metastore\WebServiceApi::get'}
+  requirements:
+    _permission: 'metastore increased visibility'
+  options:
+    _auth: ['basic_auth']
