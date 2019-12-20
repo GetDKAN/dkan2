@@ -70,7 +70,7 @@ class ValueReferencer {
   /**
    * The logger factory service.
    *
-   * @var \Drupal\Core\Logger\LoggerChannelFactory;
+   * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
   protected $loggerService;
 
