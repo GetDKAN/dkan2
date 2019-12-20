@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_data\Service\Uuid5;
 use Drupal\Core\Queue\QueueFactory;
-use Psr\Log\LoggerInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use stdClass;
 
 /**
@@ -70,9 +70,9 @@ class ValueReferencer {
   /**
    * The logger factory service.
    *
-   * @var \Psr\Log\LoggerInterface;
+   * @var \Drupal\Core\Logger\LoggerChannelFactory;
    */
-  protected $logger;
+  protected $loggerService;
 
   /**
    * ValueReferencer constructor.
@@ -85,15 +85,15 @@ class ValueReferencer {
    *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
-   * @param \Psr\Log\LoggerInterface $logger
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
    *   Injected logger factory service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerInterface $logger) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerChannelFactory $loggerService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
     $this->configService = $configService;
     $this->queueService = $queueService;
-    $this->logger = $logger;
+    $this->loggerService = $loggerService;
   }
 
   /**
@@ -178,7 +178,7 @@ class ValueReferencer {
       return $uuid;
     }
     else {
-      $this->logger->get('value_referencer')->error(
+      $this->loggerService->get('value_referencer')->error(
         'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
         [
           '@property_id' => $property_id,
@@ -308,7 +308,7 @@ class ValueReferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      $this->logger->get('value_referencer')->error(
+      $this->loggerService->get('value_referencer')->error(
         'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
         [
           '@property_id' => $property_id,
@@ -375,7 +375,7 @@ class ValueReferencer {
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->logger->get('value_referencer')->error(
+    $this->loggerService->get('value_referencer')->error(
       'Property @property_id reference @uuid not found',
       [
         '@property_id' => $property_id,
