@@ -12,6 +12,7 @@ use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Logger\LoggerChannelFactory;
 use stdClass;
 
 /**
@@ -36,14 +37,16 @@ class ValueReferencerTest extends DkanTestBase {
     $mockUuidInterface     = $this->createMock(Uuid5::class);
     $mockConfigInterface   = $this->createMock(ConfigFactoryInterface::class);
     $mockQueueFactory      = $this->createMock(QueueFactory::class);
+    $mockLoggerFactory     = $this->createMock(LoggerChannelFactory::class);
 
     // Assert.
-    $mock->__construct($mockEntityTypeManager, $mockUuidInterface, $mockConfigInterface, $mockQueueFactory);
+    $mock->__construct($mockEntityTypeManager, $mockUuidInterface, $mockConfigInterface, $mockQueueFactory, $mockLoggerFactory);
 
     $this->assertSame($mockEntityTypeManager, $this->readAttribute($mock, 'entityTypeManager'));
     $this->assertSame($mockUuidInterface, $this->readAttribute($mock, 'uuidService'));
     $this->assertSame($mockConfigInterface, $this->readAttribute($mock, 'configService'));
     $this->assertSame($mockQueueFactory, $this->readAttribute($mock, 'queueService'));
+    $this->assertSame($mockLoggerFactory, $this->readAttribute($mock, 'loggerService'));
   }
 
   /**
