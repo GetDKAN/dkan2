@@ -165,7 +165,7 @@ class ValueReferencerTest extends DkanTestBase {
         $property_id, $value, NULL, $uuid, $uuid,
       ],
       'neither found existing nor created new reference' => [
-        $property_id, $value, NULL, NULL, $value,
+        $property_id, $value, NULL, NULL, NULL,
       ],
     ];
   }
@@ -599,10 +599,7 @@ class ValueReferencerTest extends DkanTestBase {
         $uuid,
         [$mockNode],
         2,
-        (object) [
-          'uuid' => $uuid,
-          'data' => $expected,
-        ],
+        (object) ['uuid' => $uuid, 'data' => $expected],
       ],
       [
         'someProperty',
