@@ -634,6 +634,11 @@ class ValueReferencerTest extends DkanTestBase {
               ]
           )
       ->getMockForAbstractClass();
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mockEntityTypeManager->expects($this->once())
@@ -650,6 +655,18 @@ class ValueReferencerTest extends DkanTestBase {
           )
       ->willReturn($nodes);
     $this->writeProtectedProperty($mock, 'dereferenceMethod', $dereferenceMethod);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceSingle', $property_id, $uuid);
