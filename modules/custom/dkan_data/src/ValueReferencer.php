@@ -141,7 +141,7 @@ class ValueReferencer {
     foreach ($values as $value) {
       $data = $this->referenceSingle($property_id, $value);
       if (NULL !== $data) {
-        $result[] = $this->referenceSingle($property_id, $value);
+        $result[] = $data;
       }
     }
     return $result;
@@ -324,7 +324,7 @@ class ValueReferencer {
     foreach ($uuids as $uuid) {
       $data = $this->dereferenceSingle($property_id, $uuid);
       if (NULL !== $data) {
-        $result[] = $this->dereferenceSingle($property_id, $uuid);
+        $result[] = $data;
       }
     }
     return $result;
