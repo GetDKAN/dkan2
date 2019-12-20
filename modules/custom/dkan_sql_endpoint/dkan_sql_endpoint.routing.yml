@@ -20,3 +20,23 @@ dkan_sql_endpoint.settings:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+
+dkan_sql_endpoint.alt.get.api:
+  path: '/alt/api/1/datastore/sql'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryGet'}
+  requirements:
+    _permission: 'sql endpoint increased visibility'
+  options:
+    _auth: ['basic_auth']
+
+dkan_sql_endpoint.alt.post.api:
+  path: '/alt/api/1/datastore/sql'
+  methods: [POST]
+  defaults:
+    { _controller: '\Drupal\dkan_sql_endpoint\Controller\Api::runQueryPost'}
+  requirements:
+    _permission: 'sql endpoint increased visibility'
+  options:
+    _auth: ['basic_auth']
