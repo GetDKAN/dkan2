@@ -606,7 +606,7 @@ class ValueReferencerTest extends DkanTestBase {
         $uuid,
         [],
         0,
-        $uuid,
+        NULL,
       ],
     ];
   }
