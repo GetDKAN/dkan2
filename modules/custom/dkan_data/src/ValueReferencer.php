@@ -139,7 +139,10 @@ class ValueReferencer {
   protected function referenceMultiple(string $property_id, array $values) : array {
     $result = [];
     foreach ($values as $value) {
-      $result[] = $this->referenceSingle($property_id, $value);
+      $data = $this->referenceSingle($property_id, $value);
+      if (NULL !== $data) {
+        $result[] = $this->referenceSingle($property_id, $value);
+      }
     }
     return $result;
   }
@@ -164,9 +167,14 @@ class ValueReferencer {
       return $uuid;
     }
     else {
-      // In the unlikely case we neither found an existing reference nor could
-      // create a new reference, return the unchanged value.
-      return $value;
+      \Drupal::logger('value_referencer')->error(
+        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
+        [
+          '@property_id' => $property_id,
+          '@value' => var_export($value, TRUE),
+        ]
+      );
+      return NULL;
     }
   }
 
