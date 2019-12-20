@@ -13,3 +13,5 @@ permissions:
   - 'skip comment approval'
   - 'access site-wide contact form'
   - 'access shortcuts'
+  - 'metastore increased visibility'
+  - 'sql endpoint increased visibility'
