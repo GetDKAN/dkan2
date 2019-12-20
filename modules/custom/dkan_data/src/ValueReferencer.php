@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\dkan_data\Service\Uuid5;
 use Drupal\Core\Queue\QueueFactory;
+use Psr\Log\LoggerInterface;
 use stdClass;
 
 /**
@@ -67,6 +68,13 @@ class ValueReferencer {
   protected $queueService;
 
   /**
+   * The logger factory service.
+   *
+   * @var \Psr\Log\LoggerInterface;
+   */
+  protected $logger;
+
+  /**
    * ValueReferencer constructor.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -77,12 +85,15 @@ class ValueReferencer {
    *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Injected logger factory service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerInterface $logger) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
     $this->configService = $configService;
     $this->queueService = $queueService;
+    $this->logger = $logger;
   }
 
   /**
@@ -167,7 +178,7 @@ class ValueReferencer {
       return $uuid;
     }
     else {
-      \Drupal::logger('value_referencer')->error(
+      $this->logger->get('value_referencer')->error(
         'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
         [
           '@property_id' => $property_id,
@@ -297,7 +308,7 @@ class ValueReferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      \Drupal::logger('value_referencer')->error(
+      $this->logger->get('value_referencer')->error(
         'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
         [
           '@property_id' => $property_id,
@@ -364,7 +375,7 @@ class ValueReferencer {
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    \Drupal::logger('value_referencer')->error(
+    $this->logger->get('value_referencer')->error(
       'Property @property_id reference @uuid not found',
       [
         '@property_id' => $property_id,
