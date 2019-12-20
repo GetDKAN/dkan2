@@ -436,10 +436,10 @@ class ValueReferencerTest extends DkanTestBase {
       ],
       'dereferencing an array of uuid' => [
         $property_id,
-      [$uuid1, $uuid2],
-      [$value1_retrieved, $value2_retrieved],
+        [$uuid1, $uuid2],
+        [$value1_retrieved, $value2_retrieved],
         NULL,
-      [$value1_retrieved, $value2_retrieved],
+        [$value1_retrieved, $value2_retrieved],
       ],
     ];
   }
@@ -542,9 +542,30 @@ class ValueReferencerTest extends DkanTestBase {
     $mockNode->field_json_metadata = (object) ['value' => '{"uuid": "' . $uuid . '", "data": "Some Property Value"}'];
 
     return [
-      ['someProperty', $uuid, [$mockNode], 1, $expected],
-      ['someProperty', $uuid, [$mockNode], 2, (object) ['uuid' => $uuid, 'data' => $expected]],
-      ['someProperty', $uuid, [], 0, $uuid],
+      [
+        'someProperty',
+        $uuid,
+        [$mockNode],
+        1,
+        $expected,
+      ],
+      [
+        'someProperty',
+        $uuid,
+        [$mockNode],
+        2,
+        (object) [
+          'uuid' => $uuid,
+          'data' => $expected,
+        ],
+      ],
+      [
+        'someProperty',
+        $uuid,
+        [],
+        0,
+        $uuid,
+      ],
     ];
   }
 
