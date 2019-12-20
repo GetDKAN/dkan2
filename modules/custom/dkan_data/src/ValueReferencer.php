@@ -313,7 +313,10 @@ class ValueReferencer {
   protected function dereferenceMultiple(string $property_id, array $uuids) : array {
     $result = [];
     foreach ($uuids as $uuid) {
-      $result[] = $this->dereferenceSingle($property_id, $uuid);
+      $data = $this->dereferenceSingle($property_id, $uuid);
+      if (NULL !== $data) {
+        $result[] = $this->dereferenceSingle($property_id, $uuid);
+      }
     }
     return $result;
   }
