@@ -523,7 +523,7 @@ class ValueReferencerTest extends DkanTestBase {
   /**
    * Provides data for testing checkExistingReference function.
    */
-  public function datatestDereferenceSingle() {
+  public function dataTestDereferenceSingle() {
     $mockNode = $this->createMock(NodeInterface::class);
     $uuid = uniqid('some-property-uuid-');
     $expected = "Some Property Value";
