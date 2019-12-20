@@ -54,14 +54,69 @@ class ValueReferencerTest extends DkanTestBase {
    * Provides data for testing checkExistingReference function.
    */
   public function dataTestCheckExistingReference() {
-    $mockNode = $this->createMock(NodeInterface::class);
+    $mockNode = $this->getMockBuilder(NodeInterface::class)
+      ->setMethods(['uuid'])
+      ->disableOriginalConstructor()
+      ->getMockForAbstractClass();
+
     $expected = uniqid('a-uuid');
+
+    $mockNode->expects($this->any())
+      ->method('uuid')
+      ->willReturn($expected);
+
     $mockNode->uuid = (object) ['value' => $expected];
 
     return [
       ['theme', 'Topic One', [$mockNode], $expected],
       ['barfoo', '', [], NULL],
     ];
+  }
+
+  /**
+   * Tests function checkExistingReference.
+   *
+   * @param string $property_id
+   *   The property name.
+   * @param string $data
+   *   The value of the property.
+   * @param array $nodes
+   *   The expected $nodes array internally.
+   * @param string $expected
+   *   The expected return value of referenceSingle.
+   *
+   * @dataProvider dataTestCheckExistingReference
+   */
+  public function testCheckExistingReference($property_id, $data, $nodes, $expected) {
+    // Setup.
+    $mock = $this->getMockBuilder(ValueReferencer::class)
+      ->disableOriginalConstructor()
+      ->setMethods(NULL)
+      ->getMock();
+    $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
+      ->setMethods(['getStorage'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
+    $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
+      ->setMethods(['loadByProperties'])
+      ->getMockForAbstractClass();
+
+    // Expect.
+    $mockEntityTypeManager->expects($this->any())
+      ->method('getStorage')
+      ->with('node')
+      ->willReturn($mockNodeStorage);
+    $mockNodeStorage->expects($this->any())
+      ->method('loadByProperties')
+      ->with([
+          'field_data_type' => $property_id,
+          'title' => md5(json_encode($data)),
+        ])
+      ->willReturn($nodes);
+
+    // Assert.
+    $actual = $this->invokeProtectedMethod($mock, 'checkExistingReference', $property_id, $data, $nodes, $expected);
+    $this->assertEquals($expected, $actual);
   }
 
   /**
