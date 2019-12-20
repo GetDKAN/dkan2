@@ -131,43 +131,26 @@ class ValueReferencerTest extends DkanTestBase {
 
     $mockUuidInterface = $this->getMockBuilder(Uuid5::class)
       ->disableOriginalConstructor()
-      ->setMethods(
-              [
-                'generate',
-              ]
-          )
+      ->setMethods(['generate'])
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
 
     $mockEntityTypeManager = $this->getMockBuilder(EntityTypeManagerInterface::class)
-      ->setMethods(
-              [
-                'getStorage',
-              ]
-          )
+      ->setMethods(['getStorage'])
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'entityTypeManager', $mockEntityTypeManager);
 
     $mockNodeStorage = $this->getMockBuilder(EntityStorageInterface::class)
-      ->setMethods(
-              [
-                'create',
-              ]
-          )
+      ->setMethods(['create'])
       ->getMockForAbstractClass();
 
     $mockEntityInterface = $this->getMockBuilder(EntityInterface::class)
-      ->setMethods(
-              [
-                'save',
-                'uuid',
-              ]
-          )
+      ->setMethods(['save','uuid'])
       ->getMockForAbstractClass();
 
     $property_id = uniqid('some-property-');
     $value = uniqid('some-value-');
-    $uuid = Uuid5::generate($property_id, $value);
+    $uuid = uniqid('some-uuid-');
     $data = new stdClass();
     $data->identifier = $uuid;
     $data->data = $value;
@@ -182,15 +165,13 @@ class ValueReferencerTest extends DkanTestBase {
       ->willReturn($mockNodeStorage);
     $mockNodeStorage->expects($this->once())
       ->method('create')
-      ->with(
-              [
-                'title' => md5(json_encode($value)),
-                'type' => 'data',
-                'uuid' => $uuid,
-                'field_data_type' => $property_id,
-                'field_json_metadata' => json_encode($data),
-              ]
-          )
+      ->with([
+          'title' => md5(json_encode($value)),
+          'type' => 'data',
+          'uuid' => $uuid,
+          'field_data_type' => $property_id,
+          'field_json_metadata' => json_encode($data),
+        ])
       ->willReturn($mockEntityInterface);
     $mockEntityInterface->expects($this->once())
       ->method('save')
