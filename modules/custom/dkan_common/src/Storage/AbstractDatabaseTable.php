@@ -104,7 +104,7 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   public function store($data, string $id = NULL): string {
     $this->setTable();
 
-    $existing = (isset($id)) ? $this->retrieve($id): NULL;
+    $existing = (isset($id)) ? $this->retrieve($id) : NULL;
 
     $data = $this->prepareData($data, $id);
 

@@ -91,8 +91,10 @@ class DatabaseTable extends AbstractDatabaseTable implements \JsonSerializable {
     return "record_number";
   }
 
-  protected function getNonSerialFields()
-  {
+  /**
+   * Protected.
+   */
+  protected function getNonSerialFields() {
     $fields = parent::getNonSerialFields();
     $index = array_search($this->primaryKey(), $fields);
     if ($index !== FALSE) {
