@@ -192,6 +192,11 @@ class ValueReferencerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->setMethods(['checkExistingReference', 'createPropertyReference'])
       ->getMock();
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mock->expects($this->exactly(1))
@@ -202,6 +207,18 @@ class ValueReferencerTest extends DkanTestBase {
       ->method('createPropertyReference')
       ->with($property_id, $value)
       ->willReturn($createProperty);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'referenceSingle', $property_id, $value);
