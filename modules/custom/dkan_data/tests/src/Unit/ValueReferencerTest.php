@@ -466,6 +466,11 @@ class ValueReferencerTest extends DkanTestBase {
       ->disableOriginalConstructor()
       ->setMethods(['dereferenceMultiple', 'dereferenceSingle'])
       ->getMock();
+    $mockUuidInterface = $this->getMockBuilder(Uuid5::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['isValid'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
 
     // Expect.
     $mock->expects($this->any())
@@ -476,6 +481,10 @@ class ValueReferencerTest extends DkanTestBase {
       ->method('dereferenceSingle')
       ->with($property_id, $uuids)
       ->willReturn($deRefSingle);
+    $mockUuidInterface->expects($this->any())
+      ->method('isValid')
+      ->with($uuids)
+      ->willReturn(TRUE);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceProperty', $property_id, $uuids);
