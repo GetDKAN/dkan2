@@ -286,14 +286,14 @@ class ValueReferencer {
    * @param string|array $uuid
    *   A single reference uuid string, or an array of reference uuids.
    *
-   * @return string|array
-   *   An array of dereferenced values, or a single one.
+   * @return mixed
+   *   An array of dereferenced values, a single one, or NULL.
    */
   protected function dereferenceProperty(string $property_id, $uuid) {
     if (is_array($uuid)) {
       return $this->dereferenceMultiple($property_id, $uuid);
     }
-    elseif (is_string($uuid)) {
+    elseif (is_string($uuid) && $this->uuidService->isValid($uuid)) {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
@@ -304,6 +304,7 @@ class ValueReferencer {
           '@uuid' => var_export($uuid, TRUE),
         ]
       );
+      return NULL;
     }
   }
 
