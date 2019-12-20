@@ -13,6 +13,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\node\NodeInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
+use Drupal\Core\Logger\LoggerChannelInterface;
 use stdClass;
 
 /**
@@ -432,6 +433,7 @@ class ValueReferencerTest extends DkanTestBase {
         $uuid1,
         NULL,
         $value1_retrieved,
+        TRUE,
         $value1_retrieved,
       ],
       'dereferencing an array of uuid' => [
@@ -439,7 +441,16 @@ class ValueReferencerTest extends DkanTestBase {
         [$uuid1, $uuid2],
         [$value1_retrieved, $value2_retrieved],
         NULL,
+        TRUE,
         [$value1_retrieved, $value2_retrieved],
+      ],
+      'uuid is not a valid string' => [
+        $property_id,
+        "invalid-uuid",
+        NULL,
+        NULL,
+        FALSE,
+        NULL,
       ],
     ];
   }
@@ -460,7 +471,7 @@ class ValueReferencerTest extends DkanTestBase {
    *
    * @dataProvider dataTestDereferenceProperty
    */
-  public function testDereferenceProperty(string $property_id, $uuids, $deRefMultiple, $deRefSingle, $expected) {
+  public function testDereferenceProperty(string $property_id, $uuids, $deRefMultiple, $deRefSingle, $uuidIsValid, $expected) {
     // Setup.
     $mock = $this->getMockBuilder(ValueReferencer::class)
       ->disableOriginalConstructor()
@@ -471,6 +482,11 @@ class ValueReferencerTest extends DkanTestBase {
       ->setMethods(['isValid'])
       ->getMockForAbstractClass();
     $this->writeProtectedProperty($mock, 'uuidService', $mockUuidInterface);
+    $mockLoggerFactory = $this->getMockBuilder(LoggerChannelFactory::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['get'])
+      ->getMockForAbstractClass();
+    $this->writeProtectedProperty($mock, 'loggerService', $mockLoggerFactory);
 
     // Expect.
     $mock->expects($this->any())
@@ -484,7 +500,19 @@ class ValueReferencerTest extends DkanTestBase {
     $mockUuidInterface->expects($this->any())
       ->method('isValid')
       ->with($uuids)
-      ->willReturn(TRUE);
+      ->willReturn($uuidIsValid);
+    $mockLoggerChannelInterface = $this->getMockBuilder(LoggerChannelInterface::class)
+      ->disableOriginalConstructor()
+      ->setMethods(['error'])
+      ->getMockForAbstractClass();
+    $mockLoggerChannelInterface->expects($this->any())
+      ->method('error')
+      ->withAnyParameters()
+      ->willReturn("");
+    $mockLoggerFactory->expects($this->any())
+      ->method('get')
+      ->withAnyParameters()
+      ->willReturn($mockLoggerChannelInterface);
 
     // Assert.
     $actual = $this->invokeProtectedMethod($mock, 'dereferenceProperty', $property_id, $uuids);
