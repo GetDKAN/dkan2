@@ -522,6 +522,9 @@ class ValueReferencer {
     return array_values(array_filter($list));
   }
 
+  /**
+   * Private.
+   */
   private function log($loggerName, $message, $variables) {
     if ($this->loggerService) {
       $this->loggerService->get($loggerName)->error($message, $variables);
