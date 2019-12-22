@@ -373,28 +373,29 @@ class ValueReferencer {
         'field_data_type' => $property_id,
         'uuid' => $uuid,
       ]);
+
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
         if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_REFERENCE_IDS) {
           return $metadata;
         }
-        else {
-          return $metadata->data;
-        }
+
+        return $metadata->data;
+
       }
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    if ($this->loggerService) {
-      $this->loggerService->get('value_referencer')->error(
-        'Property @property_id reference @uuid not found',
-        [
-          '@property_id' => $property_id,
-          '@uuid' => var_export($uuid, TRUE),
-        ]
-      );
-    }
+    $this->log(
+      'value_referencer',
+      'Property @property_id reference @uuid not found',
+      [
+        '@property_id' => $property_id,
+        '@uuid' => var_export($uuid, TRUE),
+      ]
+    );
+
     return NULL;
   }
 
@@ -519,6 +520,12 @@ class ValueReferencer {
   protected function getPropertyList() : array {
     $list = $this->configService->get('dkan_data.settings')->get('property_list');
     return array_values(array_filter($list));
+  }
+
+  private function log($loggerName, $message, $variables) {
+    if ($this->loggerService) {
+      $this->loggerService->get($loggerName)->error($message, $variables);
+    }
   }
 
 }
