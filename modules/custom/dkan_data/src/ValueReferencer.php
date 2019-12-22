@@ -190,7 +190,7 @@ class ValueReferencer {
           'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
           [
             '@property_id' => $property_id,
-            '@value' => var_export($value, true),
+            '@value' => var_export($value, TRUE),
           ]
         );
       }
@@ -322,7 +322,7 @@ class ValueReferencer {
           'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
           [
             '@property_id' => $property_id,
-            '@uuid' => var_export($uuid, true),
+            '@uuid' => var_export($uuid, TRUE),
           ]
         );
       }
@@ -391,7 +391,7 @@ class ValueReferencer {
         'Property @property_id reference @uuid not found',
         [
           '@property_id' => $property_id,
-          '@uuid' => var_export($uuid, true),
+          '@uuid' => var_export($uuid, TRUE),
         ]
       );
     }

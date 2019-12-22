@@ -7,7 +7,7 @@ use Contracts\IdGeneratorInterface;
 /**
  * Class IdGenerator.
  *
- * @codeCoverageIgnore 
+ * @codeCoverageIgnore
  */
 class IdGenerator implements IdGeneratorInterface {
 
