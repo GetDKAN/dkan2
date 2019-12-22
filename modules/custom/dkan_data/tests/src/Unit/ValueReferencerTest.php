@@ -90,6 +90,7 @@ class ValueReferencerTest extends TestCase
       ->getMock();
 
     $uuidService = new Uuid5();
+    $uuid = $uuidService->generate('dataset', "some value");
 
     $configService = (new Chain($this))
       ->add(ConfigFactory::class, 'get', ImmutableConfig::class)
@@ -101,7 +102,7 @@ class ValueReferencerTest extends TestCase
       ->getMock();
 
     $valueReferencer = new ValueReferencer($entityTypeManager, $uuidService, $configService, $queueService);
-    $referenced = $valueReferencer->dereference((object) ['publisher' => "123456789"]);
+    $referenced = $valueReferencer->dereference((object) ['publisher' => $uuid]);
 
     $this->assertTrue(is_object($referenced));
     $this->assertEquals((object) ['name' => 'Gerardo', 'company' => 'CivicActions'], $referenced->publisher);

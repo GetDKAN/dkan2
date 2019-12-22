@@ -85,14 +85,21 @@ class ValueReferencer {
    *   Injected config service.
    * @param \Drupal\Core\Queue\QueueFactory $queueService
    *   Injected queue service.
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
-   *   Injected logger factory service.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService, LoggerChannelFactory $loggerService) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, Uuid5 $uuidService, ConfigFactoryInterface $configService, QueueFactory $queueService) {
     $this->entityTypeManager = $entityTypeManager;
     $this->uuidService = $uuidService;
     $this->configService = $configService;
     $this->queueService = $queueService;
+  }
+
+  /**
+   * Setter.
+   *
+   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerService
+   *   Injected logger factory service.
+   */
+  public function setLoggerFactory(LoggerChannelFactory $loggerService) {
     $this->loggerService = $loggerService;
   }
 
@@ -178,13 +185,15 @@ class ValueReferencer {
       return $uuid;
     }
     else {
-      $this->loggerService->get('value_referencer')->error(
-        'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
-        [
-          '@property_id' => $property_id,
-          '@value' => var_export($value, TRUE),
-        ]
-      );
+      if ($this->loggerService) {
+        $this->loggerService->get('value_referencer')->error(
+          'Neither found an existing nor could create a new reference for property_id: @property_id with value: @value',
+          [
+            '@property_id' => $property_id,
+            '@value' => var_export($value, true),
+          ]
+        );
+      }
       return NULL;
     }
   }
@@ -308,13 +317,15 @@ class ValueReferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      $this->loggerService->get('value_referencer')->error(
-        'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
-        [
-          '@property_id' => $property_id,
-          '@uuid' => var_export($uuid, TRUE),
-        ]
-      );
+      if ($this->loggerService) {
+        $this->loggerService->get('value_referencer')->error(
+          'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
+          [
+            '@property_id' => $property_id,
+            '@uuid' => var_export($uuid, true),
+          ]
+        );
+      }
       return NULL;
     }
   }
@@ -375,13 +386,15 @@ class ValueReferencer {
     }
     // If a property node was not found, it most likely means it was deleted
     // while still being referenced.
-    $this->loggerService->get('value_referencer')->error(
-      'Property @property_id reference @uuid not found',
-      [
-        '@property_id' => $property_id,
-        '@uuid' => var_export($uuid, TRUE),
-      ]
-    );
+    if ($this->loggerService) {
+      $this->loggerService->get('value_referencer')->error(
+        'Property @property_id reference @uuid not found',
+        [
+          '@property_id' => $property_id,
+          '@uuid' => var_export($uuid, true),
+        ]
+      );
+    }
     return NULL;
   }
 
