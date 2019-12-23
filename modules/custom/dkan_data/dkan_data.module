@@ -73,6 +73,21 @@ function dereferencing_method() : int {
  * Implements hook_entity_presave().
  */
 function dkan_data_entity_presave(EntityInterface $entity) {
+  $solr_setting = \Drupal::config('dkan_data.settings')->get('solr', FALSE);
+  if ($solr_setting === 1 && $entity->field_data_type->value == 'dataset') {
+    $client = new \GuzzleHttp\Client();
+    $res = $client->request('POST', 'http://solr:8983/solr/dkan/update/json/docs?f=/identifier&f=/title&f=/description&f=publisher:/publisher/name&f=format:/distribution/format&f=mediaType:/distribution/mediaType&f=keyword:/keyword&f=theme:/theme&commit=true&overwrite=true',
+      [
+        'body' => $entity->field_json_metadata->value,
+      ]
+    );
+    if($res->getBody()) {
+      $d = json_decode($entity->field_json_metadata->value);
+      $message = $d->title . " was indexed";
+      \Drupal::logger('dkan_solr')->notice($message);
+    }
+  }
+
   try {
     (new DataNodeLifeCycle($entity))->presave();
   }

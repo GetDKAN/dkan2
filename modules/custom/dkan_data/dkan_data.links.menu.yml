@@ -3,3 +3,8 @@ dkan_data.api_settings_form:
   route_name: dkan_data.config_settings
   description: Configure dataset properties for referencing and API endpoint.
   parent: dkan_common.admin_config_dkan
+dkan_data.solr_settings_form:
+  title: Solr settings
+  route_name: dkan_data.solr_settings
+  description: Enable solr indexing.
+  parent: dkan_common.admin_config_dkan

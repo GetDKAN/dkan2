@@ -6,3 +6,13 @@ dkan_data.config_settings:
     _permission: 'access administration pages'
   options:
     _admin_route: TRUE
+dkan_data.solr_settings:
+  path: '/admin/config/dkan/search'
+  defaults:
+    _form: '\Drupal\dkan_data\Form\DkanSolrSettingsForm'
+    _title: 'Enable solr indexing'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE
+    
