@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_data\Modifier;
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 use Drupal\Core\DependencyInjection\Container;
@@ -146,7 +147,8 @@ class ServiceTest extends TestCase {
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('dkan_metastore.sae_factory', Sae::class);
+      ->add('dkan_metastore.sae_factory', Sae::class)
+      ->add('dkan_data.modifier', Modifier::class);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
