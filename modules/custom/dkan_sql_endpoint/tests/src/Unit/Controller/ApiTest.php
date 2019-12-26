@@ -8,6 +8,7 @@ use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\Config\ImmutableConfig;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\Container;
+use Drupal\dkan_data\ModifierInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
@@ -29,8 +30,8 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function test() {
-    $controller = Api::create($this->getContainer());
+  public function testRunQueryGet() {
+    $controller = Api::create($this->getContainer()->getMock());
     $response = $controller->runQueryGet();
     $this->assertEquals("[]", $response->getContent());
   }
@@ -38,8 +39,8 @@ class ApiTest extends TestCase {
   /**
    *
    */
-  public function test2() {
-    $controller = Api::create($this->getContainer());
+  public function testRunQueryPost() {
+    $controller = Api::create($this->getContainer()->getMock());
     $response = $controller->runQueryPost();
     $this->assertEquals("[]", $response->getContent());
   }
@@ -48,23 +49,24 @@ class ApiTest extends TestCase {
    *
    */
   private function getContainer() {
-    $container = (new Chain($this))
+    $service = (new Chain($this))
       ->add(Container::class, "get", ConfigFactory::class)
       ->add(ConfigFactory::class, "get", ImmutableConfig::class)
       ->add(ImmutableConfig::class, "get", "100")
       ->getMock();
 
     $options = (new Options())
-      ->add('dkan_sql_endpoint.service', Service::create($container))
+      ->add('dkan_sql_endpoint.service', Service::create($service))
       ->add("database", Connection::class)
       ->add('dkan_datastore.service.factory.resource', ResourceServiceFactory::class)
       ->add('request_stack', RequestStack::class)
-      ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class);
+      ->add('dkan_datastore.database_table_factory', DatabaseTableFactory::class)
+      ->add('dkan_data.modifier', ModifierInterface::class);
 
     $query = '[SELECT * FROM abc][WHERE abc = \'blah\'][ORDER BY abc DESC][LIMIT 1 OFFSET 3];';
     $body = json_encode(["query" => $query]);
 
-    $container = (new Chain($this))
+    return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(RequestStack::class, 'getCurrentRequest', Request::class)
       ->add(Request::class, 'get', $query)
@@ -76,9 +78,7 @@ class ApiTest extends TestCase {
       ->add(Resource::class, 'getId', "1")
       ->add(DatabaseTableFactory::class, 'getInstance', DatabaseTable::class)
       ->add(DatabaseTable::class, 'query', [])
-      ->getMock();
-
-    return $container;
+      ->add(ModifierInterface::class, 'allowSqlQuery', TRUE);
   }
 
 }
