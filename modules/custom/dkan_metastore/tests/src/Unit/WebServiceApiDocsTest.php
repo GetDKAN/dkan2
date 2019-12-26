@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_data\ModifierInterface;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Serialization\Yaml;
 use Drupal\dkan_api\Controller\Docs;
@@ -52,6 +53,7 @@ class WebServiceApiDocsTest extends TestCase {
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
+        ->add("dkan_data.modifier", ModifierInterface::class)
     )
       ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec))
       ->add(Service::class, "get", "{}");

@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_data\ModifierInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
@@ -42,12 +43,20 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private $metastoreService;
 
   /**
+   * Data modifier service.
+   *
+   * @var \Drupal\dkan_data\ModifierInterface
+   */
+  private $modifier;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
-      $container->get("dkan_metastore.service")
+      $container->get("dkan_metastore.service"),
+      $container->get("dkan_data.modifier")
     );
   }
 
@@ -58,10 +67,13 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\dkan_metastore\Service $metastoreService
    *   Metastore service.
+   * @param \Drupal\dkan_data\ModifierInterface $modifier
+   *   Data modifier service.
    */
-  public function __construct(Docs $docsController, Service $metastoreService) {
+  public function __construct(Docs $docsController, Service $metastoreService, ModifierInterface $modifier) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
+    $this->modifier = $modifier;
   }
 
   /**
