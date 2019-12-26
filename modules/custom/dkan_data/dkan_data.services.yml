@@ -18,3 +18,5 @@ services:
       - {name: config.factory.override, priority: 5}
   dkan_data.uuid5:
     class: Drupal\dkan_data\Service\Uuid5
+  dkan_data.modifier:
+    class: \Drupal\dkan_data\Modifier
