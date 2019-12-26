@@ -22,4 +22,9 @@ class ModifierTest extends TestCase {
     $this->assertEquals($resources, $modifier->modifyResources($resources));
   }
 
+  public function testAllowSqlQuery() {
+    $modifier = new Modifier();
+    $this->assertEquals(TRUE, $modifier->allowSqlQuery());
+  }
+
 }

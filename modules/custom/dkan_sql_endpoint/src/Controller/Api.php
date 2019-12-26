@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan_data\ModifierInterface;
 use Drupal\dkan_datastore\Service\Factory\Resource;
 use Drupal\dkan_datastore\Storage\DatabaseTable;
 use Drupal\dkan_datastore\Storage\DatabaseTableFactory;
@@ -23,6 +24,7 @@ class Api implements ContainerInjectionInterface {
   private $requestStack;
   private $resourceServiceFactory;
   private $databaseTableFactory;
+  private $modifier;
 
   /**
    * Inherited.
@@ -37,7 +39,8 @@ class Api implements ContainerInjectionInterface {
       $container->get('database'),
       $container->get('dkan_datastore.service.factory.resource'),
       $container->get('request_stack'),
-      $container->get('dkan_datastore.database_table_factory')
+      $container->get('dkan_datastore.database_table_factory'),
+      $container->get('dkan_data.modifier')
     );
   }
 
@@ -49,19 +52,24 @@ class Api implements ContainerInjectionInterface {
     Connection $database,
     Resource $resourceServiceFactory,
     RequestStack $requestStack,
-    DatabaseTableFactory $databaseTableFactory
+    DatabaseTableFactory $databaseTableFactory,
+    ModifierInterface $modifier
   ) {
     $this->service = $service;
     $this->database = $database;
     $this->resourceServiceFactory = $resourceServiceFactory;
     $this->requestStack = $requestStack;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->modifier = $modifier;
   }
 
   /**
    * Method called by the router.
    */
   public function runQueryGet() {
+    if (!$this->modifier->allowSqlQuery()) {
+      return $this->getResponse("Sensitive data requires authentication", 401);
+    }
 
     $query = NULL;
     $query = $this->requestStack->getCurrentRequest()->get('query');
@@ -77,6 +85,9 @@ class Api implements ContainerInjectionInterface {
    * Method called by the router.
    */
   public function runQueryPost() {
+    if (!$this->modifier->allowSqlQuery()) {
+      return $this->getResponse("Sensitive data requires authentication", 401);
+    }
 
     $query = NULL;
     $payloadJson = $this->requestStack->getCurrentRequest()->getContent();

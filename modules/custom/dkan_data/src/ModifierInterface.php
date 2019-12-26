@@ -37,4 +37,12 @@ interface ModifierInterface {
    */
   public function modifyResources($resources);
 
+  /**
+   * Check if running an SQL query is allowed.
+   *
+   * @return bool
+   *   TRUE to allow the SQL Query, FALSE otherwise.
+   */
+  public function allowSqlQuery() : bool;
+
 }

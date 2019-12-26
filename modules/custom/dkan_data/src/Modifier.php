@@ -29,4 +29,13 @@ class Modifier implements ModifierInterface {
     return $resources;
   }
 
+  /**
+   * Allows SQL query by default, can be modified with a decorator service.
+   *
+   * {@inheritDoc}
+   */
+  public function allowSqlQuery(): bool {
+    return TRUE;
+  }
+
 }
