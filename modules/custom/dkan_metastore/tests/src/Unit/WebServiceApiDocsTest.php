@@ -21,7 +21,8 @@ class WebServiceApiDocsTest extends TestCase {
    *
    */
   public function testGetDatasetSpecific() {
-    $mockChain = $this->getCommonMockChain();
+    $mockChain = $this->getCommonMockChain()
+      ->add(ModifierInterface::class, 'allowSqlQuery', TRUE);
 
     // Test against ./docs/dkan_api_openapi_spec.yml.
     $endpointsToKeep = [

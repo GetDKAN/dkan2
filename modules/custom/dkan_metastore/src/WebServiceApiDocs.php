@@ -25,7 +25,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   private $endpointsToKeep = [
     '/api/1/metastore/schemas/dataset/items/{identifier}' => ['get'],
-    '/api/1/datastore/sql' => ['get'],
   ];
 
   /**
@@ -88,6 +87,10 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   public function getDatasetSpecific(string $identifier) {
     $fullSpec = $this->docsController->getJsonFromYmlFile();
 
+    // Docs to only include SQL endpoint if appropriate.
+    if ($this->modifier->allowSqlQuery()) {
+      $this->endpointsToKeep['/api/1/datastore/sql'] = ['get'];
+    }
     $spec = $this->keepDatasetSpecificEndpoints($fullSpec, $this->endpointsToKeep);
 
     // Remove the security schemes.
