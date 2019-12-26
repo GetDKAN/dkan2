@@ -4,6 +4,7 @@ services:
     arguments:
       - '@dkan_schema.schema_retriever'
       - '@dkan_metastore.sae_factory'
+      - '@dkan_data.modifier'
   dkan_metastore.sae_factory:
     class: \Drupal\dkan_metastore\Factory\Sae
     arguments:

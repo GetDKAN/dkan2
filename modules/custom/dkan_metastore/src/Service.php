@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_data\ModifierInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
@@ -30,6 +31,13 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
+   * Modifier.
+   *
+   * @var \Drupal\dkan_data\ModifierInterface
+   */
+  private $modifier;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -37,16 +45,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory')
+      $container->get('dkan_metastore.sae_factory'),
+      $container->get('dkan_data.modifier')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, ModifierInterface $modifier) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
+    $this->modifier = $modifier;
   }
 
   /**
@@ -86,7 +96,8 @@ class Service implements ContainerInjectionInterface {
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-      function ($json_string) {
+      function ($json_string) use ($schema_id) {
+        $json_string = $this->modifier->modifyGet($schema_id, $json_string);
         return json_decode($json_string);
       },
       $datasets
@@ -107,8 +118,10 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    return $this->getEngine($schema_id)
+    $dataset = $this->getEngine($schema_id)
       ->get($identifier);
+
+    return $this->modifier->modifyGet($schema_id, $dataset);
   }
 
   /**
@@ -135,7 +148,7 @@ class Service implements ContainerInjectionInterface {
     /* @todo decouple from POD. */
     $resources = $data->distribution;
 
-    return $resources;
+    return $this->modifier->modifyResources($resources);
   }
 
   /**
