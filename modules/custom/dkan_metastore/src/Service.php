@@ -38,7 +38,7 @@ class Service implements ContainerInjectionInterface {
   private $pluginManager;
 
   /**
-   * A list of discovered data protectors for metastore's GETs.
+   * Instances of discovered data protector plugins for metastore's GETs.
    *
    * @var array
    */
@@ -64,7 +64,10 @@ class Service implements ContainerInjectionInterface {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
     $this->pluginManager = $pluginManager;
-    $this->plugins = $this->pluginManager->getDefinitions();
+
+    foreach ($this->pluginManager->getDefinitions() as $definition) {
+      $this->plugins[] = $this->pluginManager->createInstance($definition['id']);
+    }
   }
 
   /**
@@ -147,9 +150,7 @@ class Service implements ContainerInjectionInterface {
     $dataObj = json_decode($data);
 
     foreach ($this->plugins as $plugin) {
-      $instance = $this->pluginManager->createInstance($plugin['id']);
-      // @Todo: test $instance value and/or surround in try...catch.
-      $dataObj = $instance->protect($schema_id, $dataObj);
+      $dataObj = $plugin->protect($schema_id, $dataObj);
     }
 
     return json_encode($dataObj);
