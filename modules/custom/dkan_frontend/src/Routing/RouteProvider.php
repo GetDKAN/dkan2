@@ -87,7 +87,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Private.
    */
   private function addStaticPages(RouteCollection $routes) {
     $base = $this->appRoot . "/data-catalog-frontend/public";
@@ -113,7 +113,7 @@ class RouteProvider {
   }
 
   /**
-   *
+   * Private.
    */
   private function addDatasets(RouteCollection $routes) {
     $query = $this->entityQuery->get("node");
