@@ -31,11 +31,18 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
-   * Data protector plugin manager service.
+   * Data protector plugin manager service for metastore GETs.
    *
    * @var \Drupal\dkan_data\Plugin\DataProtectorMetastoreGetManager
    */
-  private $protector;
+  private $pluginManager;
+
+  /**
+   * A list of discovered data protectors for metastore's GETs.
+   *
+   * @var array
+   */
+  private $plugins = [];
 
   /**
    * Inherited.
@@ -53,10 +60,11 @@ class Service implements ContainerInjectionInterface {
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataProtectorMetastoreGetManager $protector) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataProtectorMetastoreGetManager $pluginManager) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
-    $this->protector = $protector;
+    $this->pluginManager = $pluginManager;
+    $this->plugins = $this->pluginManager->getDefinitions();
   }
 
   /**
@@ -97,6 +105,7 @@ class Service implements ContainerInjectionInterface {
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
       function ($json_string) {
+        $json_string = $this->protectData($json_string);
         return json_decode($json_string);
       },
       $datasets
@@ -117,8 +126,33 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    return $this->getEngine($schema_id)
+    $data = $this->getEngine($schema_id)
       ->get($identifier);
+
+    return $this->protectData($data);
+  }
+
+  /**
+   * Provides data protector plugins the opportunity to hide or modify data.
+   *
+   * @param string $data
+   *   The Json input
+   *
+   * @return string
+   *   The Json, modified by each applicable discovered data protector plugins.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   */
+  private function protectData(string $data) {
+    $dataObj = json_decode($data);
+
+    foreach ($this->plugins as $plugin) {
+      $instance = $this->pluginManager->createInstance($plugin['id']);
+      // @Todo: test $instance value and/or surround in try...catch.
+      $dataObj = $instance->protect($dataObj);
+    }
+
+    return json_encode($dataObj);
   }
 
   /**
