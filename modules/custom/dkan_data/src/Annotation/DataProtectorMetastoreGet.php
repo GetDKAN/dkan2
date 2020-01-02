@@ -9,6 +9,6 @@ namespace Drupal\dkan_data\Annotation;
  *
  * @Annotation
  */
-class DataProtectorEndpointGet extends DataProtectorBase {
+class DataProtectorMetastoreGet extends DataProtectorBase {
 
 }

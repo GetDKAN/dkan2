@@ -9,6 +9,6 @@ namespace Drupal\dkan_data\Annotation;
  *
  * @Annotation
  */
-class DataProtectorEndpointSql extends DataProtectorBase {
+class DataProtectorSqlQuery extends DataProtectorBase {
 
 }
