@@ -7,6 +7,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_metastore\Exception\ObjectExists;
 use Drupal\dkan_metastore\Exception\ObjectNotFound;
+use Drupal\dkan_data\Plugin\DataProtectorMetastoreGetManager;
 use Drupal\dkan_data\ValueReferencer;
 use Drupal\dkan_schema\SchemaRetriever;
 
@@ -30,6 +31,13 @@ class Service implements ContainerInjectionInterface {
   private $schemaRetriever;
 
   /**
+   * Data protector plugin manager service.
+   *
+   * @var \Drupal\dkan_data\Plugin\DataProtectorMetastoreGetManager
+   */
+  private $protector;
+
+  /**
    * Inherited.
    *
    * {@inheritDoc}
@@ -37,16 +45,18 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory')
+      $container->get('dkan_metastore.sae_factory'),
+      $container->get('plugin.manager.dkan_data.protector.metastore_get')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataProtectorMetastoreGetManager $protector) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
+    $this->protector = $protector;
   }
 
   /**
