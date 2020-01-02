@@ -17,9 +17,9 @@ class RouteProvider {
   /**
    * Constructor.
    */
-  public function __construct(string $appRoot, QueryFactory $enityQuery) {
+  public function __construct(string $appRoot, QueryFactory $entityQuery) {
     $this->appRoot = $appRoot;
-    $this->entityQuery = $enityQuery;
+    $this->entityQuery = $entityQuery;
   }
 
   /**

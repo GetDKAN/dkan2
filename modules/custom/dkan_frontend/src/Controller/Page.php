@@ -36,7 +36,7 @@ class Page implements ContainerInjectionInterface {
   public function page($name) {
     $pageContent = $this->pageBuilder->build($name);
     if (empty($pageContent)) {
-      $pageContent = $this->pageBuilder->build("about");
+      $pageContent = $this->pageBuilder->build("dataset");
     }
     return Response::create($pageContent);
   }
