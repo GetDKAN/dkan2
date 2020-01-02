@@ -104,8 +104,8 @@ class Service implements ContainerInjectionInterface {
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-      function ($json_string) {
-        $json_string = $this->protectData($json_string);
+      function ($json_string) use ($schema_id) {
+        $json_string = $this->protectData($schema_id, $json_string);
         return json_decode($json_string);
       },
       $datasets
@@ -129,7 +129,7 @@ class Service implements ContainerInjectionInterface {
     $data = $this->getEngine($schema_id)
       ->get($identifier);
 
-    return $this->protectData($data);
+    return $this->protectData($schema_id, $data);
   }
 
   /**
@@ -143,13 +143,13 @@ class Service implements ContainerInjectionInterface {
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  private function protectData(string $data) {
+  private function protectData(string $schema_id, string $data) {
     $dataObj = json_decode($data);
 
     foreach ($this->plugins as $plugin) {
       $instance = $this->pluginManager->createInstance($plugin['id']);
       // @Todo: test $instance value and/or surround in try...catch.
-      $dataObj = $instance->protect($dataObj);
+      $dataObj = $instance->protect($schema_id, $dataObj);
     }
 
     return json_encode($dataObj);
