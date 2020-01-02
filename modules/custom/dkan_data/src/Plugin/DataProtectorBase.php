@@ -29,18 +29,4 @@ abstract class DataProtectorBase extends PluginBase implements DataProtectorInte
 
   // @Todo: Add common and abstract methods for this plugin type.
 
-  /**
-   * {@inheritdoc}
-   */
-  public function getPluginId() {
-
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getPluginDefinition() {
-
-  }
-
 }
