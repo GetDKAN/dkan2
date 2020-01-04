@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_data\Plugin\DataProtectorApiDocsManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
@@ -42,12 +43,27 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private $metastoreService;
 
   /**
+   * Data protector plugin manager service for sql endpoint GETs.
+   *
+   * @var \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
+   */
+  private $pluginManager;
+
+  /**
+   * Instances of discovered data protector plugins for metastore's GETs.
+   *
+   * @var array
+   */
+  private $plugins = [];
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
-      $container->get("dkan_metastore.service")
+      $container->get("dkan_metastore.service"),
+      $container->get('plugin.manager.dkan_data.protector.api_docs')
     );
   }
 
@@ -58,10 +74,19 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\dkan_metastore\Service $metastoreService
    *   Metastore service.
+   * @param \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager $pluginManager
+   *   Metastore plugin manager.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function __construct(Docs $docsController, Service $metastoreService) {
+  public function __construct(Docs $docsController, Service $metastoreService, DataProtectorApiDocsManager $pluginManager) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
+    $this->pluginManager = $pluginManager;
+
+    foreach ($this->pluginManager->getDefinitions() as $definition) {
+      $this->plugins[] = $this->pluginManager->createInstance($definition['id']);
+    }
   }
 
   /**
@@ -121,12 +146,46 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Spec with dataset-specific datastore sql endpoint.
    */
   private function modifySqlEndpoint(array $spec, string $identifier) {
-    if (isset($spec['paths']['/api/1/datastore/sql'])) {
+    if ($this->protectData($identifier)) {
+      unset($spec['paths']['/api/1/datastore/sql']);
+    }
+    elseif (isset($spec['paths']['/api/1/datastore/sql'])) {
       unset($spec['paths']['/api/1/datastore/sql']['get']['parameters']);
       $spec = $this->replaceDistributions($spec, $identifier);
       $spec['tags'][] = ["name" => "SQL Query"];
     }
     return $spec;
+  }
+
+  /**
+   * Provides data protector plugins the opportunity to hide the sql endpoint.
+   *
+   * @param string $identifier
+   *   The dataset identifier.
+   *
+   * @return bool
+   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise..
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   */
+  private function protectData(string $identifier) {
+    // Need parent dataset's accessLevel.
+    $datasets = \Drupal::database()->select('node__field_json_metadata', 'm')
+      ->condition('m.field_json_metadata_value', '%accessLevel%', 'LIKE')
+      ->condition('m.field_json_metadata_value', "%{$identifier}%", 'LIKE')
+      ->fields('m', ['field_json_metadata_value'])
+      ->execute()
+      ->fetchCol();
+
+    $dataObj = json_decode(reset($datasets));
+
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->protect('dataset', $dataObj)) {
+        return TRUE;
+      }
+    }
+
+    return FALSE;
   }
 
   /**
