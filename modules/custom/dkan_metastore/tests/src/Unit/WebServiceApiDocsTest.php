@@ -25,7 +25,7 @@ class WebServiceApiDocsTest extends TestCase {
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
 
-    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"paths":{"\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"responses":{"200":{"description":"Ok"}}}}},"tags":[{"name":"Dataset"}]}';
+    $spec = '{"openapi":"3.0.1","info":{"title":"API Documentation","version":"Alpha"},"tags":[{"name":"Dataset"},{"name":"SQL Query"}],"paths":{"\/api\/1\/datastore\/sql":{"get":{"summary":"Query resources","tags":["SQL Query"],"responses":{"200":{"description":"Ok"}}}},"\/api\/1\/metastore\/schemas\/dataset\/items\/1":{"get":{"summary":"Get this dataset","tags":["Dataset"],"responses":{"200":{"description":"Ok"}}}}}}';
 
     $this->assertEquals($spec, $response->getContent());
   }
