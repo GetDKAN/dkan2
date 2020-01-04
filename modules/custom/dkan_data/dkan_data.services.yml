@@ -24,3 +24,6 @@ services:
   plugin.manager.dkan_data.protector.sql_query:
     class: \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
     parent: default_plugin_manager
+  plugin.manager.dkan_data.protector.api_docs:
+    class: \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager
+    parent: default_plugin_manager
