@@ -138,8 +138,10 @@ class Service implements ContainerInjectionInterface {
   /**
    * Provides data protector plugins the opportunity to hide or modify data.
    *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
    * @param string $data
-   *   The Json input
+   *   The Json input.
    *
    * @return string
    *   The Json, modified by each applicable discovered data protector plugins.

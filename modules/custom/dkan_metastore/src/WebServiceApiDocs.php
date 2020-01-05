@@ -85,7 +85,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Metastore service.
    * @param \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager $pluginManager
    *   Metastore plugin manager.
-   * @param \Drupal\Core\Database\Connection
+   * @param \Drupal\Core\Database\Connection $connection
    *   Database connection.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException

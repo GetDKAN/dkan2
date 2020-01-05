@@ -27,6 +27,4 @@ abstract class DataProtectorBase extends PluginBase implements DataProtectorInte
     return $instance;
   }
 
-  // @Todo: Add common and abstract methods for this plugin type.
-
 }

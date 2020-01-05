@@ -6,6 +6,9 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
+/**
+ * Manages data protector plugins in the dataset-specific api docs.
+ */
 class DataProtectorApiDocsManager extends DefaultPluginManager {
 
   /**

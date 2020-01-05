@@ -6,6 +6,9 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
+/**
+ * Manages data protector plugins in the metastore.
+ */
 class DataProtectorMetastoreGetManager extends DefaultPluginManager {
 
   /**

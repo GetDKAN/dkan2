@@ -6,6 +6,9 @@ use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
+/**
+ * Manages data protector plugins for the datastore sql endpoint.
+ */
 class DataProtectorSqlQueryManager extends DefaultPluginManager {
 
   /**
