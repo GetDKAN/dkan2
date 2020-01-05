@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_data\Plugin\DataProtectorApiDocsManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_data\ValueReferencer;
@@ -57,13 +58,21 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private $plugins = [];
 
   /**
+   * Database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  private $connection;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
       $container->get("dkan_metastore.service"),
-      $container->get('plugin.manager.dkan_data.protector.api_docs')
+      $container->get('plugin.manager.dkan_data.protector.api_docs'),
+      $container->get('database')
     );
   }
 
@@ -76,13 +85,16 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Metastore service.
    * @param \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager $pluginManager
    *   Metastore plugin manager.
+   * @param \Drupal\Core\Database\Connection
+   *   Database connection.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function __construct(Docs $docsController, Service $metastoreService, DataProtectorApiDocsManager $pluginManager) {
+  public function __construct(Docs $docsController, Service $metastoreService, DataProtectorApiDocsManager $pluginManager, Connection $connection) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
     $this->pluginManager = $pluginManager;
+    $this->connection = $connection;
 
     foreach ($this->pluginManager->getDefinitions() as $definition) {
       $this->plugins[] = $this->pluginManager->createInstance($definition['id']);
@@ -170,22 +182,34 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   private function protectData(string $identifier) {
     // Need parent dataset's accessLevel.
-    $datasets = \Drupal::database()->select('node__field_json_metadata', 'm')
+    $datasets = $this->getParentDataset($identifier);
+    if ($dataset = reset($datasets)) {
+      $dataObj = json_decode($dataset);
+      foreach ($this->plugins as $plugin) {
+        if ($plugin->protect('dataset', $dataObj)) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
+  /**
+   * Get distribution's parent dataset.
+   *
+   * @param string $identifier
+   *   The dataset's identifier.
+   *
+   * @return mixed
+   *   Array of dataset json strings matching the identifier.
+   */
+  private function getParentDataset(string $identifier) {
+    return $this->connection->select('node__field_json_metadata', 'm')
       ->condition('m.field_json_metadata_value', '%accessLevel%', 'LIKE')
       ->condition('m.field_json_metadata_value', "%{$identifier}%", 'LIKE')
       ->fields('m', ['field_json_metadata_value'])
       ->execute()
       ->fetchCol();
-
-    $dataObj = json_decode(reset($datasets));
-
-    foreach ($this->plugins as $plugin) {
-      if ($plugin->protect('dataset', $dataObj)) {
-        return TRUE;
-      }
-    }
-
-    return FALSE;
   }
 
   /**
