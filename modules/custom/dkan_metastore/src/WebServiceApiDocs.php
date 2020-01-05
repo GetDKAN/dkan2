@@ -282,8 +282,12 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
         $path = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
 
         $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
-        $spec['paths'][$path]['get']['summary'] = $dist->data->title ?? "";
-        $spec['paths'][$path]['get']['description'] = $dist->data->description ?? "";
+        if (isset($dist->data->title)) {
+          $spec['paths'][$path]['get']['summary'] = $dist->data->title;
+        }
+        if (isset($dist->data->description)) {
+          $spec['paths'][$path]['get']['description'] = $dist->data->description;
+        }
       }
       unset($spec['paths']['/api/1/datastore/sql']);
     }
