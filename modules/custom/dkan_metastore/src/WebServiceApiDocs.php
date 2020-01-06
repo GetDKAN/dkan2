@@ -279,17 +279,35 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     // Create and customize a path for each dataset distribution/resource.
     if (isset($data->distribution)) {
       foreach ($data->distribution as $dist) {
-        $path = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
-
-        $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
-        if (isset($dist->data->title)) {
-          $spec['paths'][$path]['get']['summary'] = $dist->data->title;
-        }
-        if (isset($dist->data->description)) {
-          $spec['paths'][$path]['get']['description'] = $dist->data->description;
-        }
+        $spec = $this->replaceDistribution($dist, $spec, $identifier);
       }
       unset($spec['paths']['/api/1/datastore/sql']);
+    }
+    return $spec;
+  }
+
+  /**
+   * Replace a single distribution within the spec.
+   *
+   * @param mixed $dist
+   *   A distribution object.
+   * @param array $spec
+   *   The original spec array.
+   * @param string $identifier
+   *   The dataset uuid.
+   *
+   * @return array
+   *   Modified spec.
+   */
+  private function replaceDistribution($dist, array $spec, string $identifier) {
+    $path = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
+
+    $spec['paths'][$path] = $spec['paths']['/api/1/datastore/sql'];
+    if (isset($dist->data->title)) {
+      $spec['paths'][$path]['get']['summary'] = $dist->data->title;
+    }
+    if (isset($dist->data->description)) {
+      $spec['paths'][$path]['get']['description'] = $dist->data->description;
     }
     return $spec;
   }
