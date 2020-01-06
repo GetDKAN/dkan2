@@ -173,7 +173,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * Provides data protectors plugins a chance to hide api docs' sql endpoints.
    *
    * @param string $identifier
-   *   The dataset identifier.
+   *   The distribution's identifier.
    *
    * @return bool
    *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise..
