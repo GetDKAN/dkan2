@@ -2,6 +2,7 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
+use Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
@@ -25,6 +26,20 @@ class Api implements ContainerInjectionInterface {
   private $databaseTableFactory;
 
   /**
+   * Data protector plugin manager service for sql query endpoints.
+   *
+   * @var \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
+   */
+  private $pluginManager;
+
+  /**
+   * Instances of discovered data protector plugins for sql query endpoints.
+   *
+   * @var array
+   */
+  private $plugins = [];
+
+  /**
    * Inherited.
    *
    * @{inheritdocs}
@@ -37,7 +52,8 @@ class Api implements ContainerInjectionInterface {
       $container->get('database'),
       $container->get('dkan_datastore.service.factory.resource'),
       $container->get('request_stack'),
-      $container->get('dkan_datastore.database_table_factory')
+      $container->get('dkan_datastore.database_table_factory'),
+      $container->get('plugin.manager.dkan_data.protector.sql_query')
     );
   }
 
@@ -49,13 +65,19 @@ class Api implements ContainerInjectionInterface {
     Connection $database,
     Resource $resourceServiceFactory,
     RequestStack $requestStack,
-    DatabaseTableFactory $databaseTableFactory
+    DatabaseTableFactory $databaseTableFactory,
+    DataProtectorSqlQueryManager $pluginManager
   ) {
     $this->service = $service;
     $this->database = $database;
     $this->resourceServiceFactory = $resourceServiceFactory;
     $this->requestStack = $requestStack;
     $this->databaseTableFactory = $databaseTableFactory;
+    $this->pluginManager = $pluginManager;
+
+    foreach ($this->pluginManager->getDefinitions() as $definition) {
+      $this->plugins[] = $this->pluginManager->createInstance($definition['id']);
+    }
   }
 
   /**
@@ -103,7 +125,15 @@ class Api implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
 
-    $databaseTable = $this->getDatabaseTable($this->service->getTableName($query));
+    $uuid = $this->service->getTableName($query);
+    ddl($uuid, __FUNCTION__ . ' $uuid');
+
+
+
+
+
+
+    $databaseTable = $this->getDatabaseTable($uuid);
 
     try {
       $result = $databaseTable->query($queryObject);
@@ -113,6 +143,19 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->getResponse($result, 200);
+  }
+
+  /**
+   * Provides data protectors plugins a chance to hide api docs' sql endpoints.
+   *
+   * @param string $uuid
+   *   The distribution identifier.
+   *
+   * @return bool
+   *   TRUE if the parent dataset requires protecting, FALSE otherwise.
+   */
+  private function protectData(string $uuid) {
+    return TRUE;
   }
 
   /**
