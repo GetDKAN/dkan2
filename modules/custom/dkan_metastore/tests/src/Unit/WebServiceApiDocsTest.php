@@ -5,7 +5,7 @@ namespace Drupal\Tests\dkan_metastore\Unit;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Database\Query\SelectInterface;
-use Drupal\dkan_data\Plugin\DataProtectorApiDocsManager;
+use Drupal\dkan_data\Plugin\DataProtectorManager;
 use Drupal\dkan_data\Plugin\DataProtectorBase;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Serialization\Yaml;
@@ -37,7 +37,7 @@ class WebServiceApiDocsTest extends TestCase {
 
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, "get", $dataset)
-      ->add(DataProtectorApiDocsManager::class, 'getDefinitions', [])
+      ->add(DataProtectorManager::class, 'getDefinitions', [])
       ->add(SelectInterface::class, 'fetchCol', []);
     ;
 
@@ -55,8 +55,8 @@ class WebServiceApiDocsTest extends TestCase {
   public function testDatasetSpecificDocsWithSqlProtector() {
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, "get", "{}")
-      ->add(DataProtectorApiDocsManager::class, 'getDefinitions', [['id' => 'foobar']])
-      ->add(DataProtectorApiDocsManager::class, 'createInstance', DataProtectorBase::class)
+      ->add(DataProtectorManager::class, 'getDefinitions', [['id' => 'foobar']])
+      ->add(DataProtectorManager::class, 'createInstance', DataProtectorBase::class)
       ->add(DataProtectorBase::class, 'protect', TRUE)
       ->add(SelectInterface::class, 'fetchCol', ['{"foo":"bar"}']);
 
@@ -80,7 +80,7 @@ class WebServiceApiDocsTest extends TestCase {
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
-        ->add('plugin.manager.dkan_data.protector.api_docs', DataProtectorApiDocsManager::class)
+        ->add('plugin.manager.dkan_data.protector', DataProtectorManager::class)
         ->add('database', Connection::class)
     )
       ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec))

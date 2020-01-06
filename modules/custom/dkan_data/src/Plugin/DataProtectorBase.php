@@ -9,22 +9,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Base class for Data protector plugins.
  */
-abstract class DataProtectorBase extends PluginBase implements DataProtectorInterface, ContainerFactoryPluginInterface {
+abstract class DataProtectorBase extends PluginBase implements DataProtectorInterface {
 
-  /**
-   * Drupal\Core\Entity\EntityTypeManagerInterface definition.
-   *
-   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
-   */
-  protected $entityTypeManager;
+  public function protect($schema, $data) {
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    $instance = new static($configuration, $plugin_id, $plugin_definition);
-    $instance->entityTypeManager = $container->get('entity_type.manager');
-    return $instance;
   }
 
 }

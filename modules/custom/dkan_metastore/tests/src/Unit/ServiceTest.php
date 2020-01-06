@@ -3,7 +3,7 @@
 namespace Drupal\Tests\dkan_metastore\Unit;
 
 use Drupal\dkan_data\Plugin\DataProtectorBase;
-use Drupal\dkan_data\Plugin\DataProtectorMetastoreGetManager;
+use Drupal\dkan_data\Plugin\DataProtectorManager;
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 use Drupal\Core\DependencyInjection\Container;
@@ -62,8 +62,8 @@ class ServiceTest extends TestCase {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
       ->add(Engine::class, "get", $json)
-      ->add(DataProtectorMetastoreGetManager::class, 'getDefinitions', [['id' => 'foobar']])
-      ->add(DataProtectorMetastoreGetManager::class, 'createInstance', DataProtectorBase::class)
+      ->add(DataProtectorManager::class, 'getDefinitions', [['id' => 'foobar']])
+      ->add(DataProtectorManager::class, 'createInstance', DataProtectorBase::class)
       ->add(DataProtectorBase::class, 'protect', $protected);
 
     $service = Service::create($container->getMock());
@@ -155,12 +155,12 @@ class ServiceTest extends TestCase {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
       ->add('dkan_metastore.sae_factory', Sae::class)
-      ->add('plugin.manager.dkan_data.protector.metastore_get', DataProtectorMetastoreGetManager::class);
+      ->add('plugin.manager.dkan_data.protector', DataProtectorManager::class);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
-      ->add(DataProtectorMetastoreGetManager::class, 'getDefinitions', []);
+      ->add(DataProtectorManager::class, 'getDefinitions', []);
   }
 
 }

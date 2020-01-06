@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_metastore;
 
-use Drupal\dkan_data\Plugin\DataProtectorApiDocsManager;
+use Drupal\dkan_data\Plugin\DataProtectorManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
@@ -44,14 +44,14 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private $metastoreService;
 
   /**
-   * Data protector plugin manager service for dataset-specific api docs.
+   * Data protector plugin manager service.
    *
-   * @var \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager
+   * @var \Drupal\dkan_data\Plugin\DataProtectorManager
    */
   private $pluginManager;
 
   /**
-   * Instances of discovered data protector plugins for api docs.
+   * Instances of discovered data protector plugins.
    *
    * @var array
    */
@@ -71,8 +71,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
       $container->get("dkan_metastore.service"),
-      $container->get('plugin.manager.dkan_data.protector.api_docs'),
-      $container->get('database')
+      $container->get('plugin.manager.dkan_data.protector')
     );
   }
 
@@ -83,18 +82,15 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\dkan_metastore\Service $metastoreService
    *   Metastore service.
-   * @param \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager $pluginManager
+   * @param \Drupal\dkan_data\Plugin\DataProtectorManager $pluginManager
    *   Metastore plugin manager.
-   * @param \Drupal\Core\Database\Connection $connection
-   *   Database connection.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function __construct(Docs $docsController, Service $metastoreService, DataProtectorApiDocsManager $pluginManager, Connection $connection) {
+  public function __construct(Docs $docsController, Service $metastoreService, DataProtectorManager $pluginManager) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
     $this->pluginManager = $pluginManager;
-    $this->connection = $connection;
 
     foreach ($this->pluginManager->getDefinitions() as $definition) {
       $this->plugins[] = $this->pluginManager->createInstance($definition['id']);

@@ -2,7 +2,7 @@
 
 namespace Drupal\dkan_sql_endpoint\Controller;
 
-use Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager;
+use Drupal\dkan_data\Plugin\DataProtectorManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Drupal\Core\Database\Connection;
@@ -28,7 +28,7 @@ class Api implements ContainerInjectionInterface {
   /**
    * Data protector plugin manager service for sql query endpoints.
    *
-   * @var \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
+   * @var \Drupal\dkan_data\Plugin\DataProtectorManager
    */
   private $pluginManager;
 
@@ -53,7 +53,7 @@ class Api implements ContainerInjectionInterface {
       $container->get('dkan_datastore.service.factory.resource'),
       $container->get('request_stack'),
       $container->get('dkan_datastore.database_table_factory'),
-      $container->get('plugin.manager.dkan_data.protector.sql_query')
+      $container->get('plugin.manager.dkan_data.protector')
     );
   }
 
@@ -66,7 +66,7 @@ class Api implements ContainerInjectionInterface {
     Resource $resourceServiceFactory,
     RequestStack $requestStack,
     DatabaseTableFactory $databaseTableFactory,
-    DataProtectorSqlQueryManager $pluginManager
+    DataProtectorManager $pluginManager
   ) {
     $this->service = $service;
     $this->database = $database;
