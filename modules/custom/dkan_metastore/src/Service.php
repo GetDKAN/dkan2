@@ -152,7 +152,9 @@ class Service implements ContainerInjectionInterface {
     $dataObj = json_decode($data);
 
     foreach ($this->plugins as $plugin) {
-      $dataObj = $plugin->protect($schema_id, $dataObj);
+      if ($plugin->requiresProtection($schema_id, $dataObj)) {
+        $dataObj = $plugin->protect($schema_id, $dataObj);
+      }
     }
 
     return json_encode($dataObj);

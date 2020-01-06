@@ -39,7 +39,6 @@ class WebServiceApiDocsTest extends TestCase {
       ->add(Service::class, "get", $dataset)
       ->add(DataProtectorManager::class, 'getDefinitions', [])
       ->add(SelectInterface::class, 'fetchCol', []);
-    ;
 
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
@@ -57,8 +56,8 @@ class WebServiceApiDocsTest extends TestCase {
       ->add(Service::class, "get", "{}")
       ->add(DataProtectorManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataProtectorManager::class, 'createInstance', DataProtectorBase::class)
-      ->add(DataProtectorBase::class, 'protect', TRUE)
-      ->add(SelectInterface::class, 'fetchCol', ['{"foo":"bar"}']);
+      ->add(DataProtectorBase::class, 'requiresProtection', TRUE)
+    ;
 
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
@@ -81,15 +80,8 @@ class WebServiceApiDocsTest extends TestCase {
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
         ->add('plugin.manager.dkan_data.protector', DataProtectorManager::class)
-        ->add('database', Connection::class)
     )
-      ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec))
-      ->add(Connection::class, 'select', SelectInterface::class)
-      ->add(SelectInterface::class, 'condition', ConditionInterface::class)
-      ->add(ConditionInterface::class, 'condition', ConditionInterface::class)
-      ->add(ConditionInterface::class, 'fields', SelectInterface::class)
-      ->add(SelectInterface::class, 'fields', SelectInterface::class)
-      ->add(SelectInterface::class, 'execute', SelectInterface::class);
+      ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec));
 
     return $mockChain;
   }

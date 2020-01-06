@@ -4,7 +4,6 @@ namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_data\Plugin\DataProtectorManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\Database\Connection;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_data\ValueReferencer;
@@ -56,13 +55,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @var array
    */
   private $plugins = [];
-
-  /**
-   * Database connection.
-   *
-   * @var \Drupal\Core\Database\Connection
-   */
-  private $connection;
 
   /**
    * {@inheritdoc}
@@ -148,7 +140,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @param array $spec
    *   The original spec.
    * @param string $identifier
-   *   Dataset uuid.
+   *   Distribution uuid.
    *
    * @return array
    *   Spec with dataset-specific datastore sql endpoint.
@@ -172,40 +164,17 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   The distribution's identifier.
    *
    * @return bool
-   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise..
+   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   private function protectData(string $identifier) {
-    // Need parent dataset's accessLevel.
-    $datasets = $this->getParentDataset($identifier);
-    if ($dataset = reset($datasets)) {
-      $dataObj = json_decode($dataset);
-      foreach ($this->plugins as $plugin) {
-        if ($plugin->protect('dataset', $dataObj)) {
-          return TRUE;
-        }
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresProtection('distribution', $identifier)) {
+        return TRUE;
       }
     }
     return FALSE;
-  }
-
-  /**
-   * Get distribution's parent dataset.
-   *
-   * @param string $identifier
-   *   The dataset's identifier.
-   *
-   * @return mixed
-   *   Array of dataset json strings matching the identifier.
-   */
-  private function getParentDataset(string $identifier) {
-    return $this->connection->select('node__field_json_metadata', 'm')
-      ->condition('m.field_json_metadata_value', '%accessLevel%', 'LIKE')
-      ->condition('m.field_json_metadata_value', "%{$identifier}%", 'LIKE')
-      ->fields('m', ['field_json_metadata_value'])
-      ->execute()
-      ->fetchCol();
   }
 
   /**

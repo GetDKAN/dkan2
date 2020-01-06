@@ -126,12 +126,10 @@ class Api implements ContainerInjectionInterface {
     }
 
     $uuid = $this->service->getTableName($query);
-    ddl($uuid, __FUNCTION__ . ' $uuid');
-
-
-
-
-
+    $protect = $this->protectData($uuid);
+    if ($protect) {
+      return $this->getResponse((object)["message" => "Resource hidden since dataset access level is non-public"], 401);
+    }
 
     $databaseTable = $this->getDatabaseTable($uuid);
 
@@ -148,14 +146,21 @@ class Api implements ContainerInjectionInterface {
   /**
    * Provides data protectors plugins a chance to hide api docs' sql endpoints.
    *
-   * @param string $uuid
-   *   The distribution identifier.
+   * @param string $identifier
+   *   The distribution's identifier.
    *
    * @return bool
-   *   TRUE if the parent dataset requires protecting, FALSE otherwise.
+   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  private function protectData(string $uuid) {
-    return TRUE;
+  private function protectData(string $identifier) {
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresProtection('distribution', $identifier)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**

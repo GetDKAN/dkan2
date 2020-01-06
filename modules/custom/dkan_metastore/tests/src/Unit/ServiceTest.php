@@ -64,6 +64,7 @@ class ServiceTest extends TestCase {
       ->add(Engine::class, "get", $json)
       ->add(DataProtectorManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataProtectorManager::class, 'createInstance', DataProtectorBase::class)
+      ->add(DataProtectorBase::class, 'requiresProtection', TRUE)
       ->add(DataProtectorBase::class, 'protect', $protected);
 
     $service = Service::create($container->getMock());

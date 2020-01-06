@@ -6,20 +6,39 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
 
 /**
  * Defines an interface for Data protector plugins.
+ *
+ * Plugins of this type may have different conditions and outcomes, but all act
+ * on the following publicly accessible API endpoints:
+ *   - The metastore's GET collection and GET item
+ *   - The dataset-specific Api Docs
+ *   - The datastore's SQL query
  */
 interface DataProtectorInterface extends PluginInspectionInterface {
 
   /**
-   * Protects potentially sensitive data by concealing or removing it.
+   * Checks if the schema or data needs protecting.
    *
-   * @param string $schema_id
+   * @param string $schema
    *   The schema id.
-   * @param string|object $data
-   *   A JSON string or object.
+   * @param mixed $data
+   *   The data.
+   *
+   * @return bool
+   *   TRUE if the data requires protection, FALSE otherwise.
+   */
+  public function requiresProtection(string $schema, $data);
+
+  /**
+   * Protects sensitive data by concealing or removing it.
+   *
+   * @param string $schema
+   *   The schema id.
+   * @param mixed $data
+   *   Contains sensitive data.
    *
    * @return mixed
-   *   The modified JSON string or object, revealing less than before.
+   *   Free of sensitive data, or FALSE.
    */
-  public function protect(string $schema_id, $data);
+  public function protect(string $schema, $data);
 
 }
