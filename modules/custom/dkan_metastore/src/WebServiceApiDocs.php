@@ -44,14 +44,14 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private $metastoreService;
 
   /**
-   * Data protector plugin manager service for sql endpoint GETs.
+   * Data protector plugin manager service for dataset-specific api docs.
    *
-   * @var \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
+   * @var \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager
    */
   private $pluginManager;
 
   /**
-   * Instances of discovered data protector plugins for metastore's GETs.
+   * Instances of discovered data protector plugins for api docs.
    *
    * @var array
    */
@@ -170,7 +170,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   }
 
   /**
-   * Provides data protector plugins the opportunity to hide the sql endpoint.
+   * Provides data protectors plugins a chance to hide api docs' sql endpoints.
    *
    * @param string $identifier
    *   The dataset identifier.
