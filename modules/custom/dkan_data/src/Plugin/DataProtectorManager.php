@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\dkan_data\Plugin;
 
 use Drupal\Core\Cache\CacheBackendInterface;
@@ -7,12 +9,12 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 
 /**
- * Manages data protector plugins in the dataset-specific api docs.
+ * Manages data protector plugins.
  */
-class DataProtectorApiDocsManager extends DefaultPluginManager {
+class DataProtectorManager extends DefaultPluginManager {
 
   /**
-   * Constructs a new DataProtectorApiDocsManager object.
+   * Constructs a new DataProtectorManager object.
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths
@@ -28,16 +30,15 @@ class DataProtectorApiDocsManager extends DefaultPluginManager {
     ModuleHandlerInterface $module_handler
   ) {
     parent::__construct(
-      'Plugin/DataProtector/ApiDocs',
+      'Plugin/DataProtector',
       $namespaces,
       $module_handler,
       'Drupal\dkan_data\Plugin\DataProtectorInterface',
-      'Drupal\dkan_data\Annotation\DataProtectorApiDocs'
+      'Drupal\dkan_data\Annotation\DataProtector'
     );
 
-    $this->alterInfo('dkan_data_data_protector_api_docs_info');
-    $this->setCacheBackend($cache_backend,
-      'dkan_data_data_protector_api_docs_plugins');
+    $this->alterInfo('dkan_data_data_protector_info');
+    $this->setCacheBackend($cache_backend, 'dkan_data_data_protector_plugins');
   }
 
 }

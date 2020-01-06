@@ -11,7 +11,7 @@ use Drupal\Component\Annotation\Plugin;
  *
  * @Annotation
  */
-abstract class DataProtectorBase extends Plugin {
+class DataProtector extends Plugin {
 
   /**
    * The plugin ID.

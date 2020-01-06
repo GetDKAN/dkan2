@@ -18,12 +18,6 @@ services:
       - {name: config.factory.override, priority: 5}
   dkan_data.uuid5:
     class: Drupal\dkan_data\Service\Uuid5
-  plugin.manager.dkan_data.protector.metastore_get:
-    class: \Drupal\dkan_data\Plugin\DataProtectorMetastoreGetManager
-    parent: default_plugin_manager
-  plugin.manager.dkan_data.protector.sql_query:
-    class: \Drupal\dkan_data\Plugin\DataProtectorSqlQueryManager
-    parent: default_plugin_manager
-  plugin.manager.dkan_data.protector.api_docs:
-    class: \Drupal\dkan_data\Plugin\DataProtectorApiDocsManager
+  plugin.manager.dkan_data.protector:
+    class: \Drupal\dkan_data\Plugin\DataProtectorManager
     parent: default_plugin_manager
