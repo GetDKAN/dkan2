@@ -11,7 +11,7 @@ use Drupal\Component\Plugin\PluginInspectionInterface;
  * on the following publicly accessible API endpoints:
  *   - The metastore's GET collection and GET item
  *   - The dataset-specific Api Docs
- *   - The datastore's SQL query
+ *   - The datastore's SQL query.
  */
 interface DataProtectorInterface extends PluginInspectionInterface {
 

@@ -128,7 +128,7 @@ class Api implements ContainerInjectionInterface {
     $uuid = $this->service->getTableName($query);
     $protect = $this->protectData($uuid);
     if ($protect) {
-      return $this->getResponse((object)["message" => "Resource hidden since dataset access level is non-public"], 401);
+      return $this->getResponse((object) ["message" => "Resource hidden since dataset access level is non-public"], 401);
     }
 
     $databaseTable = $this->getDatabaseTable($uuid);
