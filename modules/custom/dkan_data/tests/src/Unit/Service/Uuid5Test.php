@@ -30,7 +30,7 @@ class Uuid5Test extends TestCase {
    */
   public function testGenerate(string $schema_id, $value, $expected) {
     // Assert.
-    $actual = Uuid5::generate($schema_id, $value);
+    $actual = (new Uuid5())->generate($schema_id, $value);
     $this->assertEquals($expected, $actual);
   }
 
