@@ -55,4 +55,14 @@ class Uuid5Test extends TestCase {
     ];
   }
 
+  public function testIsValid() {
+    $uuid5 = new Uuid5();
+
+    $valid = $uuid5->isValid('96f0603e-5da9-43e7-bc94-38eab002f9b3');
+    $this->assertTrue($valid);
+
+    $notValid = $uuid5->isValid('foo-bar');
+    $this->assertFalse($notValid);
+  }
+
 }
