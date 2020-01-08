@@ -111,7 +111,12 @@ class Api implements ContainerInjectionInterface {
       return $this->getResponseFromException($e);
     }
 
-    $databaseTable = $this->getDatabaseTable($this->service->getTableName($query));
+    $uuid = $this->service->getTableName($query);
+    $modify = $this->modifyData($uuid);
+    if ($modify) {
+      return $this->getResponse((object) ["message" => "Resource hidden since dataset access level is non-public"], 401);
+    }
+    $databaseTable = $this->getDatabaseTable($uuid);
 
     try {
       $result = $databaseTable->query($queryObject);
@@ -121,6 +126,24 @@ class Api implements ContainerInjectionInterface {
     }
 
     return $this->getResponse($result, 200);
+  }
+
+  /**
+   * Provides data modifiers plugins an opportunity to act.
+   *
+   * @param string $identifier
+   *   The distribution's identifier.
+   *
+   * @return bool
+   *   TRUE if sql endpoint docs needs to be protected, FALSE otherwise.
+   */
+  private function modifyData(string $identifier) {
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresModification('distribution', $identifier)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
