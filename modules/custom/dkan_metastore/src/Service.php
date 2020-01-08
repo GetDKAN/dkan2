@@ -93,7 +93,8 @@ class Service implements ContainerInjectionInterface {
 
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
-      function ($json_string) {
+      function ($json_string) use ($schema_id) {
+        $json_string = $this->modifyData($schema_id, $json_string);
         return json_decode($json_string);
       },
       $datasets
@@ -114,8 +115,32 @@ class Service implements ContainerInjectionInterface {
    *   The json data.
    */
   public function get($schema_id, $identifier): string {
-    return $this->getEngine($schema_id)
+    $data = $this->getEngine($schema_id)
       ->get($identifier);
+    return $this->modifyData($schema_id, $data);
+  }
+
+  /**
+   * Provides data modifiers plugins an opportunity to act.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $data
+   *   The Json input.
+   *
+   * @return string
+   *   The Json, modified by each applicable discovered data modifier plugins.
+   */
+  private function modifyData(string $schema_id, string $data) {
+    $dataObj = json_decode($data);
+
+    foreach ($this->plugins as $plugin) {
+      if ($plugin->requiresModification($schema_id, $dataObj)) {
+        $dataObj = $plugin->modify($schema_id, $dataObj);
+      }
+    }
+
+    return json_encode($dataObj);
   }
 
   /**
