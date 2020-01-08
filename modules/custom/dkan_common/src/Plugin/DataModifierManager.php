@@ -35,8 +35,8 @@ class DataModifierManager extends DefaultPluginManager {
       'Drupal\dkan_common\Annotation\DataModifier'
     );
 
-    $this->alterInfo('dkan_data_data_modifier_info');
-    $this->setCacheBackend($cache_backend, 'dkan_data_data_modifier_plugins');
+    $this->alterInfo('dkan_common_data_modifier_info');
+    $this->setCacheBackend($cache_backend, 'dkan_common_data_modifier_plugins');
   }
 
 }
