@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_common\DataModifierPluginTrait;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
@@ -14,6 +16,7 @@ use Drupal\dkan_schema\SchemaRetriever;
  * Service.
  */
 class Service implements ContainerInjectionInterface {
+  use DataModifierPluginTrait;
 
   /**
    * SAE Factory.
@@ -37,16 +40,20 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory')
+      $container->get('dkan_metastore.sae_factory'),
+      $container->get('plugin.manager.dkan_common.data_modifier')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataModifierManager $pluginManager) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
+    $this->pluginManager = $pluginManager;
+
+    $this->plugins = $this->discoverDataModifierPlugins();
   }
 
   /**

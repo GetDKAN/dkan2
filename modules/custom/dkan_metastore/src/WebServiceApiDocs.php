@@ -2,6 +2,8 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\dkan_common\DataModifierPluginTrait;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
@@ -13,6 +15,7 @@ use Drupal\dkan_api\Controller\Docs;
  */
 class WebServiceApiDocs implements ContainerInjectionInterface {
   use JsonResponseTrait;
+  use DataModifierPluginTrait;
 
   /**
    * List of endpoints to keep for dataset-specific docs.
@@ -47,7 +50,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new WebServiceApiDocs(
       $container->get("dkan_api.docs"),
-      $container->get("dkan_metastore.service")
+      $container->get("dkan_metastore.service"),
+      $container->get('plugin.manager.dkan_common.data_modifier')
     );
   }
 
@@ -58,10 +62,15 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *   Serves openapi spec for dataset-related endpoints.
    * @param \Drupal\dkan_metastore\Service $metastoreService
    *   Metastore service.
+   * @param \Drupal\dkan_common\Plugin\DataModifierManager $pluginManager
+   *   Metastore plugin manager.
    */
-  public function __construct(Docs $docsController, Service $metastoreService) {
+  public function __construct(Docs $docsController, Service $metastoreService, DataModifierManager $pluginManager) {
     $this->docsController = $docsController;
     $this->metastoreService = $metastoreService;
+    $this->pluginManager = $pluginManager;
+
+    $this->plugins = $this->discoverDataModifierPlugins();
   }
 
   /**
