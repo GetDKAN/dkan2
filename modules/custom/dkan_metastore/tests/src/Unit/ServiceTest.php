@@ -156,7 +156,7 @@ class ServiceTest extends TestCase {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
       ->add('dkan_metastore.sae_factory', Sae::class)
-      ->add('plugin.manager.dkan_common.modifier', DataModifierManager::class);
+      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)

@@ -79,7 +79,7 @@ class WebServiceApiDocsTest extends TestCase {
     $mockChain->add(ContainerInterface::class, 'get',
       (new Options)->add('dkan_api.docs', Docs::class)
         ->add('dkan_metastore.service', Service::class)
-        ->add('plugin.manager.dkan_common.modifier', DataModifierManager::class)
+        ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class)
     )
       ->add(Docs::class, "getJsonFromYmlFile", $serializer->decode($yamlSpec));
 
