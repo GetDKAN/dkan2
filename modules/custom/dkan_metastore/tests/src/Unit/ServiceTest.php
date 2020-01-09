@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_common\Plugin\DataModifierBase;
+use Drupal\dkan_common\Plugin\DataModifierManager;
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 use Drupal\Core\DependencyInjection\Container;
@@ -54,13 +56,20 @@ class ServiceTest extends TestCase {
    *
    */
   public function testGet() {
+    $json = json_encode(['foo' => 'bar']);
+    $protected = (object) ['foo' => 'bar', 'protected' => 'processed'];
+
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "get", json_encode("blah"));
+      ->add(Engine::class, "get", $json)
+      ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
+      ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
+      ->add(DataModifierBase::class, 'requiresModification', TRUE)
+      ->add(DataModifierBase::class, 'modify', $protected);
 
     $service = Service::create($container->getMock());
 
-    $this->assertEquals(json_encode("blah"), $service->get("dataset", "1"));
+    $this->assertEquals(json_encode(['foo' => 'bar', 'protected' => 'processed']), $service->get("dataset", "1"));
   }
 
   /**
@@ -146,11 +155,13 @@ class ServiceTest extends TestCase {
   public function getCommonMockChain() {
     $options = (new Options())
       ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
-      ->add('dkan_metastore.sae_factory', Sae::class);
+      ->add('dkan_metastore.sae_factory', Sae::class)
+      ->add('plugin.manager.dkan_common.data_modifier', DataModifierManager::class);
 
     return (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"));
+      ->add(SchemaRetriever::class, "retrieve", json_encode("blah"))
+      ->add(DataModifierManager::class, 'getDefinitions', []);
   }
 
 }
