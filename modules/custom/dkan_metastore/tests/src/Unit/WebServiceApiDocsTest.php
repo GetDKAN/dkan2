@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
-use Drupal\Core\Database\Connection;
-use Drupal\Core\Database\Query\ConditionInterface;
 use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\dkan_common\Plugin\DataModifierManager;
 use Drupal\dkan_common\Plugin\DataModifierBase;
@@ -25,7 +23,8 @@ class WebServiceApiDocsTest extends TestCase {
    * Tests dataset-specific docs without data modifier plugin.
    */
   public function testDatasetSpecificDocsWithoutSqlModifier() {
-    $dataset = json_encode(['distribution' => [
+    $dataset = json_encode([
+      'distribution' => [
       [
         'identifier' => 'dist-1234',
         'data' => [
@@ -33,7 +32,8 @@ class WebServiceApiDocsTest extends TestCase {
           'description' => 'Description',
         ],
       ],
-    ]]);
+      ],
+    ]);
 
     $mockChain = $this->getCommonMockChain()
       ->add(Service::class, "get", $dataset)
@@ -56,8 +56,7 @@ class WebServiceApiDocsTest extends TestCase {
       ->add(Service::class, "get", "{}")
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
-      ->add(DataModifierBase::class, 'requiresModification', TRUE)
-    ;
+      ->add(DataModifierBase::class, 'requiresModification', TRUE);
 
     $controller = WebServiceApiDocs::create($mockChain->getMock());
     $response = $controller->getDatasetSpecific(1);
