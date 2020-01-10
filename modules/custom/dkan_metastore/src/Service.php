@@ -40,19 +40,26 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory'),
-      $container->get('plugin.manager.dkan_common.data_modifier')
+      $container->get('dkan_metastore.sae_factory')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataModifierManager $pluginManager) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
-    $this->pluginManager = $pluginManager;
+  }
 
+  /**
+   * Setter to discover data modifier plugins.
+   *
+   * @param \Drupal\dkan_common\Plugin\DataModifierManager $pluginManager
+   *   Injected plugin manager.
+   */
+  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
+    $this->pluginManager = $pluginManager;
     $this->plugins = $this->discover();
   }
 
@@ -94,7 +101,9 @@ class Service implements ContainerInjectionInterface {
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
       function ($json_string) use ($schema_id) {
-        $json_string = $this->modifyData($schema_id, $json_string);
+        if (!empty($this->plugins)) {
+          $json_string = $this->modifyData($schema_id, $json_string);
+        }
         return json_decode($json_string);
       },
       $datasets
@@ -117,7 +126,10 @@ class Service implements ContainerInjectionInterface {
   public function get($schema_id, $identifier): string {
     $data = $this->getEngine($schema_id)
       ->get($identifier);
-    return $this->modifyData($schema_id, $data);
+    if (!empty($this->plugins)) {
+      $data = $this->modifyData($schema_id, $data);
+    }
+    return $data;
   }
 
   /**

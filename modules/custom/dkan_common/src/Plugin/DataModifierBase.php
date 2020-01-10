@@ -10,13 +10,6 @@ use Drupal\Component\Plugin\PluginBase;
 abstract class DataModifierBase extends PluginBase implements DataModifierInterface {
 
   /**
-   * List of schemas to potentially modify. Others will be skipped.
-   *
-   * @var array
-   */
-  private $schemasToModify = [];
-
-  /**
    * Translate and render the result annotation.
    *
    * @return string
