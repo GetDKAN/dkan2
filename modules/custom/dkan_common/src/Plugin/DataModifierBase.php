@@ -5,7 +5,7 @@ namespace Drupal\dkan_common\Plugin;
 use Drupal\Component\Plugin\PluginBase;
 
 /**
- * Base class for Data modifier plugins.
+ * Defines an abstract base class for Data modifier plugins.
  */
 abstract class DataModifierBase extends PluginBase implements DataModifierInterface {
 
@@ -14,9 +14,6 @@ abstract class DataModifierBase extends PluginBase implements DataModifierInterf
    *
    * @var array
    */
-  public $schemasToModify = [
-    'dataset',
-    'distribution',
-  ];
+  private $schemasToModify = [];
 
 }

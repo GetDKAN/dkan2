@@ -5,7 +5,7 @@ namespace Drupal\dkan_common\Annotation;
 use Drupal\Component\Annotation\Plugin;
 
 /**
- * Defines an abstract base class for all data modifier plugin annotations.
+ * Annotation for data modifier plugins.
  *
  * @see plugin_api
  *

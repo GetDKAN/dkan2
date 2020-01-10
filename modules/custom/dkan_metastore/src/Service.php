@@ -53,7 +53,7 @@ class Service implements ContainerInjectionInterface {
     $this->saeFactory = $saeFactory;
     $this->pluginManager = $pluginManager;
 
-    $this->plugins = $this->discoverDataModifierPlugins();
+    $this->plugins = $this->discover();
   }
 
   /**
