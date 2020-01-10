@@ -206,12 +206,7 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
       ->execute()
       ->fetchCol();
 
-    if ($dataset = reset($datasets)) {
-      return $dataset;
-    }
-    else {
-      return FALSE;
-    }
+    return reset($datasets);
   }
 
   /**
