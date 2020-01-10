@@ -63,7 +63,7 @@ class Api implements ContainerInjectionInterface {
     $this->databaseTableFactory = $databaseTableFactory;
     $this->pluginManager = $pluginManager;
 
-    $this->plugins = $this->discoverDataModifierPlugins();
+    $this->plugins = $this->discover();
   }
 
   /**

@@ -70,7 +70,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     $this->metastoreService = $metastoreService;
     $this->pluginManager = $pluginManager;
 
-    $this->plugins = $this->discoverDataModifierPlugins();
+    $this->plugins = $this->discover();
   }
 
   /**

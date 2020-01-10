@@ -3,7 +3,7 @@
 namespace Drupal\dkan_common;
 
 /**
- * Provides common functionality for calls of data modifier plugins.
+ * Provides common functionality for alls data modifier plugins.
  */
 trait DataModifierPluginTrait {
 
@@ -29,7 +29,7 @@ trait DataModifierPluginTrait {
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  private function discoverDataModifierPlugins() {
+  private function discover() {
     $plugins = [];
     foreach ($this->pluginManager->getDefinitions() as $definition) {
       $plugins[] = $this->pluginManager->createInstance($definition['id']);
