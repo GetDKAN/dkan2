@@ -40,19 +40,26 @@ class Service implements ContainerInjectionInterface {
   public static function create(ContainerInterface $container) {
     return new Service(
       $container->get('dkan_schema.schema_retriever'),
-      $container->get('dkan_metastore.sae_factory'),
-      $container->get('plugin.manager.dkan_common.data_modifier')
+      $container->get('dkan_metastore.sae_factory')
     );
   }
 
   /**
    * Constructor.
    */
-  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory, DataModifierManager $pluginManager) {
+  public function __construct(SchemaRetriever $schemaRetriever, Sae $saeFactory) {
     $this->schemaRetriever = $schemaRetriever;
     $this->saeFactory = $saeFactory;
-    $this->pluginManager = $pluginManager;
+  }
 
+  /**
+   * Setter to discover data modifier plugins.
+   *
+   * @param \Drupal\dkan_common\Plugin\DataModifierManager $pluginManager
+   *   Injected plugin manager.
+   */
+  public function setDataModifierPlugins(DataModifierManager $pluginManager) {
+    $this->pluginManager = $pluginManager;
     $this->plugins = $this->discover();
   }
 
