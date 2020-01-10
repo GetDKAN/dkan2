@@ -101,7 +101,9 @@ class Service implements ContainerInjectionInterface {
     // $datasets is an array of JSON encoded string. Needs to be unflattened.
     $unflattened = array_map(
       function ($json_string) use ($schema_id) {
-        $json_string = $this->modifyData($schema_id, $json_string);
+        if (!empty($this->plugins)) {
+          $json_string = $this->modifyData($schema_id, $json_string);
+        }
         return json_decode($json_string);
       },
       $datasets
@@ -124,7 +126,10 @@ class Service implements ContainerInjectionInterface {
   public function get($schema_id, $identifier): string {
     $data = $this->getEngine($schema_id)
       ->get($identifier);
-    return $this->modifyData($schema_id, $data);
+    if (!empty($this->plugins)) {
+      $data = $this->modifyData($schema_id, $data);
+    }
+    return $data;
   }
 
   /**
