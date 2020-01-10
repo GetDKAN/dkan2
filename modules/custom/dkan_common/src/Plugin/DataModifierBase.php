@@ -16,4 +16,24 @@ abstract class DataModifierBase extends PluginBase implements DataModifierInterf
    */
   private $schemasToModify = [];
 
+  /**
+   * Translate and render the result annotation.
+   *
+   * @return string
+   *   A message explaining the outcome.
+   */
+  public function message() : string {
+    return $this->getPluginDefinition()['result']->render();
+  }
+
+  /**
+   * Return the http code annotation.
+   *
+   * @return int
+   *   The http code.
+   */
+  public function httpCode() : int {
+    return (int) $this->getPluginDefinition()['code'];
+  }
+
 }

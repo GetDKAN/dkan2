@@ -15,6 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @DataModifier(
  *   id = "non_public_resource_protector",
  *   label = @Translation("Protects resources of non-public datasets"),
+ *   result = @Translation("Resource hidden since dataset access level is non-public."),
+ *   code = "401",
  * )
  */
 class NonPublicResourceProtector extends DataModifierBase implements ContainerFactoryPluginInterface {
@@ -55,12 +57,16 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
-   * @param $plugin_id
+   * @param string $plugin_id
    *   The plugin_id for the plugin instance.
-   * @param $plugin_definition
+   * @param mixed $plugin_definition
    *   The plugin implementation definition.
+   * @param \Drupal\Core\Database\Connection $database
+   *   The database service.
    * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
    *   The current route match service.
+   * @param \Drupal\dkan_data\Service\Uuid5 $uuid5
+   *   The uuid5 service.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, Connection $database, RouteMatchInterface $routeMatch, Uuid5 $uuid5) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
@@ -111,7 +117,7 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    */
   private function alternateEndpoint() {
     $routeName = $this->routeMatch->getRouteName();
-    return strpos($routeName, 'dkan_alt_api.') ===0;
+    return strpos($routeName, 'dkan_alt_api.') === 0;
   }
 
   /**
@@ -291,7 +297,7 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    */
   private function protectDistributionObject($dist) {
     unset($dist);
-    return (object) ['title' => 'Resource hidden since dataset access level is non-public'];
+    return (object) ['title' => $this->message()];
   }
 
 }
