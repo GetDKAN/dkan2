@@ -29,4 +29,20 @@ class DataModifier extends Plugin {
    */
   public $label;
 
+  /**
+   * Communicate the plugin's effect on the modified data.
+   *
+   * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
+   */
+  public $result;
+
+  /**
+   * HTTP code to include in response when modification has occured.
+   *
+   * @var int
+   */
+  public $resultCode;
+
 }

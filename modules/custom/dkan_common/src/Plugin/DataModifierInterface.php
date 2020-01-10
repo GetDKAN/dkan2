@@ -41,4 +41,20 @@ interface DataModifierInterface extends PluginInspectionInterface {
    */
   public function modify(string $schema, $data);
 
+  /**
+   * Translate and render the result annotation.
+   *
+   * @return string
+   *   A message explaining the outcome.
+   */
+  public function message() : string;
+
+  /**
+   * Return the http code annotation.
+   *
+   * @return int
+   *   The http code.
+   */
+  public function httpCode() : int;
+
 }
