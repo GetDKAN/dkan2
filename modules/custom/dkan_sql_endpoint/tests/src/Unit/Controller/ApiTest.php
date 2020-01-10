@@ -50,14 +50,19 @@ class ApiTest extends TestCase {
    *
    */
   public function testWithDataModifierPlugin() {
+    $pluginMessage = "Resource hidden since dataset access level is non-public.";
+    $pluginCode = 401;
+
     $container = $this->getCommonMockChain()
       ->add(DataModifierManager::class, 'getDefinitions', [['id' => 'foobar']])
       ->add(DataModifierManager::class, 'createInstance', DataModifierBase::class)
-      ->add(DataModifierBase::class, 'requiresModification', TRUE);
+      ->add(DataModifierBase::class, 'requiresModification', TRUE)
+      ->add(DataModifierBase::class, 'message', $pluginMessage)
+      ->add(DataModifierBase::class, 'httpCode', $pluginCode);
 
     $controller = Api::create($container->getMock());
     $response = $controller->runQueryGet();
-    $expected = '{"message":"Resource hidden since dataset access level is non-public"}';
+    $expected = '{"message":"Resource hidden since dataset access level is non-public."}';
     $this->assertEquals($expected, $response->getContent());
   }
 
