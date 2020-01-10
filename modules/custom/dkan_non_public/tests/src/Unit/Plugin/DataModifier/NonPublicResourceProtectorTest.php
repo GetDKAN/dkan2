@@ -20,23 +20,7 @@ use PHPUnit\Framework\TestCase;
 
 class NonPublicResourceProtectorTest extends TestCase {
 
-  public function testConstructor() {
-    $plugin = NonPublicResourceProtector::create(
-      $this->getCommonMockChain()->getMock(),
-      [],
-      'non_public_resource_protector',
-      []
-    );
-
-    $this->assertTrue(is_object($plugin));
-  }
-
   public function requiresModificationProvider() {
-    // Schema
-    // Data object, json string or uuid
-    // Dataset returned from searching
-    // Expected return boolean
-
     return [
       'public dataset object' => [
         'dataset',
@@ -82,7 +66,38 @@ class NonPublicResourceProtectorTest extends TestCase {
     $this->assertEquals($expected, $plugin->requiresModification($schema, $data));
   }
 
+  public function modifyProvider() {
+    return [
+      'dataset json string without resources' => [
+        'dataset',
+        '{"foo":"bar"}',
+        '{"foo":"bar"}',
+      ],
+      'dataset object with empty distribution array' => [
+        'dataset',
+        (object) ["foo" => "bar", "distribution" => []],
+        (object) ["foo" => "bar", "distribution" => []],
+      ],
+    ];
+  }
+
+  /**
+   * @dataProvider modifyProvider
+   */
+  public function testModify($schema, $data, $expected) {
+    $plugin = NonPublicResourceProtector::create(
+      $this->getCommonMockChain()->getMock(),
+      [],
+      'non_public_resource_protector',
+      []
+    );
+
+    $this->assertEquals($expected, $plugin->modify($schema, $data));
+  }
+
   public function getCommonMockChain() {
+    $pluginMessage = "Resource hidden since dataset access level is non-public.";
+
     $options = (new Options())
       ->add('database', Connection::class)
       ->add('current_route_match', RouteMatchInterface::class)
@@ -95,7 +110,8 @@ class NonPublicResourceProtectorTest extends TestCase {
       ->add(ConditionInterface::class, 'condition', ConditionInterface::class)
       ->add(ConditionInterface::class, 'fields', SelectInterface::class)
       ->add(SelectInterface::class, 'execute', StatementInterface::class)
-      ->add(StatementInterface::class, 'fetchCol', []);
+      ->add(StatementInterface::class, 'fetchCol', [])
+      ->add(DataModifierBase::class, 'message', $pluginMessage);
   }
 
 }
