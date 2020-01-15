@@ -1,0 +1,10 @@
+name: Data Search API
+description: "Integation between DKAN's data module and the Search API module."
+type: module
+core: 8.x
+dependencies:
+  - dkan_data
+  - dkan_metastore
+  - dkan_schema
+  - search_api
+package: DKAN
