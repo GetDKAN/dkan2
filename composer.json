@@ -13,7 +13,6 @@
         "drupal/config_update": "1.x-dev",
         "drupal/entity": "1.0.0-rc1",
         "drupal/search_api": "^1.15",
-        "drupal/facets": "^1.4",
         "fmizzell/json_form": "dev-8.x-1.x",
         "getdkan/contracts": "^1.0.0",
         "getdkan/datastore" : "^3.0.0",
