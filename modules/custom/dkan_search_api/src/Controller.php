@@ -52,16 +52,21 @@ class Controller
 
     /** @var  $result ResultSet*/
     $result = $query->execute();
+    $count = $result->getResultCount();
 
     $data = [];
-    $scores = [];
+
     foreach ($result->getResultItems() as $item) {
       $id = $item->getId();
-      $id = str_replace("dkan_data/", "", $id);
-      $scores[$id] = $item->getBoost();
+      $id = str_replace("dkan_dataset/", "", $id);
       $data[] = json_decode($metastore->get("dataset", $id));
     }
 
-    return $this->getResponse($data);
+    $responseBody = (object) [
+      'total' => $count,
+      'results' => $data
+    ];
+
+    return $this->getResponse($responseBody);
   }
 }
