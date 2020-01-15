@@ -1,0 +1,7 @@
+dkan_data_search_api.search:
+  path: '/api/1/search'
+  methods: [GET]
+  defaults:
+    { _controller: '\Drupal\dkan_search_api\Controller::search'}
+  requirements:
+    _permission: 'access content'
