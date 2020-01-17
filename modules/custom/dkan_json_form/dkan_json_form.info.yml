@@ -1,0 +1,7 @@
+
+name: DKAN JSON Form
+description: Examples of using React hydrate and Drupal 8 together.
+package: DKAN
+
+type: module
+core: 8.x
