@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\dkan_search_api\ComplexData;
 
 use Drupal\Core\TypedData\DataDefinition;
@@ -6,12 +7,16 @@ use Drupal\Core\TypedData\ListDataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
 use Drupal\Core\TypedData\TypedData;
 use Drupal\dkan_search_api\Facade\ComplexDataFacade;
-use Drupal\dkan_schema\SchemaRetriever;
 
-class Dataset extends ComplexDataFacade
-{
+/**
+ *
+ */
+class Dataset extends ComplexDataFacade {
   private $data;
 
+  /**
+   *
+   */
   public static function definition() {
     $definitions = [];
 
@@ -39,16 +44,17 @@ class Dataset extends ComplexDataFacade
     return $definitions;
   }
 
-  public function __construct(string $json)
-  {
+  /**
+   *
+   */
+  public function __construct(string $json) {
     $this->data = json_decode($json);
   }
 
   /**
    * @inheritDoc
    */
-  public function get($property_name)
-  {
+  public function get($property_name) {
     $definitions = self::definition();
 
     if (!isset($definitions[$property_name])) {
@@ -76,8 +82,7 @@ class Dataset extends ComplexDataFacade
   /**
    * @inheritDoc
    */
-  public function getProperties($include_computed = false)
-  {
+  public function getProperties($include_computed = FALSE) {
     $definitions = self::definition();
     $properties = [];
     foreach (array_keys($definitions) as $propertyName) {
@@ -89,8 +94,7 @@ class Dataset extends ComplexDataFacade
   /**
    * @inheritDoc
    */
-  public function getValue()
-  {
+  public function getValue() {
     return $this->data;
   }
 
