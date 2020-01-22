@@ -3,14 +3,17 @@
 namespace Drupal\dkan_search_api;
 
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_metastore\Service;
 use Drupal\search_api\Query\QueryInterface;
-use Drupal\search_api\Query\ResultSet;
 
-class Controller
-{
+/**
+ *
+ */
+class Controller {
   use JsonResponseTrait;
 
+  /**
+   *
+   */
   public function search() {
     $storage = \Drupal::service("entity.manager")->getStorage('search_api_index');
     /** @var \Drupal\search_api\IndexInterface $index */
@@ -66,10 +69,13 @@ class Controller
     return $this->getResponse($responseBody);
   }
 
+  /**
+   *
+   */
   private function getParams() {
     $defaults = [
       "pageSize" => 10,
-      "page" => 1
+      "page" => 1,
     ];
 
     $params = \Drupal::request()->query->all();
@@ -85,6 +91,9 @@ class Controller
     return $params;
   }
 
+  /**
+   *
+   */
   private function setFullText(QueryInterface $query, $params, $index) {
     if ($params['fulltext']) {
       $fulltextFields = $index->getFulltextFields();
@@ -96,6 +105,9 @@ class Controller
     }
   }
 
+  /**
+   *
+   */
   private function setFieldConditions(QueryInterface $query, $fields, $params) {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
@@ -108,6 +120,9 @@ class Controller
     }
   }
 
+  /**
+   *
+   */
   private function getFacets(QueryInterface $query, $fields) {
     $facetsTypes = ['theme', 'keyword'];
     $facets = [];
@@ -115,7 +130,7 @@ class Controller
     /** @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
-    foreach($facetsTypes as $type) {
+    foreach ($facetsTypes as $type) {
       if (in_array($type, $fields)) {
         foreach ($metastore->getAll($type) as $thing) {
           $myquery = clone $query;
@@ -124,7 +139,7 @@ class Controller
           $facets[] = [
             "type" => $type,
             "name" => $thing->data,
-            'total' => $result->getResultCount()
+            'total' => $result->getResultCount(),
           ];
         }
       }
@@ -133,9 +148,12 @@ class Controller
     return $facets;
   }
 
+  /**
+   *
+   */
   private function setSort(QueryInterface $query, $params, $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
-      if(isset($params['sort_order']) && ($params['sort_order'] == 'asc' || $params['sort_order'] == 'desc')) {
+      if (isset($params['sort_order']) && ($params['sort_order'] == 'asc' || $params['sort_order'] == 'desc')) {
         $order = ($params['sort_order'] == 'asc') ? $query::SORT_ASC : $query::SORT_DESC;
         $query->sort($params['sort'], $order);
       }
@@ -147,4 +165,5 @@ class Controller
       $query->sort('search_api_relevance', $query::SORT_DESC);
     }
   }
+
 }

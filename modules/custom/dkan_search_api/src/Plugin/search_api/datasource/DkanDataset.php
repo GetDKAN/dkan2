@@ -23,8 +23,10 @@ class DkanDataset extends DatasourcePluginBase {
     return Dataset::definition();
   }
 
-  public function getItemIds($page = null)
-  {
+  /**
+   *
+   */
+  public function getItemIds($page = NULL) {
     global $firstTime;
 
     if (!isset($page) || $page == 0) {
@@ -58,12 +60,11 @@ class DkanDataset extends DatasourcePluginBase {
     return $items;
   }
 
-
   /**
    * @inheritDoc
    */
-  public function getItemId(ComplexDataInterface $item)
-  {
+  public function getItemId(ComplexDataInterface $item) {
     return $item->get('identifier');
   }
+
 }
