@@ -1,5 +1,5 @@
 name: Data Search API
-description: "Integation between DKAN's data module and the Search API module."
+description: "Integration between DKAN's data module and the Search API module."
 type: module
 core: 8.x
 dependencies:
