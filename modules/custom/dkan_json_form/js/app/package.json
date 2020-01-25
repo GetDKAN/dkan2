@@ -2,13 +2,15 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
-  "homepage" : "http://dkan/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build",
+  "homepage": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.4.0",
     "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.19.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-jsonschema-form": "^1.8.1",
     "react-scripts": "3.3.0"
   },
   "scripts": {

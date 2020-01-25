@@ -1,7 +1,9 @@
 dkan_json_form.page:
-  path: '/admin/dkan'
+  path: '/admin/dkan/dataset'
   methods: [GET]
   defaults:
     { _controller: '\Drupal\dkan_json_form\Controller::page'}
   requirements:
-    _permission: 'access content'
+    _permission: 'post put delete datasets through the api'
+  options:
+    _admin_route: TRUE
