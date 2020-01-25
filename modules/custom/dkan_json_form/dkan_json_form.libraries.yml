@@ -1,8 +1,4 @@
 dkan_json_form:
-  version: 1.x
-  js:
-    js/app/build/static/js/2.98ef97b8.chunk.js: {}
-    js/app/build/static/js/main.b0e7eb65.chunk.js: {}
-    js/app/build/static/js/loadme.js: {}
-  dependencies:
-    - core/drupalSettings
+    version: 1.x
+    js: { js/app/build/static/js/2.692317f6.chunk.js: {  }, js/app/build/static/js/main.2314b2f0.chunk.js: {  }, js/app/build/static/js/loadme.js: {  } }
+    dependencies: [core/drupalSettings]
