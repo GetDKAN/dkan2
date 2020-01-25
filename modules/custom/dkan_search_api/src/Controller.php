@@ -11,6 +11,10 @@ use Drupal\search_api\Query\QueryInterface;
 class Controller {
   use JsonResponseTrait;
 
+  public function __construct()
+  {
+  }
+
   /**
    *
    */
