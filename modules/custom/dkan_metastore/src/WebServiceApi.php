@@ -8,6 +8,7 @@ use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_metastore\Exception\ObjectExists;
 use Drupal\dkan_metastore\Exception\ObjectNotFound;
+use Drupal\dkan_metastore\Exception\ObjectUnchanged;
 use Drupal\dkan_metastore\Exception\InvalidPayload;
 
 /**
@@ -172,6 +173,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
+    catch (ObjectUnchanged $e) {
+      return $this->getResponseFromException($e, 403);
+    }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
     }
@@ -201,6 +205,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     }
     catch (ObjectNotFound $e) {
       return $this->getResponseFromException($e, 412);
+    }
+    catch (ObjectUnchanged $e) {
+      return $this->getResponseFromException($e, 403);
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e, 400);
