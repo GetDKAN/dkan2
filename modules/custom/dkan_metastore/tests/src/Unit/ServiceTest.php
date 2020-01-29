@@ -134,6 +134,23 @@ class ServiceTest extends TestCase {
   /**
    *
    */
+  public function testPutObjectUnchangedException() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "put", "1")
+      ->add(Engine::class, "get", $existing);
+
+    $service = Service::create($container->getMock());
+
+    $this->expectException(ObjectUnchanged::class);
+    $service->put("dataset", "1", $existing);
+  }
+
+  /**
+   *
+   */
   public function testPatch() {
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
