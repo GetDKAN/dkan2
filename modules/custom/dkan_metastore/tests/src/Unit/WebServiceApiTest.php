@@ -193,6 +193,19 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
   }
 
+  public function testPutInvalidPayload() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(Data::class, 'retrieve', "{ }");
+    $mockChain->add(Data::class, 'store', new \Exception("Could not store"));
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', "{");
+    $mockChain->add(Request::class, 'getRequestUri', "http://blah");
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put(1, 'dataset');
+    $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
+  }
+
   /**
    *
    */
