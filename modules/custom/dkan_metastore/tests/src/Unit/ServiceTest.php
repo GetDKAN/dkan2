@@ -122,7 +122,6 @@ class ServiceTest extends TestCase {
 
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "put", "1")
       ->add(Engine::class, "get", $existing);
 
     $service = Service::create($container->getMock());
@@ -139,7 +138,6 @@ class ServiceTest extends TestCase {
 
     $container = $this->getCommonMockChain()
       ->add(Sae::class, "getInstance", Engine::class)
-      ->add(Engine::class, "put", "1")
       ->add(Engine::class, "get", $existing);
 
     $service = Service::create($container->getMock());
