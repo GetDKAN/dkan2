@@ -4,6 +4,7 @@ namespace Drupal\dkan_metastore;
 
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
+use Drupal\dkan_metastore\Exception\ObjectUnchanged;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
@@ -228,7 +229,10 @@ class Service implements ContainerInjectionInterface {
       throw new \Exception("Identifier cannot be modified");
     }
 
-    if ($this->objectExists($schema_id, $identifier)) {
+    if ($existing_data = $this->objectExists($schema_id, $identifier)) {
+      if ($data == $existing_data) {
+        throw new ObjectUnchanged("No changes to {$schema_id} with identifier {$identifier}.");
+      }
       $engine->put($identifier, $data);
       $new = FALSE;
     }
@@ -254,7 +258,10 @@ class Service implements ContainerInjectionInterface {
    */
   public function patch($schema_id, $identifier, $data) {
     $engine = $this->getEngine($schema_id);
-    if ($this->objectExists($schema_id, $identifier)) {
+    if ($existing_data = $this->objectExists($schema_id, $identifier)) {
+      if ($data == $existing_data) {
+        throw new ObjectUnchanged("No changes to {$schema_id} with identifier {$identifier}.");
+      }
       $engine->patch($identifier, $data);
       return $identifier;
     }
@@ -286,8 +293,7 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectExists($schemaId, $identifier) {
     try {
-      $this->getEngine($schemaId)->get($identifier);
-      return TRUE;
+      return $this->getEngine($schemaId)->get($identifier);
     }
     catch (\Exception $e) {
       return FALSE;
