@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_metastore\Exception\ObjectUnchanged;
 use PHPUnit\Framework\TestCase;
 use Sae\Sae as Engine;
 use Drupal\Core\DependencyInjection\Container;
@@ -110,6 +111,24 @@ class ServiceTest extends TestCase {
 
     $info = $service->put("dataset", "1", json_encode("blah"));
     $this->assertEquals("1", $info['identifier']);
+  }
+
+  /**
+   *
+   */
+  public function testPutModifyIdentifierException() {
+    $existing = '{"identifier":"1","title":"Foo"}';
+    $updating = '{"identifier":"2","title":"Bar"}';
+
+    $container = $this->getCommonMockChain()
+      ->add(Sae::class, "getInstance", Engine::class)
+      ->add(Engine::class, "put", "1")
+      ->add(Engine::class, "get", $existing);
+
+    $service = Service::create($container->getMock());
+
+    $this->expectExceptionMessage("Identifier cannot be modified");
+    $service->put("dataset", "1", $updating);
   }
 
   /**
