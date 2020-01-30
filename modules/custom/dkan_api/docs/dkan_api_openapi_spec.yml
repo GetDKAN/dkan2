@@ -222,6 +222,8 @@ paths:
                     type: string
         '401':
           description: Unauthorized
+        '403':
+          description: Forbidden
     patch:
       operationId: dataset-patch
       summary: Update a dataset
