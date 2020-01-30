@@ -27,18 +27,30 @@ class DkanDataset extends DatasourcePluginBase {
    *
    */
   public function getItemIds($page = NULL) {
-    global $firstTime;
+    $pageSize = 250;
+    $ids = [];
+    $query = \Drupal::entityQuery('node')
+      ->condition('status', 1)
+      ->condition('type', 'data')
+      ->condition('field_data_type', 'dataset');
 
-    if (!isset($page) || $page == 0) {
-      /* @var  $dataStorage  \Drupal\dkan_data\Storage\Data */
-      $dataStorage = \Drupal::service("dkan_data.storage");
-      $dataStorage->setSchema('dataset');
-      $objects = $dataStorage->retrieveAll();
-      $ids = array_map(function ($json) {
-        $object = json_decode($json);
-        return $object->identifier;
-      }, $objects);
-      $firstTime = FALSE;
+    $total = $query->count()->execute();
+    $pages = floor($total/$pageSize);
+
+    if ($page <= $pages) {
+
+      $query = \Drupal::entityQuery('node')
+        ->condition('status', 1)
+        ->condition('type', 'data')
+        ->condition('field_data_type', 'dataset')
+        ->range($page * $pageSize, $pageSize);
+        $nids = $query->execute();
+
+      foreach( $nids as $id) {
+        $node = node_load($id);
+        $ids[] = $node->uuid();
+      }
+
       return $ids;
     }
     return NULL;
