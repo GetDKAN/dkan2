@@ -146,6 +146,11 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
+    // Create a new, pending revision.
+    $node->setNewRevision(TRUE);
+    $node->isDefaultRevision(FALSE);
+    $node->setRevisionLogMessage('Updated data.');
+
     $node->save();
     return $node->uuid();
   }
@@ -165,6 +170,8 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
           'field_json_metadata' => json_encode($data),
         ]
       );
+    $node->setRevisionLogMessage('Newly created data.');
+
     $node->save();
     return $node->uuid();
   }
