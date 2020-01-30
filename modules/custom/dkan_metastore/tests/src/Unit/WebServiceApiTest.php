@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_metastore\Exception\ObjectNotFound;
 use Drupal\dkan_metastore\Exception\ObjectUnchanged;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
@@ -193,6 +194,20 @@ class WebServiceApiTest extends TestCase {
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->patch('dataset', 1);
     $this->assertEquals('{"message":"No changes"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPatchObjectNotFound() {
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', '{"identifier":"1","title":"foo"}');
+    $mockChain->add(Service::class, "patch", new ObjectNotFound("Not found"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->patch('dataset', 1);
+    $this->assertEquals('{"message":"Not found"}', $response->getContent());
   }
 
   /**
