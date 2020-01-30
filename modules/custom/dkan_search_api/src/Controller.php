@@ -3,7 +3,10 @@
 namespace Drupal\dkan_search_api;
 
 use Drupal\dkan_common\JsonResponseTrait;
+use Drupal\dkan_metastore\Service;
 use Drupal\search_api\Query\QueryInterface;
+use Drupal\search_api\Query\ResultSet;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  *
@@ -11,20 +14,17 @@ use Drupal\search_api\Query\QueryInterface;
 class Controller {
   use JsonResponseTrait;
 
-  public function __construct()
-  {
-  }
-
   /**
    *
    */
   public function search() {
     $storage = \Drupal::service("entity.manager")->getStorage('search_api_index');
-    /** @var \Drupal\search_api\IndexInterface $index */
+
+    /* @var \Drupal\search_api\IndexInterface $index */
     $index = $storage->load('dkan');
 
     if (!$index) {
-      return $this->getResponse("No index name 'dkan' exists.", 500);
+      return $this->getResponse((object) ['message' => "An index named [dkan] does not exist."], 500);
     }
 
     $fields = array_keys($index->getFields());
@@ -45,9 +45,9 @@ class Controller {
 
     $this->setSort($query, $params, $fields);
 
-    $end = ($params['page'] * $params['pageSize']);
-    $start = $end - $params['pageSize'];
-    $query->range($start, $params['pageSize']);
+    $end = ($params['page'] * $params['page-size']);
+    $start = $end - $params['page-size'];
+    $query->range($start, $params['page-size']);
 
     /** @var  $result ResultSet*/
     $result = $query->execute();
@@ -78,18 +78,21 @@ class Controller {
    */
   private function getParams() {
     $defaults = [
-      "pageSize" => 10,
+      "page-size" => 10,
       "page" => 1,
     ];
 
-    $params = \Drupal::request()->query->all();
+    /* @var $requestStack RequestStack */
+    $requestStack = \Drupal::service('request_stack');
+    $request = $requestStack->getCurrentRequest();
+    $params = $request->query->all();
 
     foreach ($defaults as $param => $default) {
       $params[$param] = isset($params[$param]) ? $params[$param] : $default;
     }
 
-    if ($params["pageSize"] > 100) {
-      $params["pageSize"] = 100;
+    if ($params["page-size"] > 100) {
+      $params["page-size"] = 100;
     }
 
     return $params;
@@ -99,13 +102,15 @@ class Controller {
    *
    */
   private function setFullText(QueryInterface $query, $params, $index) {
-    if ($params['fulltext']) {
+    if (isset($params['fulltext'])) {
       $fulltextFields = $index->getFulltextFields();
-      $cg = $query->createConditionGroup('OR');
-      foreach ($fulltextFields as $field) {
-        $cg->addCondition($field, $params['fulltext']);
+      if (!empty($fulltextFields)) {
+        $values = [];
+        foreach ($fulltextFields as $field) {
+          $values[$field][] = $params['fulltext'];
+        }
+        $this->createConditionGroup($query, $values, 'OR');
       }
-      $query->addConditionGroup($cg);
     }
   }
 
@@ -115,11 +120,11 @@ class Controller {
   private function setFieldConditions(QueryInterface $query, $fields, $params) {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
-        $cg = $query->createConditionGroup();
+        $values = [];
         foreach (explode(",", $params[$field]) as $value) {
-          $cg->addCondition($field, trim($value));
+          $values[$field][] = trim($value);
         }
-        $query->addConditionGroup($cg);
+        $this->createConditionGroup($query, $values);
       }
     }
   }
@@ -135,7 +140,8 @@ class Controller {
     $metastore = \Drupal::service("dkan_metastore.service");
 
     foreach ($facetsTypes as $type) {
-      if (in_array($type, $fields)) {
+      $inArray = in_array($type, $fields);
+      if ($inArray) {
         foreach ($metastore->getAll($type) as $thing) {
           $myquery = clone $query;
           $myquery->addCondition($type, $thing->data);
@@ -157,8 +163,8 @@ class Controller {
    */
   private function setSort(QueryInterface $query, $params, $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
-      if (isset($params['sort_order']) && ($params['sort_order'] == 'asc' || $params['sort_order'] == 'desc')) {
-        $order = ($params['sort_order'] == 'asc') ? $query::SORT_ASC : $query::SORT_DESC;
+      if (isset($params['sort-order']) && ($params['sort-order'] == 'asc' || $params['sort-order'] == 'desc')) {
+        $order = ($params['sort-order'] == 'asc') ? $query::SORT_ASC : $query::SORT_DESC;
         $query->sort($params['sort'], $order);
       }
       else {
@@ -168,6 +174,16 @@ class Controller {
     else {
       $query->sort('search_api_relevance', $query::SORT_DESC);
     }
+  }
+
+  private function createConditionGroup(QueryInterface $query, $array, $conjuction = 'AND') {
+    $cg = $query->createConditionGroup($conjuction);
+    foreach ($array as $field => $values) {
+      foreach ($values as $value) {
+        $cg->addCondition($field, $value);
+      }
+    }
+    $query->addConditionGroup($cg);
   }
 
 }
