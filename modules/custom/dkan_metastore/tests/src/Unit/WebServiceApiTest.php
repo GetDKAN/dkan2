@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\dkan_metastore\Unit;
 
+use Drupal\dkan_metastore\Exception\ObjectUnchanged;
 use PHPUnit\Framework\TestCase;
 use MockChain\Chain;
 use MockChain\Options;
@@ -193,6 +194,9 @@ class WebServiceApiTest extends TestCase {
     $this->assertEquals('{"endpoint":"http:\/\/blah","identifier":"1"}', $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testPutInvalidPayload() {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(Data::class, 'retrieve', "{ }");
@@ -204,6 +208,22 @@ class WebServiceApiTest extends TestCase {
     $controller = WebServiceApi::create($mockChain->getMock());
     $response = $controller->put(1, 'dataset');
     $this->assertEquals('{"message":"Invalid JSON"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
+  public function testPutObjectUnchanged() {
+    $existing = '{"identifier":"1","title":"foo"}';
+
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', $existing);
+    $mockChain->add(Service::class, "put", new ObjectUnchanged("No changes"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->put('dataset', 1);
+    $this->assertEquals('{"message":"No changes"}', $response->getContent());
   }
 
   /**
