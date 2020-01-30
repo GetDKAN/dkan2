@@ -10,6 +10,7 @@
         "composer/installers": "^1.2",
         "cweagans/composer-patches": "^1.5.0",
         "drush/drush": "^9.7.1",
+        "drupal/admin_toolbar": "2.0",
         "drupal/config_update": "1.x-dev",
         "drupal/entity": "1.0.0-rc1",
         "drupal/search_api": "^1.15",
@@ -18,11 +19,7 @@
         "getdkan/contracts": "^1.0.0",
         "getdkan/datastore" : "^3.0.0",
         "getdkan/file-fetcher" : "^3.0.0",
-<<<<<<< HEAD
         "getdkan/harvest": "^1.0.0",
-=======
-        "getdkan/harvest": "new-storage",
->>>>>>> pull in update for Harvest library
         "getdkan/json-schema-provider": "^0.1.2",
         "getdkan/sae" : "^1.1.1",
         "getdkan/sql-parser": "^1.1.2",
