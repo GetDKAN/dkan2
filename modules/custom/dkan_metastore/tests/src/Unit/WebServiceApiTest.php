@@ -182,6 +182,22 @@ class WebServiceApiTest extends TestCase {
   /**
    *
    */
+  public function testPatchObjectUnchanged() {
+    $existing = '{"identifier":"1","title":"foo"}';
+
+    $mockChain = $this->getCommonMockChain();
+    $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
+    $mockChain->add(Request::class, 'getContent', $existing);
+    $mockChain->add(Service::class, "patch", new ObjectUnchanged("No changes"));
+
+    $controller = WebServiceApi::create($mockChain->getMock());
+    $response = $controller->patch('dataset', 1);
+    $this->assertEquals('{"message":"No changes"}', $response->getContent());
+  }
+
+  /**
+   *
+   */
   public function testPut() {
     $mockChain = $this->getCommonMockChain();
     $mockChain->add(RequestStack::class, 'getCurrentRequest', Request::class);
