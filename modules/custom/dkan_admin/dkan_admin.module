@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function dkan_admin_form_views_exposed_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['#id']) && $form['#id'] == 'views-exposed-form-dkan-content-page-1') {
+    $options = [
+      '' => t('- Any -'),
+      'dataset' => 'dataset',
+      'distribution' => 'distribution',
+      'keyword' => 'keyword',
+      'publisher' => 'publisher',
+      'theme' => 'theme'
+    ];
+
+    $form['data-type'] = [
+      '#title' => new TranslatableMarkup('Data Type'),
+      '#type' => 'select',
+      '#options' => $options,
+      '#size' => NULL,
+      '#default_value' => '',
+    ];
+  }
+}

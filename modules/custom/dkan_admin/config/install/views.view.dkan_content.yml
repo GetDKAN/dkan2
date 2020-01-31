@@ -9,7 +9,7 @@ dependencies:
     - user
     - views_bulk_operations
 _core:
-  default_config_hash: tS8PbpJX90aRFC3-UTgXzdqkq7_2frk2pz4TMijEebM
+  default_config_hash: sIHLrlWWGhDodotLDzoAJlqrnlv7OKphojbYzgYptFk
 id: dkan_content
 label: 'DKAN Content'
 module: node
@@ -24,7 +24,7 @@ display:
       access:
         type: perm
         options:
-          perm: 'access content overview'
+          perm: 'administer nodes'
       cache:
         type: tag
       query:
@@ -174,14 +174,13 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          batch: true
+          batch: false
           batch_size: 100
           form_step: true
-          buttons: true
-          clear_on_exposed: false
+          buttons: false
+          clear_on_exposed: true
           action_title: Action
           selected_actions:
-            comment_delete_action: 0
             node_unpromote_action: 0
             node_unpublish_action: 0
             node_publish_action: 0
@@ -193,13 +192,15 @@ display:
             node_make_unsticky_action: 0
             views_bulk_operations_delete_entity: views_bulk_operations_delete_entity
             'entity:save_action:node': 0
-            'entity:unpublish_action:node': 0
-            'entity:publish_action:node': 0
-            'entity:delete_action:node': 'entity:delete_action:node'
+            'entity:unpublish_action:node': 'entity:unpublish_action:node'
+            'entity:publish_action:node': 'entity:publish_action:node'
+            'entity:delete_action:node': 0
           preconfiguration:
             views_bulk_operations_delete_entity:
               label_override: ''
-            'entity:delete_action:node':
+            'entity:unpublish_action:node':
+              label_override: ''
+            'entity:publish_action:node':
               label_override: ''
           plugin_id: views_bulk_operations_bulk_form
         title:
@@ -413,56 +414,6 @@ display:
           plugin_id: field
           entity_type: node
           entity_field: changed
-        operations:
-          id: operations
-          table: node
-          field: operations
-          relationship: none
-          group_type: group
-          admin_label: ''
-          label: Operations
-          exclude: false
-          alter:
-            alter_text: false
-            text: ''
-            make_link: false
-            path: ''
-            absolute: false
-            external: false
-            replace_spaces: false
-            path_case: none
-            trim_whitespace: false
-            alt: ''
-            rel: ''
-            link_class: ''
-            prefix: ''
-            suffix: ''
-            target: ''
-            nl2br: false
-            max_length: 0
-            word_boundary: true
-            ellipsis: true
-            more_link: false
-            more_link_text: ''
-            more_link_path: ''
-            strip_tags: false
-            trim: false
-            preserve_tags: ''
-            html: false
-          element_type: ''
-          element_class: ''
-          element_label_type: ''
-          element_label_class: ''
-          element_label_colon: true
-          element_wrapper_type: ''
-          element_wrapper_class: ''
-          element_default_classes: true
-          empty: ''
-          hide_empty: false
-          empty_zero: false
-          hide_alter_empty: true
-          destination: true
-          plugin_id: entity_operations
       filters:
         title:
           id: title
@@ -545,6 +496,46 @@ display:
           plugin_id: bundle
           entity_type: node
           entity_field: type
+        field_data_type_value:
+          id: field_data_type_value
+          table: node__field_data_type
+          field: field_data_type_value
+          relationship: none
+          group_type: group
+          admin_label: ''
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_data_type_value_op
+            label: 'Data type'
+            description: ''
+            use_operator: false
+            operator: field_data_type_value_op
+            identifier: data-type
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              api_user: '0'
+              administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          plugin_id: string
         status:
           id: status
           table: node_field_data
@@ -661,14 +652,16 @@ display:
           admin_label: ''
           default_action: ignore
           exception:
-            value: all
+            value: ''
             title_enable: false
             title: All
           title_enable: false
           title: ''
-          default_argument_type: fixed
+          default_argument_type: query_parameter
           default_argument_options:
-            argument: ''
+            query_param: data-type
+            fallback: All
+            multiple: and
           default_argument_skip_url: false
           summary_options:
             base_path: ''
@@ -686,7 +679,7 @@ display:
           validate_options: {  }
           glossary: false
           limit: 0
-          case: none
+          case: ucfirst
           path_case: none
           transform_dash: false
           break_phrase: false
@@ -705,6 +698,17 @@ display:
         groups:
           1: AND
       display_extenders: {  }
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          empty: false
+          content: 'Displaying @start - @end of @total'
+          plugin_id: result
     display_plugin: default
     display_title: Master
     id: default
