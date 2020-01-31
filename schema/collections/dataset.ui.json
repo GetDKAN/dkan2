@@ -1,0 +1,32 @@
+{
+  "@type": {
+    "ui:widget": "hidden"
+  },
+  "contactPoint": {
+    "@type": {
+      "ui:widget": "hidden"
+    }
+  },
+  "publisher": {
+    "@type": {
+      "ui:widget": "hidden"
+    }
+  },
+  "identifier": {
+    "ui:widget": "hidden"
+  },
+  "description": {
+    "ui:widget": "textarea",
+    "ui:options": {
+      "rows": 5
+    }
+  },
+  "references": {
+    "items": {
+      "ui:placeholder": "http://"
+    }
+  },
+  "accessLevel": {
+    "ui:emptyValue": "public"
+  }
+}
