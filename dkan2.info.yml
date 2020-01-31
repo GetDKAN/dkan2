@@ -10,6 +10,7 @@ dependencies:
   - config_update_ui
   - contextual
   - dblog
+  - dkan_admin
   - dkan_api
   - dkan_common
   - dkan_data
@@ -25,8 +26,6 @@ dependencies:
   - toolbar
   - user
   - views
-  - views_bulk_operations
-  - views_ui
 themes:
   - bartik
   - seven
