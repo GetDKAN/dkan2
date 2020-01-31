@@ -1,5 +1,6 @@
 {
-  "id": "http://dkan/api/1/schema/dataset",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "id": "http://dkan/api/v1/schema/dataset",
   "title": "Project Open Data Dataset",
   "description": "The metadata format for all federal open data. Validates a single JSON object entry (as opposed to entire Data.json catalog).",
   "type": "object",
@@ -47,7 +48,49 @@
     "accrualPeriodicity": {
       "title": "Frequency",
       "description": "Frequency with which dataset is published.",
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "R/P10Y",
+        "R/P4Y",
+        "R/P1Y",
+        "R/P2M",
+        "R/P3.5D",
+        "R/P1D",
+        "R/P2W",
+        "R/P6M",
+        "R/P2Y",
+        "R/P3Y",
+        "R/P0.33W",
+        "R/P0.33M",
+        "R/PT1S",
+        "R/P1M",
+        "R/P3M",
+        "R/P0.5M",
+        "R/P4M",
+        "R/P1W",
+        "R/PT1H"
+      ],
+      "enumNames": [
+        "Decennial",
+        "Quadrennial",
+        "Annual",
+        "Bimonthly",
+        "Semiweekly",
+        "Daily",
+        "Biweekly",
+        "Semiannual",
+        "Biennial",
+        "Triennial",
+        "Three times a week",
+        "Three times a month",
+        "Continuously updated",
+        "Monthly",
+        "Quarterly",
+        "Semimonthly",
+        "Three times a year",
+        "Weekly",
+        "Hourly"
+      ]
     },
     "describedBy": {
       "title": "Data Dictionary",
@@ -62,30 +105,7 @@
     },
     "contactPoint": {
       "title": "Contact",
-      "description": "Contact person for dataset.",
-      "type": "object",
-      "items": {
-        "type": "object",
-        "properties": {
-          "@type": {
-            "type": "string",
-            "title": "Metadata Context",
-            "description": "IRI for the JSON-LD data type. This should be vcard:Contact for contactPoint",
-            "default": "vcard:Contact"
-          },
-          "fn": {
-            "title": "Contact Name",
-            "description": "A full formatted name, eg Firstname Lastname",
-            "type": "string",
-            "minLength": 1
-          },
-          "hasEmail": {
-            "title": "Email",
-            "description": "Email address for the contact",
-            "type": "string"
-          }
-        }
-      }
+      "$ref": "#/definitions/vcard"
     },
     "distribution": {
       "title": "Distribution",
@@ -245,7 +265,8 @@
     "issued": {
       "title": "Release Date",
       "description": "Date of formal issuance.",
-      "type": "string"
+      "type": "string",
+      "format": "date-time"
     },
     "keyword": {
       "title": "Tags",
