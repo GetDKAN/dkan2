@@ -19,6 +19,7 @@ class Drush extends DrushCommands {
   private $reactAppPath;
   private $reactAppBuildDirectoryPath;
   private $reactAppBuildStaticJsDirectoryPath;
+  private $reactAppBuildStaticCssDirectoryPath;
 
   public function __construct()
   {
@@ -27,6 +28,7 @@ class Drush extends DrushCommands {
     $this->reactAppPath = $this->moduleDirectory . "/js/app";
     $this->reactAppBuildDirectoryPath = $this->reactAppPath . "/build";
     $this->reactAppBuildStaticJsDirectoryPath = $this->reactAppBuildDirectoryPath . "/static/js";
+    $this->reactAppBuildStaticCssDirectoryPath = $this->reactAppBuildDirectoryPath . "/static/css";
   }
 
   /**
@@ -47,35 +49,56 @@ class Drush extends DrushCommands {
       unlink($this->librariesFilePath);
     }
 
-    $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
-    $folderInfo = scandir($this->reactAppBuildStaticJsDirectoryPath);
-    unset($folderInfo[0]);
-    unset($folderInfo[1]);
-    $chunks = [];
-    foreach ($folderInfo as $dirfile) {
-      $skip = false;
-      foreach ($skips as $s) {
-        if (substr_count($dirfile, $s) > 0) {
-          $skip = true;
-          break;
-        }
-      }
-      if (!$skip) {
-        $chunks[] = $dirfile;
-      }
-    }
+    /*  "js/app/build/static/js/{$chunks[0]}" => [],
+        "js/app/build/static/js/{$chunks[1]}" => [],*/
 
     $libraries = ['dkan_json_form' => [
       "version" => "1.x",
       "js" => [
-        "js/app/build/static/js/{$chunks[0]}" => [],
-        "js/app/build/static/js/{$chunks[1]}" => [],
         "js/app/build/static/js/loadme.js" => [],
+      ],
+      "css" => [
+        "base" => []
       ],
       "dependencies" => [
         "core/drupalSettings"
       ]
     ]];
+
+    $paths = [
+      "css" => $this->reactAppBuildStaticCssDirectoryPath,
+      "js" => $this->reactAppBuildStaticJsDirectoryPath
+    ];
+
+    foreach ($paths as $type => $path) {
+      $base = "js/app/build/static/{$type}/";
+
+      $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
+      $folderInfo = scandir($path);
+      unset($folderInfo[0]);
+      unset($folderInfo[1]);
+      $chunks = [];
+      foreach ($folderInfo as $dirfile) {
+        $skip = false;
+        foreach ($skips as $s) {
+          if (substr_count($dirfile, $s) > 0) {
+            $skip = true;
+            break;
+          }
+        }
+        if (!$skip) {
+          $chunks[] = $dirfile;
+        }
+      }
+      foreach ($chunks as $chunk) {
+        if ($type == 'js') {
+            $libraries['dkan_json_form']['js'][$base . $chunk] = [];
+        }
+        else {
+          $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
+        }
+      }
+    }
 
     $yaml = Yaml::dump($libraries);
     file_put_contents($this->librariesFilePath, $yaml);
