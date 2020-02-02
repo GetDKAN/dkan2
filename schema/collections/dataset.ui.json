@@ -12,9 +12,6 @@
       "ui:widget": "hidden"
     }
   },
-  "identifier": {
-    "ui:widget": "hidden"
-  },
   "description": {
     "ui:widget": "textarea",
     "ui:options": {
