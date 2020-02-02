@@ -48,12 +48,73 @@ class Drush extends DrushCommands {
    * Create libraries file.
    */
   private function createtLibrariesFile() {
+    $this->removeExistingFile();
 
+    $libraries = $this->getLibrariesBasicStructure();
+
+    $paths = [
+      "css" => $this->reactAppBuildStaticCssDirectoryPath,
+      "js" => $this->reactAppBuildStaticJsDirectoryPath,
+    ];
+
+    foreach ($paths as $type => $path) {
+      $base = "js/app/build/static/{$type}/";
+
+      $chunks = $this->getAppChunckFiles($path);
+
+      foreach ($chunks as $chunk) {
+        if ($type == 'js') {
+          $libraries['dkan_json_form']['js'][$base . $chunk] = [];
+        }
+        else {
+          $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
+        }
+      }
+    }
+
+    $yaml = Yaml::dump($libraries);
+    file_put_contents($this->librariesFilePath, $yaml);
+  }
+
+  /**
+   * Private.
+   */
+  private function getAppChunckFiles($path) {
+    $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
+    $folderInfo = scandir($path);
+    unset($folderInfo[0]);
+    unset($folderInfo[1]);
+    $chunks = [];
+    foreach ($folderInfo as $dirfile) {
+      $skip = FALSE;
+      foreach ($skips as $s) {
+        if (substr_count($dirfile, $s) > 0) {
+          $skip = TRUE;
+          break;
+        }
+      }
+      if (!$skip) {
+        $chunks[] = $dirfile;
+      }
+    }
+    return $chunks;
+  }
+
+  /**
+   * Private.
+   */
+  private function removeExistingFile() {
     if (file_exists($this->librariesFilePath)) {
       unlink($this->librariesFilePath);
     }
+  }
 
-    $libraries = [
+  /**
+   * Private.
+   */
+  private function getLibrariesBasicStructure() {
+
+    return [
       'dkan_json_form' => [
         "version" => "1.x",
         "js" => [
@@ -67,44 +128,6 @@ class Drush extends DrushCommands {
         ],
       ],
     ];
-
-    $paths = [
-      "css" => $this->reactAppBuildStaticCssDirectoryPath,
-      "js" => $this->reactAppBuildStaticJsDirectoryPath,
-    ];
-
-    foreach ($paths as $type => $path) {
-      $base = "js/app/build/static/{$type}/";
-
-      $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
-      $folderInfo = scandir($path);
-      unset($folderInfo[0]);
-      unset($folderInfo[1]);
-      $chunks = [];
-      foreach ($folderInfo as $dirfile) {
-        $skip = FALSE;
-        foreach ($skips as $s) {
-          if (substr_count($dirfile, $s) > 0) {
-            $skip = TRUE;
-            break;
-          }
-        }
-        if (!$skip) {
-          $chunks[] = $dirfile;
-        }
-      }
-      foreach ($chunks as $chunk) {
-        if ($type == 'js') {
-          $libraries['dkan_json_form']['js'][$base . $chunk] = [];
-        }
-        else {
-          $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
-        }
-      }
-    }
-
-    $yaml = Yaml::dump($libraries);
-    file_put_contents($this->librariesFilePath, $yaml);
   }
 
   /**
