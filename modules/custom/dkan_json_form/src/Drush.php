@@ -5,7 +5,6 @@ namespace Drupal\dkan_json_form;
 use Drush\Commands\DrushCommands;
 use Masterminds\HTML5;
 use Symfony\Component\Yaml\Yaml;
-use DOMElement;
 
 /**
  * Drush commands.
@@ -21,8 +20,10 @@ class Drush extends DrushCommands {
   private $reactAppBuildStaticJsDirectoryPath;
   private $reactAppBuildStaticCssDirectoryPath;
 
-  public function __construct()
-  {
+  /**
+   *
+   */
+  public function __construct() {
     $this->moduleDirectory = drupal_get_path("module", "dkan_json_form");
     $this->librariesFilePath = $this->moduleDirectory . "/dkan_json_form.libraries.yml";
     $this->reactAppPath = $this->moduleDirectory . "/js/app";
@@ -43,6 +44,9 @@ class Drush extends DrushCommands {
     $this->createtLibrariesFile();
   }
 
+  /**
+   *
+   */
   private function createtLibrariesFile() {
 
     if (file_exists($this->librariesFilePath)) {
@@ -50,24 +54,26 @@ class Drush extends DrushCommands {
     }
 
     /*  "js/app/build/static/js/{$chunks[0]}" => [],
-        "js/app/build/static/js/{$chunks[1]}" => [],*/
+    "js/app/build/static/js/{$chunks[1]}" => [],*/
 
-    $libraries = ['dkan_json_form' => [
-      "version" => "1.x",
-      "js" => [
-        "js/app/build/static/js/loadme.js" => [],
+    $libraries = [
+      'dkan_json_form' => [
+        "version" => "1.x",
+        "js" => [
+          "js/app/build/static/js/loadme.js" => [],
+        ],
+        "css" => [
+          "base" => [],
+        ],
+        "dependencies" => [
+          "core/drupalSettings",
+        ],
       ],
-      "css" => [
-        "base" => []
-      ],
-      "dependencies" => [
-        "core/drupalSettings"
-      ]
-    ]];
+    ];
 
     $paths = [
       "css" => $this->reactAppBuildStaticCssDirectoryPath,
-      "js" => $this->reactAppBuildStaticJsDirectoryPath
+      "js" => $this->reactAppBuildStaticJsDirectoryPath,
     ];
 
     foreach ($paths as $type => $path) {
@@ -79,10 +85,10 @@ class Drush extends DrushCommands {
       unset($folderInfo[1]);
       $chunks = [];
       foreach ($folderInfo as $dirfile) {
-        $skip = false;
+        $skip = FALSE;
         foreach ($skips as $s) {
           if (substr_count($dirfile, $s) > 0) {
-            $skip = true;
+            $skip = TRUE;
             break;
           }
         }
@@ -92,7 +98,7 @@ class Drush extends DrushCommands {
       }
       foreach ($chunks as $chunk) {
         if ($type == 'js') {
-            $libraries['dkan_json_form']['js'][$base . $chunk] = [];
+          $libraries['dkan_json_form']['js'][$base . $chunk] = [];
         }
         else {
           $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
@@ -104,6 +110,9 @@ class Drush extends DrushCommands {
     file_put_contents($this->librariesFilePath, $yaml);
   }
 
+  /**
+   *
+   */
   private function createLoadMeJs() {
     $loadMeJsFilePath = $this->reactAppBuildStaticJsDirectoryPath . "/loadme.js";
 
@@ -125,4 +134,5 @@ class Drush extends DrushCommands {
       }
     }
   }
+
 }
