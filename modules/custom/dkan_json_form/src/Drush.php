@@ -86,24 +86,31 @@ class Drush extends DrushCommands {
    * Private.
    */
   private function getAppChunckFiles($path) {
-    $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
     $folderInfo = scandir($path);
     unset($folderInfo[0]);
     unset($folderInfo[1]);
     $chunks = [];
     foreach ($folderInfo as $dirfile) {
-      $skip = FALSE;
-      foreach ($skips as $s) {
-        if (substr_count($dirfile, $s) > 0) {
-          $skip = TRUE;
-          break;
-        }
-      }
-      if (!$skip) {
+      if (!$this->skip($dirfile)) {
         $chunks[] = $dirfile;
       }
     }
     return $chunks;
+  }
+
+  /**
+   * Private.
+   */
+  private function skip($dirfile) {
+    $skips = ["LICENSE", 'map', 'loadme', 'runtime'];
+    $skip = FALSE;
+    foreach ($skips as $s) {
+      if (substr_count($dirfile, $s) > 0) {
+        $skip = TRUE;
+        break;
+      }
+    }
+    return $skip;
   }
 
   /**
