@@ -21,7 +21,7 @@ class Drush extends DrushCommands {
   private $reactAppBuildStaticCssDirectoryPath;
 
   /**
-   *
+   * Constructor.
    */
   public function __construct() {
     $this->moduleDirectory = drupal_get_path("module", "dkan_json_form");
@@ -45,16 +45,13 @@ class Drush extends DrushCommands {
   }
 
   /**
-   *
+   * Create libraries file.
    */
   private function createtLibrariesFile() {
 
     if (file_exists($this->librariesFilePath)) {
       unlink($this->librariesFilePath);
     }
-
-    /*  "js/app/build/static/js/{$chunks[0]}" => [],
-    "js/app/build/static/js/{$chunks[1]}" => [],*/
 
     $libraries = [
       'dkan_json_form' => [
@@ -111,7 +108,7 @@ class Drush extends DrushCommands {
   }
 
   /**
-   *
+   * Create loadMe.js.
    */
   private function createLoadMeJs() {
     $loadMeJsFilePath = $this->reactAppBuildStaticJsDirectoryPath . "/loadme.js";
