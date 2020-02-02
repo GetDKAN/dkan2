@@ -59,21 +59,27 @@ class Drush extends DrushCommands {
 
     foreach ($paths as $type => $path) {
       $base = "js/app/build/static/{$type}/";
-
       $chunks = $this->getAppChunckFiles($path);
-
-      foreach ($chunks as $chunk) {
-        if ($type == 'js') {
-          $libraries['dkan_json_form']['js'][$base . $chunk] = [];
-        }
-        else {
-          $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
-        }
-      }
+      $libraries = $this->setLibraries($libraries, $chunks, $type, $base);
     }
 
     $yaml = Yaml::dump($libraries);
     file_put_contents($this->librariesFilePath, $yaml);
+  }
+
+  /**
+   * Private.
+   */
+  private function setLibraries($libraries, $chunks, $type, $base) {
+    foreach ($chunks as $chunk) {
+      if ($type == 'js') {
+        $libraries['dkan_json_form']['js'][$base . $chunk] = [];
+      }
+      else {
+        $libraries['dkan_json_form']['css']['base'][$base . $chunk] = [];
+      }
+    }
+    return $libraries;
   }
 
   /**
