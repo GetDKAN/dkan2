@@ -184,17 +184,18 @@ class Controller {
    */
   private function setSort(QueryInterface $query, $params, $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
+
       if (isset($params['sort-order']) && ($params['sort-order'] == 'asc' || $params['sort-order'] == 'desc')) {
         $order = ($params['sort-order'] == 'asc') ? $query::SORT_ASC : $query::SORT_DESC;
         $query->sort($params['sort'], $order);
+        return;
       }
-      else {
-        $query->sort($params['sort'], $query::SORT_ASC);
-      }
+
+      $query->sort($params['sort'], $query::SORT_ASC);
+      return;
     }
-    else {
-      $query->sort('search_api_relevance', $query::SORT_DESC);
-    }
+
+    $query->sort('search_api_relevance', $query::SORT_DESC);
   }
 
   /**
