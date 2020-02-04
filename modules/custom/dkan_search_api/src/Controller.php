@@ -43,24 +43,20 @@ class Controller {
 
     $this->setSort($query, $params, $fields);
 
-    $end = ($params['page'] * $params['page-size']);
-    $start = $end - $params['page-size'];
-    $query->range($start, $params['page-size']);
+    $this->setRange($query, $params);
 
     /* @var  $result ResultSet*/
     $result = $query->execute();
     $count = $result->getResultCount();
 
-    $data = [];
-
     /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
-    foreach ($result->getResultItems() as $item) {
+    $data = array_map(function ($item) use ($metastore) {
       $id = $item->getId();
       $id = str_replace("dkan_dataset/", "", $id);
-      $data[] = json_decode($metastore->get("dataset", $id));
-    }
+      return json_decode($metastore->get("dataset", $id));
+    }, $result->getResultItems());
 
     $responseBody = (object) [
       'total' => $count,
@@ -69,6 +65,15 @@ class Controller {
     ];
 
     return $this->getResponse($responseBody);
+  }
+
+  /**
+   * Private.
+   */
+  function setRange(QueryInterface $query, $params) {
+    $end = ($params['page'] * $params['page-size']);
+    $start = $end - $params['page-size'];
+    $query->range($start, $params['page-size']);
   }
 
   /**
