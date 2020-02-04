@@ -11,6 +11,8 @@ use Drupal\Core\TypedData\TraversableTypedDataInterface;
 class ComplexDataFacade implements \Iterator, ComplexDataInterface {
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getDataDefinition() {
@@ -18,6 +20,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function get($property_name) {
@@ -25,6 +29,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function set($property_name, $value, $notify = TRUE) {
@@ -32,6 +38,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getProperties($include_computed = FALSE) {
@@ -39,6 +47,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function toArray() {
@@ -46,6 +56,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function isEmpty() {
@@ -53,6 +65,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function current() {
@@ -60,6 +74,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function next() {
@@ -67,6 +83,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function key() {
@@ -74,6 +92,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function valid() {
@@ -81,6 +101,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function rewind() {
@@ -88,6 +110,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function onChange($name) {
@@ -95,6 +119,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public static function createInstance(
@@ -106,6 +132,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getValue() {
@@ -113,6 +141,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function setValue($value, $notify = TRUE) {
@@ -120,6 +150,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getString() {
@@ -127,6 +159,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getConstraints() {
@@ -134,6 +168,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function validate() {
@@ -141,6 +177,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function applyDefaultValue($notify = TRUE) {
@@ -148,6 +186,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getName() {
@@ -155,6 +195,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getParent() {
@@ -162,6 +204,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getRoot() {
@@ -169,6 +213,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getPropertyPath() {
@@ -176,6 +222,8 @@ class ComplexDataFacade implements \Iterator, ComplexDataInterface {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function setContext(

@@ -20,7 +20,7 @@ class Dataset extends ComplexDataFacade {
   public static function definition() {
     $definitions = [];
 
-    /** @var  $schemaRetriever  SchemaRetriever */
+    /* @var  $schemaRetriever  SchemaRetriever */
     $schemaRetriever = \Drupal::service("dkan_schema.schema_retriever");
     $json = $schemaRetriever->retrieve("dataset");
     $object = json_decode($json);
@@ -52,6 +52,8 @@ class Dataset extends ComplexDataFacade {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function get($property_name) {
@@ -80,6 +82,8 @@ class Dataset extends ComplexDataFacade {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getProperties($include_computed = FALSE) {
@@ -92,6 +96,8 @@ class Dataset extends ComplexDataFacade {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getValue() {

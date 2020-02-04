@@ -18,13 +18,17 @@ use Drupal\search_api\Datasource\DatasourcePluginBase;
 class DkanDataset extends DatasourcePluginBase {
 
   /**
-   * {@inheritdoc}
+   * Inherited.
+   *
+   * @inheritDoc
    */
   public function getPropertyDefinitions() {
     return Dataset::definition();
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getItemIds($page = NULL) {
@@ -58,7 +62,9 @@ class DkanDataset extends DatasourcePluginBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Inherited.
+   *
+   * @inheritDoc
    */
   public function loadMultiple(array $ids) {
     /* @var  $dataStorage  \Drupal\dkan_data\Storage\Data */
@@ -74,6 +80,8 @@ class DkanDataset extends DatasourcePluginBase {
   }
 
   /**
+   * Inherited.
+   *
    * @inheritDoc
    */
   public function getItemId(ComplexDataInterface $item) {
