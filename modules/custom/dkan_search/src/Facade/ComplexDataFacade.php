@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_search_api\Facade;
+namespace Drupal\dkan_search\Facade;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\TraversableTypedDataInterface;

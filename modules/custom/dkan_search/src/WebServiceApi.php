@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_search_api;
+namespace Drupal\dkan_search;
 
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_metastore\Service;
@@ -9,7 +9,7 @@ use Drupal\search_api\Query\QueryInterface;
 /**
  * Controller.
  */
-class Controller {
+class WebServiceApi {
   use JsonResponseTrait;
 
   /**

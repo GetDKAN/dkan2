@@ -1,12 +1,12 @@
 <?php
 
-namespace Drupal\dkan_search_api\ComplexData;
+namespace Drupal\dkan_search\ComplexData;
 
 use Drupal\Core\TypedData\DataDefinition;
 use Drupal\Core\TypedData\ListDataDefinition;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
 use Drupal\Core\TypedData\TypedData;
-use Drupal\dkan_search_api\Facade\ComplexDataFacade;
+use Drupal\dkan_search\Facade\ComplexDataFacade;
 
 /**
  * Dataset.

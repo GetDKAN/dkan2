@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_search_api\Plugin\search_api\datasource;
+namespace Drupal\dkan_search\Plugin\search_api\datasource;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\dkan_search_api\ComplexData\Dataset;

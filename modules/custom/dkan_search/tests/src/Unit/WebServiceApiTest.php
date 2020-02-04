@@ -16,12 +16,12 @@ use Drupal\search_api\IndexInterface;
 use Drupal\search_api\Query\QueryInterface;
 use Drupal\search_api\Utility\QueryHelperInterface;
 use Drupal\dkan_metastore\Service;
-use Drupal\dkan_search_api\Controller;
+use Drupal\dkan_search\WebServiceApi;
 
 /**
  *
  */
-class ControllerTest extends TestCase {
+class WebServiceApiTest extends TestCase {
 
   /**
    *
@@ -77,7 +77,7 @@ class ControllerTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $controller = new Controller();
+    $controller = new WebServiceApi();
 
     /* @var $response \Symfony\Component\HttpFoundation\JsonResponse */
     $response = $controller->search();
@@ -97,7 +97,7 @@ class ControllerTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $controller = new Controller();
+    $controller = new WebServiceApi();
 
     /* @var $response \Symfony\Component\HttpFoundation\JsonResponse */
     $response = $controller->search();
