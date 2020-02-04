@@ -123,13 +123,21 @@ class Controller {
   private function setFieldConditions(QueryInterface $query, $fields, $params) {
     foreach ($fields as $field) {
       if (isset($params[$field])) {
-        $values = [];
-        foreach (explode(",", $params[$field]) as $value) {
-          $values[$field][] = trim($value);
-        }
+        $values[$field] = $this->getValuesFromCommaSeparatedString($params[$field]);
         $this->createConditionGroup($query, $values);
       }
     }
+  }
+
+  /**
+   * Private.
+   */
+  private function getValuesFromCommaSeparatedString($string) {
+    $values = [];
+    foreach (explode(",", $string) as $value) {
+      $values[] = trim($value);
+    }
+    return $values;
   }
 
   /**
