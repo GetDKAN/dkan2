@@ -1,11 +1,20 @@
 <?php
 
+use Drupal\dkan_search_api\ComplexData\Dataset;
+use MockChain\Chain;
+use Drupal\dkan_schema\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
 use MockChain\Options;
 use Drupal\Core\DependencyInjection\Container;
 
-class DatasetTest extends TestCase
-{
+/**
+ *
+ */
+class DatasetTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $schema = '
     {
@@ -32,22 +41,22 @@ class DatasetTest extends TestCase
     ';
 
     $options = (new Options())
-      ->add('dkan_schema.schema_retriever', \Drupal\dkan_schema\SchemaRetriever::class);
+      ->add('dkan_schema.schema_retriever', SchemaRetriever::class);
 
-
-    $container = (new MockChain\Chain($this))
+    $container = (new Chain($this))
       ->add(Container::class, "get", $options)
-      ->add(\Drupal\dkan_schema\SchemaRetriever::class, 'retrieve', $schema)
+      ->add(SchemaRetriever::class, 'retrieve', $schema)
       ->getMock();
 
     \Drupal::setContainer($container);
 
     $thing = (object) ['firstName' => 'hello', 'lastName' => 'goodbye', 'age' => 5000];
     $json = json_encode($thing);
-    $dataset = new \Drupal\dkan_search_api\ComplexData\Dataset($json);
+    $dataset = new Dataset($json);
     $this->assertEquals($json, json_encode($dataset->getValue()));
 
     $properties = $dataset->getProperties();
     $this->assertEquals(3, count($properties));
   }
+
 }

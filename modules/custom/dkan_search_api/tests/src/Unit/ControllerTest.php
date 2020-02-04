@@ -18,26 +18,34 @@ use Drupal\search_api\Utility\QueryHelperInterface;
 use Drupal\dkan_metastore\Service;
 use Drupal\dkan_search_api\Controller;
 
+/**
+ *
+ */
 class ControllerTest extends TestCase {
 
+  /**
+   *
+   */
   public function test() {
 
     $paramsBag = (new Chain($this))
       ->add(ParameterBag::class, 'all',
-        ['page-size' => 500,
+        [
+          'page-size' => 500,
           'fulltext' => 'hello',
           'description' => 'goodbye',
           'sort' => 'description',
-          'sort-order' => 'asc'])
+          'sort-order' => 'asc',
+        ])
       ->getMock();
 
     $request = (new Chain($this))
-      ->add(Request::class, 'blah', null)
+      ->add(Request::class, 'blah', NULL)
       ->getMock();
 
     $reflection = new ReflectionClass($request);
     $reflection_property = $reflection->getProperty('query');
-    $reflection_property->setAccessible(true);
+    $reflection_property->setAccessible(TRUE);
     $reflection_property->setValue($request, $paramsBag);
 
     $options = (new Options())
@@ -52,7 +60,7 @@ class ControllerTest extends TestCase {
 
     $thing = (object) ['title' => 'hello', 'description' => 'goodbye'];
 
-    $container = (new MockChain\Chain($this))
+    $container = (new Chain($this))
       ->add(Container::class, "get", $options)
       ->add(EntityManager::class, 'getStorage', EntityStorageInterface::class)
       ->add(EntityStorageInterface::class, 'load', IndexInterface::class)
@@ -78,8 +86,11 @@ class ControllerTest extends TestCase {
       $response->getContent());
   }
 
+  /**
+   *
+   */
   public function testNoIndex() {
-    $container = (new MockChain\Chain($this))
+    $container = (new Chain($this))
       ->add(Container::class, "get", EntityManager::class)
       ->add(EntityManager::class, 'getStorage', EntityStorageInterface::class)
       ->getMock();
@@ -92,4 +103,5 @@ class ControllerTest extends TestCase {
     $response = $controller->search();
     $this->assertEquals(json_encode((object) ['message' => "An index named [dkan] does not exist."]), $response->getContent());
   }
+
 }

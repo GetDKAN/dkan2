@@ -36,7 +36,7 @@ class DkanDataset extends DatasourcePluginBase {
       ->condition('field_data_type', 'dataset');
 
     $total = $query->count()->execute();
-    $pages = floor($total/$pageSize);
+    $pages = floor($total / $pageSize);
 
     if ($page <= $pages) {
 
@@ -45,10 +45,10 @@ class DkanDataset extends DatasourcePluginBase {
         ->condition('type', 'data')
         ->condition('field_data_type', 'dataset')
         ->range($page * $pageSize, $pageSize);
-        $nids = $query->execute();
+      $nids = $query->execute();
 
-      foreach( $nids as $id) {
-        $node =  Node::load($id);
+      foreach ($nids as $id) {
+        $node = Node::load($id);
         $ids[] = $node->uuid();
       }
 

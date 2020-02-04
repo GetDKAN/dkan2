@@ -12,8 +12,14 @@ use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
 
-class DkanDatasetTest extends TestCase
-{
+/**
+ *
+ */
+class DkanDatasetTest extends TestCase {
+
+  /**
+   *
+   */
   public function test() {
     $containerOptions = (new Options())
       ->add('entity_type.manager', EntityTypeManager::class)
@@ -31,7 +37,7 @@ class DkanDatasetTest extends TestCase
       ->add(QueryInterface::class, 'count', QueryInterface::class)
       ->add(QueryInterface::class, 'execute', $executeSequence)
       ->add(QueryInterface::class, 'range', QueryInterface::class)
-      ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', null)
+      ->add(EntityTypeRepository::class, 'getEntityTypeFromClass', NULL)
       ->getMock();
 
     \Drupal::setContainer($container);
@@ -40,4 +46,5 @@ class DkanDatasetTest extends TestCase
     $ids = $plugin->getItemIds(0);
     $this->assertEquals(json_encode(['xyz', 'xyz']), json_encode($ids));
   }
+
 }

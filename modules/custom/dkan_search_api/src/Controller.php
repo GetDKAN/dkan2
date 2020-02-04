@@ -5,8 +5,6 @@ namespace Drupal\dkan_search_api;
 use Drupal\dkan_common\JsonResponseTrait;
 use Drupal\dkan_metastore\Service;
 use Drupal\search_api\Query\QueryInterface;
-use Drupal\search_api\Query\ResultSet;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  *
@@ -176,6 +174,9 @@ class Controller {
     }
   }
 
+  /**
+   *
+   */
   private function createConditionGroup(QueryInterface $query, $array, $conjuction = 'AND') {
     $cg = $query->createConditionGroup($conjuction);
     foreach ($array as $field => $values) {
