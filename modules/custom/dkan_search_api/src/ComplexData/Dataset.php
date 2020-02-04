@@ -28,20 +28,25 @@ class Dataset extends ComplexDataFacade {
 
     foreach ($properties as $property) {
       $type = $object->properties->{$property}->type;
-
-      if ($type == "object" || $type == "any") {
-        $type = "string";
-      }
-
-      if ($type == "array") {
-        $definitions[$property] = ListDataDefinition::create("string");
-      }
-      else {
-        $definitions[$property] = DataDefinition::createFromDataType($type);
-      }
+      $definitions[$property] = self::getDefinition($type);
     }
 
     return $definitions;
+  }
+
+  /**
+   * Private.
+   */
+  private static function getDefinition($type) {
+    if ($type == "object" || $type == "any") {
+      $type = "string";
+    }
+
+    if ($type == "array") {
+      return ListDataDefinition::create("string");
+    }
+
+    return DataDefinition::createFromDataType($type);
   }
 
   /**
