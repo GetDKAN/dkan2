@@ -47,13 +47,13 @@ class Controller {
     $start = $end - $params['page-size'];
     $query->range($start, $params['page-size']);
 
-    /** @var  $result ResultSet*/
+    /* @var  $result ResultSet*/
     $result = $query->execute();
     $count = $result->getResultCount();
 
     $data = [];
 
-    /** @var  $metastore Service */
+    /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
     foreach ($result->getResultItems() as $item) {
@@ -134,7 +134,7 @@ class Controller {
     $facetsTypes = ['theme', 'keyword'];
     $facets = [];
 
-    /** @var  $metastore Service */
+    /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
     foreach ($facetsTypes as $type) {

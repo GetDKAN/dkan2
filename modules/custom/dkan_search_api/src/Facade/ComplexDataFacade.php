@@ -6,6 +6,8 @@ use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\Core\TypedData\TraversableTypedDataInterface;
 
 /**
+ * ComplexDataFacade.
+ *
  * @codeCoverageIgnore
  */
 class ComplexDataFacade implements \Iterator, ComplexDataInterface {
