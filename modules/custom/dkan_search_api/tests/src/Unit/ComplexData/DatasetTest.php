@@ -31,6 +31,9 @@ class DatasetTest extends TestCase {
           "type": "string",
           "description": "The person\'s last name."
         },
+        "occupations" : {
+          "type": "array"
+        },
         "age": {
           "description": "Age in years which must be equal to or greater than zero.",
           "type": "integer",
@@ -41,7 +44,8 @@ class DatasetTest extends TestCase {
     ';
 
     $options = (new Options())
-      ->add('dkan_schema.schema_retriever', SchemaRetriever::class);
+      ->add('dkan_schema.schema_retriever', SchemaRetriever::class)
+    ->add('typed_data_manager', \Drupal\Core\TypedData\TypedDataManagerInterface::class);
 
     $container = (new Chain($this))
       ->add(Container::class, "get", $options)
@@ -50,13 +54,13 @@ class DatasetTest extends TestCase {
 
     \Drupal::setContainer($container);
 
-    $thing = (object) ['firstName' => 'hello', 'lastName' => 'goodbye', 'age' => 5000];
+    $thing = (object) ['firstName' => 'hello', 'lastName' => 'goodbye', 'age' => 5000, 'occupations' => ['teacher']];
     $json = json_encode($thing);
     $dataset = new Dataset($json);
     $this->assertEquals($json, json_encode($dataset->getValue()));
 
     $properties = $dataset->getProperties();
-    $this->assertEquals(3, count($properties));
+    $this->assertEquals(4, count($properties));
   }
 
 }
