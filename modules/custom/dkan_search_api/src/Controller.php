@@ -100,16 +100,21 @@ class Controller {
    * Private.
    */
   private function setFullText(QueryInterface $query, $params, $index) {
-    if (isset($params['fulltext'])) {
-      $fulltextFields = $index->getFulltextFields();
-      if (!empty($fulltextFields)) {
-        $values = [];
-        foreach ($fulltextFields as $field) {
-          $values[$field][] = $params['fulltext'];
-        }
-        $this->createConditionGroup($query, $values, 'OR');
-      }
+    if (!isset($params['fulltext'])) {
+      return;
     }
+
+    $fulltextFields = $index->getFulltextFields();
+    if (empty($fulltextFields)) {
+      return;
+    }
+
+    $values = [];
+    foreach ($fulltextFields as $field) {
+      $values[$field][] = $params['fulltext'];
+    }
+
+    $this->createConditionGroup($query, $values, 'OR');
   }
 
   /**
