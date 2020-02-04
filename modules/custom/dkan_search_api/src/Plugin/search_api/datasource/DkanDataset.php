@@ -4,6 +4,7 @@ namespace Drupal\dkan_search_api\Plugin\search_api\datasource;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
 use Drupal\dkan_search_api\ComplexData\Dataset;
+use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
 
 /**
@@ -47,7 +48,7 @@ class DkanDataset extends DatasourcePluginBase {
         $nids = $query->execute();
 
       foreach( $nids as $id) {
-        $node = node_load($id);
+        $node =  Node::load($id);
         $ids[] = $node->uuid();
       }
 
