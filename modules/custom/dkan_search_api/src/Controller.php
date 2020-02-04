@@ -147,23 +147,33 @@ class Controller {
     $facetsTypes = ['theme', 'keyword'];
     $facets = [];
 
+    foreach ($facetsTypes as $type) {
+      if (in_array($type, $fields)) {
+        $facets = array_merge($facets, $this->getFacetsForType($query, $type));
+      }
+    }
+
+    return $facets;
+  }
+
+  /**
+   * Private.
+   */
+  private function getFacetsForType(QueryInterface $query, $type) {
+    $facets = [];
+
     /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
-    foreach ($facetsTypes as $type) {
-      $inArray = in_array($type, $fields);
-      if ($inArray) {
-        foreach ($metastore->getAll($type) as $thing) {
-          $myquery = clone $query;
-          $myquery->addCondition($type, $thing->data);
-          $result = $myquery->execute();
-          $facets[] = [
-            "type" => $type,
-            "name" => $thing->data,
-            'total' => $result->getResultCount(),
-          ];
-        }
-      }
+    foreach ($metastore->getAll($type) as $thing) {
+      $myquery = clone $query;
+      $myquery->addCondition($type, $thing->data);
+      $result = $myquery->execute();
+      $facets[] = [
+        'type' => $type,
+        'name' => $thing->data,
+        'total' => $result->getResultCount(),
+      ];
     }
 
     return $facets;
