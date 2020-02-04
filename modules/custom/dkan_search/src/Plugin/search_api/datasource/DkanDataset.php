@@ -3,7 +3,7 @@
 namespace Drupal\dkan_search\Plugin\search_api\datasource;
 
 use Drupal\Core\TypedData\ComplexDataInterface;
-use Drupal\dkan_search_api\ComplexData\Dataset;
+use Drupal\dkan_search\ComplexData\Dataset;
 use Drupal\node\Entity\Node;
 use Drupal\search_api\Datasource\DatasourcePluginBase;
 
