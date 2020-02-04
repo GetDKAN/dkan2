@@ -49,14 +49,7 @@ class Controller {
     $result = $query->execute();
     $count = $result->getResultCount();
 
-    /* @var  $metastore Service */
-    $metastore = \Drupal::service("dkan_metastore.service");
-
-    $data = array_map(function ($item) use ($metastore) {
-      $id = $item->getId();
-      $id = str_replace("dkan_dataset/", "", $id);
-      return json_decode($metastore->get("dataset", $id));
-    }, $result->getResultItems());
+    $data = $this->getData($result);
 
     $responseBody = (object) [
       'total' => $count,
@@ -70,7 +63,21 @@ class Controller {
   /**
    * Private.
    */
-  function setRange(QueryInterface $query, $params) {
+  private function getData($result) {
+    /* @var  $metastore Service */
+    $metastore = \Drupal::service("dkan_metastore.service");
+
+    return array_map(function ($item) use ($metastore) {
+      $id = $item->getId();
+      $id = str_replace("dkan_dataset/", "", $id);
+      return json_decode($metastore->get("dataset", $id));
+    }, $result->getResultItems());
+  }
+
+  /**
+   * Private.
+   */
+  private function setRange(QueryInterface $query, $params) {
     $end = ($params['page'] * $params['page-size']);
     $start = $end - $params['page-size'];
     $query->range($start, $params['page-size']);
