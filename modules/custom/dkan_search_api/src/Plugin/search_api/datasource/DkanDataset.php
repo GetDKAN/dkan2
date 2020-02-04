@@ -25,7 +25,7 @@ class DkanDataset extends DatasourcePluginBase {
   }
 
   /**
-   *
+   * @inheritDoc
    */
   public function getItemIds($page = NULL) {
     $pageSize = 250;

@@ -7,13 +7,13 @@ use Drupal\dkan_metastore\Service;
 use Drupal\search_api\Query\QueryInterface;
 
 /**
- *
+ * Controller.
  */
 class Controller {
   use JsonResponseTrait;
 
   /**
-   *
+   * Search.
    */
   public function search() {
     $storage = \Drupal::service("entity.manager")->getStorage('search_api_index');
@@ -72,7 +72,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function getParams() {
     $defaults = [
@@ -97,7 +97,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function setFullText(QueryInterface $query, $params, $index) {
     if (isset($params['fulltext'])) {
@@ -113,7 +113,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function setFieldConditions(QueryInterface $query, $fields, $params) {
     foreach ($fields as $field) {
@@ -128,7 +128,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function getFacets(QueryInterface $query, $fields) {
     $facetsTypes = ['theme', 'keyword'];
@@ -157,7 +157,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function setSort(QueryInterface $query, $params, $fields) {
     if (isset($params['sort']) && in_array($params['sort'], $fields)) {
@@ -175,7 +175,7 @@ class Controller {
   }
 
   /**
-   *
+   * Private.
    */
   private function createConditionGroup(QueryInterface $query, $array, $conjuction = 'AND') {
     $cg = $query->createConditionGroup($conjuction);

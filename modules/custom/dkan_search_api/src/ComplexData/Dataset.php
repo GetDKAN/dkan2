@@ -9,13 +9,13 @@ use Drupal\Core\TypedData\TypedData;
 use Drupal\dkan_search_api\Facade\ComplexDataFacade;
 
 /**
- *
+ * Dataset.
  */
 class Dataset extends ComplexDataFacade {
   private $data;
 
   /**
-   *
+   * Definition.
    */
   public static function definition() {
     $definitions = [];
@@ -45,7 +45,7 @@ class Dataset extends ComplexDataFacade {
   }
 
   /**
-   *
+   * Constructor.
    */
   public function __construct(string $json) {
     $this->data = json_decode($json);
