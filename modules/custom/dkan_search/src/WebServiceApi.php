@@ -16,7 +16,7 @@ class WebServiceApi {
    * Search.
    */
   public function search() {
-    $storage = \Drupal::service("entity.manager")->getStorage('search_api_index');
+    $storage = \Drupal::service("entity_type.manager")->getStorage('search_api_index');
 
     /* @var \Drupal\search_api\IndexInterface $index */
     $index = $storage->load('dkan');
