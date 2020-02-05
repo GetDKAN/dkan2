@@ -21,7 +21,7 @@ use Drupal\dkan_search\WebServiceApi;
 /**
  *
  */
-class WebServiceApiTest extends TestCase {
+class WebServiceApi2Test extends TestCase {
 
   /**
    *
@@ -49,7 +49,7 @@ class WebServiceApiTest extends TestCase {
     $reflection_property->setValue($request, $paramsBag);
 
     $options = (new Options())
-      ->add('entity.manager', EntityManager::class)
+      ->add('entity_type.manager', EntityManager::class)
       ->add('request_stack', RequestStack::class)
       ->add('search_api.query_helper', QueryHelperInterface::class)
       ->add('dkan_metastore.service', Service::class);

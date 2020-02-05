@@ -5,14 +5,14 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\dkan_data\Storage\Data;
-use Drupal\dkan_search_api\Plugin\search_api\datasource\DkanDataset;
+use Drupal\dkan_search\Plugin\search_api\datasource\DkanDataset;
 use Drupal\node\NodeInterface;
 use MockChain\Chain;
 use MockChain\Options;
 use MockChain\Sequence;
 use PHPUnit\Framework\TestCase;
 use Drupal\Core\Entity\EntityTypeRepository;
-use Drupal\dkan_search_api\ComplexData\Dataset;
+use Drupal\dkan_search\ComplexData\Dataset;
 
 /**
  *

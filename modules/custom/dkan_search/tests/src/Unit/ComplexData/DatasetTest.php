@@ -1,6 +1,6 @@
 <?php
 
-use Drupal\dkan_search_api\ComplexData\Dataset;
+use Drupal\dkan_search\ComplexData\Dataset;
 use MockChain\Chain;
 use Drupal\dkan_schema\SchemaRetriever;
 use PHPUnit\Framework\TestCase;
