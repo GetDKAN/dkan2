@@ -7,4 +7,5 @@ dependencies:
   - dkan_metastore
   - dkan_schema
   - search_api
+  - search_api_db
 package: DKAN
