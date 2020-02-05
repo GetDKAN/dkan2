@@ -3,11 +3,10 @@ The dkan_search module provides some integration with [search_api](https://www.d
 
 Search API manages search servers and indexes. For more information on how Search API works visit their [documentation](https://www.drupal.org/docs/8/modules/search-api).
 
-This module provides a Data Source for Search API that allows it to index DKAN's metadata. In particular datasets.
+This module provides a Data Source for Search API that allows it to index DKAN's metadata. In particular datasets. It also provides a default server and index configurations.
 
-Search expects the index that will be driving the search to be named "dkan".
 
-After an index has been created, search capabilities will be available at ```/api/1/search```
+Querying the search server is possible at ```/api/1/search```
 
 Different search queries can be executed against the index through query parameters.
 
