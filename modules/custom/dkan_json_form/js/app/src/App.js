@@ -8,7 +8,7 @@ import './App.scss';
 const axios = require('axios');
 
 function App() {
-  const baseUrl = "";
+  const baseUrl = "http://localtest.me:32844";
 
   let history = useHistory();
 
@@ -106,6 +106,19 @@ function App() {
     return null;
   }
 
+  function CustomFieldTemplate(schema) {
+    const {id, classNames, label, help, required, description, errors, children, rawDescription} = schema;
+    return (
+      <div className={classNames}>
+        <label htmlFor={id}>{label}{required ? "*" : null}</label>
+        <div dangerouslySetInnerHTML={{__html: rawDescription}} />
+        {children}
+        {errors}
+        {help}
+      </div>
+    );
+  }
+
   return (
     <>
     <ToastBox
@@ -116,7 +129,8 @@ function App() {
       />
     <Form 
         id="dc-json-editor" 
-        schema={schema} 
+        schema={schema}
+        FieldTemplate={CustomFieldTemplate}
         formData={formData} 
         uiSchema={uiSchema}
         autocomplete="on"
