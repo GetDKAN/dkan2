@@ -32,9 +32,12 @@
     label {
       margin: 1em 0 0;
     }
-    p {
+    p.field-description {
       margin: .25em 0;
     }
+  }
+  p.text-right.array-item-add {
+    float: right;
   }
 }
 #root fieldset#root {
