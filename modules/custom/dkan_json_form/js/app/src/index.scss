@@ -1,0 +1,54 @@
+#root fieldset#root {
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  .btn-info.btn-add,
+  .btn.array-item-remove {
+    max-width: 50px;
+  }
+  .btn-group {
+    justify-content: start !important;
+  }
+  button[type="submit"] {
+    margin: 15px;
+  }
+  fieldset {
+    border: 1px solid #dddddd;
+    padding: 15px;
+    position: relative;
+  }
+  legend {
+    border: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 4px 15px;
+    background: #f4f4f4;
+  }
+}
+#dc-json-editor button[type="submit"] {
+  margin: 0 15px 15px;
+}
+fieldset[id^="root_distribution_"] {
+  border: none;
+  legend {
+    background: transparent;
+    position: relative;
+    padding-left: 0;
+  }
+}
+fieldset#root_distribution_0_schema_fields {
+  border: none;
+  padding: 50px 0;
+  legend {
+    background: transparent;
+  }
+  fieldset[id^="root_distribution_0_schema_fields_"] {
+    border: none;
+    legend {
+      background: transparent;
+      position: relative;
+      padding:0;
+    }
+  }
+}

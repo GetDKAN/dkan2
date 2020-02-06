@@ -102,69 +102,22 @@
       "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL",
       "type": "string"
     },
-    "contactPoint": {
-      "title": "Contact",
-      "$ref": "#/definitions/vcard"
-    },
-    "distribution": {
-      "title": "Distribution",
-      "description": "A container for the array of Distribution objects",
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/distribution",
-        "minItems": 1,
-        "uniqueItems": true
-      }
-    },
     "issued": {
       "title": "Release Date",
       "description": "Date of formal issuance.",
       "type": "string",
       "format": "date-time"
     },
-    "keyword": {
-      "title": "Tags",
-      "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1
-    },
-    "theme": {
-      "title": "Category",
-      "description": "Main thematic category of the dataset.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+    "modified": {
+      "title": "Last Update",
+      "description": "Most recent date on which the dataset was changed, updated or modified.",
+      "type": "string"
     },
     "license": {
       "title": "License",
       "description": "The license dataset or API is published with. See <a href=\"https://project-open-data.cio.gov/open-licenses/\">Open Licenses</a> for more information.",
       "type": "string",
       "format": "uri"
-    },
-    "modified": {
-      "title": "Last Update",
-      "description": "Most recent date on which the dataset was changed, updated or modified.",
-      "type": "string"
-    },
-    "publisher": {
-      "$ref": "#/definitions/organization"
-    },
-    "references": {
-      "title": "Related Documents",
-      "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "format": "uri"
-      }
     },
     "spatial": {
       "title": "Spatial",
@@ -182,6 +135,53 @@
       "description": "The collection of which the dataset is a subset",
       "type": "string",
       "minLength": 1
+    },
+    "publisher": {
+      "$ref": "#/definitions/organization"
+    },
+    "contactPoint": {
+      "title": "Contact",
+      "$ref": "#/definitions/vcard"
+    },
+    "theme": {
+      "title": "Category",
+      "description": "Main thematic category of the dataset.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "keyword": {
+      "title": "Tags",
+      "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "distribution": {
+      "title": "Distribution",
+      "description": "A container for the array of Distribution objects",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/distribution",
+        "minItems": 1,
+        "uniqueItems": true
+      }
+    },
+    "references": {
+      "title": "Related Documents",
+      "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
     }
   },
   "definitions": {

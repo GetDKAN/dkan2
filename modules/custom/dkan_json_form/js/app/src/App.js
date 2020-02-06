@@ -3,11 +3,12 @@ import { useHistory } from "react-router-dom";
 import Form from "react-jsonschema-form";
 import 'bootstrap-lite/lib.bootstrap.css';
 import ToastBox, { toast } from "react-toastbox";
+import './index.scss';
 
 const axios = require('axios');
 
 function App() {
-  const baseUrl = "";
+  const baseUrl = "http://localtest.me:32844";
 
   let history = useHistory();
 
@@ -16,6 +17,7 @@ function App() {
   const [schema, setSchema] = useState({});
   const [uiSchema, setUiSchema] = useState({});
   const [formData, setFormData] = useState({});
+
 
   useEffect(() => {
     async function fetchSchema() {
@@ -112,7 +114,12 @@ function App() {
         pauseOnHover={true}
         intent="success"
       />
-    <Form schema={schema} formData={formData} uiSchema={uiSchema}
+    <Form 
+        id="dc-json-editor" 
+        schema={schema} 
+        formData={formData} 
+        uiSchema={uiSchema}
+        autocomplete="on"
         onSubmit={ (e) => {
           setMessage("");
           submitDataset(e);
