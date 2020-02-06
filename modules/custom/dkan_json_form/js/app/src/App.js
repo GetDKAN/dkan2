@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom";
 import Form from "react-jsonschema-form";
 import 'bootstrap-lite/lib.bootstrap.css';
 import ToastBox, { toast } from "react-toastbox";
-import './index.scss';
+import './App.scss';
 
 const axios = require('axios');
 
 function App() {
-  const baseUrl = "http://localtest.me:32844";
+  const baseUrl = "";
 
   let history = useHistory();
 
