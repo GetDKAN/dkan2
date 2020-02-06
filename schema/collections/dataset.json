@@ -267,26 +267,10 @@
       "type": "string",
       "format": "date-time"
     },
-    "keyword": {
-      "title": "Tags",
-      "description": "Tags (or keywords) help users discover your dataset; please include terms that would be used by technical and non-technical users.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1
-    },
-    "theme": {
-      "title": "Category",
-      "description": "Main thematic category of the dataset.",
-      "type": "array",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "minItems": 1,
-      "uniqueItems": true
+    "modified": {
+      "title": "Last Update",
+      "description": "Most recent date on which the dataset was changed, updated or modified.",
+      "type": "string"
     },
     "license": {
       "title": "License",
