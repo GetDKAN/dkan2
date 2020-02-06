@@ -8,7 +8,7 @@ import './App.scss';
 const axios = require('axios');
 
 function App() {
-  const baseUrl = "http://localtest.me:32844";
+  const baseUrl = "";
 
   let history = useHistory();
 
