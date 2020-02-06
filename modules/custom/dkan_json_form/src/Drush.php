@@ -24,7 +24,7 @@ class Drush extends DrushCommands {
    * Constructor.
    */
   public function __construct() {
-    $this->moduleDirectory = drupal_get_path("module", "dkan_json_form");
+    $this->moduleDirectory = DRUPAL_ROOT . "/" . drupal_get_path("module", "dkan_json_form");
     $this->librariesFilePath = $this->moduleDirectory . "/dkan_json_form.libraries.yml";
     $this->reactAppPath = $this->moduleDirectory . "/js/app";
     $this->reactAppBuildDirectoryPath = $this->reactAppPath . "/build";
