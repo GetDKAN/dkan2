@@ -229,8 +229,8 @@ class Service implements ContainerInjectionInterface {
       throw new \Exception("Identifier cannot be modified");
     }
 
-    if ($existing_data = $this->objectExists($schema_id, $identifier)) {
-      if ($data == $existing_data) {
+    if ($this->objectExists($schema_id, $identifier)) {
+      if ($this->objectIsEquivalent($schema_id, $identifier, $data)) {
         throw new ObjectUnchanged("No changes to {$schema_id} with identifier {$identifier}.");
       }
       $engine->put($identifier, $data);
@@ -258,8 +258,8 @@ class Service implements ContainerInjectionInterface {
    */
   public function patch($schema_id, $identifier, $data) {
     $engine = $this->getEngine($schema_id);
-    if ($existing_data = $this->objectExists($schema_id, $identifier)) {
-      if ($data == $existing_data) {
+    if ($this->objectExists($schema_id, $identifier)) {
+      if ($this->objectIsEquivalent($schema_id, $identifier, $data)) {
         throw new ObjectUnchanged("No changes to {$schema_id} with identifier {$identifier}.");
       }
       $engine->patch($identifier, $data);
@@ -293,11 +293,34 @@ class Service implements ContainerInjectionInterface {
    */
   private function objectExists($schemaId, $identifier) {
     try {
-      return $this->getEngine($schemaId)->get($identifier);
+      $this->getEngine($schemaId)->get($identifier);
+      return TRUE;
     }
     catch (\Exception $e) {
       return FALSE;
     }
+  }
+
+  /**
+   * Verify if metadata is equivalent.
+   *
+   * Because json metadata strings could be formatted differently (white space,
+   * order of properties...) yet be equivalent, compare their resulting json
+   * objects.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   The uuid.
+   * @param string $new_metadata
+   *   The new data being compared to the existing data.
+   *
+   * @return bool
+   *   TRUE if the metadata is equivalent, false otherwise.
+   */
+  private function objectIsEquivalent(string $schema_id, string $identifier, string $new_metadata) {
+    $existing_metadata = $this->getEngine($schema_id)->get($identifier);
+    return json_decode($new_metadata) == json_decode($existing_metadata);
   }
 
   /**
