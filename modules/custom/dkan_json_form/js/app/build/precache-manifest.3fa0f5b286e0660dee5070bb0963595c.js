@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "053e47a8712a5621de265866fb517caf",
+    "revision": "6d3edd7e04b626d757b3fe4710899b1d",
     "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css"
   },
   {
-    "revision": "89956147fde1736badf6",
+    "revision": "a9c6649f624fffb4e3c7",
     "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.b450c82b.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.LICENSE"
   },
   {
-    "revision": "89956147fde1736badf6",
-    "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.8cb5d1be.chunk.js"
+    "revision": "a9c6649f624fffb4e3c7",
+    "url": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.196c5d8c.chunk.js"
   },
   {
     "revision": "8ea8bfb212412458cf5a",
