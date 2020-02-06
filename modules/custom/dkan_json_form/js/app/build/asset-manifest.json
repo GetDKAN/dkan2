@@ -1,22 +1,25 @@
 {
   "files": {
-    "main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.6a03990e.chunk.js",
-    "main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.6a03990e.chunk.js.map",
+    "main.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.54f2799f.chunk.css",
+    "main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.8cb5d1be.chunk.js",
+    "main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.8cb5d1be.chunk.js.map",
     "runtime-main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/runtime-main.ca6f5c2c.js",
     "runtime-main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/runtime-main.ca6f5c2c.js.map",
     "static/css/2.52734cf0.chunk.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css",
-    "static/js/2.6c1412fb.chunk.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.6c1412fb.chunk.js",
-    "static/js/2.6c1412fb.chunk.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.6c1412fb.chunk.js.map",
+    "static/js/2.630aa503.chunk.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js",
+    "static/js/2.630aa503.chunk.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.map",
     "index.html": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/index.html",
-    "precache-manifest.1d5b6016c6dc65f53db7cec688c6f1c5.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.1d5b6016c6dc65f53db7cec688c6f1c5.js",
+    "precache-manifest.04bc839157f6354a5878a6fbbc841be9.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.04bc839157f6354a5878a6fbbc841be9.js",
     "service-worker.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/service-worker.js",
     "static/css/2.52734cf0.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css.map",
-    "static/js/2.6c1412fb.chunk.js.LICENSE": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.6c1412fb.chunk.js.LICENSE"
+    "static/css/main.54f2799f.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.54f2799f.chunk.css.map",
+    "static/js/2.630aa503.chunk.js.LICENSE": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.ca6f5c2c.js",
     "static/css/2.52734cf0.chunk.css",
-    "static/js/2.6c1412fb.chunk.js",
-    "static/js/main.6a03990e.chunk.js"
+    "static/js/2.630aa503.chunk.js",
+    "static/css/main.54f2799f.chunk.css",
+    "static/js/main.8cb5d1be.chunk.js"
   ]
 }
