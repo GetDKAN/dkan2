@@ -39,6 +39,12 @@
   p.text-right.array-item-add {
     float: right;
   }
+  .form-group.field-object > label,
+  .form-group.field-object > div,
+  .form-group.field-array > label,
+  .form-group.field-array > div {
+    display: none;
+  }
 }
 #root fieldset#root {
   border: none;
