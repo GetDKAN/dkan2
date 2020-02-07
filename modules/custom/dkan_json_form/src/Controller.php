@@ -14,7 +14,7 @@ class Controller extends ControllerBase {
    */
   public function page() {
     return [
-      '#markup' => '<div id="root"></div>',
+      '#markup' => '<div id="app"></div>',
       '#attached' => [
         'library' => [
           'dkan_json_form/dkan_json_form',

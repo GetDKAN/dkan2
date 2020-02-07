@@ -1,4 +1,5 @@
 #root {
+  background-color: #ffffff;
   border: none;
   padding: 15px;
   font-size: 14px;
@@ -16,6 +17,7 @@
     margin: 15px;
   }
   fieldset {
+    background-color: #fefefe;
     border: 1px solid #dddddd;
     padding: 50px 15px 0;
     position: relative;
@@ -33,9 +35,14 @@
       margin: 1em 0 0;
     }
     .dc-field-label {
-      margin: .5em 0;
-      color: #555555;
+      margin: 0 0 .25em 0;
+      color: #767676;
     }
+  }
+  input,
+  select,
+  textarea {
+    color: #003366;
   }
   p.text-right.array-item-add {
     float: right;
@@ -47,13 +54,7 @@
     display: none;
   }
 }
-#root fieldset#root {
-  border: none;
-  background-color: transparent;
-  legend#root__title {
-    background: transparent;
-  }
-}
+
 #dc-json-editor button[type="submit"] {
   margin: 0 15px 15px;
 }
