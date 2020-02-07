@@ -106,18 +106,13 @@ function App() {
     return null;
   }
 
-  function CustomFieldTemplate(schema) {
-    const {id, classNames, label, help, required, description, errors, children, rawDescription} = schema;
-    return (
-      <div className={classNames}>
-        <label htmlFor={id}>{label}{required ? "*" : null}</label>
-        <div dangerouslySetInnerHTML={{__html: rawDescription}} />
-        {children}
-        {errors}
-        {help}
-      </div>
-    );
-  }
+  const CustomDescriptionField = ({id, description}) => {
+    return <div className="dc-field-label"  id={id} dangerouslySetInnerHTML={{__html: description}} />
+  };
+  
+  const fields = {
+    DescriptionField: CustomDescriptionField
+  };
 
   return (
     <>
@@ -130,7 +125,7 @@ function App() {
     <Form 
         id="dc-json-editor" 
         schema={schema}
-        FieldTemplate={CustomFieldTemplate}
+        fields={fields}
         formData={formData} 
         uiSchema={uiSchema}
         autocomplete="on"

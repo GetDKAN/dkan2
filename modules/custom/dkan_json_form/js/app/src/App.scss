@@ -32,8 +32,9 @@
     label {
       margin: 1em 0 0;
     }
-    p.field-description {
-      margin: .25em 0;
+    .dc-field-label {
+      margin: .5em 0;
+      color: #555555;
     }
   }
   p.text-right.array-item-add {

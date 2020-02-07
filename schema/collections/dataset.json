@@ -278,11 +278,6 @@
       "type": "string",
       "format": "uri"
     },
-    "modified": {
-      "title": "Last Update",
-      "description": "Most recent date on which the dataset was changed, updated or modified.",
-      "type": "string"
-    },
     "publisher": {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
@@ -301,7 +296,7 @@
         },
         "name": {
           "title": "Publisher Name",
-          "description": "A full formatted name, eg Firstname Lastname",
+          "description": "",
           "type": "string",
           "minLength": 1
         },
