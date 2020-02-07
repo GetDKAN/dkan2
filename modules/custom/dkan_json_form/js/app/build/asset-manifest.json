@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.679df599.chunk.css",
+    "main.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.128b3adc.chunk.css",
     "main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.58af94a2.chunk.js",
     "main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.58af94a2.chunk.js.map",
     "runtime-main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/runtime-main.ca6f5c2c.js",
@@ -9,17 +9,17 @@
     "static/js/2.630aa503.chunk.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js",
     "static/js/2.630aa503.chunk.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.map",
     "index.html": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/index.html",
-    "precache-manifest.096394f27ae32740f2294f8244ed8659.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.096394f27ae32740f2294f8244ed8659.js",
+    "precache-manifest.199635e34be4eb775d47d9d8311f5329.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.199635e34be4eb775d47d9d8311f5329.js",
     "service-worker.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/service-worker.js",
     "static/css/2.52734cf0.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css.map",
-    "static/css/main.679df599.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.679df599.chunk.css.map",
+    "static/css/main.128b3adc.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.128b3adc.chunk.css.map",
     "static/js/2.630aa503.chunk.js.LICENSE": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.ca6f5c2c.js",
     "static/css/2.52734cf0.chunk.css",
     "static/js/2.630aa503.chunk.js",
-    "static/css/main.679df599.chunk.css",
+    "static/css/main.128b3adc.chunk.css",
     "static/js/main.58af94a2.chunk.js"
   ]
 }
