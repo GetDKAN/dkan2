@@ -264,8 +264,7 @@
     "issued": {
       "title": "Release Date",
       "description": "Date of formal issuance.",
-      "type": "string",
-      "format": "date-time"
+      "type": "string"
     },
     "modified": {
       "title": "Last Update",
