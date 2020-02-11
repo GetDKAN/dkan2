@@ -132,8 +132,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function post(string $schema_id) {
     try {
-      $data = $this->getRequestContent();
-      $this->checkData($data);
+      $data = $this->requestAndCheckData();
       $identifier = $this->service->post($schema_id, $data);
       return $this->getResponse([
         "endpoint" => "{$this->getRequestUri()}/{$identifier}",
@@ -165,8 +164,7 @@ class WebServiceApi implements ContainerInjectionInterface {
    */
   public function put($schema_id, string $identifier) {
     try {
-      $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+      $data = $this->requestAndCheckData($identifier);
       $info = $this->service->put($schema_id, $identifier, $data);
       $code = ($info['new'] == TRUE) ? 201 : 200;
       return $this->getResponse(["endpoint" => $this->getRequestUri(), "identifier" => $info['identifier']], $code);
@@ -195,10 +193,8 @@ class WebServiceApi implements ContainerInjectionInterface {
    *   The json response.
    */
   public function patch($schema_id, $identifier) {
-
     try {
-      $data = $this->getRequestContent();
-      $this->checkData($data, $identifier);
+      $data = $this->requestAndCheckData($identifier);
       $this->service->patch($schema_id, $identifier, $data);
       return $this->getResponse((object) ["endpoint" => $this->getRequestUri(), "identifier" => $identifier]);
     }
@@ -213,6 +209,21 @@ class WebServiceApi implements ContainerInjectionInterface {
       ];
       return $this->getResponseFromException($e, $http_code[get_class($e)]);
     }
+  }
+
+  /**
+   * Request, check and return the data.
+   *
+   * @param NULL|string $identifier
+   *   The uuid.
+   *
+   * @return string
+   *   The metadata json string.
+   */
+  private function requestAndCheckData($identifier = NULL) : string {
+    $data = $this->getRequestContent();
+    $this->checkData($data, $identifier);
+    return $data;
   }
 
   /**
