@@ -214,7 +214,7 @@ class WebServiceApi implements ContainerInjectionInterface {
   /**
    * Request, check and return the data.
    *
-   * @param NULL|string $identifier
+   * @param null|string $identifier
    *   The uuid.
    *
    * @return string
