@@ -143,11 +143,12 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
-    catch (ObjectExists $e) {
-      return $this->getResponseFromException($e, 409);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+    catch (ObjectExists | \Exception $e) {
+      $http_code = [
+        ObjectExists::class => 409,
+        \Exception::class => 400,
+      ];
+      return $this->getResponseFromException($e, $http_code[get_class($e)]);
     }
   }
 
@@ -173,11 +174,12 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
-    catch (ObjectUnchanged $e) {
-      return $this->getResponseFromException($e, 403);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+    catch (ObjectUnchanged | \Exception $e) {
+      $http_code = [
+        ObjectUnchanged::class => 403,
+        \Exception::class => 400,
+      ];
+      return $this->getResponseFromException($e, $http_code[get_class($e)]);
     }
   }
 
@@ -203,14 +205,13 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
-    catch (ObjectNotFound $e) {
-      return $this->getResponseFromException($e, 412);
-    }
-    catch (ObjectUnchanged $e) {
-      return $this->getResponseFromException($e, 403);
-    }
-    catch (\Exception $e) {
-      return $this->getResponseFromException($e, 400);
+    catch (ObjectNotFound | ObjectUnchanged | \Exception $e) {
+      $http_code = [
+        ObjectNotFound::class => 412,
+        ObjectUnchanged::class => 403,
+        \Exception::class => 400,
+      ];
+      return $this->getResponseFromException($e, $http_code[get_class($e)]);
     }
   }
 
