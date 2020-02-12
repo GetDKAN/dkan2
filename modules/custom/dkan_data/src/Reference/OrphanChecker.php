@@ -7,7 +7,7 @@ use Drupal\Core\Queue\QueueFactory;
 use stdClass;
 
 /**
- *
+ * OrphanChecker.
  */
 class OrphanChecker {
   use HelperTrait;
@@ -21,9 +21,6 @@ class OrphanChecker {
 
   /**
    * Constructor.
-   *
-   * @param \Drupal\Core\Queue\QueueFactory $queueService
-   *   Injected queue service.
    */
   public function __construct(ConfigFactoryInterface $configService, QueueFactory $queueService) {
     $this->queueService = $queueService;

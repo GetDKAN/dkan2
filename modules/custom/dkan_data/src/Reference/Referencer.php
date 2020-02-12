@@ -7,7 +7,7 @@ use Drupal\Core\Entity\EntityTypeManager;
 use stdClass;
 
 /**
- *
+ * Referencer.
  */
 class Referencer {
   use HelperTrait;

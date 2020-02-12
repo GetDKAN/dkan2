@@ -7,7 +7,7 @@ use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\dkan_data\Service\Uuid5;
 
 /**
- *
+ * HelperTrait.
  */
 trait HelperTrait {
   /**
