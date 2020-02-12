@@ -6,6 +6,7 @@ use Contracts\BulkRetrieverInterface;
 use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
 use Contracts\StorerInterface;
+use DateTime;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use HTMLPurifier;
 
@@ -146,10 +147,10 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
     $node->field_data_type = $this->schemaId;
     $new_data = json_encode($data);
     $node->field_json_metadata = $new_data;
-    // Create a new, pending revision.
+    // Create a new revision.
     $node->setNewRevision(TRUE);
-    $node->isDefaultRevision(FALSE);
-    $node->setRevisionLogMessage('Updated data.');
+    $node->isDefaultRevision(TRUE);
+    $node->setRevisionLogMessage("Updated on " . $this->formattedTimestamp());
 
     $node->save();
     return $node->uuid();
@@ -170,7 +171,7 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
           'field_json_metadata' => json_encode($data),
         ]
       );
-    $node->setRevisionLogMessage('Newly created data.');
+    $node->setRevisionLogMessage("Created on " . $this->formattedTimestamp());
 
     $node->save();
     return $node->uuid();
@@ -259,6 +260,17 @@ class Data implements StorerInterface, RetrieverInterface, BulkRetrieverInterfac
   private function htmlPurifier(string $input) {
     $filter = new HTMLPurifier();
     return $filter->purify($input);
+  }
+
+  /**
+   * Returns the current time, formatted.
+   *
+   * @return string
+   *   Current timestamp, formatted.
+   */
+  private function formattedTimestamp() : string {
+    $now = new \DateTime('now');
+    return $now->format(DateTime::ATOM);
   }
 
 }
