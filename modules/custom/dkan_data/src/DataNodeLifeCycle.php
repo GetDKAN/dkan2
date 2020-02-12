@@ -75,7 +75,8 @@ class DataNodeLifeCycle {
 
     // Check for possible orphan property references when updating a dataset.
     if (isset($entity->original)) {
-      $referencer->processReferencesInUpdatedDataset(
+      $orphanChecker = \Drupal::service("dkan_data.orphan_checker");
+      $orphanChecker->processReferencesInUpdatedDataset(
         json_decode($entity->referenced_metadata),
         $metadata
       );

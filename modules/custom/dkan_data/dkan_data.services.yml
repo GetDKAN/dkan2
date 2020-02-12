@@ -4,21 +4,21 @@ services:
     arguments:
       - '@entity_type.manager'
   dkan_data.referencer:
-    class: \Drupal\dkan_data\ValueReferencer
+    class: \Drupal\dkan_data\Reference\Referencer
     arguments:
       - '@config.factory'
       - '@entity_type.manager'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   dkan_data.dereferencer:
-    class: \Drupal\dkan_data\ValueReferencer
+    class: \Drupal\dkan_data\Reference\Dereferencer
     arguments:
       - '@config.factory'
       - '@entity_type.manager'
     calls:
       - [setLoggerFactory, ['@logger.factory']]
   dkan_data.orphan_checker:
-    class: \Drupal\dkan_data\ValueReferencer
+    class: \Drupal\dkan_data\Reference\OrphanChecker
     arguments:
       - '@config.factory'
       - '@queue'

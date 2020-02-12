@@ -163,7 +163,7 @@ class Referencer {
   private function createPropertyReference(string $property_id, $value) {
     // Create json metadata for the reference.
     $data = new stdClass();
-    $data->identifier = $this->uuidService->generate($property_id, $value);
+    $data->identifier = $this->getUuidService()->generate($property_id, $value);
     $data->data = $value;
 
     // Create node to store this reference.
