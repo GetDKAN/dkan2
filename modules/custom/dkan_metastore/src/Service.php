@@ -259,9 +259,6 @@ class Service implements ContainerInjectionInterface {
   public function patch($schema_id, $identifier, $data) {
     $engine = $this->getEngine($schema_id);
     if ($this->objectExists($schema_id, $identifier)) {
-      if ($this->objectIsEquivalent($schema_id, $identifier, $data)) {
-        throw new ObjectUnchanged("No changes to {$schema_id} with identifier {$identifier}.");
-      }
       $engine->patch($identifier, $data);
       return $identifier;
     }

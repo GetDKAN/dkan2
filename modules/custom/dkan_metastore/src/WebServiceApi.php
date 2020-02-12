@@ -201,10 +201,9 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
-    catch (ObjectNotFound | ObjectUnchanged | \Exception $e) {
+    catch (ObjectNotFound | \Exception $e) {
       $http_code = [
         ObjectNotFound::class => 412,
-        ObjectUnchanged::class => 403,
         \Exception::class => 400,
       ];
       return $this->getResponseFromException($e, $http_code[get_class($e)]);
