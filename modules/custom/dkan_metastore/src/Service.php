@@ -7,7 +7,7 @@ use Drupal\dkan_common\Plugin\DataModifierManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
-use Drupal\dkan_metastore\Exception\ObjectExists;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\ObjectNotFound;
 use Drupal\dkan_data\ValueReferencer;
 use Drupal\dkan_schema\SchemaRetriever;
@@ -199,7 +199,7 @@ class Service implements ContainerInjectionInterface {
     if (isset($decoded['identifier'])) {
       $identifier = $decoded['identifier'];
       if ($this->objectExists($schema_id, $identifier)) {
-        throw new ObjectExists("{$schema_id}/{$identifier} already exists.");
+        throw new ExistingObjectException("{$schema_id}/{$identifier} already exists.");
       }
     }
 

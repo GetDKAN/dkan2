@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\JsonResponseTrait;
-use Drupal\dkan_metastore\Exception\ObjectExists;
+use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\ObjectNotFound;
 use Drupal\dkan_metastore\Exception\InvalidPayload;
 
@@ -142,7 +142,7 @@ class WebServiceApi implements ContainerInjectionInterface {
     catch (InvalidPayload $e) {
       return $this->getResponseFromException($e, $this->getCodeFromInvalidPayloadException($e));
     }
-    catch (ObjectExists $e) {
+    catch (ExistingObjectException $e) {
       return $this->getResponseFromException($e, 409);
     }
     catch (\Exception $e) {
