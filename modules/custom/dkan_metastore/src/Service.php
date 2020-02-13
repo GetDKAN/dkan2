@@ -9,6 +9,7 @@ use Drupal\dkan_data\ValueReferencer;
 use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
+use Drupal\dkan_metastore\Exception\UnmodifiedObjectException;
 use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_schema\SchemaRetriever;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -230,6 +231,9 @@ class Service implements ContainerInjectionInterface {
     }
 
     if ($this->objectExists($schema_id, $identifier)) {
+      if ($this->objectIsEquivalent($schema_id, $identifier, $data)) {
+        throw new UnmodifiedObjectException("No changes to {$schema_id} with identifier {$identifier}.");
+      }
       $engine->put($identifier, $data);
       $new = FALSE;
     }
@@ -293,6 +297,28 @@ class Service implements ContainerInjectionInterface {
     catch (\Exception $e) {
       return FALSE;
     }
+  }
+
+  /**
+   * Verify if metadata is equivalent.
+   *
+   * Because json metadata strings could be formatted differently (white space,
+   * order of properties...) yet be equivalent, compare their resulting json
+   * objects.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   The uuid.
+   * @param string $new_metadata
+   *   The new data being compared to the existing data.
+   *
+   * @return bool
+   *   TRUE if the metadata is equivalent, false otherwise.
+   */
+  private function objectIsEquivalent(string $schema_id, string $identifier, string $new_metadata) {
+    $existing_metadata = $this->getEngine($schema_id)->get($identifier);
+    return json_decode($new_metadata) == json_decode($existing_metadata);
   }
 
   /**
