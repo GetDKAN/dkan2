@@ -30,6 +30,15 @@ class OrphanChecker {
   /**
    * Check for orphan references when a dataset is being deleted.
    *
+   * This function queues each property that holds a reference to be put through
+   * the orphan-check process.
+   *
+   * If the object referenced is still referenced by other objects it is
+   * left alone. If no other reference exists, it is deleted.
+   *
+   * When an object is deleted, the referenced objects for all properties must
+   * be checked.
+   *
    * @param object $data
    *   Dataset to be deleted.
    */
