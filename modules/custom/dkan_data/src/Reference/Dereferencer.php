@@ -158,12 +158,8 @@ class Dereferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-        if ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_REFERENCE_IDS) {
-          return $metadata;
-        }
-
-        return $metadata->data;
-
+        
+        return ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_REFERENCE_IDS) ? $metadata : $metadata->data;
       }
     }
     // If a property node was not found, it most likely means it was deleted
