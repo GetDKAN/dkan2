@@ -222,26 +222,40 @@ class Service implements ContainerInjectionInterface {
    *   ["identifier" => string, "new" => boolean].
    */
   public function put($schema_id, $identifier, string $data): array {
-    $new = TRUE;
-    $engine = $this->getEngine($schema_id);
-
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $identifier) {
       throw new CannotChangeUuidException("Identifier cannot be modified");
     }
-
-    if ($this->objectExists($schema_id, $identifier)) {
-      if ($this->objectIsEquivalent($schema_id, $identifier, $data)) {
-        throw new UnmodifiedObjectException("No changes to {$schema_id} with identifier {$identifier}.");
-      }
-      $engine->put($identifier, $data);
-      $new = FALSE;
+    elseif ($this->objectExists($schema_id, $identifier) && $this->objectIsEquivalent($schema_id, $identifier, $data)) {
+      throw new UnmodifiedObjectException("No changes to {$schema_id} with identifier {$identifier}.");
     }
     else {
-      $engine->post($data);
+      return $this->proceedWithPut($schema_id, $identifier, $data);
     }
+  }
 
-    return ['identifier' => $identifier, 'new' => $new];
+  /**
+   * Procede with PUT.
+   *
+   * @param string $schema_id
+   *   The {schema_id} slug from the HTTP request.
+   * @param string $identifier
+   *   Identifier.
+   * @param string $data
+   *   Json payload.
+   *
+   * @return array
+   *   ["identifier" => string, "new" => boolean].
+   */
+  private function proceedWithPut($schema_id, $identifier, string $data): array {
+    if ($this->objectExists($schema_id, $identifier)) {
+      $this->getEngine($schema_id)->put($identifier, $data);
+      return ['identifier' => $identifier, 'new' => FALSE];
+    }
+    else {
+      $this->getEngine($schema_id)->post($data);
+      return ['identifier' => $identifier, 'new' => TRUE];
+    }
   }
 
   /**
