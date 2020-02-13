@@ -2,15 +2,16 @@
 
 namespace Drupal\dkan_metastore;
 
+use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\dkan_metastore\Factory\Sae;
+use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
-use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_schema\SchemaRetriever;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Service.
@@ -225,7 +226,7 @@ class Service implements ContainerInjectionInterface {
 
     $obj = json_decode($data);
     if (isset($obj->identifier) && $obj->identifier != $identifier) {
-      throw new \Exception("Identifier cannot be modified");
+      throw new CannotChangeUuidException("Identifier cannot be modified");
     }
 
     if ($this->objectExists($schema_id, $identifier)) {
