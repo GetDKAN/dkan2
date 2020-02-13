@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_metastore\Factory\Sae;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
-use Drupal\dkan_metastore\Exception\ObjectNotFound;
+use Drupal\dkan_metastore\Exception\MissingObjectException;
 use Drupal\dkan_data\ValueReferencer;
 use Drupal\dkan_schema\SchemaRetriever;
 
@@ -259,7 +259,7 @@ class Service implements ContainerInjectionInterface {
       return $identifier;
     }
 
-    throw new ObjectNotFound("No data with the identifier {$identifier} was found.");
+    throw new MissingObjectException("No data with the identifier {$identifier} was found.");
   }
 
   /**
