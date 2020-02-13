@@ -58,10 +58,12 @@ class OrphanChecker {
         // could be deleted. Safe to skip checking for orphan reference.
         continue;
       }
-      if (!isset($new_dataset->{$property_id})) {
-        $new_dataset->{$property_id} = $this->emptyPropertyOfSameType($old_dataset->{$property_id});
-      }
-      $this->processReferencesInUpdatedProperty($property_id, $old_dataset->{$property_id}, $new_dataset->{$property_id});
+      $oldProperty = $old_dataset->{$property_id};
+      $newProperty = (!isset($new_dataset->{$property_id})) ?
+        $this->emptyPropertyOfSameType($oldProperty) :
+        $new_dataset->{$property_id};
+
+      $this->processReferencesInUpdatedProperty($property_id, $oldProperty, $newProperty);
     }
   }
 
