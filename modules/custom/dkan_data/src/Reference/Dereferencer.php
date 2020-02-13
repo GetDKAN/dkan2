@@ -98,15 +98,11 @@ class Dereferencer {
       return $this->dereferenceSingle($property_id, $uuid);
     }
     else {
-      if ($this->loggerService) {
-        $this->loggerService->get('value_referencer')->error(
-          'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
-          [
-            '@property_id' => $property_id,
-            '@uuid' => var_export($uuid, TRUE),
-          ]
-        );
-      }
+      $this->log('value_referencer', 'Unexpected data type when dereferencing property_id: @property_id with uuid: @uuid',
+        [
+          '@property_id' => $property_id,
+          '@uuid' => var_export($uuid, TRUE),
+        ]);
       return NULL;
     }
   }
@@ -158,7 +154,6 @@ class Dereferencer {
     if ($node = reset($nodes)) {
       if (isset($node->field_json_metadata->value)) {
         $metadata = json_decode($node->field_json_metadata->value);
-        
         return ($this->dereferenceMethod == self::DEREFERENCE_OUTPUT_REFERENCE_IDS) ? $metadata : $metadata->data;
       }
     }
