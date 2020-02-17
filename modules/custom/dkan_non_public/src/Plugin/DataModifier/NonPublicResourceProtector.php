@@ -181,10 +181,12 @@ class NonPublicResourceProtector extends DataModifierBase implements ContainerFa
    */
   private function getIdentifier($dist) : string {
     if (is_string($dist)) {
-      if ($this->uuid5->isValid($dist)) {
+      if ($decoded = json_decode($dist)) {
+        $dist = $decoded;
+      }
+      else {
         return $dist;
       }
-      $dist = json_decode($dist);
     }
     return $dist->identifier;
   }
