@@ -5,6 +5,11 @@ namespace Drupal\dkan_search\Drush;
 use Drush\Commands\DrushCommands;
 use Drupal\search_api\Entity\Index;
 
+/**
+ * Class DkanSearchCommands.
+ *
+ * @package Drupal\dkan_search\Drush
+ */
 class DkanSearchCommands extends DrushCommands {
 
   /**
