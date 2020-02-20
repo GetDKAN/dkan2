@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.7d79a6ad9e0e42b8111df5ab3bf270e4.js"
+  "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.96c8a50a57b7cb54e830791b97c81a67.js"
 );
 
 self.addEventListener('message', (event) => {

@@ -118,13 +118,13 @@ function App() {
 
   return (
     <>
-    <ToastBox
+      <ToastBox
         timerExpires={5000}
         position="top-left"
         pauseOnHover={true}
         intent="success"
       />
-    <Form 
+      <Form 
         id="dc-json-editor" 
         schema={schema}
         fields={fields}
@@ -135,7 +135,13 @@ function App() {
           setMessage("");
           submitDataset(e);
         } }
-        onError={(e) => { console.log(e);}} /></>
+        onError={(e) => { console.log(e);}}>
+        <div>
+          <button className="btn btn-success" type="submit">Submit</button>
+          <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Cancel</button>
+        </div>
+      </Form>
+    </>
   );
 }
 

@@ -1,25 +1,25 @@
 {
   "files": {
-    "main.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.128b3adc.chunk.css",
-    "main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.f752c7ef.chunk.js",
-    "main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.f752c7ef.chunk.js.map",
+    "main.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.69ef0e6f.chunk.css",
+    "main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.e55be437.chunk.js",
+    "main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/main.e55be437.chunk.js.map",
     "runtime-main.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/runtime-main.ca6f5c2c.js",
     "runtime-main.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/runtime-main.ca6f5c2c.js.map",
     "static/css/2.52734cf0.chunk.css": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css",
     "static/js/2.630aa503.chunk.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js",
     "static/js/2.630aa503.chunk.js.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.map",
     "index.html": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/index.html",
-    "precache-manifest.7d79a6ad9e0e42b8111df5ab3bf270e4.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.7d79a6ad9e0e42b8111df5ab3bf270e4.js",
+    "precache-manifest.96c8a50a57b7cb54e830791b97c81a67.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/precache-manifest.96c8a50a57b7cb54e830791b97c81a67.js",
     "service-worker.js": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/service-worker.js",
     "static/css/2.52734cf0.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/2.52734cf0.chunk.css.map",
-    "static/css/main.128b3adc.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.128b3adc.chunk.css.map",
+    "static/css/main.69ef0e6f.chunk.css.map": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/css/main.69ef0e6f.chunk.css.map",
     "static/js/2.630aa503.chunk.js.LICENSE": "/profiles/contrib/dkan2/modules/custom/dkan_json_form/js/app/build/static/js/2.630aa503.chunk.js.LICENSE"
   },
   "entrypoints": [
     "static/js/runtime-main.ca6f5c2c.js",
     "static/css/2.52734cf0.chunk.css",
     "static/js/2.630aa503.chunk.js",
-    "static/css/main.128b3adc.chunk.css",
-    "static/js/main.f752c7ef.chunk.js"
+    "static/css/main.69ef0e6f.chunk.css",
+    "static/js/main.e55be437.chunk.js"
   ]
 }
