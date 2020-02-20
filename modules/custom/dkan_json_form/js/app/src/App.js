@@ -70,6 +70,7 @@ function App() {
       axios.put(baseUrl + '/api/1/metastore/schemas/dataset/items/' + identifier, cleanData).then(
         () => {
           setMessage("The dataset with identifier " + identifier + " has been updated.");
+          setTimeout(window.location = "/admin/content/datasets", 2000);
         }
       ).catch((error) => {
         if (error.response) {
@@ -88,6 +89,7 @@ function App() {
           
           setIdentifier(id);
           setMessage("A dataset with the identifier " + id + " has been created.");
+          setTimeout(window.location = "/admin/content/datasets", 2000);
         }
       ).catch((error) => {
         if (error.response) {
