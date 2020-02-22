@@ -35,8 +35,11 @@ class DataNodeLifeCycle2Test extends TestCase {
     $container = $containerChain->getMock();
 
     $metadata = (object) [
-      'accessURL' => "http://google.com",
-      'mediaType' => "text/csv",
+      'identifier' => "12345",
+      'data' => (object) [
+        'accessURL' => "http://google.com",
+        'mediaType' => "text/csv",
+      ],
     ];
 
     $sequence = (new Sequence())

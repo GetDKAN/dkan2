@@ -39,13 +39,14 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
    */
   private function isDatastorable() {
     $metadata = $this->getMetaData();
+    $data = $metadata->data;
 
-    if (!isset($metadata->downloadURL) && !isset($metadata->accessURL)) {
+    if (!isset($data->downloadURL) && !isset($data->accessURL)) {
       return FALSE;
     }
 
-    if (!(isset($metadata->mediaType) && $metadata->mediaType == 'text/csv') &&
-      !(isset($metadata->format) && $metadata->format == 'csv')) {
+    if (!(isset($data->mediaType) && $data->mediaType == 'text/csv') &&
+      !(isset($data->format) && $data->format == 'csv')) {
       return FALSE;
     }
 
