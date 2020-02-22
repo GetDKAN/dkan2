@@ -5,7 +5,7 @@ namespace Drupal\dkan_common;
 use Drupal\Core\Logger\LoggerChannelFactory;
 
 /**
- *
+ * LoggerTrait.
  */
 trait LoggerTrait {
   /**

@@ -12,7 +12,7 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
   use LoggerTrait;
 
   /**
-   *
+   * Insert.
    */
   public function insert() {
     $entity = $this->node;
@@ -20,14 +20,7 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       return;
     }
 
-    $metadata = $this->getMetaData();
-
-    if (!isset($metadata->downloadURL) && !isset($metadata->accessURL)) {
-      return;
-    }
-
-    if ((isset($metadata->mediaType) && $metadata->mediaType == 'text/csv') ||
-        (isset($metadata->format) && $metadata->format == 'csv')) {
+    if ($this->isDatastorable()) {
       try {
         /* @var $datastore_service \Drupal\dkan_datastore\Service */
         $datastore_service = \Drupal::service('dkan_datastore.service');
@@ -39,6 +32,24 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       }
     }
 
+  }
+
+  /**
+   * Private.
+   */
+  private function isDatastorable() {
+    $metadata = $this->getMetaData();
+
+    if (!isset($metadata->downloadURL) && !isset($metadata->accessURL)) {
+      return FALSE;
+    }
+
+    if (!(isset($metadata->mediaType) && $metadata->mediaType == 'text/csv') &&
+      !(isset($metadata->format) && $metadata->format == 'csv')) {
+      return FALSE;
+    }
+
+    return TRUE;
   }
 
 }
