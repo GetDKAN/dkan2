@@ -20,7 +20,7 @@ use Drupal\Core\Utility\UpdateException;
  *
  * @throws Drupal\Core\Utility\UpdateException
  */
-function _dkan_db_uninstall_modules(array $modules, $uninstall_dependents = TRUE) {
+function _dkan_uninstall_modules(array $modules, $uninstall_dependents = TRUE) {
   $success = \Drupal::service('module_installer')->uninstall($modules, $uninstall_dependents);
   $modules_list = implode(', ', $modules);
   if ($success) {
@@ -35,7 +35,7 @@ function _dkan_db_uninstall_modules(array $modules, $uninstall_dependents = TRUE
 }
 
 /**
- * Uninstall dkan_admin module.
+ * Uninstall example module.
  */
 // function dkan_db_update_8001(&$sandbox) {
 //     $messages = _dkan_db_uninstall_modules(['example']);

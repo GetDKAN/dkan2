@@ -1,8 +1,0 @@
-name: 'DKAN DB'
-type: module
-description: 'Update and db op tools.'
-core: 8.x
-package: 'DKAN'
-dependencies:
-  - redirect_options
-  - path_redirect_import
