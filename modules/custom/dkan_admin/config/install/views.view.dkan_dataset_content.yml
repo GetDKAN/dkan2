@@ -8,7 +8,7 @@ dependencies:
     - node
     - user
 _core:
-  default_config_hash: tS8PbpJX90aRFC3-UTgXzdqkq7_2frk2pz4TMijEebM
+  default_config_hash: a3iKR4Ahl23CurenkAnv23BpfnLT3gOCj13w5IgtZds
 id: dkan_dataset_content
 label: 'DKAN Datasets'
 module: node
@@ -610,7 +610,7 @@ display:
           admin_label: 'Add dataset button'
           empty: false
           tokenize: false
-          content: '<a class="button" href="/admin/dkan/dataset">Add new dataset</a>'
+          content: '<a class="button button--primary" href="/admin/dkan/dataset">+ Add new dataset</a>'
           plugin_id: text_custom
     display_plugin: default
     display_title: Master
