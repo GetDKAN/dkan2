@@ -7,7 +7,9 @@
     "title",
     "description",
     "identifier",
-    "accessLevel"
+    "accessLevel",
+    "modified",
+    "keyword"
   ],
   "properties": {
     "@type": {
