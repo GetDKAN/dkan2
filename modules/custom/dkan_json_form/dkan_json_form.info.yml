@@ -1,6 +1,6 @@
 
-name: DKAN JSON Form
-description: Examples of using React hydrate and Drupal 8 together.
+name: Dataset JSON Form
+description: Adds a React form for creating and editing dataset metadata.
 package: DKAN
 
 type: module
