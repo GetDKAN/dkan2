@@ -117,7 +117,7 @@ function App() {
   return (
     <>
       <ToastBox
-        timerExpires={5000}
+        timerExpires={10000}
         position="top-left"
         pauseOnHover={true}
         intent="success"
@@ -135,7 +135,7 @@ function App() {
           submitDataset(e);
         } }
         onError={(e) => { console.log(e);}}>
-        <div>
+        <div className="dc-form-actions">
           <button className="btn btn-success" type="submit">Submit</button>
           <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Cancel</button>
         </div>
