@@ -64,7 +64,9 @@ class DataNodeLifeCycle2Test extends TestCase {
       $containerChain->getStoredInput('log')[0]);
   }
 
-
+  /**
+   *
+   */
   public function testLifeCycle() {
     $options = (new Options())
       ->add('dkan_datastore.service', Service::class)
@@ -91,7 +93,7 @@ class DataNodeLifeCycle2Test extends TestCase {
       ->add('field_data_type', 'distribution')
       ->add('field_json_metadata', json_encode($metadata))
       ->use('field_get')
-    ->index(1);
+      ->index(1);
 
     $entity = (new Chain($this))
       ->add(Node::class, 'bundle', 'data')
@@ -110,4 +112,5 @@ class DataNodeLifeCycle2Test extends TestCase {
     // The right info was given to the datastore service to drop the datastore.
     $this->assertEquals(['12345'], $containerChain->getStoredInput('drop'));
   }
+
 }
