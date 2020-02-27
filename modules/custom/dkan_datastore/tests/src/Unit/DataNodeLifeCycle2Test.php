@@ -64,9 +64,10 @@ class DataNodeLifeCycle2Test extends TestCase {
       $containerChain->getStoredInput('log')[0]);
   }
 
-  /**
-   *
-   */
+
+/**
+ *
+ */
   public function testLifeCycle() {
     $options = (new Options())
       ->add('dkan_datastore.service', Service::class)
