@@ -1,9 +1,9 @@
+dkan_frontend.dataset:
+  path: '/dataset/{identifier}'
+  defaults:
+    _controller: '\Drupal\dkan_frontend\Controller\DatasetPageController::dataset'
+  requirements:
+    _access: 'TRUE'
+
 route_callbacks:
   - 'dkan_frontend.route_provider::routes'
-
-dkan_frontend.dataset:
-  path: '/example/{identifier}'
-  defaults:
-    _controller: '\Drupal\dkan_frontend\Controller\DatasetPageController::content'
-  requirements:
-    _permission:  'access_content'

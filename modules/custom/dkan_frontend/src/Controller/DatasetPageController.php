@@ -2,21 +2,36 @@
 
 namespace Drupal\dkan_frontend\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * An ample controller.
+ */
 class DatasetPageController {
-  public function content($identifier, Request $request) {
-    // This is a hardcoded node ID, you'll probably want to load 
-    // this from config, or something.
-    $nid = 303;
-    $entity_type = 'node';
-    $view_mode = 'default';
 
-    $view_builder = \Drupal::entityTypeManager()->getViewBuilder($entity_type);
-    $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
-    $node = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $identifier]);
-    
-    // $build = $view_builder->view($node, $view_mode);
-    return $node;
+  private $pageBuilder;
+
+  /**
+   * Controller method.
+   */
+  public function dataset($identifier) {
+    $appRoot = \Drupal::root();
+    $file = NULL;
+    $node_loaded_by_uuid = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $identifier]);
+    $node_loaded_by_uuid = reset($node_loaded_by_uuid);
+
+    if ($node_loaded_by_uuid) {
+      $name = str_replace("__", "/", $identifier);
+      $file = $appRoot . "/data-catalog-frontend/public/dataset/{$name}/index.html";
+      if (empty(file_get_contents($file))) {
+        $file = $appRoot . "/data-catalog-frontend/public/dataset/index.html";
+      }
+    }
+    else {
+      $file = $appRoot . "/data-catalog-frontend/public/dataset/index.html";
+    }
+
+    return Response::create(file_get_contents($file));
   }
+
 }
