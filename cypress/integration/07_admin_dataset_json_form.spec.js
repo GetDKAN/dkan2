@@ -1,7 +1,7 @@
 context('Admin dataset json form', () => {
 
     beforeEach(() => {
-        cy.drupalLogin('admin', 'admin')
+        cy.drupalLogin('testeditor', 'testeditor')
     })
     
     it('The dataset form has the correct required fields.', () => {

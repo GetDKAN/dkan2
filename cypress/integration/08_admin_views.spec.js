@@ -1,10 +1,10 @@
 context('Admin content and dataset views', () => {
 
     beforeEach(() => {
-        cy.drupalLogin('admin', 'admin')
+        cy.drupalLogin('testeditor', 'testeditor')
     })
 
-    // Create datasest.
+    // Create a datasest.
     it('Admin can create a dataset with the json form UI.', () => {
         cy.visit("http://dkan/admin/dkan/dataset")
         cy.wait(2000)
@@ -44,12 +44,14 @@ context('Admin content and dataset views', () => {
         cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/');
     })
 
-    it('There is a link to the datasets admin screen.', () => {
+    it('There is a link in the admin menu to the datasets admin screen.', () => {
         cy.visit("http://dkan/admin/content/node")
         cy.get('.toolbar-icon-system-admin-content').trigger('mouseover')
-        cy.get('ul.toolbar-menu ul.toolbar-menu > .menu-item > a').invoke('attr', 'href').then(href => {
-            cy.visit(href);
-          });
+        cy.get('ul.toolbar-menu ul.toolbar-menu > .menu-item > a')
+            .invoke('attr', 'href')
+            .then(href => {
+                cy.visit(href);
+        });
         cy.get('h1').should('have.text', 'Datasets')
     })
 
