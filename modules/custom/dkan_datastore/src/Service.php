@@ -100,10 +100,15 @@ class Service implements ContainerInjectionInterface {
     if ($storage) {
       $storage->destroy();
     }
+
+    /* @var $resourceService \Drupal\dkan_datastore\Service\Resource */
+    $resourceService = $this->resourceServiceFactory->getInstance($uuid);
+    $resourceService->remove();
+
     /* @var $resource \Dkan\Datastore\Resource */
-    $resource = $this->resourceServiceFactory->getInstance($uuid)->get();
+    $resource = $resourceService->get();
     $this->jobStoreFactory->getInstance(Importer::class)->remove($resource->getId());
-    $this->jobStoreFactory->getInstance(FileFetcher::class)->remove($uuid);
+
   }
 
   /**

@@ -57,33 +57,42 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
    */
   public function processItem($data) {
 
-    $datastore = $this->container->get('dkan_datastore.service');
+    try {
+      $datastore = $this->container->get('dkan_datastore.service');
 
-    $results = $datastore->import($data['uuid']);
+      $results = $datastore->import($data['uuid']);
 
-    foreach ($results as $result) {
-      switch ($result->getStatus()) {
-        case Result::STOPPED:
+      foreach ($results as $result) {
+        switch ($result->getStatus()) {
+          case Result::STOPPED:
 
-          // Requeue for next iteration.
-          // queue is self calling and should keep going until complete.
-          $newQueueItemId = $this->requeue($data);
+            // Requeue for next iteration.
+            // queue is self calling and should keep going until complete.
+            $newQueueItemId = $this->requeue($data);
 
-          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
+            $this->log(RfcLogLevel::INFO,
+              "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).");
 
-          break;
+            break;
 
-        case Result::IN_PROGRESS:
-        case Result::ERROR:
+          case Result::IN_PROGRESS:
+          case Result::ERROR:
 
-          // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
-          $this->log(RfcLogLevel::ERROR, "Import for {$data['uuid']} returned an error: {$result->getError()}");
-          break;
+            // @todo fall through to cleanup on error. maybe should not so we can inspect issues further?
+            $this->log(RfcLogLevel::ERROR,
+              "Import for {$data['uuid']} returned an error: {$result->getError()}");
+            break;
 
-        case Result::DONE:
-          $this->log(RfcLogLevel::INFO, "Import for {$data['uuid']} complete/stopped.");
-          break;
+          case Result::DONE:
+            $this->log(RfcLogLevel::INFO,
+              "Import for {$data['uuid']} complete/stopped.");
+            break;
+        }
       }
+    }
+    catch (\Exception $e) {
+      $this->log(RfcLogLevel::ERROR,
+        "Import for {$data['uuid']} returned an error: {$e->getMessage()}");
     }
   }
 
