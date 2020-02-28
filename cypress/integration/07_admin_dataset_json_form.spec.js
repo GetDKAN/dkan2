@@ -18,7 +18,7 @@ context('Admin dataset json form', () => {
         cy.get('#root_keyword__title > .required').should('be.visible')
     })
 
-    it.only('User can create and delete a dataset with the admin UI.', () => {
+    it('User can create a dataset with the json form UI.', () => {
         cy.visit("http://dkan/admin/dkan/dataset")
         cy.wait(2000)
         cy.get('#root_title').type('DKANTEST dataset title', { force:true } )
@@ -32,7 +32,30 @@ context('Admin dataset json form', () => {
         cy.get('#root_keyword_0').type('open data', { force:true } )
         cy.get('.btn-success').click({ force:true })
         cy.get('.toast-content-container > .toast-content').should('contain','DKANTEST1234567890 has been created')
-        cy.get('.dc-form-actions button[type="button"]').click({ force:true })
+    })
+
+    it('Admin user can edit a dataset with the json form UI.', () => {
+        cy.visit("http://dkan/admin/content/datasets")
+        cy.get('.views-field-nothing > a').click({ force:true })
+        cy.wait(2000)
+        cy.get('#root_title').should('have.value','DKANTEST dataset title')
+        cy.get('#root_title').type('NEW dkantest dataset title',{ force:true })
+        cy.get('#root_accrualPeriodicity').select('Annual', { force:true })
+        cy.get('#root_keyword > :nth-child(4) > .col-xs-3 > .btn').click({ force:true })
+        cy.get('#root_keyword_1').type('testing', { force:true })
+        cy.get(':nth-child(2) > .col-xs-3 > .btn-group > .array-item-move-up').click({ force:true })
+        cy.get('#root_distribution > :nth-child(4) > .col-xs-3 > .btn').click({ force:true })
+        cy.get('#root_distribution_0_title').type('DKANTEST distribution number one', { force:true })
+        cy.get('#root_distribution_0_format').type('csv', { force:true })
+        cy.get('#root_distribution_0_mediaType').type('text/csv', { force:true })
+        cy.get('#root_distribution_0_downloadURL').type('https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv', { force:true })
+        cy.get('#root_distribution_0_isssued').type('2020-02-02', { force:true })
+        cy.get('.btn-success').click({ force:true })
+        cy.get('.toast-content-container > .toast-content').should('contain','DKANTEST1234567890 has been updated')
+    })
+
+    it('Admin user can delete a dataset (cleanup)', () => {
+        cy.visit("http://dkan/admin/content/datasets")
         cy.wait(2000)
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })

@@ -67,6 +67,8 @@ jobs:
             cd ~/sandbox
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
+            dktl drush user:create admin --password="admin"
+            dktl drush user-add-role administrator admin
             dktl dkan:test-cypress
       - run:
           name: Run DKAN dredd tests
