@@ -18,3 +18,6 @@ As a piece of software in its Alpha cycle, the code is continuously changing and
 - Web service API endpoints that allow third party applications to work with the datasets
 - Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend) 
 - A datastore to store CSV files and make them queryable through an SQL endpoint.
+
+
+## delete after testing
