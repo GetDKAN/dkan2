@@ -1,11 +1,11 @@
 context('Admin dataset json form', () => {
-
+    let baseurl = Cypress.config().baseUrl;
     beforeEach(() => {
         cy.drupalLogin('testeditor', 'testeditor')
     })
     
     it('The dataset form has the correct required fields.', () => {
-        cy.visit("http://dkan/admin/dkan/dataset")
+        cy.visit(baseurl + "/admin/dkan/dataset")
         cy.get('#root__title').should('have.text', 'Project Open Data Dataset')
         cy.get('#root .control-label[for="root_title"] > .required').should('be.visible')
         cy.get('#root .control-label[for="root_identifier"] > .required').should('be.visible')
@@ -19,7 +19,7 @@ context('Admin dataset json form', () => {
     })
 
     it('User can create a dataset with the json form UI.', () => {
-        cy.visit("http://dkan/admin/dkan/dataset")
+        cy.visit(baseurl + "/admin/dkan/dataset")
         cy.wait(2000)
         cy.get('#root_title').type('DKANTEST dataset title', { force:true } )
         cy.get('#root_identifier').type('DKANTEST1234567890', { force:true } )
@@ -35,8 +35,8 @@ context('Admin dataset json form', () => {
     })
 
     it('Admin user can edit a dataset with the json form UI.', () => {
-        cy.visit("http://dkan/admin/content/datasets")
-        cy.get('.views-field-nothing > a').click({ force:true })
+        cy.visit(baseurl + "/admin/content/datasets")
+        cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
         cy.wait(2000)
         cy.get('#root_title').should('have.value','DKANTEST dataset title')
         cy.get('#root_title').type('NEW dkantest dataset title',{ force:true })
@@ -55,7 +55,7 @@ context('Admin dataset json form', () => {
     })
 
     it('Admin user can delete a dataset (cleanup)', () => {
-        cy.visit("http://dkan/admin/content/datasets")
+        cy.visit(baseurl + "/admin/content/datasets")
         cy.wait(2000)
         cy.get('#edit-node-bulk-form-0').check({ force:true })
         cy.get('#edit-submit--2').click({ force:true })
