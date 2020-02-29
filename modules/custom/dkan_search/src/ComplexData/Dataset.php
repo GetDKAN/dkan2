@@ -14,6 +14,9 @@ use Drupal\dkan_search\Facade\ComplexDataFacade;
 class Dataset extends ComplexDataFacade {
   private $data;
 
+  // Search API's default stemmer only acts on English language.
+  protected $language = 'en';
+
   /**
    * Definition.
    */
