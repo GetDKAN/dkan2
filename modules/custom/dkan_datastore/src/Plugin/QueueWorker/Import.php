@@ -73,7 +73,7 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   }
 
   /**
-   *
+   * Private.
    */
   private function processResult(Result $result, $data) {
     $level = RfcLogLevel::INFO;
