@@ -2,7 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-class ImportTest extends TestCase
+class Import2Test extends TestCase
 {
   public function test() {
     $this->assertTrue(TRUE);
