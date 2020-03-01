@@ -10,7 +10,6 @@ use Drupal\dkan_datastore\Service\Factory\Resource;
 use Drupal\dkan_datastore\Service\Factory\Import;
 use Drupal\dkan_datastore\Service\ImporterList\ImporterList;
 use Dkan\Datastore\Importer;
-use FileFetcher\FileFetcher;
 
 /**
  * Main services for the datastore.
