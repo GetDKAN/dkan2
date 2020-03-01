@@ -37,6 +37,30 @@ class Import2Test extends TestCase
     $this->assertEquals("Import for 12345 completed.", $containerChain->getStoredInput('log')[1]);
   }
 
+  public function testErrorPath() {
+    $result = (new Chain($this))
+      ->add(Result::class, 'getStatus', Result::ERROR)
+      ->add(Result::class, 'getError', 'Oops')
+      ->getMock();
+
+    $containerChain = $this->getContainerChain($result);
+    $containerChain
+      ->add(LoggerChannelFactory::class, 'get', LoggerChannel::class)
+      ->add(LoggerChannel::class, 'log', null, 'log');
+    $container = $containerChain->getMock();
+
+    $data = [
+      'uuid' => '12345'
+    ];
+
+    \Drupal::setContainer($container);
+
+    $queueWorker = Import::create($container, [], '', '');
+    $queueWorker->processItem($data);
+
+    $this->assertEquals("Import for 12345 returned an error: Oops", $containerChain->getStoredInput('log')[1]);
+  }
+
   public function testRequeue() {
     $result = (new Chain($this))
       ->add(Result::class, 'getStatus', Result::STOPPED)

@@ -76,7 +76,8 @@ class Import extends QueueWorkerBase implements ContainerFactoryPluginInterface 
   private function processResult(Result $result, $data) {
     $level = RfcLogLevel::INFO;
     $message = "";
-    switch ($result->getStatus()) {
+    $status = $result->getStatus();
+    switch ($status) {
       case Result::STOPPED:
         $newQueueItemId = $this->requeue($data);
         $message = "Import for {$data['uuid']} is requeueing for iteration No. {$data['queue_iteration']}. (ID:{$newQueueItemId}).";
