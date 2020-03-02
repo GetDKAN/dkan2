@@ -76,6 +76,8 @@ components:
         - description
         - identifier
         - accessLevel
+        - modified
+        - keyword
       properties:
         title:
           type: string
@@ -89,6 +91,12 @@ components:
             - public
             - restricted public
             - non-public
+        modified:
+          type: string
+        keyword:
+          type: array
+          items:
+            type: string
 paths:
   /api/1/metastore/schemas/dataset:
     get:
