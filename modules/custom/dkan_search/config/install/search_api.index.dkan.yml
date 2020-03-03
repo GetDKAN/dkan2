@@ -1,4 +1,3 @@
-uuid: 55a882b8-3474-47c9-9cc7-67a44d69115d
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
   module:
     - search_api
     - dkan_search
-_core:
-  default_config_hash: tkuzPeAxGCETQxs931FmkXdIYJxrbzA46J9aU2P8-n8
 id: dkan
 name: DKAN
 description: ''
@@ -46,9 +43,6 @@ processor_settings:
       - keyword
       - theme
       - title
-    weights:
-      preprocess_index: -20
-      preprocess_query: -20
   language_with_fallback: {  }
   rendered_item: {  }
 tracker_settings:

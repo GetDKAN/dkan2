@@ -1,8 +1,0 @@
-name: Search Demo
-description: "Example config for POD search."
-type: module
-core: 8.x
-dependencies:
-    - search_api
-    - dkan_search
-package: DKAN
