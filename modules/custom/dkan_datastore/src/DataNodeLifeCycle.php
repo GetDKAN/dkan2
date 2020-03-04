@@ -22,7 +22,7 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       return;
     }
 
-    if ($this->isDatastorable()) {
+    if ($this->isDataStorable()) {
       try {
         /* @var $datastoreService \Drupal\dkan_datastore\Service */
         $datastoreService = \Drupal::service('dkan_datastore.service');
@@ -71,20 +71,30 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
   /**
    * Private.
    */
-  private function isDatastorable() {
+  private function isDataStorable() {
     $metadata = $this->getMetaData();
     $data = $metadata->data;
 
-    if (!isset($data->downloadURL) && !isset($data->accessURL)) {
-      return FALSE;
+    // Project Open Data schema requires distributions to contain downloadURL
+    // or accessURL. In case of downloadURL, mediaType is required as well.
+    if (isset($data->downloadURL) && isset($data->mediaType)) {
+      $acceptableMediaTypes = [
+        'text/csv',
+        'text/tab-separated-values',
+      ];
+      return in_array($data->mediaType, $acceptableMediaTypes);
+    }
+    if (isset($data->accessURL) && isset($data->format)) {
+      $acceptableFormat = [
+        'csv',
+        'tsv',
+        'tab',
+        'txt',
+      ];
+      return in_array($data->format, $acceptableFormat);
     }
 
-    if (!(isset($data->mediaType) && $data->mediaType == 'text/csv') &&
-      !(isset($data->format) && $data->format == 'csv')) {
-      return FALSE;
-    }
-
-    return TRUE;
+    return FALSE;
   }
 
 }

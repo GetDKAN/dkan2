@@ -57,7 +57,7 @@ class Resource {
       return $this->getResourceFromFileFetcher($node, $runFileFetcher);
     }
     else {
-      return new R($node->id(), $this->getResourceFilePathFromNode($node));
+      return new R($node->id(), $this->getResourceFilePathFromNode($node), $this->getMimeType($node));
     }
   }
 
@@ -168,7 +168,19 @@ class Resource {
 
     $json = $fileFetcher->getResult()->getData();
     $fileData = json_decode($json);
-    return new R($node->id(), $fileData->destination);
+    return new R($node->id(), $fileData->destination, $this->getMimeType($node));
+  }
+
+  /**
+   * Private.
+   */
+  private function getMimeType($node) {
+    if (!$node) {
+      return NULL;
+    }
+
+    $metadata = json_decode($node->get('field_json_metadata')->value);
+    return $metadata->data->mediaType ?? NULL;
   }
 
 }
