@@ -12,7 +12,7 @@ When ready to commit your changes
 - Remove the value from `const baseUrl = "";`
 - `rm -R ../build`
 - `npm run build`
-- `dktl drush dkan-json-form:sync`
+- `dktl drush dkan-metadata-form:sync`
 - `dktl drush cr`
 - Review the form at `/admin/dkan/dataset`
 
