@@ -125,18 +125,16 @@ context('Datastore API', () => {
 
   });
 
-  it.skip('List', () => {
+  it('List', () => {
     cy.request({
       url: apiUri + '/datastore/imports',
       auth: user_credentials
     }).then((response) => {
       let firstKey = Object.keys(response.body)[0];
       expect(response.status).eql(200);
-      cy.log(response.body);
-      // response.body is empty here
-      //expect(response.body[firstKey].hasOwnProperty('fileFetcher')).equals(true);
-      // expect(response.body[firstKey].hasOwnProperty('fileFetcherStatus')).equals(true);
-      // expect(response.body[firstKey].hasOwnProperty('fileName')).equals(true);
+      expect(response.body[firstKey].hasOwnProperty('fileFetcher')).equals(true);
+      expect(response.body[firstKey].hasOwnProperty('fileFetcherStatus')).equals(true);
+      expect(response.body[firstKey].hasOwnProperty('fileName')).equals(true);
     })
   });
 
