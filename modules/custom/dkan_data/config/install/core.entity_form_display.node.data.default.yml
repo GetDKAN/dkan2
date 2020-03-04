@@ -8,8 +8,6 @@ dependencies:
     - node.type.data
   module:
     - path
-_core:
-  default_config_hash: yvV3zcYvINaTgTrMaoUa-lVtIQ3BWnvd7dKQQv4H45o
 id: node.data.default
 targetEntityType: node
 bundle: data
