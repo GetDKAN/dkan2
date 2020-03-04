@@ -37,7 +37,7 @@ class Drush extends DrushCommands {
    *
    * Synchronize the module with the React app.
    *
-   * @command dkan-json-form:sync
+   * @command dkan-metadata-form:sync
    */
   public function sync() {
     $this->createLoadMeJs();
