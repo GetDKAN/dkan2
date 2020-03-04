@@ -1,7 +1,7 @@
 dkan_frontend.dataset:
-  path: '/dataset/{identifier}'
+  path: '/dataset/{name}'
   defaults:
-    _controller: '\Drupal\dkan_frontend\Controller\DatasetPageController::dataset'
+    _controller: 'Drupal\dkan_frontend\Controller\DatasetPage::page'
   requirements:
     _access: 'TRUE'
 
