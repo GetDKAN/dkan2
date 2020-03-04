@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\dkan_json_form;
+namespace Drupal\dkan_metadata_form;
 
 use Drupal\Core\Controller\ControllerBase;
 
@@ -17,7 +17,7 @@ class Controller extends ControllerBase {
       '#markup' => '<div id="app"></div>',
       '#attached' => [
         'library' => [
-          'dkan_json_form/dkan_json_form',
+          'dkan_metadata_form/dkan_metadata_form',
         ],
       ],
     ];

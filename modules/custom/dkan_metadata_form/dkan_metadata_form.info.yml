@@ -1,5 +1,5 @@
 
-name: Dataset JSON Form
+name: DKAN Metadata Form
 description: Adds a React form for creating and editing dataset metadata.
 package: DKAN
 

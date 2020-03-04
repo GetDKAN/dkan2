@@ -1,4 +1,4 @@
-# DKAN Dataset Form
+# DKAN Metadata Form
 
 ## Development
 
