@@ -45,14 +45,9 @@ class Page implements ContainerInjectionInterface {
    * Controller method.
    */
   public function dataset($name) {
-    $node_loaded_by_uuid = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['uuid' => $name]);
-    $node_loaded_by_uuid = reset($node_loaded_by_uuid);
-    $pageContent = $this->pageBuilder->build('dataset');
-    if ($node_loaded_by_uuid) {
-      $pageContent = $this->pageBuilder->build("dataset/" . $name);
-      if (empty($pageContent)) {
-        $pageContent = $this->pageBuilder->build('dataset');
-      }
+    $pageContent = $this->pageBuilder->buildDataset($name);
+    if (empty($pageContent)) {
+      $pageContent = $this->pageBuilder->build("404");
     }
 
     return Response::create($pageContent);
