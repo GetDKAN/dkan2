@@ -38,8 +38,8 @@ class DataNodeLifeCycle2Test extends TestCase {
     $metadata = (object) [
       'identifier' => "12345",
       'data' => (object) [
-        'accessURL' => "http://google.com",
-        'mediaType' => "text/csv",
+        'downloadURL' => "http://google.com/some-file.tsv",
+        'mediaType' => "text/tab-separated-values",
       ],
     ];
 
@@ -85,7 +85,7 @@ class DataNodeLifeCycle2Test extends TestCase {
       'identifier' => "12345",
       'data' => (object) [
         'accessURL' => "http://google.com",
-        'mediaType' => "text/csv",
+        'format' => "csv",
       ],
     ];
 

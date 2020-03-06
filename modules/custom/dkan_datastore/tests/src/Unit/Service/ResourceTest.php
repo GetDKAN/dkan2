@@ -27,6 +27,7 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
     $meta = [
       "value" => json_encode($object),
@@ -66,6 +67,7 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
     $meta = [
       "value" => json_encode($object),
@@ -124,6 +126,7 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
     $meta = [
       "value" => json_encode($object),
@@ -180,6 +183,7 @@ class ResourceTest extends TestCase {
     $object = (object) [];
     $object->data = (object) [];
     $object->data->downloadURL = "http://google.com";
+    $object->data->mediaType = "text/csv";
 
     $meta = [
       "value" => json_encode($object),
