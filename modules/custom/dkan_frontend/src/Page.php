@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\dkan_frontend;
+
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 /**
@@ -43,7 +44,6 @@ class Page {
    *
    * @return string|bool
    *   False if file doesn't exist.
-   *
    */
   public function buildDataset($name) {
     $base_dataset = $this->appRoot . "/data-catalog-frontend/public/dataset/index.html";
