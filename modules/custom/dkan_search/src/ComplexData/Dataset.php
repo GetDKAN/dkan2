@@ -33,17 +33,15 @@ class Dataset extends ComplexDataFacade {
         foreach($child_properties as $child) {
           $child_type = $object->properties->{$property}->properties->{$child}->type;
           if ($child_type == 'string') {
-            $definitions[$property . ":" . $child] = self::getDefinition($child_type);
-            //var_dump($definitions[$property . ":" . $child]);
+            $definitions[$property . "__" . $child] = self::getDefinition($child_type);
           }
         }
       }
       else {
         $definitions[$property] = self::getDefinition($type);
-        //var_dump($definitions[$property]);
       }
     }
-    
+
     return $definitions;
   }
 
@@ -74,7 +72,6 @@ class Dataset extends ComplexDataFacade {
    * @inheritDoc
    */
   public function get($property_name) {
-    exit(var_dump($property_name));
     $definitions = self::definition();
 
     if (!isset($definitions[$property_name])) {
@@ -92,8 +89,18 @@ class Dataset extends ComplexDataFacade {
       $property->setValue($values);
     }
     else {
-      $property = new class($definition, $property_name) extends TypedData {};
-      $property->setValue($this->data->{$property_name});
+      $matches = [];
+      // Check if property corresponds to an object.
+      if (preg_match('/(.*)__(.*)/', $property_name, $matches)) {
+        if (isset($matches[1]) && isset($matches[2])) {
+          $value = $this->data->{$matches[1]}->{$matches[2]};
+        }
+      }
+      else {
+        $value = $this->data->{$property_name};
+      }
+      $property = new class ($definition, $property_name) extends TypedData{};
+      $property->setValue($value);
     }
 
     return $property;
@@ -105,7 +112,6 @@ class Dataset extends ComplexDataFacade {
    * @inheritDoc
    */
   public function getProperties($include_computed = FALSE) {
-    exit(var_dump($include_computed));
     $definitions = self::definition();
     $properties = [];
     foreach (array_keys($definitions) as $propertyName) {
