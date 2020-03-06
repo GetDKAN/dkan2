@@ -27,12 +27,23 @@ class Dataset extends ComplexDataFacade {
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
-      if (isset($object->properties->{$property}->type)) {
-        $type = $object->properties->{$property}->type;
+      $type = $object->properties->{$property}->type;
+      if ($type == "object" && isset($object->properties->{$property}->properties)) {
+        $child_properties = array_keys((array) $object->properties->{$property}->properties);
+        foreach($child_properties as $child) {
+          $child_type = $object->properties->{$property}->properties->{$child}->type;
+          if ($child_type == 'string') {
+            $definitions[$property . ":" . $child] = self::getDefinition($child_type);
+            //var_dump($definitions[$property . ":" . $child]);
+          }
+        }
+      }
+      else {
         $definitions[$property] = self::getDefinition($type);
+        //var_dump($definitions[$property]);
       }
     }
-
+    
     return $definitions;
   }
 
@@ -47,7 +58,6 @@ class Dataset extends ComplexDataFacade {
     if ($type == "array") {
       return ListDataDefinition::create("string");
     }
-
     return DataDefinition::createFromDataType($type);
   }
 
@@ -64,6 +74,7 @@ class Dataset extends ComplexDataFacade {
    * @inheritDoc
    */
   public function get($property_name) {
+    exit(var_dump($property_name));
     $definitions = self::definition();
 
     if (!isset($definitions[$property_name])) {
@@ -94,6 +105,7 @@ class Dataset extends ComplexDataFacade {
    * @inheritDoc
    */
   public function getProperties($include_computed = FALSE) {
+    exit(var_dump($include_computed));
     $definitions = self::definition();
     $properties = [];
     foreach (array_keys($definitions) as $propertyName) {

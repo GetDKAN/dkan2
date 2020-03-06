@@ -135,7 +135,49 @@
       "description": "Most recent date on which the dataset was changed, updated or modified.",
       "type": "string"
     },
-    "publisher": {"$ref": "#/definitions/organization"},
+    "publisher": {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
+      "title": "Organization",
+      "description": "A Dataset Publisher Organization.",
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "@type": {
+          "title": "Metadata Context",
+          "description": "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
+          "type": "string",
+          "default": "org:Organization"
+        },
+        "name": {
+          "title": "Publisher Name",
+          "description": "A full formatted name, eg Firstname Lastname",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "title": "Description",
+          "type": "string",
+          "description": "Description of the organization"
+        },
+        "identifier": {
+          "type": "string",
+          "title": "Identifier"
+        },
+        "image": {
+          "title": "Image",
+          "description": "Image or logo for the organization",
+          "type": "string",
+          "format": "uri"
+        },
+        "subOrganizationOf": {
+          "title": "Parent Organization",
+          "type": "string"
+        }
+      }
+    },
     "references": {
       "title": "Related Documents",
       "description": "Related documents such as technical information about a dataset, developer documentation, etc.",
@@ -309,49 +351,6 @@
               }
             }
           }
-        }
-      }
-    },
-    "organization": {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "id": "https://project-open-data.cio.gov/v1.1/schema/organization.json#",
-      "title": "Organization",
-      "description": "A Dataset Publisher Organization.",
-      "type": "object",
-      "required": [
-        "name"
-      ],
-      "properties": {
-        "@type": {
-          "title": "Metadata Context",
-          "description": "IRI for the JSON-LD data type. This should be org:Organization for each publisher",
-          "type": "string",
-          "default": "org:Organization"
-        },
-        "name": {
-          "title": "Publisher Name",
-          "description": "A full formatted name, eg Firstname Lastname",
-          "type": "string",
-          "minLength": 1
-        },
-        "description": {
-          "title": "Description",
-          "type": "string",
-          "description": "Description of the organization"
-        },
-        "identifier": {
-          "type": "string",
-          "title": "Identifier"
-        },
-        "image": {
-          "title": "Image",
-          "description": "Image or logo for the organization",
-          "type": "string",
-          "format": "uri"
-        },
-        "subOrganizationOf": {
-          "title": "Parent Organization",
-          "type": "string"
         }
       }
     }
