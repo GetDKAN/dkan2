@@ -133,13 +133,13 @@ class Resource {
    */
   private function getResourceFilePathFromNode(NodeInterface $node): string {
 
-    $meta = $node->get('field_json_metadata')->get(0)->getValue();
+    $meta = $node->get('field_json_metadata')->getString();
 
-    if (!isset($meta['value'])) {
+    if (!isset($meta)) {
       throw new \Exception("Entity for {$node->uuid()} does not have required field `field_json_metadata`.");
     }
 
-    $metadata = json_decode($meta['value']);
+    $metadata = json_decode($meta);
 
     if (!($metadata instanceof \stdClass)) {
       throw new \Exception("Invalid metadata information or missing file information.");
@@ -179,7 +179,7 @@ class Resource {
       return NULL;
     }
 
-    $metadata = json_decode($node->get('field_json_metadata')->value);
+    $metadata = json_decode($node->get('field_json_metadata')->getString());
     return $metadata->data->mediaType ?? NULL;
   }
 
