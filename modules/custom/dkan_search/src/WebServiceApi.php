@@ -161,7 +161,7 @@ class WebServiceApi {
    * Private.
    */
   private function getFacets(QueryInterface $query, $fields) {
-    $facetsTypes = ['theme', 'keyword'];
+    $facetsTypes = ['theme', 'keyword', 'publisher__name'];
     $facets = [];
 
     foreach ($facetsTypes as $type) {
@@ -182,15 +182,34 @@ class WebServiceApi {
     /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
 
-    foreach ($metastore->getAll($type) as $thing) {
-      $myquery = clone $query;
-      $myquery->addCondition($type, $thing->data);
-      $result = $myquery->execute();
-      $facets[] = [
-        'type' => $type,
-        'name' => $thing->data,
-        'total' => $result->getResultCount(),
-      ];
+    // Prepare facets for fields that correspond to objects.
+    $matches = [];
+    if (preg_match('/(.*)__(.*)/', $type, $matches)) {
+      $schema = $matches[1];
+      $field = $matches[2];
+
+      foreach ($metastore->getAll($schema) as $thing) {
+        $myquery = clone $query;
+        $myquery->addCondition($type, $thing->data->{$field});
+        $result = $myquery->execute();
+        $facets[] = [
+          'type' => $type,
+          'name' => $thing->data->{$field},
+          'total' => $result->getResultCount(),
+        ];
+      }
+    }
+    else {
+      foreach ($metastore->getAll($type) as $thing) {
+        $myquery = clone $query;
+        $myquery->addCondition($type, $thing->data);
+        $result = $myquery->execute();
+        $facets[] = [
+          'type' => $type,
+          'name' => $thing->data,
+          'total' => $result->getResultCount(),
+        ];
+      }
     }
 
     return $facets;
