@@ -11,8 +11,6 @@ use Drupal\dkan_common\LoggerTrait;
 class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
   use LoggerTrait;
 
-
-
   /**
    * Insert.
    *
@@ -78,7 +76,7 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
     $data = $metadata->data;
 
     if (isset($data->downloadURL) && isset($data->mediaType)) {
-      return in_array($data->mediaType,[
+      return in_array($data->mediaType, [
         'text/csv',
         'text/tab-separated-values',
       ]);
