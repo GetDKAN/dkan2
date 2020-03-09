@@ -64,7 +64,9 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
       $url = $data->downloadURL;
       $pieces = explode('sites/default/files/', $url);
       $path = "public://" . end($pieces);
-      file_unmanaged_delete($path);
+      /** @var \Drupal\Core\File\FileSystemInterface $fileSystemService */
+      $fileSystemService = \Drupal::service('file_system');
+      $fileSystemService->delete($path);
     }
   }
 
