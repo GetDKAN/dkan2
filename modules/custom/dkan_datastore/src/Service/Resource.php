@@ -173,12 +173,14 @@ class Resource {
 
   /**
    * Private.
+   *
+   * @param \Drupal\node\NodeInterface $node
+   *   A Drupal node.
+   *
+   * @return string|null
+   *   The resource's MIME type.
    */
-  private function getMimeType($node) {
-    if (!$node) {
-      return NULL;
-    }
-
+  private function getMimeType(NodeInterface $node) : ?string {
     $metadata = json_decode($node->get('field_json_metadata')->getString());
     return $metadata->data->mediaType ?? NULL;
   }
