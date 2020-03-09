@@ -11,6 +11,8 @@ use Drupal\dkan_common\LoggerTrait;
 class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
   use LoggerTrait;
 
+
+
   /**
    * Insert.
    *
@@ -71,27 +73,15 @@ class DataNodeLifeCycle extends AbstractDataNodeLifeCycle {
   /**
    * Private.
    */
-  private function isDataStorable() {
+  private function isDataStorable() : bool {
     $metadata = $this->getMetaData();
     $data = $metadata->data;
 
-    // Project Open Data schema requires distributions to contain downloadURL
-    // or accessURL. In case of downloadURL, mediaType is required as well.
     if (isset($data->downloadURL) && isset($data->mediaType)) {
-      $acceptableMediaTypes = [
+      return in_array($data->mediaType,[
         'text/csv',
         'text/tab-separated-values',
-      ];
-      return in_array($data->mediaType, $acceptableMediaTypes);
-    }
-    if (isset($data->accessURL) && isset($data->format)) {
-      $acceptableFormat = [
-        'csv',
-        'tsv',
-        'tab',
-        'txt',
-      ];
-      return in_array($data->format, $acceptableFormat);
+      ]);
     }
 
     return FALSE;
