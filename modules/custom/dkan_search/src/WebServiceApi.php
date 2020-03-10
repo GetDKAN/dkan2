@@ -189,30 +189,30 @@ class WebServiceApi {
       $field = $matches[2];
 
       foreach ($metastore->getAll($schema) as $thing) {
-        $myquery = clone $query;
-        $myquery->addCondition($type, $thing->data->{$field});
-        $result = $myquery->execute();
-        $facets[] = [
-          'type' => $type,
-          'name' => $thing->data->{$field},
-          'total' => $result->getResultCount(),
-        ];
+        $facets[] = $this->getFacetHelper($query, $type, $thing->data->{$field});
       }
     }
     else {
       foreach ($metastore->getAll($type) as $thing) {
-        $myquery = clone $query;
-        $myquery->addCondition($type, $thing->data);
-        $result = $myquery->execute();
-        $facets[] = [
-          'type' => $type,
-          'name' => $thing->data,
-          'total' => $result->getResultCount(),
-        ];
+        $facets[] = $this->getFacetHelper($query, $type, $thing->data);
       }
     }
 
     return $facets;
+  }
+
+  /**
+   * Private.
+   */
+  private function getFacetHelper(QueryInterface $query, $type, $facet_name) {
+    $myquery = clone $query;
+    $myquery->addCondition($type, $facet_name);
+    $result = $myquery->execute();
+    return [
+      'type' => $type,
+      'name' => $facet_name,
+      'total' => $result->getResultCount(),
+    ];
   }
 
   /**
