@@ -178,6 +178,7 @@ class WebServiceApi {
    */
   private function getFacetsForType(QueryInterface $query, $type) {
     $facets = [];
+    $field = '';
 
     /* @var  $metastore Service */
     $metastore = \Drupal::service("dkan_metastore.service");
@@ -187,15 +188,13 @@ class WebServiceApi {
     if (preg_match('/(.*)__(.*)/', $type, $matches)) {
       $schema = $matches[1];
       $field = $matches[2];
-
-      foreach ($metastore->getAll($schema) as $thing) {
-        $facets[] = $this->getFacetHelper($query, $type, $thing->data->{$field});
-      }
     }
     else {
-      foreach ($metastore->getAll($type) as $thing) {
-        $facets[] = $this->getFacetHelper($query, $type, $thing->data);
-      }
+      $schema = $type;
+    }
+    foreach ($metastore->getAll($schema) as $thing) {
+      $facet_name = empty($field) ? $thing->data : $thing->data->{$field};
+      $facets[] = $this->getFacetHelper($query, $type, $facet_name);
     }
 
     return $facets;
