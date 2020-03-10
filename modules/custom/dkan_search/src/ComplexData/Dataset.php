@@ -28,6 +28,12 @@ class Dataset extends ComplexDataFacade {
 
     foreach ($properties as $property) {
       $type = $object->properties->{$property}->type;
+      if ($type == "array"  && isset($object->properties->{$property}->items)) {
+        $child_properties = array_keys((array) $object->properties->{$property}->items->properties);
+        foreach ($child_properties as $child) {
+          $definitions[$property . "__item__" . $child] = self::getDefinition($type);
+        }
+      }
       if ($type == "object" && isset($object->properties->{$property}->properties)) {
         $child_properties = array_keys((array) $object->properties->{$property}->properties);
         foreach($child_properties as $child) {
@@ -82,9 +88,17 @@ class Dataset extends ComplexDataFacade {
 
     if ($definition instanceof ListDataDefinition) {
       $property = new ItemList($definition, $property_name);
-      $values = $this->data->{$property_name};
-      if (is_string($values)) {
-        $values = json_decode($values);
+      $values = [];
+      if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)) {
+        foreach ($this->data->{$matches[1]} as $dist) {
+          $values[] = $dist->{$matches[2]};
+        }
+      }
+      else {
+        $values = $this->data->{$property_name};
+        if (is_string($values)) {
+          $values = json_decode($values);
+        }
       }
       $property->setValue($values);
     }
