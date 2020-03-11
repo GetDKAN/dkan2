@@ -133,7 +133,8 @@ class Dataset extends ComplexDataFacade {
       && isset($this->data->{$matches[1]}->{$matches[2]})) {
         $value = $this->data->{$matches[1]}->{$matches[2]};
       }
-    } elseif (isset($this->data->{$property_name})) {
+    }
+    elseif (isset($this->data->{$property_name})) {
       $value = $this->data->{$property_name};
     }
 
@@ -151,7 +152,8 @@ class Dataset extends ComplexDataFacade {
           $values[] = $dist->{$matches[2]};
         }
       }
-    } else {
+    }
+    else {
       if (isset($this->data->{$property_name})) {
         $values = $this->data->{$property_name};
         if (is_string($values)) {
