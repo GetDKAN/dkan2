@@ -102,28 +102,32 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
    * Store data.
    */
   public function store($data, string $id = NULL): string {
+    return $this->storeMultiple([ $data ], $id);
+  }
+
+  public function storeMultiple(array $data, string $id = NULL) : string {
     $this->setTable();
 
     $existing = (isset($id)) ? $this->retrieve($id) : NULL;
-
-    $data = $this->prepareData($data, $id);
-
     $returned_id = NULL;
 
     if ($existing === NULL) {
       $fields = $this->getNonSerialFields();
 
-      if (count($fields) != count($data)) {
-        throw new \Exception("The number of fields and data given do not match: fields - " .
-        json_encode($fields) . " data - " . json_encode($data));
-      }
-
       $q = $this->connection->insert($this->getTableName());
       $q->fields($fields);
-      $q->values($data);
+      foreach ($data as $datum) {
+        $datum = $this->prepareData($datum, $id);
+        if (count($fields) != count($datum)) {
+          throw new \Exception("The number of fields and data given do not match: fields - " .
+            json_encode($fields) . " data - " . json_encode($datum));
+        }
+        $q->values($datum);
+      }
       $returned_id = $q->execute();
     }
     else {
+      $data = $this->prepareData($data[0], $id);
       $q = $this->connection->update($this->getTableName());
       $q->fields($data)
         ->condition($this->primaryKey(), $id)
