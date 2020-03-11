@@ -29,8 +29,8 @@ class Dataset extends ComplexDataFacade {
     foreach ($properties as $property) {
       $defs = [];
       $type = $object->properties->{$property}->type;
-      if (($type == "array" && isset($object->properties->{$property}->items->properties))
-        || $type == "object") {
+      $array_has_items = ($type == "array" && isset($object->properties->{$property}->items->properties));
+      if ($array_has_items || $type == "object") {
         $defs = self::definitionHelper($object->properties->{$property}, $type, $property);
       }
       else {
@@ -60,7 +60,7 @@ class Dataset extends ComplexDataFacade {
       $child_properties = array_keys((array) $props);
     }
     else {
-      $defs[$property_name] = self::getDefinition($type);
+      $definitions[$property_name] = self::getDefinition($type);
     }
 
     foreach ($child_properties as $child) {
