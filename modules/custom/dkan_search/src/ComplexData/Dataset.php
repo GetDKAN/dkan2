@@ -27,27 +27,45 @@ class Dataset extends ComplexDataFacade {
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
+      $defs = [];
       $type = $object->properties->{$property}->type;
-      if ($type == "array"  && isset($object->properties->{$property}->items)) {
-        $child_properties = array_keys((array) $object->properties->{$property}->items->properties);
-        foreach ($child_properties as $child) {
-          $definitions[$property . "__item__" . $child] = self::getDefinition($type);
-        }
-      }
-      elseif ($type == "object" && isset($object->properties->{$property}->properties)) {
-        $child_properties = array_keys((array) $object->properties->{$property}->properties);
-        foreach ($child_properties as $child) {
-          $child_type = $object->properties->{$property}->properties->{$child}->type;
-          if ($child_type == 'string') {
-            $definitions[$property . "__" . $child] = self::getDefinition($child_type);
-          }
-        }
+      if (($type == "array" && isset($object->properties->{$property}->items->properties))
+        || $type == "object") {
+        $defs = self::definitionHelper($object->properties->{$property}, $type, $property);
       }
       else {
-        $definitions[$property] = self::getDefinition($type);
+        $defs[$property] = self::getDefinition($type);
       }
+      $definitions = array_merge($definitions, $defs);
     }
 
+    return $definitions;
+  }
+
+  /**
+   * Private.
+   */
+  private static function definitionHelper($property_items, $type, $property_name) {
+    $prefix = '';
+    $definitions = [];
+    $child_properties = [];
+    if ($type == "array" && isset($property_items->items->properties)) {
+      $prefix = $property_name . '__item__';
+      $props = $property_items->items->properties;
+      $child_properties = array_keys((array) $props);
+    }
+    elseif ($type == "object" && isset($property_items->properties)) {
+      $prefix = $property_name . '__';
+      $props = $property_items->properties;
+      $child_properties = array_keys((array) $props);
+    }
+    else {
+      $defs[$property_name] = self::getDefinition($type);
+    }
+
+    foreach ($child_properties as $child) {
+      $definitions[$prefix . $child] = self::getDefinition($type);
+    }
     return $definitions;
   }
 
