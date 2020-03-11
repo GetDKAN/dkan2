@@ -106,36 +106,61 @@ class Dataset extends ComplexDataFacade {
 
     if ($definition instanceof ListDataDefinition) {
       $property = new ItemList($definition, $property_name);
-      $values = [];
-      if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)) {
-        foreach ($this->data->{$matches[1]} as $dist) {
+      $values = $this->getArrayValues($property_name);
+      $property->setValue($values);
+    }
+    else {
+      $property = new class ($definition, $property_name) extends TypedData{};
+      $value = $this->getPropertyValue($property_name);
+      $property->setValue($value);
+    }
+
+    return $property;
+  }
+
+  /**
+   * Private.
+   */
+  private function getPropertyValue($property_name) {
+    $value = [];
+    $matches = [];
+
+    if (preg_match('/(.*)__(.*)/', $property_name, $matches)) {
+      // Check if property corresponds to an object.
+      if (isset($matches[1])
+      && isset($this->data->{$matches[1]})
+      && isset($matches[2])
+      && isset($this->data->{$matches[1]}->{$matches[2]})) {
+        $value = $this->data->{$matches[1]}->{$matches[2]};
+      }
+    } elseif (isset($this->data->{$property_name})) {
+      $value = $this->data->{$property_name};
+    }
+
+    return $value;
+  }
+
+  /**
+   * Private.
+   */
+  private function getArrayValues($property_name) {
+    $values = [];
+    if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)) {
+      foreach ($this->data->{$matches[1]} as $dist) {
+        if (isset($dist->{$matches[2]})) {
           $values[] = $dist->{$matches[2]};
         }
       }
-      else {
+    } else {
+      if (isset($this->data->{$property_name})) {
         $values = $this->data->{$property_name};
         if (is_string($values)) {
           $values = json_decode($values);
         }
       }
-      $property->setValue($values);
-    }
-    else {
-      $matches = [];
-      // Check if property corresponds to an object.
-      if (preg_match('/(.*)__(.*)/', $property_name, $matches)) {
-        if (isset($matches[1]) && isset($matches[2])) {
-          $value = $this->data->{$matches[1]}->{$matches[2]};
-        }
-      }
-      else {
-        $value = $this->data->{$property_name};
-      }
-      $property = new class ($definition, $property_name) extends TypedData{};
-      $property->setValue($value);
     }
 
-    return $property;
+    return $values;
   }
 
   /**
