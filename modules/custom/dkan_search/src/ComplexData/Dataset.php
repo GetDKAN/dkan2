@@ -43,7 +43,8 @@ class Dataset extends ComplexDataFacade {
     if (($type == "array" && isset($object->properties->{$property_name}->items->properties))
     || $type == "object") {
       $defs = self::getComplexPropertyDefinition($object->properties->{$property_name}, $type, $property_name);
-    } else {
+    }
+    else {
       $defs[$property_name] = self::getDefinitionObject($type);
     }
     return $defs;
