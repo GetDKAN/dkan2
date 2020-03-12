@@ -27,15 +27,8 @@ class Dataset extends ComplexDataFacade {
     $properties = array_keys((array) $object->properties);
 
     foreach ($properties as $property) {
-      $defs = [];
       $type = $object->properties->{$property}->type;
-      $array_has_items = ($type == "array" && isset($object->properties->{$property}->items->properties));
-      if ($array_has_items || $type == "object") {
-        $defs = self::definitionHelper($object->properties->{$property}, $type, $property);
-      }
-      else {
-        $defs[$property] = self::getDefinition($type);
-      }
+      $defs = self::getPropertyDefinition($type, $object, $property);
       $definitions = array_merge($definitions, $defs);
     }
 
@@ -45,7 +38,21 @@ class Dataset extends ComplexDataFacade {
   /**
    * Private.
    */
-  private static function definitionHelper($property_items, $type, $property_name) {
+  private static function getPropertyDefinition($type, $object, $property_name) {
+    $defs = [];
+    if (($type == "array" && isset($object->properties->{$property_name}->items->properties))
+    || $type == "object") {
+      $defs = self::getComplexPropertyDefinition($object->properties->{$property_name}, $type, $property_name);
+    } else {
+      $defs[$property_name] = self::getDefinitionObject($type);
+    }
+    return $defs;
+  }
+
+  /**
+   * Private.
+   */
+  private static function getComplexPropertyDefinition($property_items, $type, $property_name) {
     $prefix = '';
     $definitions = [];
     $child_properties = [];
@@ -60,11 +67,11 @@ class Dataset extends ComplexDataFacade {
       $child_properties = array_keys((array) $props);
     }
     else {
-      $definitions[$property_name] = self::getDefinition($type);
+      $definitions[$property_name] = self::getDefinitionObject($type);
     }
 
     foreach ($child_properties as $child) {
-      $definitions[$prefix . $child] = self::getDefinition($type);
+      $definitions[$prefix . $child] = self::getDefinitionObject($type);
     }
     return $definitions;
   }
@@ -72,7 +79,7 @@ class Dataset extends ComplexDataFacade {
   /**
    * Private.
    */
-  private static function getDefinition($type) {
+  private static function getDefinitionObject($type) {
     if ($type == "object" || $type == "any") {
       $type = "string";
     }
