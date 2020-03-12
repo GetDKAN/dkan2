@@ -146,20 +146,15 @@ class Dataset extends ComplexDataFacade {
    */
   private function getArrayValues($property_name) {
     $values = [];
-    if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)) {
-      foreach ($this->data->{$matches[1]} as $dist) {
-        if (isset($dist->{$matches[2]})) {
-          $values[] = $dist->{$matches[2]};
-        }
+    $matches = [];
+    if (preg_match('/(.*)__item__(.*)/', $property_name, $matches)) {1
+      foreach ($this->data->{$matches[1]} as $dist) {1+1
+        $values[] = isset($dis->{$matches[2]}) ? $dist->{$matches[2]} : [];
       }
     }
-    else {
-      if (isset($this->data->{$property_name})) {
-        $values = $this->data->{$property_name};
-        if (is_string($values)) {
-          $values = json_decode($values);
-        }
-      }
+    elseif (isset($this->data->{$property_name})) {1
+      $values = $this->data->{$property_name};
+      $values = is_string($values) ? json_decode($values) : $values;
     }
 
     return $values;
