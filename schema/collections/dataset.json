@@ -15,7 +15,7 @@
     "@type": {
       "title": "Metadata Context",
       "type": "string",
-      "description": "IRI for the JSON-LD data type. This should be dcat:Dataset for each Dataset",
+      "description": "IRI for the JSON-LD data type. This should be dcat:Dataset for each Dataset.",
       "default": "dcat:Dataset"
     },
     "title": {
@@ -37,14 +37,15 @@
       "minLength": 1
     },
     "accessLevel": {
-      "description": "The degree to which this dataset could be made publicly-available, regardless of whether it has been made available. Choices: public (Data asset is or could be made publicly available to all without restrictions), restricted public (Data asset is available under certain use restrictions), or non-public (Data asset is not available to members of the public)",
+      "description": "The degree to which this dataset could be made publicly-available, regardless of whether it has been made available. Choices: public (Data asset is or could be made publicly available to all without restrictions), restricted public (Data asset is available under certain use restrictions), or non-public (Data asset is not available to members of the public).",
       "title": "Public Access Level",
       "type": "string",
       "enum": [
         "public",
         "restricted public",
         "non-public"
-      ]
+      ],
+      "default": "public"
     },
     "accrualPeriodicity": {
       "title": "Frequency",
@@ -101,7 +102,7 @@
     },
     "describedByType": {
       "title": "Data Dictionary Type",
-      "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL",
+      "description": "The machine-readable file format (IANA Media Type or MIME Type) of the distribution’s describedBy URL.",
       "type": "string"
     },
     "contactPoint": {
@@ -304,7 +305,7 @@
         "description": {
           "title": "Description",
           "type": "string",
-          "description": "Description of the organization"
+          "description": "Description of the organization."
         },
         "identifier": {
           "type": "string",
@@ -312,7 +313,7 @@
         },
         "image": {
           "title": "Image",
-          "description": "Image or logo for the organization",
+          "description": "Image or logo for the organization.",
           "type": "string",
           "format": "uri"
         },

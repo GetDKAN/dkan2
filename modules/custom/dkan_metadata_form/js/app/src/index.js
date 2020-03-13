@@ -4,7 +4,9 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter as Router} from "react-router-dom";
 
-ReactDOM.render(<Router><App /></Router>, document.getElementById('app'));
+const uuid = window.drupalSettings.tempUUID;
+
+ReactDOM.render(<Router><App tempUUID={uuid} /></Router>, document.getElementById('app'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

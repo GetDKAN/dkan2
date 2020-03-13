@@ -7,7 +7,7 @@ import './App.scss';
 
 const axios = require('axios');
 
-function App() {
+function App({ tempUUID }) {
   const baseUrl = "";
 
   let history = useHistory();
@@ -21,8 +21,15 @@ function App() {
 
   useEffect(() => {
     async function fetchSchema() {
-      const response = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset');
-      setSchema(response.data);
+      const response = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset').then(
+        (response) => {
+          let data = response.data;
+          // Alter the schema to override the 'required' status on identifier.
+          data.required = data.required.filter(item => item !== "identifier" );
+          delete data.properties.identifier.minLength;
+          setSchema(data);
+        }
+      );
 
       const response2 = await axios.get(baseUrl + '/api/1/metastore/schemas/dataset.ui');
       setUiSchema(response2.data);
@@ -46,7 +53,7 @@ function App() {
   }, [identifier]);
 
   useEffect(() => {
-    if (message.length > 0) {
+    if (message.length > 0) { 
       toast.success(message);
     }
   }, [message]);
@@ -59,6 +66,10 @@ function App() {
         }
       }
     );
+    // Assign the uuid from drupalSettings to the identifier field.
+    if (!data.identifier) {
+      cleanData.identifier = tempUUID.toString();
+    }
     return cleanData;
   }
 
@@ -95,6 +106,7 @@ function App() {
         }
       });
     }
+    window.scrollTo(0,0);
   }
 
   function getId() {
@@ -114,6 +126,18 @@ function App() {
     DescriptionField: CustomDescriptionField
   };
 
+  function transformErrors(errors) {
+    return errors.map(error => {
+      if (error.name === "pattern" && error.property === ".contactPoint.hasEmail") {
+        error.message = "Enter a valid email address.";
+      }
+      if (error.name === "pattern" && error.property.includes(".distribution") && error.property.includes(".isssued")) {
+        error.message = "Dates should be ISO 8601 of least resolution. In other words, as much of YYYY-MM-DDThh:mm:ss.sTZD as is relevant to this dataset.";
+      }       
+      return error;
+    });
+  }
+
   return (
     <>
       <ToastBox
@@ -129,12 +153,13 @@ function App() {
         fields={fields}
         formData={formData} 
         uiSchema={uiSchema}
-        autocomplete="on"
+        autoComplete="on"
+        transformErrors={transformErrors}
         onSubmit={ (e) => {
           setMessage("");
           submitDataset(e);
         } }
-        onError={(e) => { console.log(e);}}>
+        onError={(e) => { window.scrollTo(0,0); console.error(e);}}>
         <div className="dc-form-actions">
           <button className="btn btn-success" type="submit">Submit</button>
           <button className="btn btn-default" type="button" onClick={event =>  window.location.href='/admin/content/datasets'}>Cancel</button>

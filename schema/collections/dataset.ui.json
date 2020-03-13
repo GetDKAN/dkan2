@@ -1,5 +1,9 @@
 {
+  "ui:autofocus": true,
   "@type": {
+    "ui:widget": "hidden"
+  },
+  "identifier": {
     "ui:widget": "hidden"
   },
   "contactPoint": {
@@ -25,5 +29,11 @@
   },
   "accessLevel": {
     "ui:emptyValue": "public"
+  },
+  "modified": {
+    "ui:placeholder": "YYYY-MM-DD"
+  },
+  "describedBy": {
+    "ui:placeholder": "http://"
   }
 }
