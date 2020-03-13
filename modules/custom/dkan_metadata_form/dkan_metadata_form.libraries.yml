@@ -1,5 +1,5 @@
 dkan_metadata_form:
     version: 1.x
-    js: { js/app/build/static/js/loadme.js: {  }, js/app/build/static/js/2.e10b0f2b.chunk.js: {  }, js/app/build/static/js/main.c72213c0.chunk.js: {  } }
-    css: { base: { js/app/build/static/css/2.52734cf0.chunk.css: {  }, js/app/build/static/css/main.69ef0e6f.chunk.css: {  } } }
+    js: { js/app/build/static/js/loadme.js: {  }, js/app/build/static/js/2.0e3cfa9c.chunk.js: {  }, js/app/build/static/js/main.fd3563e3.chunk.js: {  } }
+    css: { base: { js/app/build/static/css/2.24eef765.chunk.css: {  }, js/app/build/static/css/main.b9557a38.chunk.css: {  } } }
     dependencies: [core/drupalSettings]
