@@ -102,32 +102,28 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
    * Store data.
    */
   public function store($data, string $id = NULL): string {
-    return $this->storeMultiple([$data], $id);
-  }
-
-  /**
-   * Prepare to store possibly multiple values.
-   *
-   * @param array $data
-   *   Array of values to be inserted into the database.
-   * @param string|null $id
-   *   Identifier.
-   *
-   * @return string
-   *   Record number.
-   */
-  public function storeMultiple(array $data, string $id = NULL) : string {
     $this->setTable();
 
     $existing = (isset($id)) ? $this->retrieve($id) : NULL;
+
+    $data = $this->prepareData($data, $id);
+
     $returned_id = NULL;
 
     if ($existing === NULL) {
       $fields = $this->getNonSerialFields();
-      $returned_id = $this->doStoreMultiple($fields, $data);
+
+      if (count($fields) != count($data)) {
+        throw new \Exception("The number of fields and data given do not match: fields - " .
+        json_encode($fields) . " data - " . json_encode($data));
+      }
+
+      $q = $this->connection->insert($this->getTableName());
+      $q->fields($fields);
+      $q->values($data);
+      $returned_id = $q->execute();
     }
     else {
-      $data = $this->prepareData($data[0], $id);
       $q = $this->connection->update($this->getTableName());
       $q->fields($data)
         ->condition($this->primaryKey(), $id)
@@ -138,23 +134,23 @@ abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInter
   }
 
   /**
-   * Store multiple values to reduce database write operations.
+   * Prepare to store possibly multiple values.
    *
-   * @param array $fields
-   *   An array of the fields.
    * @param array $data
-   *   An array of data records.
-   * @param string|null $id
-   *   A record identifier.
+   *   Array of values to be inserted into the database.
    *
-   * @return int|null
-   *   The last inserted id of the query, or NULL.
+   * @return string
+   *   Last record id inserted into the database.
    */
-  private function doStoreMultiple(array $fields, array $data, string $id = NULL) {
+  public function storeMultiple(array $data) : string {
+    $this->setTable();
+
+    $fields = $this->getNonSerialFields();
+
     $q = $this->connection->insert($this->getTableName());
     $q->fields($fields);
     foreach ($data as $datum) {
-      $datum = $this->prepareData($datum, $id);
+      $datum = $this->prepareData($datum);
       if (count($fields) != count($datum)) {
         throw new \Exception("The number of fields and data given do not match: fields - " .
           json_encode($fields) . " data - " . json_encode($datum));
