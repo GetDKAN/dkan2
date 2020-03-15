@@ -4,6 +4,7 @@ namespace Drupal\dkan_common\Storage;
 
 use Contracts\RemoverInterface;
 use Contracts\RetrieverInterface;
+use Contracts\StorerInterface;
 use Dkan\Datastore\Storage\StorageInterface;
 use Dkan\Datastore\Storage\Database\SqlStorageTrait;
 use Drupal\Core\Database\Connection;
@@ -12,7 +13,7 @@ use Drupal\dkan_datastore\Storage\Query;
 /**
  * AbstractDatabaseTable class.
  */
-abstract class AbstractDatabaseTable implements StorageInterface, RetrieverInterface, RemoverInterface {
+abstract class AbstractDatabaseTable implements StorageInterface, StorerInterface, RetrieverInterface, RemoverInterface {
   use SqlStorageTrait;
   use QueryToQueryHelperTrait;
 
