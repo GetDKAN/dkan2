@@ -71,7 +71,6 @@ jobs:
             dktl drush dkan-dummy-content:create
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
-            dktl drush queue:run dkan_datastore_import
             dktl drush en dkan_frontend
             dktl drush dkan-search:rebuild-tracker
             dktl drush search-api-index
