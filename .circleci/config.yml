@@ -84,3 +84,7 @@ jobs:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
       - store_test_results:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/videos
+      - store_artifacts:
+          path: ~/sandbox/src/frontend/cypress/screenshots
+      - store_artifacts:
+          path: ~/sandbox/src/frontend/cypress/videos
