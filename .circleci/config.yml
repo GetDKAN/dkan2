@@ -61,16 +61,30 @@ jobs:
             cd ~/sandbox
             dktl install
       - run:
-          name: Run integration tests (cypress, dredd, frontend)
+          name: Run DKAN cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl dkan:test-cypress
+      - run:
+          name: Run DKAN dredd tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
+            dktl install
             dktl drush dkan-dummy-content:create
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl dkan:test-dredd
+      - run:
+          name: Run frontend cypress tests
+          command: |
+            export PATH=$PATH:~/dkan-tools/bin
+            cd ~/sandbox
+            dktl install
+            dktl drush dkan-dummy-content:create
+            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl drush en dkan_frontend
             dktl drush dkan-search:rebuild-tracker
             dktl drush search-api-index
