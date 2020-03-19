@@ -10,9 +10,9 @@ use Drupal\Component\Uuid\Php;
  * Controller.
  */
 class Controller extends ControllerBase {
-  
+
   /**
-   * @var Php $uuidService
+   * @var \Drupal\Component\Uuid\Php
    */
   protected $uuidService;
 
@@ -27,7 +27,7 @@ class Controller extends ControllerBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    // Instantiates this form class.
+    // Instantiates this service class.
     return new static(
       // Load the service required to construct this class.
       $container->get('uuid')
