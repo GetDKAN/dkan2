@@ -12,6 +12,8 @@ use Drupal\Component\Uuid\Php;
 class Controller extends ControllerBase {
 
   /**
+   * Uuid Service.
+   *
    * @var \Drupal\Component\Uuid\Php
    */
   protected $uuidService;
