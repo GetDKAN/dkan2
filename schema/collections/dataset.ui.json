@@ -16,6 +16,13 @@
       "ui:widget": "hidden"
     }
   },
+  "distribution": {
+    "items": {
+      "@type": {
+        "ui:widget": "hidden"
+      }
+    }
+  },
   "description": {
     "ui:widget": "textarea",
     "ui:options": {
