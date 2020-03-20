@@ -86,6 +86,7 @@ jobs:
             cd ~/sandbox
             dktl install
             dktl drush dkan-dummy-content:create
+            dktl drush queue:run dkan_datastore_import
             dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
             dktl drush en dkan_frontend
             dktl drush dkan-search:rebuild-tracker
