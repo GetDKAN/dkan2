@@ -9,7 +9,6 @@ context('Admin content and dataset views', () => {
         cy.visit(baseurl + "/admin/dkan/dataset")
         cy.wait(2000)
         cy.get('#root_title').type('DKANTEST2 dataset title', { force:true } )
-        cy.get('#root_identifier').type('DKANTEST0987654321', { force:true } )
         cy.get('#root_description').type('DKANTEST2 dataset description.', { force:true } )
         cy.get('#root_accessLevel').select('public', { force:true } )
         cy.get('#root_modified').type('2020-02-02', { force:true } )
@@ -18,7 +17,7 @@ context('Admin content and dataset views', () => {
         cy.get('#root_contactPoint_hasEmail').type('mailto:dkantest@test.com', { force:true } )
         cy.get('#root_keyword_0').type('open data', { force:true } )
         cy.get('.btn-success').click({ force:true })
-        cy.get('.toast-content-container > .toast-content').should('contain','DKANTEST0987654321 has been created')
+        cy.get('.toast-content-container > .toast-content').should('contain','has been created')
     })
     
     // DKAN Content View.    
@@ -41,7 +40,7 @@ context('Admin content and dataset views', () => {
         cy.visit(baseurl + "/admin/content/node")
         cy.get('#edit-data-type').select('dataset',{ force:true })
         cy.get('#edit-submit-dkan-content').click({ force:true })
-        cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/');
+        cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/node/');
     })
 
     it('There is a link in the admin menu to the datasets admin screen.', () => {
@@ -66,7 +65,7 @@ context('Admin content and dataset views', () => {
 
     it('The dataset data node titles should link to the REACT page. The edit link should go to the json form.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
-        cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/')
+        //cy.get('tbody > :nth-child(1) > .views-field-title > a').invoke('attr', 'href').should('contain', '/dataset/')
         cy.get('tbody > :nth-child(1) > .views-field-nothing > a').invoke('attr', 'href').should('contain', 'admin/dkan/dataset?id=');
     })
 

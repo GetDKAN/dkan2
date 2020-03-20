@@ -8,7 +8,7 @@ context('Admin dataset json form', () => {
         cy.visit(baseurl + "/admin/dkan/dataset")
         cy.get('#root__title').should('have.text', 'Project Open Data Dataset')
         cy.get('#root .control-label[for="root_title"] > .required').should('be.visible')
-        cy.get('#root .control-label[for="root_identifier"] > .required').should('be.visible')
+        cy.get('#root .control-label[for="root_identifier"] > .required').should('not.be.visible')
         cy.get('#root .control-label[for="root_description"] > .required').should('be.visible')
         cy.get('#root .control-label[for="root_accessLevel"] > .required').should('be.visible')
         cy.get('#root .control-label[for="root_modified"] > .required').should('be.visible')
@@ -22,7 +22,6 @@ context('Admin dataset json form', () => {
         cy.visit(baseurl + "/admin/dkan/dataset")
         cy.wait(2000)
         cy.get('#root_title').type('DKANTEST dataset title', { force:true } )
-        cy.get('#root_identifier').type('DKANTEST1234567890', { force:true } )
         cy.get('#root_description').type('DKANTEST dataset description.', { force:true } )
         cy.get('#root_accessLevel').select('public', { force:true } )
         cy.get('#root_modified').type('2020-02-02', { force:true } )
@@ -31,11 +30,13 @@ context('Admin dataset json form', () => {
         cy.get('#root_contactPoint_hasEmail').type('mailto:dkantest@test.com', { force:true } )
         cy.get('#root_keyword_0').type('open data', { force:true } )
         cy.get('.btn-success').click({ force:true })
-        cy.get('.toast-content-container > .toast-content').should('contain','DKANTEST1234567890 has been created')
+        cy.get('.toast-content-container > .toast-content').should('contain','has been created')
     })
 
     it('Admin user can edit a dataset with the json form UI.', () => {
         cy.visit(baseurl + "/admin/content/datasets")
+        cy.get('#edit-title').type('DKANTEST dataset title', { force:true } )
+        cy.get('#edit-submit-dkan-dataset-content').click({ force:true })
         cy.get('tbody > tr:first-of-type > .views-field-nothing > a').click({ force:true })
         cy.wait(2000)
         cy.get('#root_title').should('have.value','DKANTEST dataset title')
@@ -48,10 +49,9 @@ context('Admin dataset json form', () => {
         cy.get('#root_distribution_0_title').type('DKANTEST distribution number one', { force:true })
         cy.get('#root_distribution_0_format').type('csv', { force:true })
         cy.get('#root_distribution_0_mediaType').type('text/csv', { force:true })
-        cy.get('#root_distribution_0_downloadURL').type('https://dkan-default-content-files.s3.amazonaws.com/district_centerpoints_small.csv', { force:true })
         cy.get('#root_distribution_0_isssued').type('2020-02-02', { force:true })
         cy.get('.btn-success').click({ force:true })
-        cy.get('.toast-content-container > .toast-content').should('contain','DKANTEST1234567890 has been updated')
+        cy.get('.toast-content').should('contain','has been updated')
     })
 
     it('Admin user can delete a dataset (cleanup)', () => {
