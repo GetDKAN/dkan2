@@ -139,13 +139,33 @@ jobs:
             git commit -m "Set branch to $CIRCLE_BRANCH"
             git push origin $CIRCLE_BRANCH
 
+  deploy_tag:
+    parallelism: 1
+    machine:
+      image: circleci/classic:latest
+    steps:
+      - run:
+          name: Clone site repo
+          command: |
+            cd ~
+            git clone https://oauth2:$GITLAB_TOKEN@git.civicactions.net/dkan/dkan-demo.git
+            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
+            cd dkan-demo
+            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
+            sed -i "s/ENV DKAN_TAG.*/ENV DKAN_TAG $CIRCLE_TAG/" Dockerfile
+            git add Dockerfile
+            git commit -m "Set tag to $CIRCLE_TAG"
+            git push origin master
+
 workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - deploy:
+      - deploy
+      - deploy_tag
           filters:
-            - branches
-      - build:
-          filters:
-            - branches
+            tags:
+              ignore: /1\..*/
+            branches:
+              ignore: /.*/
+      - build
