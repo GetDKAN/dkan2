@@ -128,7 +128,7 @@ jobs:
           name: Clone site repo
           command: |
             cd ~
-            git clone ssh://git@git.civicactions.net:940/dkan/dkan-demo.git
+            git clone https://oauth2:$GITLAB_TOKEN@git.civicactions.net/dkan/dkan-demo.git
             cd dkan-demo
             git checkout -b $CIRCLE_BRANCH
             sed -i "s/ENV DKAN_TAG.*/ENV DKAN_BRANCH $CIRCLE_BRANCH/" Dockerfile
