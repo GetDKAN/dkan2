@@ -144,4 +144,8 @@ workflows:
   build_test_deploy:
     jobs:
       - deploy
+          filters:
+            - branches
       - build
+          filters:
+            - branches
