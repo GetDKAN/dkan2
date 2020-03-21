@@ -156,7 +156,7 @@ workflows:
       - deploy_tag:
           filters:
             tags:
-              ignore: /1\..*/
+              only: /.*/
             branches:
               ignore: /.*/
       - build
