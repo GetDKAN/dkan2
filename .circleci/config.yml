@@ -126,6 +126,7 @@ jobs:
             sed -i 's/tag=$DKAN_TAG/branch=$DKAN_BRANCH/' Dockerfile
             git add Dockerfile
             git commit -m "Set branch to $CIRCLE_BRANCH"
+            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
             git push origin $CIRCLE_BRANCH
 
 workflows:
