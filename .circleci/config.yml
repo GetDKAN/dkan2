@@ -133,7 +133,7 @@ workflows:
   build_test_deploy:
     jobs:
       - build
-      - deploy
+      - deploy:
           requires:
             - build
 
