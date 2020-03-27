@@ -71,7 +71,11 @@ jobs:
             rm -rf ./docroot/profiles/contrib/dkan2
             mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2
-
+      - persist_to_workspace:
+          root: /home/circleci
+          paths:
+            - dkan-tools
+            - sandbox
   test-phpunit:
     parallelism: 1
     machine:
