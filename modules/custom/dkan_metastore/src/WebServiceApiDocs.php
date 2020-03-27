@@ -154,17 +154,20 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
       $newPath = $path;
       $newOperations = $operations;
       unset($pathsAndOperations[$path]);
-      list($newPath, $newOperations) = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
+      [$newPath, $newOperations] = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
       $pathsAndOperations[$newPath] = $newOperations;
     }
 
     return $pathsAndOperations;
   }
 
+  /**
+   * Private.
+   */
   private function modifyDatasetEndpoint($path, $operations, $identifier) {
     $newOperations = $this->getModifyDatasetEndpointNewOperations($operations, $identifier);
 
-    if(!isset($newOperations)) {
+    if (!isset($newOperations)) {
       return [$path, $operations];
     }
 
@@ -192,8 +195,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function getModifyDatasetEndpointNewParameters(array $parameters, $identifier): ?array
-  {
+  private function getModifyDatasetEndpointNewParameters(array $parameters, $identifier): ?array {
     $modified = FALSE;
     foreach ($parameters as $key => $parameter) {
       if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
