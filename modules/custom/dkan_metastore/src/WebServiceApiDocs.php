@@ -153,7 +153,14 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     foreach ($pathsAndOperations as $path => $operations) {
       foreach ($operations as $operation => $info) {
         foreach ($info['parameters'] as $key => $parameter) {
-          $this->modifyDatasetEndpoint($pathsAndOperations, $path, $operation, $key, $parameter, $identifier);
+          $config = [
+            'path' => $path,
+            'operation' => $operation,
+            'parameterKey' => $key,
+            'parameter' => $parameter,
+            'identifier' => $identifier
+          ];
+          $this->modifyDatasetEndpoint($pathsAndOperations, $config);
         }
       }
     }
@@ -164,7 +171,13 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   /**
    * Private.
    */
-  private function modifyDatasetEndpoint(&$pathsAndOperations, $path, $operation, $parameterKey, $parameter, $identifier) {
+  private function modifyDatasetEndpoint(&$pathsAndOperations, array $config) {
+    $path = $config['path'];
+    $operation = $config['operation'];
+    $parameterKey = $config['parameterKey'];
+    $parameter = $config['parameter'];
+    $identifier = $config['identifier'];
+
     if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
       $newPath = str_replace("{identifier}", $identifier, $path);
       $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
