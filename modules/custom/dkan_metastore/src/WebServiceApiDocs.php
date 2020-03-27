@@ -93,8 +93,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
 
     $pathsAndOperations = $fullSpec['paths'];
     $pathsAndOperations = $this->keepDatasetSpecificEndpoints($pathsAndOperations);
-    $pathsAndOperations = $this->modifyDatasetEndpoint($pathsAndOperations, $identifier);
-    $pathsAndOperations = $this->modifySqlEndpoint($pathsAndOperations, $identifier, $fullSpec['components']['parameters']);
+    $pathsAndOperations = $this->modifyDatasetEndpoints($pathsAndOperations, $identifier);
+    $pathsAndOperations = $this->modifySqlEndpoints($pathsAndOperations, $identifier, $fullSpec['components']['parameters']);
 
     $fullSpec['paths'] = $pathsAndOperations;
     return $this->getResponse($fullSpec);
@@ -148,22 +148,29 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @return array
    *   Spec with dataset-specific metastore get endpoint.
    */
-  private function modifyDatasetEndpoint(array $pathsAndOperations, string $identifier) {
+  private function modifyDatasetEndpoints(array $pathsAndOperations, string $identifier) {
 
     foreach ($pathsAndOperations as $path => $operations) {
       foreach ($operations as $operation => $info) {
         foreach ($info['parameters'] as $key => $parameter) {
-          if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
-            $newPath = str_replace("{identifier}", $identifier, $path);
-            $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
-            unset($pathsAndOperations[$path]);
-            $pathsAndOperations[$newPath][$operation]['parameters'][$key]['example'] = $identifier;
-          }
+          $this->modifyDatasetEndpoint($pathsAndOperations, $path, $operation, $key, $parameter, $identifier);
         }
       }
     }
 
     return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function modifyDatasetEndpoint(&$pathsAndOperations, $path, $operation, $parameterKey, $parameter, $identifier) {
+    if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
+      $newPath = str_replace("{identifier}", $identifier, $path);
+      $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
+      unset($pathsAndOperations[$path]);
+      $pathsAndOperations[$newPath][$operation]['parameters'][$parameterKey]['example'] = $identifier;
+    }
   }
 
   /**
@@ -179,7 +186,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    * @return array
    *   Spec with dataset-specific datastore sql endpoint.
    */
-  private function modifySqlEndpoint(array $pathsAndOperations, string $identifier, array $parameters) {
+  private function modifySqlEndpoints(array $pathsAndOperations, string $identifier, array $parameters) {
     if ($this->modifyData($identifier)) {
       foreach ($pathsAndOperations as $path => $operations) {
         if (substr_count($path, 'sql') > 0) {
