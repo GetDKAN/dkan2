@@ -186,7 +186,7 @@ workflows:
             branches:
               ignore: /.*/
       - build
-      - test-phpunit
-        - requires: build
-      - test-behat
-        - requires: build
+      - test-phpunit:
+          requires: build
+      - test-behat:
+          requires: build
