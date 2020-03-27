@@ -267,8 +267,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
     if (isset($distribution->data->description)) {
       $operations['get']['description'] = $distribution->data->description;
     }
-
-
+    
     $query['example'] = "[SELECT * FROM {$distribution->identifier}];";
     $operations['get']['parameters'] = [$query];
 
