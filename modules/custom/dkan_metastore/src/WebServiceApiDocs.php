@@ -154,7 +154,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
       $newPath = $path;
       $newOperations = $operations;
       unset($pathsAndOperations[$path]);
-      list($newPath, $newOperations) = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
+      [$newPath, $newOperations] = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
       $pathsAndOperations[$newPath] = $newOperations;
     }
 
@@ -226,19 +226,28 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
 
     $query = $parameters['query'];
 
-    foreach ($pathsAndOperations as $path => $operations) {
-      if (substr_count($path, 'sql') > 0) {
+    foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
+      $newOperations = $operations;
+      unset($pathsAndOperations[$path]);
 
-        $newOperations = $operations;
-        unset($pathsAndOperations[$path]);
-
-        foreach ($this->getDistributions($identifier) as $dist) {
-          list($newPath, $newOperations) = $this->modifySqlEndpoint($newOperations, $dist, $query);
-          $pathsAndOperations[$newPath] = $newOperations;
-        }
+      foreach ($this->getDistributions($identifier) as $dist) {
+        [$newPath, $newOperations] = $this->modifySqlEndpoint($newOperations, $dist, $query);
+        $pathsAndOperations[$newPath] = $newOperations;
       }
     }
 
+    return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function getSqlPathsAndOperations($pathsAndOperations) {
+    foreach ($this->getSqlPathsAndOperations($pathsAndOperations) as $path => $operations) {
+      if (substr_count($path, 'sql') == 0) {
+        unset($pathsAndOperations[$path]);
+      }
+    }
     return $pathsAndOperations;
   }
 
