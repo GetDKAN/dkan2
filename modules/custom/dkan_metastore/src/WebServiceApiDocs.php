@@ -261,10 +261,10 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private function modifySqlEndpoint($operations, $distribution, $query) {
     $newPath = "/api/1/datastore/sql?query=[SELECT * FROM {$distribution->identifier}];";
 
-    if (isset($dist->data->title)) {
+    if (isset($distribution->data->title)) {
       $operations['get']['summary'] = $distribution->data->title;
     }
-    if (isset($dist->data->description)) {
+    if (isset($distribution->data->description)) {
       $operations['get']['description'] = $distribution->data->description;
     }
 
