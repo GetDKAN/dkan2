@@ -116,7 +116,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
 
     $pathsToKeepPaths = array_combine($paths, array_map(function ($path) use ($keepPaths) {
       foreach ($keepPaths as $keepPath) {
-        if (substr_count($path, $keepPath) > 0) {
+        if (substr_count($path, $keepPath) > 0 && substr_count($path, $keepPath . "/") == 0) {
           return $keepPath;
         }
       }
