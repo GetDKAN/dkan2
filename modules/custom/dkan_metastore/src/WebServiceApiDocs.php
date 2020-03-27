@@ -154,7 +154,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
       $newPath = $path;
       $newOperations = $operations;
       unset($pathsAndOperations[$path]);
-      [$newPath, $newOperations] = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
+      list($newPath, $newOperations) = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
       $pathsAndOperations[$newPath] = $newOperations;
     }
 
@@ -233,7 +233,7 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
         unset($pathsAndOperations[$path]);
 
         foreach ($this->getDistributions($identifier) as $dist) {
-          [$newPath, $newOperations] = $this->modifySqlEndpoint($newOperations, $dist, $query);
+          list($newPath, $newOperations) = $this->modifySqlEndpoint($newOperations, $dist, $query);
           $pathsAndOperations[$newPath] = $newOperations;
         }
       }
