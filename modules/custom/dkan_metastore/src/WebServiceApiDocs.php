@@ -142,7 +142,6 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param array $pathsAndOperations
    *   The paths defined in the original spec.
-   *
    * @param string $identifier
    *   Dataset uuid.
    *
@@ -172,10 +171,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    *
    * @param array $pathsAndOperations
    *   The paths defined in the original spec.
-   *
    * @param string $identifier
    *   Dataset uuid.
-   *
    * @param array $parameters
    *   Original spec parameters.
    *
