@@ -157,12 +157,6 @@ workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - deploy_tag:
-          filters:
-            tags:
-              ignore: /1\..*/
-            branches:
-              ignore: /.*/
       - build
       - test-phpunit:
           requires: 
