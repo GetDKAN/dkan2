@@ -151,39 +151,57 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
   private function modifyDatasetEndpoints(array $pathsAndOperations, string $identifier) {
 
     foreach ($pathsAndOperations as $path => $operations) {
-      foreach ($operations as $operation => $info) {
-        foreach ($info['parameters'] as $key => $parameter) {
-          $config = [
-            'path' => $path,
-            'operation' => $operation,
-            'parameterKey' => $key,
-            'parameter' => $parameter,
-            'identifier' => $identifier
-          ];
-          $this->modifyDatasetEndpoint($pathsAndOperations, $config);
-        }
-      }
+      $newPath = $path;
+      $newOperations = $operations;
+      unset($pathsAndOperations[$path]);
+      list($newPath, $newOperations) = $this->modifyDatasetEndpoint($newPath, $newOperations, $identifier);
+      $pathsAndOperations[$newPath] = $newOperations;
     }
 
     return $pathsAndOperations;
   }
 
+  private function modifyDatasetEndpoint($path, $operations, $identifier) {
+    $newOperations = $this->getModifyDatasetEndpointNewOperations($operations, $identifier);
+
+    if(!isset($newOperations)) {
+      return [$path, $operations];
+    }
+
+    $newPath = str_replace("{identifier}", $identifier, $path);;
+
+    return [$newPath, $newOperations];
+  }
+
   /**
    * Private.
    */
-  private function modifyDatasetEndpoint(&$pathsAndOperations, array $config) {
-    $path = $config['path'];
-    $operation = $config['operation'];
-    $parameterKey = $config['parameterKey'];
-    $parameter = $config['parameter'];
-    $identifier = $config['identifier'];
-
-    if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
-      $newPath = str_replace("{identifier}", $identifier, $path);
-      $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
-      unset($pathsAndOperations[$path]);
-      $pathsAndOperations[$newPath][$operation]['parameters'][$parameterKey]['example'] = $identifier;
+  private function getModifyDatasetEndpointNewOperations($operations, $identifier) {
+    $modified = FALSE;
+    foreach ($operations as $operation => $info) {
+      $newParameters = $this->getModifyDatasetEndpointNewParameters($info['parameters'], $identifier);
+      if ($newParameters) {
+        $operations[$operation]['parameters'] = $newParameters;
+        $modified = TRUE;
+      }
     }
+
+    return ($modified) ? $operations : NULL;
+  }
+
+  /**
+   * Private.
+   */
+  private function getModifyDatasetEndpointNewParameters(array $parameters, $identifier): ?array
+  {
+    $modified = FALSE;
+    foreach ($parameters as $key => $parameter) {
+      if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
+        $parameters[$key]['example'] = $identifier;
+        $modified = TRUE;
+      }
+    }
+    return ($modified) ? $parameters : NULL;
   }
 
   /**
