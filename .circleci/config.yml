@@ -54,6 +54,15 @@ jobs:
             rm -rf ./docroot/profiles/contrib/dkan2
             mv ~/project ./docroot/profiles/contrib/dkan2
             ls -lha ./docroot/profiles/contrib/dkan2
+
+  test-phpunit:
+    parallelism: 1
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DRUPAL_VERSION: V8
+    steps:
       - run:
           name: Run phpUnit tests
           command: |
@@ -61,6 +70,15 @@ jobs:
             cd ~/sandbox
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
+
+  test-behat:
+    parallelism: 1
+    machine:
+      image: circleci/classic:latest
+    environment:
+      TEST_RESULTS: /tmp/test-results
+      DRUPAL_VERSION: V8
+    steps:
       - run:
           name: Install site
           command: |
@@ -119,6 +137,24 @@ jobs:
       - store_artifacts:
           path: ~/sandbox/src/frontend/cypress/videos
 
+  deploy_tag:
+    parallelism: 1
+    machine:
+      image: circleci/classic:latest
+    steps:
+      - run:
+          name: Clone site repo
+          command: |
+            cd ~
+            git clone https://oauth2:$GITLAB_TOKEN@git.civicactions.net/dkan/dkan-demo.git
+            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
+            cd dkan-demo
+            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
+            sed -i "s/ENV DKAN_TAG.*/ENV DKAN_TAG $CIRCLE_TAG/" Dockerfile
+            git add Dockerfile
+            git commit -m "Set tag to $CIRCLE_TAG"
+            git push origin master
+
   deploy:
     parallelism: 1
     machine:
@@ -139,29 +175,10 @@ jobs:
             git commit -m "Set branch to $CIRCLE_BRANCH"
             git push origin $CIRCLE_BRANCH
 
-  deploy_tag:
-    parallelism: 1
-    machine:
-      image: circleci/classic:latest
-    steps:
-      - run:
-          name: Clone site repo
-          command: |
-            cd ~
-            git clone https://oauth2:$GITLAB_TOKEN@git.civicactions.net/dkan/dkan-demo.git
-            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
-            cd dkan-demo
-            git config user.email "bot@getdkan.com" && git config user.name "DKAN bot"
-            sed -i "s/ENV DKAN_TAG.*/ENV DKAN_TAG $CIRCLE_TAG/" Dockerfile
-            git add Dockerfile
-            git commit -m "Set tag to $CIRCLE_TAG"
-            git push origin master
-
 workflows:
   version: 2
   build_test_deploy:
     jobs:
-      - deploy
       - deploy_tag:
           filters:
             tags:
@@ -169,3 +186,7 @@ workflows:
             branches:
               ignore: /.*/
       - build
+      - test-phpunit
+        - requires: build
+      - test-behat
+        - requires: build
