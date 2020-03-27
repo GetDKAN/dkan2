@@ -221,37 +221,58 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
    */
   private function modifySqlEndpoints(array $pathsAndOperations, string $identifier, array $parameters) {
     if ($this->modifyData($identifier)) {
-      foreach ($pathsAndOperations as $path => $operations) {
-        if (substr_count($path, 'sql') > 0) {
-          unset($pathsAndOperations[$path]);
+      return $this->removeSqlEndpointPaths($pathsAndOperations);
+    }
+
+    $query = $parameters['query'];
+
+    foreach ($pathsAndOperations as $path => $operations) {
+      if (substr_count($path, 'sql') > 0) {
+
+        $newOperations = $operations;
+        unset($pathsAndOperations[$path]);
+
+        foreach ($this->getDistributions($identifier) as $dist) {
+          [$newPath, $newOperations] = $this->modifySqlEndpoint($newOperations, $dist, $query);
+          $pathsAndOperations[$newPath] = $newOperations;
         }
       }
     }
-    else {
-      foreach ($pathsAndOperations as $path => $operations) {
-        if (substr_count($path, 'sql') > 0) {
-          foreach ($this->getDistributions($identifier) as $dist) {
-            $newPath = "/api/1/datastore/sql?query=[SELECT * FROM {$dist->identifier}];";
 
-            $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
+    return $pathsAndOperations;
+  }
 
-            if (isset($dist->data->title)) {
-              $pathsAndOperations[$newPath]['get']['summary'] = $dist->data->title;
-            }
-            if (isset($dist->data->description)) {
-              $pathsAndOperations[$newPath]['get']['description'] = $dist->data->description;
-            }
+  /**
+   * Private.
+   */
+  private function removeSqlEndpointPaths($pathsAndOperations) {
+    foreach ($pathsAndOperations as $path => $operations) {
+      if (substr_count($path, 'sql') > 0) {
 
-            $query = $parameters['query'];
-            $query['example'] = "[SELECT * FROM {$dist->identifier}];";
-            $pathsAndOperations[$newPath]['get']['parameters'] = [$query];
-          }
-
-          unset($pathsAndOperations[$path]);
-        }
+        unset($pathsAndOperations[$path]);
       }
     }
     return $pathsAndOperations;
+  }
+
+  /**
+   * Private.
+   */
+  private function modifySqlEndpoint($operations, $distribution, $query) {
+    $newPath = "/api/1/datastore/sql?query=[SELECT * FROM {$distribution->identifier}];";
+
+    if (isset($dist->data->title)) {
+      $operations['get']['summary'] = $distribution->data->title;
+    }
+    if (isset($dist->data->description)) {
+      $operations['get']['description'] = $distribution->data->description;
+    }
+
+
+    $query['example'] = "[SELECT * FROM {$distribution->identifier}];";
+    $operations['get']['parameters'] = [$query];
+
+    return [$newPath, $operations];
   }
 
   /**
