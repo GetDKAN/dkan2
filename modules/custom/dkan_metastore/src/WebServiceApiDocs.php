@@ -153,8 +153,8 @@ class WebServiceApiDocs implements ContainerInjectionInterface {
 
     foreach ($pathsAndOperations as $path => $operations) {
       foreach ($operations as $operation => $info) {
-        foreach ($info['parameters'] as $key => $paremeter) {
-          if (isset($paremeter['name']) && $paremeter['name'] == "identifier" && isset($paremeter['example'])) {
+        foreach ($info['parameters'] as $key => $parameter) {
+          if (isset($parameter['name']) && $parameter['name'] == "identifier" && isset($parameter['example'])) {
             $newPath = str_replace("{identifier}", $identifier, $path);
             $pathsAndOperations[$newPath] = $pathsAndOperations[$path];
             unset($pathsAndOperations[$path]);
