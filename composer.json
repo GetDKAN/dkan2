@@ -10,7 +10,7 @@
         "cweagans/composer-patches": "^1.5.0",
         "drush/drush": "^10.2.2",
         "drupal/admin_toolbar": "^2.2",
-        "drupal/config_update": "1.x-dev",
+        "drupal/config_update": "^1.6",
         "drupal/entity": "^1.0.0",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
