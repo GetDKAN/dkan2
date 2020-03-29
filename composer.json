@@ -11,7 +11,7 @@
         "drush/drush": "^10.2.2",
         "drupal/admin_toolbar": "^2.2",
         "drupal/config_update": "1.x-dev",
-        "drupal/entity": "1.0.0-rc1",
+        "drupal/entity": "^1.0.0",
         "drupal/search_api": "^1.15",
         "drupal/views_bulk_operations": "^3.6",
         "fmizzell/maquina": "^1.1.0",
