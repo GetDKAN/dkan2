@@ -30,7 +30,7 @@
         "getdkan/mock-chain": "^1.0.1"
     },
     "require-dev": {
-	"phpunit/phpunit": "^7.5"
+        "phpunit/phpunit": "^7.5"
     },
     "repositories": [
         {
@@ -53,12 +53,16 @@
             "email": "acinternets@gmail.com"
         },
         {
-          "name": "dafeder",
-          "email": "dafeder@gmail.com"
+            "name": "dafeder",
+            "email": "dafeder@gmail.com"
         },
-	    {
-	      "name": "fmizzell",
-          "email": "fmizzell.dev@gmail.com"
-	    }
+        {
+            "name": "fmizzell",
+            "email": "fmizzell.dev@gmail.com"
+        },
+        {
+            "name": "Thierry Dallacroce",
+            "email": "thierry.dallacroce+dev@gmail.com"
+        }
     ]
 }
