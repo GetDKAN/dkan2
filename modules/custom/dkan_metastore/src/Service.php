@@ -307,9 +307,7 @@ class Service implements ContainerInjectionInterface {
    *   The catalog object
    */
   public function getDataJson() {
-    // @Todo: Switch to DI once we decide on where to add this.
-    $schemaRetriever = \Drupal::service("dkan_schema.schema_retriever");
-    $catalogJson = $schemaRetriever->retrieve("catalog");
+    $catalogJson = $this->schemaRetriever->retrieve("catalog");
     $catalog = json_decode($catalogJson);
     $catalog->dataset = $this->getAll('dataset');
 
