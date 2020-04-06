@@ -307,12 +307,10 @@ class Service implements ContainerInjectionInterface {
    *   The catalog object
    */
   public function getDataJson() {
-    $catalog = new \stdClass();
-    $catalog->{"@context"} = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld";
-    $catalog->{"@id"} = "https://data.cms.gov/data.json";
-    $catalog->{"@type"} = "dcat:Catalog";
-    $catalog->conformsTo = "https://project-open-data.cio.gov/v1.1/schema";
-    $catalog->describedBy = "https://project-open-data.cio.gov/v1.1/schema/catalog.json";
+    // @Todo: Switch to DI once we decide on where to add this.
+    $schemaRetriever = \Drupal::service("dkan_schema.schema_retriever");
+    $catalogJson = $schemaRetriever->retrieve("data");
+    $catalog = json_decode($catalogJson);
     $catalog->dataset = $this->getAll('dataset');
 
     return $catalog;
