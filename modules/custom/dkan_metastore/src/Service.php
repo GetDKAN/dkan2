@@ -301,6 +301,24 @@ class Service implements ContainerInjectionInterface {
   }
 
   /**
+   * Assembles the data catalog object.
+   *
+   * @return object
+   *   The catalog object
+   */
+  public function getDataJson() {
+    $catalog = new \stdClass();
+    $catalog->{"@context"} = "https://project-open-data.cio.gov/v1.1/schema/catalog.jsonld";
+    $catalog->{"@id"} = "https://data.cms.gov/data.json";
+    $catalog->{"@type"} = "dcat:Catalog";
+    $catalog->conformsTo = "https://project-open-data.cio.gov/v1.1/schema";
+    $catalog->describedBy = "https://project-open-data.cio.gov/v1.1/schema/catalog.json";
+    $catalog->dataset = $this->getAll('dataset');
+
+    return $catalog;
+  }
+
+  /**
    * Private.
    */
   private function objectExists($schemaId, $identifier) {
