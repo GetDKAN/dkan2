@@ -29,7 +29,7 @@ class SchemaRetriever implements RetrieverInterface {
    */
   public function getAllIds() {
     return [
-      'data',
+      'catalog',
       'dataset',
       'dataset.ui',
     ];
