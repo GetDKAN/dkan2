@@ -5,7 +5,7 @@ namespace Drupal\dkan_metastore;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\dkan_common\DataModifierPluginTrait;
 use Drupal\dkan_common\Plugin\DataModifierManager;
-use Drupal\dkan_data\ValueReferencer;
+use Drupal\dkan_data\Reference\Dereferencer;
 use Drupal\dkan_metastore\Exception\CannotChangeUuidException;
 use Drupal\dkan_metastore\Exception\ExistingObjectException;
 use Drupal\dkan_metastore\Exception\MissingObjectException;
@@ -172,7 +172,7 @@ class Service implements ContainerInjectionInterface {
 
     // Load this dataset's metadata with both data and identifiers.
     if (function_exists('drupal_static')) {
-      drupal_static('dkan_data_dereference_method', ValueReferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
+      drupal_static('dkan_data_dereference_method', Dereferencer::DEREFERENCE_OUTPUT_REFERENCE_IDS);
     }
 
     $json = $this->getEngine($schema_id)
