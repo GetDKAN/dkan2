@@ -90,6 +90,6 @@ dkan_metastore.data_json:
   path: '/data.json'
   methods: [GET]
   defaults:
-    { _controller: '\Drupal\dkan_metastore\WebServiceApi::getDataJson'}
+    { _controller: '\Drupal\dkan_metastore\WebServiceApi::getCatalog'}
   requirements:
     _permission: 'access content'
