@@ -307,8 +307,7 @@ class Service implements ContainerInjectionInterface {
    *   The catalog object
    */
   public function getCatalog() {
-    $catalogJson = $this->schemaRetriever->retrieve("catalog");
-    $catalog = json_decode($catalogJson);
+    $catalog = $this->getSchema('catalog');
     $catalog->dataset = $this->getAll('dataset');
 
     return $catalog;
