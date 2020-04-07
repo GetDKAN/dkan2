@@ -230,9 +230,9 @@ class WebServiceApi implements ContainerInjectionInterface {
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    *   A json response, either the catalog or an exception.
    */
-  public function getDataJson() : JsonResponse {
+  public function getCatalog() : JsonResponse {
     try {
-      return $this->getResponse($this->service->getDataJson());
+      return $this->getResponse($this->service->getCatalog());
     }
     catch (\Exception $e) {
       return $this->getResponseFromException($e);
