@@ -16,46 +16,55 @@ class WebServiceApi {
    * Search.
    */
   public function search() {
-    $storage = \Drupal::service("entity_type.manager")->getStorage('search_api_index');
 
-    /* @var \Drupal\search_api\IndexInterface $index */
-    $index = $storage->load('dkan');
 
-    if (!$index) {
-      return $this->getResponse((object) ['message' => "An index named [dkan] does not exist."], 500);
-    }
-
-    $fields = array_keys($index->getFields());
-
+//    $storage = \Drupal::service("entity_type.manager")->getStorage('search_api_index');
+//
+//    /* @var \Drupal\search_api\IndexInterface $index */
+//    $index = $storage->load('dkan');
+//
+//    if (!$index) {
+//      return $this->getResponse((object) ['message' => "An index named [dkan] does not exist."], 500);
+//    }
+//
+//    $fields = array_keys($index->getFields());
+//
     $params = $this->getParams();
-
-    /* @var $qh \Drupal\search_api\Utility\QueryHelper */
-    $qh = \Drupal::service("search_api.query_helper");
-
-    /* @var $query \Drupal\search_api\Query\QueryInterface */
-    $query = $qh->createQuery($index);
-
-    $this->setFullText($query, $params, $index);
-
-    $this->setFieldConditions($query, $fields, $params);
-
-    $facets = $this->getFacets($query, $fields);
-
-    $this->setSort($query, $params, $fields);
-
-    $this->setRange($query, $params);
-
-    /* @var  $result ResultSet*/
-    $result = $query->execute();
-    $count = $result->getResultCount();
-
-    $data = $this->getData($result);
-
-    $responseBody = (object) [
-      'total' => $count,
-      'results' => $data,
-      'facets' => $facets,
-    ];
+//
+//    /* @var $qh \Drupal\search_api\Utility\QueryHelper */
+//    $qh = \Drupal::service("search_api.query_helper");
+//
+//    /* @var $query \Drupal\search_api\Query\QueryInterface */
+//    $query = $qh->createQuery($index);
+//
+//    $this->setFullText($query, $params, $index);
+//
+//    $this->setFieldConditions($query, $fields, $params);
+//
+//    $facets = $this->getFacets($query, $fields);
+//
+//    $this->setSort($query, $params, $fields);
+//
+//    $this->setRange($query, $params);
+//
+//    /* @var  $result ResultSet*/
+//    $result = $query->execute();
+//    $count = $result->getResultCount();
+//
+//    $data = $this->getData($result);
+//
+//    $responseBody = (object) [
+//      'total' => $count,
+//      'results' => $data,
+//      'facets' => $facets,
+//    ];
+//
+    try {
+      $responseBody = (new \Drupal\dkan_search\Service())->search();
+    }
+    catch (\Exception $e) {
+      return $this->getResponse((object) ["message" => $e->getMessage()], 500);
+    }
 
     return $this->getResponse($responseBody);
   }
