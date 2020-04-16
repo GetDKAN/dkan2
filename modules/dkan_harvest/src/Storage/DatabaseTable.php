@@ -31,8 +31,9 @@ class DatabaseTable extends AbstractDatabaseTable {
    * @inheritDoc
    */
   public function retrieve(string $id) {
+    /** @var \Procrastinator\Result $result */
     $result = parent::retrieve($id);
-    return $result->data;
+    return $result->getData();
   }
 
   /**
