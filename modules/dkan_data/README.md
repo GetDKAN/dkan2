@@ -1,12 +1,10 @@
-@page general Catalog Basics
+@page data Data
+
+The **dkan_data** module provides the connection to [Drupal](https://drupal.org) as a means of storage.
 
 ## What is a Dataset
 
-A dataset contains a distribution list of individual resources (files, APIs or links that are being shared) as well as metadata. 
-
-Metadata is the “Who, What, When, Where, Why” of each dataset. There are a number of specifications for dataset metadata and DKAN currently complies with the DCAT and [Project Open Data](https://project-open-data.cio.gov/) schemas.
-
-It is possible to add new fields to DKAN to conform to additional specifications or custom requirements.
+A dataset is an identifiable collection of structured data objects (distribution list) unified by some criteria (authorship, subject, scope, spatial or temporal extent…) as well as <a href="metastore.html">metadata</a>.
 
 ### Sample Data Files
 

@@ -1,9 +1,10 @@
-@page guide-harvest Harvest
+@page harvest Harvest
 
-To “harvest” data is to use the public feed or API of another data portal to import items from that portal’s catalog into your own. 
+The **dkan_harvest** module provides integration with the [harvest](https://github.com/GetDKAN/harvest) library. This enables you to use the public feed or API of another data portal and import items from that portal’s catalog into your own.
+
 For example, [Data.gov](https://data.gov/) harvests all of its datasets from the [data.json](https://project-open-data.cio.gov/v1.1/schema/) files of [hundreds of U.S. federal, state and local data portals](https://catalog.data.gov/harvest).
 
- A DKAN harvest consists of a [harvest plan](#harvest-plan) that will save the source information to the local file system in cache and plan files.
+ A "harvest" consists of a [harvest plan](#harvest-plan) that will save the source information to the local file system in cache and plan files.
 
 ## Drush Commands
 
@@ -22,7 +23,7 @@ The harvest plan is the configuration used to import data into your catalog.
 \ref https://github.com/GetDKAN/harvest/blob/master/schema/schema.json
 <!-- /include blob/master/schema/schema.json -->
 
-\code{.json} 
+\code{.json}
   {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "harvest-plan",
@@ -95,17 +96,18 @@ Currently there is no UI for creating or running a harvest, use the drush comman
   - Provide the **load** object that defines the type of content you want to create, most likely datasets, so use: "\\Drupal\\dkan_harvest\\Load\\Dataset"
 
 2. If you would also like to make changes to the data you are harvesting, you can create custom **transforms** that will modify the data before saving to your catalog. Add multiple transforms as an array. [Learn more here](#transforms).
- 
+
 ### Example
-\code{.bash} 
-dkan-harvest:register '{"identifier":"exampleharvest","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms": ["\\Drupal\\dkan_harvest\\Transform\\ResourceImporter"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
+\code{.bash}
+drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":[],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 \endcode
 
 ## Run the harvest
-Once you have registered a harvest source, run the import, passing in the identifier as an arguement `dkan-harvest:run exampleharvest`
+Once you have registered a harvest source, run the import, passing in the identifier as an arguement `drush dkan-harvest:run example`
 
 <h2 id="transforms">How to create transforms</h2>
-Let's say you want to harvest from a Socrata catalog and only want to import the distributions with csv files. Create a custom module with the following structure: custom_module/src/Harvest/Transform/Socrata.php
+Transforms allow you to modify what you are harvesting.
+Let's say you want to harvest from a Socrata catalog and only want to import the distributions with csv files. [Create a custom module](https://www.drupal.org/docs/8/creating-custom-modules) with the following structure: custom_module/src/Harvest/Transform/Socrata.php
 
 \code{.php}
 <?php
@@ -140,17 +142,19 @@ class Socrata extends Transform {
         unset($item->distribution[$key]);
       }
       else {
-        $dist->title = "pqdc_{$this->counter}_{$counter}";
+        $dist->title = "distribution_{$this->counter}_{$counter}";
         $item->distribution[$key] = $dist;
       }
       $counter++;
     }
-  
+
     return $item;
   }
 
   /**
    * Private.
+   *
+   * Convert the url identifier to a non-url based identifier.
    */
   private function getIdentifier($identifier) {
     $path = parse_url($identifier, PHP_URL_PATH);
@@ -161,6 +165,6 @@ class Socrata extends Transform {
 \endcode
 
 ### Example with new transform
-\code{.bash} 
-dkan-harvest:register '{"identifier":"exampleharvest","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms": ["\\Drupal\\custom_module\\Transform\\Socrata"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
+\code{.bash}
+drush dkan-harvest:register '{"identifier":"example","extract":{"type":"\\Harvest\\ETL\\Extract\\DataJson","uri":"https://source/data.json"},"transforms":["\\Drupal\\custom_module\\Transform\\Socrata"],"load":{"type":"\\Drupal\\dkan_harvest\\Load\\Dataset"}}'
 \endcode
