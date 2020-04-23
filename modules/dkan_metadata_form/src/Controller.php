@@ -63,7 +63,7 @@ class Controller extends ControllerBase {
         ],
         'drupalSettings' => [
           'tempUUID' => $generated_uuid,
-          'isNew' => true,
+          'isNew' => TRUE,
         ],
       ],
     ];
@@ -84,7 +84,7 @@ class Controller extends ControllerBase {
           ],
           'drupalSettings' => [
             'tempUUID' => $uuid,
-            'isNew' => false,
+            'isNew' => FALSE,
           ],
         ],
       ];
