@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['community_1187',['Community',['../community.html',1,'']]],
-  ['components_1188',['Components',['../components.html',1,'']]],
-  ['code_20of_20conduct_1189',['Code of conduct',['../conduct.html',1,'']]]
+  ['dataset_20api_1198',['Dataset API',['../datasetapi.html',1,'metastore']]],
+  ['datastore_1199',['Datastore',['../datastore.html',1,'modules']]]
 ];
