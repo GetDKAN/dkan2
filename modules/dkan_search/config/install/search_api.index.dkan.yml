@@ -1,4 +1,3 @@
-uuid: 7f753ab6-afa4-4459-be92-ef72cd5f6a81
 langcode: en
 status: true
 dependencies:
@@ -7,8 +6,6 @@ dependencies:
   module:
     - search_api
     - dkan_search
-_core:
-  default_config_hash: XKTXGYRR--JS06TIY7U5NgOoTL-EzzrPZzSMymFUc0Q
 id: dkan
 name: DKAN
 description: ''
