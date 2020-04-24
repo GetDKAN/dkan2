@@ -4,7 +4,7 @@ The **dkan_harvest** module provides integration with the [harvest](https://gith
 
 For example, [Data.gov](https://data.gov/) harvests all of its datasets from the [data.json](https://project-open-data.cio.gov/v1.1/schema/) files of [hundreds of U.S. federal, state and local data portals](https://catalog.data.gov/harvest).
 
- A "harvest" consists of a [harvest plan](#harvest-plan) that will save the source information to the local file system in cache and plan files.
+ A "harvest" is the execution of a [harvest plan](#harvest-plan).
 
 ## Drush Commands
 
