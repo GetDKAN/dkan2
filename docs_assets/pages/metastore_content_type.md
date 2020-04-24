@@ -1,6 +1,6 @@
-@page data Data
+@page data Metastore Content Type
 
-The **dkan_data** module provides the connection to [Drupal](https://drupal.org) as a means of storage.
+The **metastore_content_type** module provides the connection to [Drupal](https://drupal.org) as a means of storage.
 
 ## What is a Dataset
 

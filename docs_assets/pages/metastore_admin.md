@@ -1,6 +1,6 @@
-@page admin Administration
+@page admin Metastore Administration
 
-The **dkan_admin** module provides administrative views for managing dataset content.
+The **metastore_admin** module provides administrative views for managing dataset content.
 
 The default `admin/content/node` view will be replaced with DKAN's `admin/content/node` view that:
   1. adds an additional filter for "Data type"
