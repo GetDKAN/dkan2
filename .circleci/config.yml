@@ -20,7 +20,7 @@ jobs:
           name: Install DKTL
           command: |
             cd ~
-            git clone --single-branch --depth 1 https://github.com/GetDKAN/dkan-tools.git
+            git clone --single-branch --depth 1 --branch fix https://github.com/GetDKAN/dkan-tools.git
             chmod 777 ./dkan-tools/bin/dktl
             export PATH=$PATH:~/dkan-tools/bin
             which dktl
@@ -51,16 +51,11 @@ jobs:
             dktl xdebug:start
             dktl dkan:test-phpunit-coverage $CC_TEST_REPORTER_ID
       - run:
-          name: Install site
-          command: |
-            export PATH=$PATH:~/dkan-tools/bin
-            cd ~/sandbox
-            dktl install
-      - run:
           name: Run DKAN cypress tests
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
+            dktl install
             dktl drush user:create testuser --password="2jqzOAnXS9mmcLasy"
             dktl drush user-add-role api_user testuser
             dktl drush user:create testeditor --password="testeditor"
@@ -81,11 +76,7 @@ jobs:
           command: |
             export PATH=$PATH:~/dkan-tools/bin
             cd ~/sandbox
-            dktl dc exec web chmod -R 777 /var/www/docroot/sites/default/files/dkan-tmp
-            dktl dc exec web chmod -R 777 /var/www/docroot/data-catalog-frontend
             dktl install --demo
-            dktl drush queue:run dkan_datastore_import
-            dktl drush cr
             dktl dkan:test-cypress frontend
       - store_artifacts:
           path: ~/sandbox/docroot/profiles/contrib/dkan2/cypress/screenshots
