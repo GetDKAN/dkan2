@@ -6,7 +6,6 @@ jobs:
       image: circleci/classic:latest
     environment:
       TEST_RESULTS: /tmp/test-results
-      DRUPAL_VERSION: V8
     steps:
       - checkout
       - run:
