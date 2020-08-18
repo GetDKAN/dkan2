@@ -1,4 +1,6 @@
-# DKAN
+# DEPRECATED
+
+The code for DKAN 2.x has been moved to [DKAN](https://github.com/GetDKAN/dkan)
 
 [DKAN](https://getdkan.com) Open Data Portal/Catalog built on [Drupal 8](https://www.drupal.org/documentation) - Release Candidate
 
@@ -9,14 +11,12 @@
 
 As a piece of software in its Alpha cycle, the code is continuously changing and in very active development.
 
-[Documentation](https://getdkan.github.io/dkan2/)
-
 ## Features
 
-- Harvesting of data from external catalogs that provide a data.json
-- Dataset metadata and resources @ref metastore "[Metastore]"
-- Web service API endpoints that allow third party applications to work with the datasets
-- Integration with a decoupled [REACT front end](https://github.com/getdkan/data-catalog-frontend) 
+- Harvesting of data from external catalogs that provide a data.json.
+- Dataset metadata and resources.
+- Web service API endpoints that allow third party applications to work with the datasets.
+- Integration with a decoupled REACT front end.
 - A datastore to store CSV files and make them queryable through an SQL endpoint.
 
 ## License
